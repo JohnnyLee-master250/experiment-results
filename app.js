@@ -6,6 +6,7 @@ const MODELS=['Sol6','Astra','DeepSeek','DeepSeek-high'];
 const METHODS=['B1','B2','B3','V0'];
 const DASH={Sol6:'',Astra:'7 4',DeepSeek:'2 4','DeepSeek-high':'9 3 2 3'};
 let manifest,data,cache=new Map(),visible=new Set(),datasetId=new URL(location).searchParams.get('dataset')||'GQA',mode='best',activeSamples=null,loadSeq=0,needsReload=false;
+let focusedRun=null,initialRun=new URL(location).searchParams.get('run');
 const state={xmin:1,xmax:30,ymin:null,ymax:null,ymode:'focus',uncertainty:false};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=(v,n=6)=>v==null?'—':Number(v).toLocaleString('en-US',{maximumFractionDigits:n,minimumFractionDigits:Math.min(3,n)});
@@ -21,15 +22,20 @@ function series(r){
 }
 function showNotice(s){$('#notice').hidden=!s;$('#notice').textContent=s;}
 async function getJSON(url){const response=await fetch(url,{cache:'no-cache'});if(!response.ok)throw Error(`HTTP ${response.status}`);return response.json();}
+function renderNextUpdate(){
+ const next=manifest?.next_update_estimated_at,el=$('#next-update');
+ el.textContent=next?`预计下次更新 ${date(next)} SGT${Date.now()>Date.parse(next)?' · 等待更新':''}`:'预计下次更新 —';
+ el.title=next?`按 ${manifest.update_cadence_minutes} 分钟监督周期估算；实际以源快照发布时间为准。`:'';
+}
 async function refresh(force=false){
  $('#refresh').disabled=true;
  try{
   const m=await getJSON(`./api/v1/index.json?t=${Date.now()}`);
   if(m.schema_version!==1)throw Error('不支持的数据版本');
   const changed=!manifest||m.updated_at!==manifest.updated_at;
-  manifest=m;if(!data){$('#updated').textContent=date(m.updated_at);$('#updated').dateTime=m.updated_at;}
+  manifest=m;renderNextUpdate();if(!data){$('#updated').textContent=date(m.updated_at);$('#updated').dateTime=m.updated_at;}
   $('#connection').classList.remove('stale');showNotice('');
-  if(changed||force||needsReload){cache.clear();renderNav();await loadDataset(datasetId,!data||data.id!==datasetId);}
+  if(changed||force||needsReload){cache.clear();renderNav();renderRunning();await loadDataset(datasetId,!data||data.id!==datasetId,initialRun);if(!needsReload)initialRun=null;}
  }catch(e){$('#connection').classList.add('stale');showNotice(`更新暂不可用${data?'，保留上次数据':''} · ${e.message}`);}
  finally{$('#refresh').disabled=false;}
 }
@@ -37,7 +43,17 @@ function renderNav(){
  $('#datasets').innerHTML=manifest.datasets.map(d=>`<button type="button" data-dataset="${esc(d.id)}" aria-current="${d.id===datasetId}">${esc(d.id)}</button>`).join('');
  $$('[data-dataset]').forEach(b=>b.onclick=()=>loadDataset(b.dataset.dataset,true));
 }
-async function loadDataset(id,reset){
+function renderRunning(){
+ const runs=manifest.running_runs||[];
+ $('#running-count').textContent=`${runs.length} 组`;
+ $('#running-links').innerHTML=runs.map(r=>{
+  const href=`?${new URLSearchParams({dataset:r.dataset,run:r.id})}#curves`;
+  const phase={reviewing:'审查中',evaluating:'评测中',profiling:'测量中',ready:'推进中',initializing:'初始化'}[r.phase]||'运行中';
+  return `<a class="running-link ${focusedRun===r.id?'current':''}" href="${esc(href)}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}" style="--color:${COLORS[r.method]||'#526c89'}" title="${esc(r.model+' / '+r.effort)} · 已记录 ${r.reported_attempts}/${r.budget} 轮；待审查记录不代表独立完成"><span class="swatch"></span><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(r.method)}</strong><span class="running-round">${r.reported_attempts}<span> / ${r.budget} 轮</span></span><span class="running-phase">${phase}</span><span aria-hidden="true">↗</span></a>`;
+ }).join('')||'<span class="running-empty">暂无运行中的实验</span>';
+ $$('[data-running]').forEach(a=>a.onclick=e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();loadDataset(a.dataset.target,data?.id!==a.dataset.target,a.dataset.running,true);});
+}
+async function loadDataset(id,reset,focusRun=null,push=false){
  const seq=++loadSeq;const meta=manifest.datasets.find(d=>d.id===id)||manifest.datasets[0];datasetId=meta.id;
  try{
   const d=cache.get(meta.id)||await getJSON(`./api/v1/${meta.url}?v=${encodeURIComponent(manifest.updated_at)}`);
@@ -47,9 +63,16 @@ async function loadDataset(id,reset){
   $('#updated').textContent=date(d.updated_at);$('#updated').dateTime=d.updated_at;
   if(reset){visible=new Set(data.runs.filter(usable).map(r=>r.id));Object.assign(state,{xmin:1,xmax:30,ymode:'focus',ymin:null,ymax:null});$('#round-run').value='all';}
   else for(const r of data.runs)if(!r.search.length&&!r.formal)visible.delete(r.id);
-  const url=new URL(location);url.searchParams.set('dataset',meta.id);history.replaceState(null,'',url);renderNav();
+  if(reset)focusedRun=null;
+  const target=focusRun&&data.runs.find(r=>r.id===focusRun);
+  if(target){focusedRun=target.id;if(usable(target))visible.add(target.id);Object.assign(state,{xmin:1,xmax:30,ymode:'focus',ymin:null,ymax:null});}
+  const url=new URL(location);url.searchParams.set('dataset',meta.id);
+  if(focusedRun)url.searchParams.set('run',focusedRun);else url.searchParams.delete('run');
+  if(target)url.hash=target.method==='B0'?'correctness':'curves';
+  history[push?'pushState':'replaceState'](null,'',url);renderNav();renderRunning();
   $('#dataset-name').textContent=data.title;$('#workload').textContent=data.workload;
   syncRange();renderAll();showNotice('');
+  if(target){const el=$(target.method==='B0'?'#correctness':'#curves');el.scrollIntoView({block:'start'});if(target.method!=='B0')el.focus({preventScroll:true});}
  }catch(e){if(seq===loadSeq){needsReload=true;$('#connection').classList.add('stale');showNotice(`数据读取失败，保留上次快照 · ${e.message}`);}}
 }
 function toggle(id,on){on?visible.add(id):visible.delete(id);renderAll();}
@@ -112,6 +135,8 @@ function bounds(runs,detail){
   const sorted=values.slice().sort((a,b)=>a-b);let cut=-1;
   for(let i=Math.min(3,sorted.length-1);i<sorted.length;i++){if(i>0&&sorted[i]/sorted[i-1]>=2){cut=i;break;}}
   if(cut>0)values=sorted.slice(0,cut);
+  const focused=runs.find(r=>r.id===focusedRun),terminal=focused&&series(focused).filter(p=>p.y!=null&&p.round<=state.xmax).at(-1);
+  if(terminal)values.push(terminal.y);
  }
  if(!values.length)return [0,1];
  const min=Math.min(...values),max=Math.max(...values),pad=Math.max((max-min)*.15,Math.abs(max)*.025,.000001);
@@ -138,7 +163,7 @@ function renderChart(el,detail){
    else d+=`L${sx(p.round)},${sy(p.y)}`;
    last=p;
   }
-  svg+=`<path class="curve" data-run="${esc(r.id)}" d="${d}" fill="none" stroke="${col}" stroke-width="1.8" stroke-dasharray="${DASH[r.model]}" opacity=".88"/>`;
+  svg+=`<path class="curve" data-run="${esc(r.id)}" d="${d}" fill="none" stroke="${col}" stroke-width="${r.id===focusedRun?3:1.8}" stroke-dasharray="${DASH[r.model]}" opacity=".88"/>`;
   for(const p of pts){
    if(p.timing){
     if(state.uncertainty)svg+=`<path d="M${sx(p.round)},${sy(p.timing.p10_ms)}V${sy(p.timing.p90_ms)}M${sx(p.round)-2.5},${sy(p.timing.p10_ms)}h5M${sx(p.round)-2.5},${sy(p.timing.p90_ms)}h5" stroke="${col}" fill="none" opacity=".35"/>`;
@@ -198,6 +223,7 @@ $('#apply-range').onclick=applyRange;
 $('#y-mode').onchange=()=>{if($('#y-mode').value!=='manual')applyRange();};
 $('#reset').onclick=()=>{Object.assign(state,{xmin:1,xmax:30,ymode:'focus',ymin:null,ymax:null});syncRange();showNotice('');renderCharts();};
 new ResizeObserver(()=>renderCharts()).observe($('.charts'));
-setInterval(()=>{if(!document.hidden)refresh();},60000);
+setInterval(()=>{if(!document.hidden){renderNextUpdate();refresh();}},60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
+window.addEventListener('popstate',()=>{const url=new URL(location);loadDataset(url.searchParams.get('dataset')||'GQA',true,url.searchParams.get('run'));});
 refresh();
