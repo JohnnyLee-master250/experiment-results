@@ -7,6 +7,7 @@ const METHODS=['B1','B2','B3','V0'];
 const DASH={Sol6:'',Astra:'7 4',DeepSeek:'2 4','DeepSeek-high':'9 3 2 3'};
 let manifest,data,cache=new Map(),visible=new Set(),datasetId=new URL(location).searchParams.get('dataset')||'GQA',mode='best',activeSamples=null,loadSeq=0,needsReload=false;
 let focusedRun=null,initialRun=new URL(location).searchParams.get('run');
+let eventLimit=12;
 const state={xmin:1,xmax:30,ymin:null,ymax:null,ymode:'focus',uncertainty:false};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=(v,n=6)=>v==null?'—':Number(v).toLocaleString('en-US',{maximumFractionDigits:n,minimumFractionDigits:Math.min(3,n)});
@@ -33,7 +34,7 @@ async function refresh(force=false){
   const m=await getJSON(`./api/v1/index.json?t=${Date.now()}`);
   if(m.schema_version!==1)throw Error('不支持的数据版本');
   const changed=!manifest||m.updated_at!==manifest.updated_at;
-  manifest=m;renderNextUpdate();if(!data){$('#updated').textContent=date(m.updated_at);$('#updated').dateTime=m.updated_at;}
+  manifest=m;renderNextUpdate();renderTaskEvents();if(!data){$('#updated').textContent=date(m.updated_at);$('#updated').dateTime=m.updated_at;}
   $('#connection').classList.remove('stale');showNotice('');
   if(changed||force||needsReload){cache.clear();renderNav();renderRunning();await loadDataset(datasetId,!data||data.id!==datasetId,initialRun);if(!needsReload)initialRun=null;}
  }catch(e){$('#connection').classList.add('stale');showNotice(`更新暂不可用${data?'，保留上次数据':''} · ${e.message}`);}
@@ -76,16 +77,26 @@ async function loadDataset(id,reset,focusRun=null,push=false){
  }catch(e){if(seq===loadSeq){needsReload=true;$('#connection').classList.add('stale');showNotice(`数据读取失败，保留上次快照 · ${e.message}`);}}
 }
 function toggle(id,on){on?visible.add(id):visible.delete(id);renderAll();}
+function toggleModel(model,on){data.runs.filter(r=>r.model===model&&usable(r)).forEach(r=>on?visible.add(r.id):visible.delete(r.id));renderAll();}
 function renderControls(){
  $('#series-controls').innerHTML=MODELS.map(model=>{
-  const runs=data.runs.filter(r=>r.model===model),effort=runs[0]?.effort||'';
-  return `<div class="model-group"><div class="model-heading"><button type="button" data-model="${model}" aria-label="切换 ${model} 全部曲线">${model}</button><span class="effort">${esc(effort)}</span><span class="model-line ${model.toLowerCase()}"></span></div><div class="chips">${METHODS.map(method=>{
+  const runs=data.runs.filter(r=>r.model===model),effort=runs[0]?.effort||'',available=runs.filter(usable),count=available.filter(r=>visible.has(r.id)).length,all=available.length>0&&count===available.length,mixed=count>0&&!all;
+  return `<div class="model-group"><div class="model-heading"><button type="button" data-model="${model}" aria-label="切换 ${model} 全部曲线" ${available.length?'':'disabled'}>${model}</button><span class="effort">${esc(effort)}</span><span class="model-line ${model.toLowerCase()}"></span><label class="model-toggle ${mixed?'mixed':''}" title="${count}/${available.length} 条曲线已显示"><span>${available.length?(all?'全部':mixed?'部分':'关闭'):'无数据'}</span><input type="checkbox" data-model-check="${model}" aria-label="${model} 全部曲线" aria-checked="${mixed?'mixed':String(all)}" ${all?'checked':''} ${available.length?'':'disabled'}><span class="toggle-track" aria-hidden="true"></span></label></div><div class="chips">${METHODS.map(method=>{
    const r=runs.find(x=>x.method===method),on=r&&visible.has(r.id),ok=r&&usable(r);
    return `<label class="chip ${on?'active':''} ${ok?'':'disabled'}" style="--color:${COLORS[method]}" title="${esc(r?LABELS[r.status]:'无数据')}"><input type="checkbox" data-series="${esc(r?.id)}" ${on?'checked':''} ${ok?'':'disabled'} aria-label="${model} ${method} 曲线">${method}</label>`;
   }).join('')}</div></div>`;
  }).join('');
  $$('[data-series]').forEach(e=>e.onchange=()=>toggle(e.dataset.series,e.checked));
- $$('[data-model]').forEach(e=>e.onclick=()=>{const runs=data.runs.filter(r=>r.model===e.dataset.model&&usable(r)),all=runs.every(r=>visible.has(r.id));runs.forEach(r=>all?visible.delete(r.id):visible.add(r.id));renderAll();});
+ $$('[data-model-check]').forEach(e=>{e.indeterminate=e.getAttribute('aria-checked')==='mixed';e.onchange=()=>{const model=e.dataset.modelCheck;toggleModel(model,e.checked);$(`[data-model-check="${model}"]`).focus({preventScroll:true});};});
+ $$('[data-model]').forEach(e=>e.onclick=()=>{const runs=data.runs.filter(r=>r.model===e.dataset.model&&usable(r));toggleModel(e.dataset.model,!runs.every(r=>visible.has(r.id)));});
+}
+function renderTaskEvents(){
+ const labels={started:'开始',resumed:'恢复',paused:'暂停',completed:'完成'},ds=$('#event-dataset').value,kind=$('#event-kind').value;
+ const events=(manifest?.task_events||[]).filter(e=>(ds==='all'||e.runs.some(r=>r.dataset===ds))&&(kind==='all'||e.kind===kind));
+ $('#event-count').textContent=`${events.length} 条`;
+ $('#task-events').innerHTML=events.slice(0,eventLimit).map(e=>`<li class="task-event"><time datetime="${esc(e.at)}" title="${esc(e.at)}">${date(e.at)}${e.time_basis==='observed'?'<small>记录时间</small>':''}</time><span class="event-tag ${esc(e.kind)}">${labels[e.kind]||esc(e.kind)}</span><div class="event-runs">${e.runs.map(r=>`<a href="?${new URLSearchParams({dataset:r.dataset,run:r.id})}#curves" data-event-run="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(r.model)} ${esc(r.method)} ↗</a>`).join('')}</div><p>${esc(e.reason)}</p></li>`).join('')||'<li class="empty">暂无记录</li>';
+ $('#events-more').hidden=eventLimit>=events.length;
+ $$('[data-event-run]').forEach(a=>a.onclick=e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();loadDataset(a.dataset.target,data?.id!==a.dataset.target,a.dataset.eventRun,true);});
 }
 function renderSummary(){
  let previous='';
@@ -216,6 +227,8 @@ $('#json').onclick=()=>download(`${data.id}-complete.json`,JSON.stringify(data,n
 $('#sample-csv').onclick=()=>{if(activeSamples)download(`${data.id}-${activeSamples.r.model}-${activeSamples.r.method}-${activeSamples.p.round}-samples.csv`,'sample,latency_ms\n'+activeSamples.p.timing.samples_ms.map((v,i)=>`${i+1},${v}`).join('\n'),'text/csv');};
 $('#close-samples').onclick=()=>$('#samples').close();
 $('#refresh').onclick=()=>refresh(true);
+$('#event-dataset').onchange=$('#event-kind').onchange=()=>{eventLimit=12;renderTaskEvents();};
+$('#events-more').onclick=()=>{eventLimit+=12;renderTaskEvents();};
 $('#round-run').onchange=renderRounds;$('#round-status').onchange=renderRounds;
 $('#best-mode').onclick=()=>setMode('best');$('#raw-mode').onclick=()=>setMode('raw');
 function setMode(m){mode=m;$('#best-mode').classList.toggle('selected',m==='best');$('#raw-mode').classList.toggle('selected',m==='raw');$('#best-mode').setAttribute('aria-pressed',m==='best');$('#raw-mode').setAttribute('aria-pressed',m==='raw');renderCharts();}
