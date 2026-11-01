@@ -38,3 +38,11 @@ The browser checks `index.json` every 60 seconds and refreshes the selected data
 `update_cadence_minutes` comes from the active monitoring schedule. `next_update_estimated_at` is the source snapshot timestamp plus that interval, an estimate rather than a guaranteed measurement or deployment time. The page shows “等待更新” after the estimate passes without a new snapshot. Both fields are null when that schedule is inactive or unavailable.
 
 Consumers should load the manifest, then the chosen endpoint with `?v=<updated_at>`, keep last-known-good data on errors, and show its timestamp. This is a read-only public API. No credentials or experiment source code are included. The publishing adapter is operated outside the experimental MAIN workspaces.
+
+## KL Apply API
+
+`index.json.categories` selects `bv` (B0–B3 / V0) or `kl`. `index.json.kl.url` points to `api/v1/kl.json` relative to this API directory. KL has its own grain: run → Apply (1–10) → candidate evaluation, rather than B/V valid rounds. `?category=kl&dataset=GQA&apply=2` selects the dataset and internal Apply detail.
+
+Each run includes model/effort, budget, per-Apply timeout, evaluation timeout, actual workspace_path (null until created), start time, independent completion time, status and applies. Each Apply records timing, status, candidate evaluations, infrastructure error count, reuse snapshot count and last delivered validation. Candidate sequence is the saved evaluation-event order; it is not a B/V round. Reuse is not a new device evaluation. Missing values stay null, never zero. Delivery requires completed native Apply and its last version; it does not choose an earlier fastest version. Acceptance requires every native validation gate, a bound original Job without job-level error, and a valid positive latency. Independent completion requires separate operation-bound audit evidence.
+
+KL latency uses the median of three group medians (10 warmups, 50 samples per group), distinct from the existing B/V measurement contract. These values are not merged into B/V curves. `kl.json.task_events` records actual task start, executed pause/recovery and independent completion; preparation creates no fictitious start. `index.json.kl.running_runs` lists only currently running KL tasks. Source capture time and publication time remain separate.
