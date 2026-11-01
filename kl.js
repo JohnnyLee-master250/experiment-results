@@ -1,6 +1,6 @@
 'use strict';
 let klData=null,klRun=null,klApply=null,klSequence=0;
-const KL_LABELS={not_run:'未开始',running:'进行中',complete:'独立完成',ended:'结束 · 待验收',blocked:'待处理',paused:'已暂停',completed:'已交付',failed:'失败',interrupted:'中断',unknown:'待核对',passed:'通过',infrastructure_error:'基础设施异常'};
+const KL_LABELS={not_run:'未开始',running:'运行中',complete:'已完成',ended:'运行中 · 收尾',blocked:'已暂停',paused:'已暂停',completed:'已交付',failed:'失败',interrupted:'中断',unknown:'待核对',passed:'通过',infrastructure_error:'基础设施异常'};
 function klStatus(s){return KL_LABELS[s]||'待核对';}
 function setCategory(id){
  category=id==='kl'?'kl':'bv';

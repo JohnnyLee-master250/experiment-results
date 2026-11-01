@@ -56,12 +56,12 @@ function renderRunning(){
  $('#running-count').textContent=`${runs.length} 组`;
  $('#running-links').innerHTML=runs.map(r=>{
   const href=`?${new URLSearchParams({dataset:r.dataset,run:r.id,category:r.category||'bv'})}${r.category==='kl'?'#kl-overview':'#curves'}`;
-  const phase={reviewing:'审查中',evaluating:'评测中',profiling:'测量中',ready:'推进中',initializing:'初始化'}[r.phase]||'运行中';
+ const phase={reviewing:'审查中',evaluating:'评测中',profiling:'测量中',ready:'运行中',initializing:'准备中',finished:'收尾中',queued:'排队中'}[r.phase]||'运行中';
   return `<a class="running-link ${focusedRun===r.id?'current':''}" href="${esc(href)}" data-category-target="${r.category||'bv'}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}" style="--color:${COLORS[r.method]||'#526c89'}" title="${esc(r.model+' / '+r.effort)} · 已记录 ${r.reported_attempts}/${r.budget} 轮；待审查记录不代表独立完成"><span class="swatch"></span><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(r.method)}</strong><span class="running-round">${r.reported_attempts}<span> / ${r.budget} ${r.category==='kl'?'Apply':'轮'}</span></span><span class="running-phase">${phase}</span><span aria-hidden="true">↗</span></a>`;
- }).join('')||'<span class="running-empty">此快照中无运行中的 MAIN，请查看下方各组状态</span>';
+ }).join('')||'<span class="running-empty">当前没有运行中的实验，各组状态见下方</span>';
  const campaign=manifest.campaign_runs||[];
  $('#campaign-status').innerHTML=campaign.map(r=>{
-  const label=r.status==='complete'?'独立完成':r.status==='paused'?'已暂停':r.phase==='finished'?'待独立验收':r.status==='running'?'运行中':r.status==='blocked'?'待审查／恢复':'未开始';
+  const label=r.status==='complete'?'已完成':r.status==='paused'||r.status==='blocked'?'已暂停':r.status==='running'?'运行中':'未开始';
   return `<a href="?category=bv&dataset=${esc(r.dataset)}&run=${esc(r.id)}#curves" data-campaign-run="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} ${esc(r.method)} <strong>${r.reported_attempts}/${r.budget}</strong><span>${label}</span></a>`;
  }).join('');
  $$('[data-campaign-run]').forEach(a=>a.onclick=e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();loadDataset(a.dataset.target,data?.id!==a.dataset.target,a.dataset.campaignRun,true);});
