@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-01T21:24:05.587648+00:00",
+  "source_captured_at": "2026-11-01T21:29:08.293191+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -756,7 +756,7 @@
           "status": "running",
           "started_at": "2026-11-01T21:15:42.016547+00:00",
           "ended_at": null,
-          "elapsed_seconds": 299.99897851701826,
+          "elapsed_seconds": 600.0003398302943,
           "candidates": [
             {
               "accepted": true,
@@ -777,9 +777,19 @@
               "sequence": 2,
               "status": "failed",
               "reused": false
+            },
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 3,
+              "status": "failed",
+              "reused": false
             }
           ],
-          "evaluations": 2,
+          "evaluations": 3,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -809,7 +819,7 @@
           "status": "running",
           "started_at": "2026-11-01T21:15:42.027034+00:00",
           "ended_at": null,
-          "elapsed_seconds": 299.999057861045,
+          "elapsed_seconds": 600.0003570076078,
           "candidates": [
             {
               "accepted": true,
@@ -846,7 +856,7 @@
       "model": "Astra",
       "effort": "high",
       "status": "blocked",
-      "phase": "原操作失败，待核对",
+      "phase": "评测框架不支持任务要求的 FP8 输入；该组暂停",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -915,7 +925,7 @@
           "status": "running",
           "started_at": "2026-11-01T21:15:42.151089+00:00",
           "ended_at": null,
-          "elapsed_seconds": 299.9990607704967,
+          "elapsed_seconds": 600.000414009206,
           "candidates": [
             {
               "accepted": false,
@@ -926,9 +936,29 @@
               "sequence": 1,
               "status": "failed",
               "reused": false
+            },
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 2,
+              "status": "failed",
+              "reused": false
+            },
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 2.1267800331115723,
+              "reference_latency_ms": null,
+              "sequence": 3,
+              "status": "passed",
+              "reused": false
             }
           ],
-          "evaluations": 1,
+          "evaluations": 3,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -941,20 +971,50 @@
       "problem_id": "fa3-backward-sm90",
       "model": "Astra",
       "effort": "high",
-      "status": "not_run",
-      "phase": "准备中",
+      "status": "running",
+      "phase": "Apply 执行中",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
       "evaluation_timeout_seconds": 1800,
-      "started_at": null,
+      "started_at": "2026-11-01T21:27:44.092981+00:00",
       "finished_at": null,
       "independently_complete": false,
-      "workspace_path": null,
-      "applies": []
+      "workspace_path": "/home/lbh24/codex-workspace/kl-astra-high-nine-datasets-20261101-001/repo/baselines-910C/klineage-910c/workspaces/opt/20261101-astra-fa3-backward-sm90",
+      "applies": [
+        {
+          "apply": 1,
+          "native_index": 0,
+          "status": "running",
+          "started_at": "2026-11-01T21:27:44.280810+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 0.0,
+          "candidates": [],
+          "evaluations": 0,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 0,
+          "delivered": null
+        }
+      ]
     }
   ],
   "task_events": [
+    {
+      "id": "kl-astra-high-20261101-kl-fa3:started:2026-11-01T21:27:44.092981+00:00",
+      "run_id": "kl-astra-high-20261101-kl-fa3",
+      "dataset": "FA3",
+      "at": "2026-11-01T21:27:44.092981+00:00",
+      "kind": "started",
+      "reason": "原任务实际启动"
+    },
+    {
+      "id": "kl-astra-high-20261101-kl-mqa:mqa-fp8-abi-20261102-001:KL-MQA:paused",
+      "run_id": "kl-astra-high-20261101-kl-mqa",
+      "dataset": "MQA",
+      "at": "2026-11-01T21:27:42.808413+00:00",
+      "kind": "paused",
+      "reason": "原因待核对"
+    },
     {
       "id": "kl-astra-high-20261101-kl-top-k:started:2026-11-01T21:15:41.963200+00:00",
       "run_id": "kl-astra-high-20261101-kl-top-k",
@@ -1052,5 +1112,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-01T21:24:04.365918+00:00"
+  "updated_at": "2026-11-01T21:29:07.178877+00:00"
 }
