@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-01T21:29:08.293191+00:00",
+  "source_captured_at": "2026-11-01T21:33:16.245036+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -756,7 +756,7 @@
           "status": "running",
           "started_at": "2026-11-01T21:15:42.016547+00:00",
           "ended_at": null,
-          "elapsed_seconds": 600.0003398302943,
+          "elapsed_seconds": 900.001510781236,
           "candidates": [
             {
               "accepted": true,
@@ -819,7 +819,7 @@
           "status": "running",
           "started_at": "2026-11-01T21:15:42.027034+00:00",
           "ended_at": null,
-          "elapsed_seconds": 600.0003570076078,
+          "elapsed_seconds": 900.0016550989822,
           "candidates": [
             {
               "accepted": true,
@@ -840,9 +840,19 @@
               "sequence": 2,
               "status": "failed",
               "reused": false
+            },
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 2.2852799892425537,
+              "reference_latency_ms": null,
+              "sequence": 3,
+              "status": "passed",
+              "reused": false
             }
           ],
-          "evaluations": 2,
+          "evaluations": 3,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -876,27 +886,27 @@
           "candidates": [
             {
               "accepted": false,
-              "stage": "correctness",
+              "stage": "framework",
               "correctness_passed": false,
               "latency_ms": null,
               "reference_latency_ms": null,
               "sequence": 1,
-              "status": "failed",
+              "status": "infrastructure_error",
               "reused": false
             },
             {
               "accepted": false,
-              "stage": "correctness",
+              "stage": "framework",
               "correctness_passed": false,
               "latency_ms": null,
               "reference_latency_ms": null,
               "sequence": 2,
-              "status": "failed",
+              "status": "infrastructure_error",
               "reused": false
             }
           ],
-          "evaluations": 2,
-          "infrastructure_errors": 0,
+          "evaluations": 0,
+          "infrastructure_errors": 2,
           "reused_snapshots": 0,
           "delivered": null
         }
@@ -925,7 +935,7 @@
           "status": "running",
           "started_at": "2026-11-01T21:15:42.151089+00:00",
           "ended_at": null,
-          "elapsed_seconds": 600.000414009206,
+          "elapsed_seconds": 900.001927816309,
           "candidates": [
             {
               "accepted": false,
@@ -956,9 +966,19 @@
               "sequence": 3,
               "status": "passed",
               "reused": false
+            },
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 2.098810076713562,
+              "reference_latency_ms": null,
+              "sequence": 4,
+              "status": "passed",
+              "reused": false
             }
           ],
-          "evaluations": 3,
+          "evaluations": 4,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -988,7 +1008,7 @@
           "status": "running",
           "started_at": "2026-11-01T21:27:44.280810+00:00",
           "ended_at": null,
-          "elapsed_seconds": 0.0,
+          "elapsed_seconds": 299.9990570805967,
           "candidates": [],
           "evaluations": 0,
           "infrastructure_errors": 0,
@@ -1013,7 +1033,7 @@
       "dataset": "MQA",
       "at": "2026-11-01T21:27:42.808413+00:00",
       "kind": "paused",
-      "reason": "原因待核对"
+      "reason": "评测框架不支持任务要求的 FP8 输入，在候选执行前中断；该组暂停"
     },
     {
       "id": "kl-astra-high-20261101-kl-top-k:started:2026-11-01T21:15:41.963200+00:00",
@@ -1112,5 +1132,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-01T21:29:07.178877+00:00"
+  "updated_at": "2026-11-01T21:33:14.998485+00:00"
 }
