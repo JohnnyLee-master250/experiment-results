@@ -110,11 +110,12 @@ function renderRounds(){
  }).join('')||'<tr><td colspan="11" class="empty">没有符合筛选条件的数据</td></tr>';
  $$('[data-sample]').forEach(b=>b.onclick=()=>{const[id,n]=b.dataset.sample.split('|'),r=data.runs.find(r=>r.id===id),p=r.search.find(p=>p.round===+n);activeSamples={r,p};$('#sample-title').textContent=`${r.model} · ${r.method} · 第 ${n} 轮`;$('#sample-stats').textContent=`均值 ${fmt(p.timing.mean_ms)} ms · P10–P90 ${fmt(p.timing.p10_ms)}–${fmt(p.timing.p90_ms)} ms · n=${p.timing.sample_count}`;$('#sample-values').textContent=p.timing.samples_ms.map((v,i)=>`${String(i+1).padStart(3,' ')}  ${v}`).join('\n');$('#samples').showModal();});
 }
-function renderSources(){
- const ids=[...new Set(data.runs.map(r=>r.source_id).filter(Boolean))];
- $('#sources').innerHTML=`<p>${manifest.notes.map(esc).join(' ')}</p><p>阶段快照：${date(data.updated_at)} SGT。样本单位 ms；均值与 P10–P90 由已保存样本复算。基础设施中断保留编号，不画性能点。</p><p>Astra：历史环境；Sol6 / DeepSeek：本批环境。${esc(data.runs[0].environment)}。</p><table><thead><tr><th>来源</th><th>采集时间 SGT</th><th>版本</th></tr></thead><tbody>${ids.map(id=>`<tr><td>${esc(manifest.sources[id]?.label||id)}</td><td>${date(manifest.sources[id]?.captured_at)}</td><td>v1</td></tr>`).join('')}</tbody></table>`;
+function renderWorkspaces(){
+ const runs=data.runs.filter(r=>r.workspace_path);
+ $('#workspace-paths').innerHTML=runs.map(r=>`<div class="workspace-row"><div class="workspace-label"><strong>${esc(r.model)} · ${esc(r.run_label||r.method)}</strong><span>${esc(r.effort)}</span></div><code>${esc(r.workspace_path)}</code><button type="button" data-copy-workspace="${esc(r.id)}" aria-label="复制 ${esc(r.model+' '+(r.run_label||r.method))} 工作区路径">复制</button></div>`).join('')||'<p class="empty">暂无已保存的工作区路径</p>';
+ $$('[data-copy-workspace]').forEach(b=>b.onclick=async()=>{const r=runs.find(r=>r.id===b.dataset.copyWorkspace);try{await navigator.clipboard.writeText(r.workspace_path);b.textContent='已复制';}catch{b.textContent='请选中路径复制';}});
 }
-function renderAll(){if(!data)return;renderControls();renderSummary();renderRoundSelector();renderRounds();renderSources();renderCharts();}
+function renderAll(){if(!data)return;renderControls();renderSummary();renderRoundSelector();renderRounds();renderWorkspaces();renderCharts();}
 function ticks(lo,hi,count){
  const raw=(hi-lo)/Math.max(count,1),exp=10**Math.floor(Math.log10(raw||1)),n=raw/exp,step=(n<=1?1:n<=2?2:n<=5?5:10)*exp;
  const out=[];for(let v=Math.ceil(lo/step)*step;v<=hi+step*1e-7;v+=step)out.push(Math.abs(v)<step*1e-8?0:v);return out;

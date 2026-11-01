@@ -16,6 +16,8 @@ Stable fields: `id`, `model`, `model_id`, `effort`, `method`, `status`, `reporte
 Statuses: `not_run`, `no_data`, `running`, `paused`, `blocked`, `complete`, `ended`.
 `no_data` means the historical inventory has no retained record; it does not assert that an experiment never ran. `finished_at` is recorded experiment closure, not the date the webpage was generated. Unfinished groups retain null.
 
+`workspace_path` is the experiment workspace directory from retained evidence, published at the user's explicit request. It is a server filesystem path, not a browser download URL or a claim of current access to historical folders. Missing paths are null. Only this exact field permits approved workspace directory names; logs, credentials, kernel implementations and operator evidence remain excluded.
+
 DeepSeek high and max are separate series. Historical and current execution environments are identified separately. Effort and environment differences preclude attributing cross-run differences solely to model choice.
 
 ## Search point
