@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-01T20:14:34.087128+00:00",
+  "source_captured_at": "2026-11-01T20:21:31.199445+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -196,9 +196,20 @@
           "status": "running",
           "started_at": "2026-11-01T20:12:51.868812+00:00",
           "ended_at": null,
-          "elapsed_seconds": 0.0033727241680026054,
-          "candidates": [],
-          "evaluations": 0,
+          "elapsed_seconds": 505.86107141152024,
+          "candidates": [
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 1,
+              "status": "failed",
+              "reused": false
+            }
+          ],
+          "evaluations": 1,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -285,10 +296,10 @@
         {
           "apply": 2,
           "native_index": 1,
-          "status": "running",
+          "status": "completed",
           "started_at": "2026-11-01T19:17:36.926456+00:00",
-          "ended_at": null,
-          "elapsed_seconds": 3220.863306174986,
+          "ended_at": "2026-11-01T20:15:24.914240+00:00",
+          "elapsed_seconds": 3467.987785425037,
           "candidates": [
             {
               "accepted": true,
@@ -299,9 +310,38 @@
               "sequence": 1,
               "status": "passed",
               "reused": false
+            },
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 2,
+              "status": "infrastructure_error",
+              "reused": false
             }
           ],
           "evaluations": 1,
+          "infrastructure_errors": 1,
+          "reused_snapshots": 1,
+          "delivered": {
+            "accepted": true,
+            "stage": null,
+            "correctness_passed": true,
+            "latency_ms": 24.360730171203613,
+            "reference_latency_ms": 68.82260131835938
+          }
+        },
+        {
+          "apply": 3,
+          "native_index": 2,
+          "status": "running",
+          "started_at": "2026-11-01T20:15:24.914240+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 352.878286825493,
+          "candidates": [],
+          "evaluations": 0,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -428,10 +468,10 @@
         {
           "apply": 2,
           "native_index": 1,
-          "status": "running",
+          "status": "completed",
           "started_at": "2026-11-01T19:19:37.157590+00:00",
-          "ended_at": null,
-          "elapsed_seconds": 3100.698220071383,
+          "ended_at": "2026-11-01T20:17:27.802324+00:00",
+          "elapsed_seconds": 3470.644732874818,
           "candidates": [
             {
               "accepted": true,
@@ -452,9 +492,38 @@
               "sequence": 2,
               "status": "passed",
               "reused": false
+            },
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 3,
+              "status": "infrastructure_error",
+              "reused": false
             }
           ],
           "evaluations": 2,
+          "infrastructure_errors": 1,
+          "reused_snapshots": 1,
+          "delivered": {
+            "accepted": true,
+            "stage": null,
+            "correctness_passed": true,
+            "latency_ms": 2.0541800260543823,
+            "reference_latency_ms": 2.1934800148010254
+          }
+        },
+        {
+          "apply": 3,
+          "native_index": 2,
+          "status": "running",
+          "started_at": "2026-11-01T20:17:27.802324+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 230.05599576979876,
+          "candidates": [],
+          "evaluations": 0,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -624,9 +693,40 @@
           "status": "running",
           "started_at": "2026-11-01T20:08:09.047929+00:00",
           "ended_at": null,
-          "elapsed_seconds": 188.8714260486886,
-          "candidates": [],
-          "evaluations": 0,
+          "elapsed_seconds": 788.8744255416095,
+          "candidates": [
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 1,
+              "status": "failed",
+              "reused": false
+            },
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 2,
+              "status": "failed",
+              "reused": false
+            },
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 3,
+              "status": "failed",
+              "reused": false
+            }
+          ],
+          "evaluations": 3,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -758,5 +858,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-01T20:14:32.504163+00:00"
+  "updated_at": "2026-11-01T20:21:29.931344+00:00"
 }
