@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-01T21:13:07.292441+00:00",
+  "source_captured_at": "2026-11-01T21:17:49.378346+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -10,7 +10,7 @@
       "model": "Astra",
       "effort": "high",
       "status": "blocked",
-      "phase": "原操作失败，待核对",
+      "phase": "模型连接中断；原结果已保留，该组暂停",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -223,7 +223,7 @@
       "model": "Astra",
       "effort": "high",
       "status": "blocked",
-      "phase": "原操作失败，待核对",
+      "phase": "模型连接中断；原结果已保留，该组暂停",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -355,7 +355,7 @@
       "model": "Astra",
       "effort": "high",
       "status": "blocked",
-      "phase": "原操作失败，待核对",
+      "phase": "模型连接中断；原结果已保留，该组暂停",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -537,7 +537,7 @@
       "model": "Astra",
       "effort": "high",
       "status": "blocked",
-      "phase": "原操作失败，待核对",
+      "phase": "模型连接中断；原结果已保留，该组暂停",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -739,17 +739,31 @@
       "problem_id": "thunderkittens-based-h100",
       "model": "Astra",
       "effort": "high",
-      "status": "not_run",
-      "phase": "准备中",
+      "status": "running",
+      "phase": "Apply 执行中",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
       "evaluation_timeout_seconds": 1800,
-      "started_at": null,
+      "started_at": "2026-11-01T21:15:41.826831+00:00",
       "finished_at": null,
       "independently_complete": false,
-      "workspace_path": null,
-      "applies": []
+      "workspace_path": "/home/lbh24/codex-workspace/kl-astra-high-nine-datasets-20261101-001/repo/baselines-910C/klineage-910c/workspaces/opt/20261101-astra-thunderkittens-based-h100",
+      "applies": [
+        {
+          "apply": 1,
+          "native_index": 0,
+          "status": "running",
+          "started_at": "2026-11-01T21:15:42.016547+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 0.0,
+          "candidates": [],
+          "evaluations": 0,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 0,
+          "delivered": null
+        }
+      ]
     },
     {
       "id": "kl-astra-high-20261101-kl-mega",
@@ -757,17 +771,31 @@
       "problem_id": "deepgemm-mega-mhc-sm100",
       "model": "Astra",
       "effort": "high",
-      "status": "not_run",
-      "phase": "准备中",
+      "status": "running",
+      "phase": "Apply 执行中",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
       "evaluation_timeout_seconds": 1800,
-      "started_at": null,
+      "started_at": "2026-11-01T21:15:41.839350+00:00",
       "finished_at": null,
       "independently_complete": false,
-      "workspace_path": null,
-      "applies": []
+      "workspace_path": "/home/lbh24/codex-workspace/kl-astra-high-nine-datasets-20261101-001/repo/baselines-910C/klineage-910c/workspaces/opt/20261101-astra-deepgemm-mega-mhc-sm100",
+      "applies": [
+        {
+          "apply": 1,
+          "native_index": 0,
+          "status": "running",
+          "started_at": "2026-11-01T21:15:42.027034+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 0.0,
+          "candidates": [],
+          "evaluations": 0,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 0,
+          "delivered": null
+        }
+      ]
     },
     {
       "id": "kl-astra-high-20261101-kl-mqa",
@@ -775,17 +803,42 @@
       "problem_id": "deepgemm-mqa-h800",
       "model": "Astra",
       "effort": "high",
-      "status": "not_run",
-      "phase": "准备中",
+      "status": "running",
+      "phase": "Apply 执行中",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
       "evaluation_timeout_seconds": 1800,
-      "started_at": null,
+      "started_at": "2026-11-01T21:15:41.902558+00:00",
       "finished_at": null,
       "independently_complete": false,
-      "workspace_path": null,
-      "applies": []
+      "workspace_path": "/home/lbh24/codex-workspace/kl-astra-high-nine-datasets-20261101-001/repo/baselines-910C/klineage-910c/workspaces/opt/20261101-astra-deepgemm-mqa-h800",
+      "applies": [
+        {
+          "apply": 1,
+          "native_index": 0,
+          "status": "running",
+          "started_at": "2026-11-01T21:15:42.093127+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 0.0,
+          "candidates": [
+            {
+              "accepted": false,
+              "stage": "correctness",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 1,
+              "status": "failed",
+              "reused": false
+            }
+          ],
+          "evaluations": 1,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 0,
+          "delivered": null
+        }
+      ]
     },
     {
       "id": "kl-astra-high-20261101-kl-top-k",
@@ -793,17 +846,31 @@
       "problem_id": "deepselect-topk-sm90",
       "model": "Astra",
       "effort": "high",
-      "status": "not_run",
-      "phase": "准备中",
+      "status": "running",
+      "phase": "Apply 执行中",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
       "evaluation_timeout_seconds": 1800,
-      "started_at": null,
+      "started_at": "2026-11-01T21:15:41.963200+00:00",
       "finished_at": null,
       "independently_complete": false,
-      "workspace_path": null,
-      "applies": []
+      "workspace_path": "/home/lbh24/codex-workspace/kl-astra-high-nine-datasets-20261101-001/repo/baselines-910C/klineage-910c/workspaces/opt/20261101-astra-deepselect-topk-sm90",
+      "applies": [
+        {
+          "apply": 1,
+          "native_index": 0,
+          "status": "running",
+          "started_at": "2026-11-01T21:15:42.151089+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 0.0,
+          "candidates": [],
+          "evaluations": 0,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 0,
+          "delivered": null
+        }
+      ]
     },
     {
       "id": "kl-astra-high-20261101-kl-fa3",
@@ -825,6 +892,38 @@
     }
   ],
   "task_events": [
+    {
+      "id": "kl-astra-high-20261101-kl-top-k:started:2026-11-01T21:15:41.963200+00:00",
+      "run_id": "kl-astra-high-20261101-kl-top-k",
+      "dataset": "TopK",
+      "at": "2026-11-01T21:15:41.963200+00:00",
+      "kind": "started",
+      "reason": "原任务实际启动"
+    },
+    {
+      "id": "kl-astra-high-20261101-kl-mqa:started:2026-11-01T21:15:41.902558+00:00",
+      "run_id": "kl-astra-high-20261101-kl-mqa",
+      "dataset": "MQA",
+      "at": "2026-11-01T21:15:41.902558+00:00",
+      "kind": "started",
+      "reason": "原任务实际启动"
+    },
+    {
+      "id": "kl-astra-high-20261101-kl-mega:started:2026-11-01T21:15:41.839350+00:00",
+      "run_id": "kl-astra-high-20261101-kl-mega",
+      "dataset": "Mega",
+      "at": "2026-11-01T21:15:41.839350+00:00",
+      "kind": "started",
+      "reason": "原任务实际启动"
+    },
+    {
+      "id": "kl-astra-high-20261101-kl-based:started:2026-11-01T21:15:41.826831+00:00",
+      "run_id": "kl-astra-high-20261101-kl-based",
+      "dataset": "Based",
+      "at": "2026-11-01T21:15:41.826831+00:00",
+      "kind": "started",
+      "reason": "原任务实际启动"
+    },
     {
       "id": "kl-astra-high-20261101-kl-gdn:started:2026-11-01T18:21:17.705535+00:00",
       "run_id": "kl-astra-high-20261101-kl-gdn",
@@ -858,5 +957,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-01T21:13:05.678629+00:00"
+  "updated_at": "2026-11-01T21:17:48.136055+00:00"
 }
