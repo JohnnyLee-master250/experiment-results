@@ -12,7 +12,7 @@ async function chooseCategory(id){
  return category==='kl'?loadKL(datasetId):loadDataset(datasetId,true);
 }
 async function loadKL(id){
- const seq=++klSequence;setCategory('kl');datasetId=id;
+ const seq=++klSequence;++loadSeq;setCategory('kl');datasetId=id;
  try{
   if(!klData||klData.updated_at!==manifest.updated_at)klData=await getJSON(`./api/v1/${manifest.kl.url}?v=${encodeURIComponent(manifest.updated_at)}`);
   if(seq!==klSequence||category!=='kl')return;
@@ -24,7 +24,7 @@ async function loadKL(id){
   const url=new URL(location);url.searchParams.set('category','kl');url.searchParams.set('dataset',id);url.searchParams.delete('run');url.searchParams.delete('apply');
   history.replaceState(null,'',url);renderNav();renderKL();showNotice('');
   $('#updated').textContent=date(manifest.updated_at);$('#updated').dateTime=manifest.updated_at;
- }catch(e){$('#connection').classList.add('stale');showNotice(`KL 数据读取失败，保留上次快照 · ${e.message}`);}
+ }catch(e){if(seq===klSequence&&category==='kl'){$('#connection').classList.add('stale');showNotice(`KL 数据读取失败，保留上次快照 · ${e.message}`);}}
 }
 function selectApply(index){
  klApply=Number(index);const url=new URL(location);url.searchParams.set('category','kl');url.searchParams.set('dataset',datasetId);url.searchParams.set('apply',String(index));url.hash='kl-inner';history.replaceState(null,'',url);renderKL();

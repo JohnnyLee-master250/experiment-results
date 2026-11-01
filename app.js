@@ -1,5 +1,6 @@
 'use strict';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const FRONTEND_VERSION=$('meta[name="frontend-version"]')?.content;
 const COLORS={B1:'#0072B2',B2:'#D55E00',B3:'#CC79A7',V0:'#009E73'};
 const LABELS={running:'正在跑',complete:'已完成',paused:'已暂停',not_run:'未跑',no_data:'无数据',ended:'已结束',blocked:'待处理'};
 const MODELS=['Sol6','Astra','DeepSeek','DeepSeek-high'];
@@ -34,6 +35,11 @@ async function refresh(force=false){
  try{
   const m=await getJSON(`./api/v1/index.json?t=${Date.now()}`);
   if(m.schema_version!==1)throw Error('不支持的数据版本');
+  if(m.frontend_version&&FRONTEND_VERSION&&m.frontend_version!==FRONTEND_VERSION){
+   const url=new URL(location);
+   if(url.searchParams.get('ui_version')!==m.frontend_version){url.searchParams.set('ui_version',m.frontend_version);location.replace(url.href);return;}
+   throw Error('页面版本正在同步，请稍后刷新');
+  }
   const changed=!manifest||m.updated_at!==manifest.updated_at;
   manifest=m;renderNextUpdate();renderTaskEvents();if(!data){$('#updated').textContent=date(m.updated_at);$('#updated').dateTime=m.updated_at;}
   $('#connection').classList.remove('stale');showNotice('');
@@ -52,7 +58,13 @@ function renderRunning(){
   const href=`?${new URLSearchParams({dataset:r.dataset,run:r.id,category:r.category||'bv'})}${r.category==='kl'?'#kl-overview':'#curves'}`;
   const phase={reviewing:'审查中',evaluating:'评测中',profiling:'测量中',ready:'推进中',initializing:'初始化'}[r.phase]||'运行中';
   return `<a class="running-link ${focusedRun===r.id?'current':''}" href="${esc(href)}" data-category-target="${r.category||'bv'}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}" style="--color:${COLORS[r.method]||'#526c89'}" title="${esc(r.model+' / '+r.effort)} · 已记录 ${r.reported_attempts}/${r.budget} 轮；待审查记录不代表独立完成"><span class="swatch"></span><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(r.method)}</strong><span class="running-round">${r.reported_attempts}<span> / ${r.budget} ${r.category==='kl'?'Apply':'轮'}</span></span><span class="running-phase">${phase}</span><span aria-hidden="true">↗</span></a>`;
- }).join('')||'<span class="running-empty">暂无运行中的实验</span>';
+ }).join('')||'<span class="running-empty">此快照中无运行中的 MAIN，请查看下方各组状态</span>';
+ const campaign=manifest.campaign_runs||[];
+ $('#campaign-status').innerHTML=campaign.map(r=>{
+  const label=r.status==='complete'?'独立完成':r.status==='paused'?'已暂停':r.phase==='finished'?'待独立验收':r.status==='running'?'运行中':r.status==='blocked'?'待审查／恢复':'未开始';
+  return `<a href="?category=bv&dataset=${esc(r.dataset)}&run=${esc(r.id)}#curves" data-campaign-run="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} ${esc(r.method)} <strong>${r.reported_attempts}/${r.budget}</strong><span>${label}</span></a>`;
+ }).join('');
+ $$('[data-campaign-run]').forEach(a=>a.onclick=e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();loadDataset(a.dataset.target,data?.id!==a.dataset.target,a.dataset.campaignRun,true);});
  $$('[data-running]').forEach(a=>a.onclick=e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();if(a.dataset.categoryTarget==='kl'){loadKL(a.dataset.target);}else loadDataset(a.dataset.target,data?.id!==a.dataset.target,a.dataset.running,true);});
 }
 async function loadDataset(id,reset,focusRun=null,push=false){
@@ -60,7 +72,7 @@ async function loadDataset(id,reset,focusRun=null,push=false){
  const seq=++loadSeq;const meta=manifest.datasets.find(d=>d.id===id)||manifest.datasets[0];datasetId=meta.id;
  try{
   const d=cache.get(meta.id)||await getJSON(`./api/v1/${meta.url}?v=${encodeURIComponent(manifest.updated_at)}`);
-  if(seq!==loadSeq)return;
+  if(seq!==loadSeq||category!=='bv')return;
   if(d.updated_at!==manifest.updated_at)throw Error('发布版本尚在同步');
   cache.set(meta.id,d);data=d;needsReload=false;
   $('#updated').textContent=date(d.updated_at);$('#updated').dateTime=d.updated_at;
