@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-01T23:18:34.609308+00:00",
+  "source_captured_at": "2026-11-01T23:45:51.497618+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -739,8 +739,8 @@
       "problem_id": "thunderkittens-based-h100",
       "model": "Astra",
       "effort": "high",
-      "status": "running",
-      "phase": "Apply 执行中",
+      "status": "paused",
+      "phase": "用户要求暂停；保留原进程和结果",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -886,9 +886,30 @@
           "status": "running",
           "started_at": "2026-11-01T23:06:27.626679+00:00",
           "ended_at": null,
-          "elapsed_seconds": 554.4190881280228,
-          "candidates": [],
-          "evaluations": 0,
+          "elapsed_seconds": 2054.425985940732,
+          "candidates": [
+            {
+              "accepted": false,
+              "stage": "correctness",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 1,
+              "status": "failed",
+              "reused": false
+            },
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 20.480040550231934,
+              "reference_latency_ms": 9.443789958953857,
+              "sequence": 2,
+              "status": "failed",
+              "reused": false
+            }
+          ],
+          "evaluations": 2,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -901,8 +922,8 @@
       "problem_id": "deepgemm-mega-mhc-sm100",
       "model": "Astra",
       "effort": "high",
-      "status": "running",
-      "phase": "Apply 执行中",
+      "status": "paused",
+      "phase": "用户要求暂停；保留原进程和结果",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -1085,10 +1106,50 @@
         {
           "apply": 3,
           "native_index": 2,
-          "status": "running",
+          "status": "completed",
           "started_at": "2026-11-01T22:54:32.447134+00:00",
+          "ended_at": "2026-11-01T23:33:11.667619+00:00",
+          "elapsed_seconds": 2319.2204827852547,
+          "candidates": [
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 2.20006000995636,
+              "reference_latency_ms": 2.259519934654236,
+              "sequence": 1,
+              "status": "passed",
+              "reused": false
+            },
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 2.2200100421905518,
+              "reference_latency_ms": 2.2735400199890137,
+              "sequence": 2,
+              "status": "passed",
+              "reused": false
+            }
+          ],
+          "evaluations": 2,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 1,
+          "delivered": {
+            "accepted": true,
+            "stage": null,
+            "correctness_passed": true,
+            "latency_ms": 2.20006000995636,
+            "reference_latency_ms": 2.259519934654236
+          }
+        },
+        {
+          "apply": 4,
+          "native_index": 3,
+          "status": "running",
+          "started_at": "2026-11-01T23:33:11.667619+00:00",
           "ended_at": null,
-          "elapsed_seconds": 1269.6084910193458,
+          "elapsed_seconds": 450.3948086677119,
           "candidates": [],
           "evaluations": 0,
           "infrastructure_errors": 0,
@@ -1156,8 +1217,8 @@
       "problem_id": "deepselect-topk-sm90",
       "model": "Astra",
       "effort": "high",
-      "status": "running",
-      "phase": "Apply 执行中",
+      "status": "paused",
+      "phase": "用户要求暂停；保留原进程和结果",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -1293,9 +1354,20 @@
           "status": "running",
           "started_at": "2026-11-01T23:07:08.697221+00:00",
           "ended_at": null,
-          "elapsed_seconds": 513.4821525281295,
-          "candidates": [],
-          "evaluations": 0,
+          "elapsed_seconds": 2013.4885988840833,
+          "candidates": [
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 2.0503599643707275,
+              "reference_latency_ms": 2.108680009841919,
+              "sequence": 1,
+              "status": "passed",
+              "reused": false
+            }
+          ],
+          "evaluations": 1,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -1308,8 +1380,8 @@
       "problem_id": "fa3-backward-sm90",
       "model": "Astra",
       "effort": "high",
-      "status": "running",
-      "phase": "Apply 执行中",
+      "status": "paused",
+      "phase": "用户要求暂停；保留原进程和结果",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -1475,9 +1547,20 @@
           "status": "running",
           "started_at": "2026-11-01T23:16:02.252652+00:00",
           "ended_at": null,
-          "elapsed_seconds": 102.0540119111538,
-          "candidates": [],
-          "evaluations": 0,
+          "elapsed_seconds": 1302.0593424402177,
+          "candidates": [
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 6.564049959182739,
+              "reference_latency_ms": 6.71835994720459,
+              "sequence": 1,
+              "status": "passed",
+              "reused": false
+            }
+          ],
+          "evaluations": 1,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -1486,6 +1569,38 @@
     }
   ],
   "task_events": [
+    {
+      "id": "kl-astra-high-20261101-kl-top-k:user-pause-all-20261102-001:KL-Top-K",
+      "run_id": "kl-astra-high-20261101-kl-top-k",
+      "dataset": "TopK",
+      "at": "2026-11-01T23:42:36.186646+00:00",
+      "kind": "paused",
+      "reason": "用户要求暂停"
+    },
+    {
+      "id": "kl-astra-high-20261101-kl-mega:user-pause-all-20261102-001:KL-Mega",
+      "run_id": "kl-astra-high-20261101-kl-mega",
+      "dataset": "Mega",
+      "at": "2026-11-01T23:42:36.186646+00:00",
+      "kind": "paused",
+      "reason": "用户要求暂停"
+    },
+    {
+      "id": "kl-astra-high-20261101-kl-fa3:user-pause-all-20261102-001:KL-FA3",
+      "run_id": "kl-astra-high-20261101-kl-fa3",
+      "dataset": "FA3",
+      "at": "2026-11-01T23:42:36.186646+00:00",
+      "kind": "paused",
+      "reason": "用户要求暂停"
+    },
+    {
+      "id": "kl-astra-high-20261101-kl-based:user-pause-all-20261102-001:KL-Based",
+      "run_id": "kl-astra-high-20261101-kl-based",
+      "dataset": "Based",
+      "at": "2026-11-01T23:42:36.186646+00:00",
+      "kind": "paused",
+      "reason": "用户要求暂停"
+    },
     {
       "id": "kl-astra-high-20261101-kl-fa3:started:2026-11-01T21:27:44.092981+00:00",
       "run_id": "kl-astra-high-20261101-kl-fa3",
@@ -1599,5 +1714,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-01T23:18:33.282479+00:00"
+  "updated_at": "2026-11-01T23:45:50.200692+00:00"
 }
