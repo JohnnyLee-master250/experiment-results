@@ -1,17 +1,33 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-01T17:12:28.996812+00:00",
-  "published_at": "2026-11-01T17:12:30.713970+00:00",
+  "updated_at": "2026-11-01T17:13:51.655229+00:00",
+  "published_at": "2026-11-01T17:13:53.439942+00:00",
   "refresh_seconds": 60,
   "counts": {
     "datasets": 9,
     "runs_with_records": 84,
-    "saved_records": 1925,
-    "performance_samples": 147600
+    "saved_records": 1926,
+    "performance_samples": 147700
   },
   "update_cadence_minutes": 5,
-  "next_update_estimated_at": "2026-11-01T17:17:28.996812+00:00",
+  "next_update_estimated_at": "2026-11-01T17:18:51.655229+00:00",
   "task_events": [
+    {
+      "id": "866b2a43d603dbe704ad",
+      "at": "2026-11-01T17:13:01.199608+00:00",
+      "kind": "resumed",
+      "runs": [
+        {
+          "id": "sol6-gqa-b1",
+          "dataset": "GQA",
+          "model": "Sol6",
+          "effort": "medium",
+          "method": "B1"
+        }
+      ],
+      "reason": "原实验继续执行，保留既有结果和轮次。",
+      "time_basis": "recorded"
+    },
     {
       "id": "9fdd1e99a6f0ef9abc50",
       "at": "2026-11-01T17:02:16.007555+00:00",
@@ -827,9 +843,9 @@
       "method": "B1",
       "reported_attempts": 26,
       "budget": 30,
-      "phase": "pending_review",
-      "status": "paused",
-      "source_captured_at": "2026-11-01T17:12:28.996812+00:00"
+      "phase": "reviewing",
+      "status": "running",
+      "source_captured_at": "2026-11-01T17:13:51.655229+00:00"
     },
     {
       "dataset": "GQA",
@@ -841,7 +857,7 @@
       "budget": 30,
       "phase": "finished",
       "status": "complete",
-      "source_captured_at": "2026-11-01T17:12:28.996812+00:00"
+      "source_captured_at": "2026-11-01T17:13:51.655229+00:00"
     },
     {
       "dataset": "GQA",
@@ -853,7 +869,7 @@
       "budget": 30,
       "phase": "finished",
       "status": "complete",
-      "source_captured_at": "2026-11-01T17:12:28.996812+00:00"
+      "source_captured_at": "2026-11-01T17:13:51.655229+00:00"
     },
     {
       "dataset": "MQA",
@@ -863,9 +879,9 @@
       "method": "B1",
       "reported_attempts": 26,
       "budget": 30,
-      "phase": "ready",
+      "phase": "evaluating",
       "status": "running",
-      "source_captured_at": "2026-11-01T17:12:28.996812+00:00"
+      "source_captured_at": "2026-11-01T17:13:51.655229+00:00"
     },
     {
       "dataset": "MQA",
@@ -877,7 +893,7 @@
       "budget": 30,
       "phase": "finished",
       "status": "complete",
-      "source_captured_at": "2026-11-01T17:12:28.996812+00:00"
+      "source_captured_at": "2026-11-01T17:13:51.655229+00:00"
     },
     {
       "dataset": "MQA",
@@ -885,11 +901,11 @@
       "model": "Sol6",
       "effort": "medium",
       "method": "B3",
-      "reported_attempts": 27,
+      "reported_attempts": 28,
       "budget": 30,
-      "phase": "evaluating",
+      "phase": "reviewing",
       "status": "running",
-      "source_captured_at": "2026-11-01T17:12:28.996812+00:00"
+      "source_captured_at": "2026-11-01T17:13:51.655229+00:00"
     }
   ],
   "datasets": [
@@ -898,66 +914,77 @@
       "title": "CUDA-L2 GEMM",
       "suite": "cuda-l2-five-rtx3090",
       "url": "cuda-l2.json",
-      "updated_at": "2026-11-01T17:12:28.996812+00:00"
+      "updated_at": "2026-11-01T17:13:51.655229+00:00"
     },
     {
       "id": "Sonny",
       "title": "FA forward",
       "suite": "sonny-mha-forward-rtx3090",
       "url": "sonny.json",
-      "updated_at": "2026-11-01T17:12:28.996812+00:00"
+      "updated_at": "2026-11-01T17:13:51.655229+00:00"
     },
     {
       "id": "GQA",
       "title": "GQA decode",
       "suite": "flashinfer-gqa-decode-a100",
       "url": "gqa.json",
-      "updated_at": "2026-11-01T17:12:28.996812+00:00"
+      "updated_at": "2026-11-01T17:13:51.655229+00:00"
     },
     {
       "id": "FA3",
       "title": "FA3 backward",
       "suite": "fa3-backward-sm90",
       "url": "fa3.json",
-      "updated_at": "2026-11-01T17:12:28.996812+00:00"
+      "updated_at": "2026-11-01T17:13:51.655229+00:00"
     },
     {
       "id": "GDN",
       "title": "GDN prefill",
       "suite": "gdn-prefill-sm100",
       "url": "gdn.json",
-      "updated_at": "2026-11-01T17:12:28.996812+00:00"
+      "updated_at": "2026-11-01T17:13:51.655229+00:00"
     },
     {
       "id": "Based",
       "title": "Based",
       "suite": "thunderkittens-based-h100",
       "url": "based.json",
-      "updated_at": "2026-11-01T17:12:28.996812+00:00"
+      "updated_at": "2026-11-01T17:13:51.655229+00:00"
     },
     {
       "id": "Mega",
       "title": "Mega mHC",
       "suite": "deepgemm-mega-mhc-sm100",
       "url": "mega.json",
-      "updated_at": "2026-11-01T17:12:28.996812+00:00"
+      "updated_at": "2026-11-01T17:13:51.655229+00:00"
     },
     {
       "id": "MQA",
       "title": "MQA",
       "suite": "deepgemm-mqa-h800",
       "url": "mqa.json",
-      "updated_at": "2026-11-01T17:12:28.996812+00:00"
+      "updated_at": "2026-11-01T17:13:51.655229+00:00"
     },
     {
       "id": "TopK",
       "title": "Top-K",
       "suite": "deepselect-topk-sm90",
       "url": "topk.json",
-      "updated_at": "2026-11-01T17:12:28.996812+00:00"
+      "updated_at": "2026-11-01T17:13:51.655229+00:00"
     }
   ],
   "running_runs": [
+    {
+      "dataset": "GQA",
+      "id": "sol6-gqa-b1",
+      "model": "Sol6",
+      "effort": "medium",
+      "method": "B1",
+      "reported_attempts": 26,
+      "budget": 30,
+      "phase": "reviewing",
+      "source_captured_at": "2026-11-01T17:13:51.655229+00:00"
+    },
     {
       "dataset": "MQA",
       "id": "sol6-mqa-b1",
@@ -966,8 +993,8 @@
       "method": "B1",
       "reported_attempts": 26,
       "budget": 30,
-      "phase": "ready",
-      "source_captured_at": "2026-11-01T17:12:28.996812+00:00"
+      "phase": "evaluating",
+      "source_captured_at": "2026-11-01T17:13:51.655229+00:00"
     },
     {
       "dataset": "MQA",
@@ -975,10 +1002,10 @@
       "model": "Sol6",
       "effort": "medium",
       "method": "B3",
-      "reported_attempts": 27,
+      "reported_attempts": 28,
       "budget": 30,
-      "phase": "evaluating",
-      "source_captured_at": "2026-11-01T17:12:28.996812+00:00"
+      "phase": "reviewing",
+      "source_captured_at": "2026-11-01T17:13:51.655229+00:00"
     }
   ],
   "sources": {
@@ -989,27 +1016,27 @@
     },
     "ds-max-nine-datasets-20261028-001": {
       "label": "ds-max-nine-datasets-20261028-001",
-      "captured_at": "2026-11-01T17:12:28.996812+00:00",
+      "captured_at": "2026-11-01T17:13:51.655229+00:00",
       "verification": "只读采集已保存结果；运行中数据为阶段快照"
     },
     "sol6-medium-sonny-20261030-001": {
       "label": "sol6-medium-sonny-20261030-001",
-      "captured_at": "2026-11-01T17:12:28.996812+00:00",
+      "captured_at": "2026-11-01T17:13:51.655229+00:00",
       "verification": "只读采集已保存结果；运行中数据为阶段快照"
     },
     "sol6-medium-v0-gqa-mqa-20261031-001": {
       "label": "sol6-medium-v0-gqa-mqa-20261031-001",
-      "captured_at": "2026-11-01T17:12:28.996812+00:00",
+      "captured_at": "2026-11-01T17:13:51.655229+00:00",
       "verification": "只读采集已保存结果；运行中数据为阶段快照"
     },
     "sol6-medium-b0-b3-gqa-mqa-20261101-001": {
       "label": "sol6-medium-b0-b3-gqa-mqa-20261101-001",
-      "captured_at": "2026-11-01T17:12:28.996812+00:00",
+      "captured_at": "2026-11-01T17:13:51.655229+00:00",
       "verification": "只读采集已保存结果；运行中数据为阶段快照"
     },
     "deepseek-high-20261021": {
       "label": "deepseek-high-20261021",
-      "captured_at": "2026-11-01T17:12:28.996812+00:00",
+      "captured_at": "2026-11-01T17:13:51.655229+00:00",
       "verification": "只读采集已保存结果；运行中数据为阶段快照"
     }
   },
@@ -1035,7 +1062,7 @@
   "kl": {
     "url": "kl.json",
     "run_count": 9,
-    "source_captured_at": "2026-11-01T17:12:30.515138+00:00",
+    "source_captured_at": "2026-11-01T17:13:53.248087+00:00",
     "running_runs": []
   },
   "frontend_version": "15a5134841608581f951"
