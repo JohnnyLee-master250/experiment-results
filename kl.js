@@ -46,8 +46,9 @@ function klChart(target,points,label,maxX,selectable=false){
  el.querySelectorAll('[data-apply-point]').forEach(p=>{p.onclick=()=>selectApply(p.dataset.applyPoint);p.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectApply(p.dataset.applyPoint);}};});
 }
 function renderKL(){
- if(category!=='kl')return;
+ if(category!=='kl'||!manifest)return;
  const meta=manifest.datasets.find(d=>d.id===datasetId);$('#kl-name').textContent=(meta?.title||datasetId)+' · KL';
+ if(!klData){$('#kl-body').hidden=true;$('#kl-state').textContent='正在读取 KL 数据…';return;}
  if(!klRun){$('#kl-body').hidden=true;$('#kl-state').textContent='此测试集尚未登记 KL 实验';return;}
  $('#kl-body').hidden=false;const r=klRun,done=r.applies.filter(a=>a.status==='completed').length;
  $('#kl-state').textContent=`${r.model} / ${r.effort} · ${klStatus(r.status)} · ${r.phase||''}`;
