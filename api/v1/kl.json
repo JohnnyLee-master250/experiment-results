@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-02T02:29:50.784762+00:00",
+  "source_captured_at": "2026-11-02T02:33:55.750901+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -196,7 +196,7 @@
           "status": "running",
           "started_at": "2026-11-01T20:12:51.868812+00:00",
           "ended_at": null,
-          "elapsed_seconds": 3052.872827164829,
+          "elapsed_seconds": 3352.8740031654015,
           "candidates": [
             {
               "accepted": false,
@@ -349,7 +349,7 @@
           "status": "running",
           "started_at": "2026-11-01T20:15:24.914240+00:00",
           "ended_at": null,
-          "elapsed_seconds": 2369.709980715066,
+          "elapsed_seconds": 2669.7111539775506,
           "candidates": [
             {
               "accepted": true,
@@ -572,7 +572,7 @@
           "status": "running",
           "started_at": "2026-11-02T02:08:45.035202+00:00",
           "ended_at": null,
-          "elapsed_seconds": 1152.297580325976,
+          "elapsed_seconds": 1452.2987885754555,
           "candidates": [
             {
               "accepted": true,
@@ -1050,8 +1050,8 @@
       "problem_id": "deepgemm-mega-mhc-sm100",
       "model": "Astra",
       "effort": "high",
-      "status": "blocked",
-      "phase": "连接故障暂停，已保存结果保留",
+      "status": "waiting",
+      "phase": "等待并行名额",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -1512,8 +1512,8 @@
       "problem_id": "deepselect-topk-sm90",
       "model": "Astra",
       "effort": "high",
-      "status": "blocked",
-      "phase": "连接故障暂停，已保存结果保留",
+      "status": "waiting",
+      "phase": "等待并行名额",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -1785,8 +1785,8 @@
       "problem_id": "fa3-backward-sm90",
       "model": "Astra",
       "effort": "high",
-      "status": "blocked",
-      "phase": "连接故障暂停，已保存结果保留",
+      "status": "waiting",
+      "phase": "等待并行名额",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -2085,30 +2085,6 @@
   ],
   "task_events": [
     {
-      "id": "kl-astra-high-20261101-kl-fa3:three-model-transport-20261102T0152Z-KL-FA3-parked",
-      "run_id": "kl-astra-high-20261101-kl-fa3",
-      "dataset": "FA3",
-      "at": "2026-11-02T02:07:53.731017+00:00",
-      "kind": "paused",
-      "reason": "模型连接中断；原调用已关闭，保留已完成结果，该组暂停"
-    },
-    {
-      "id": "kl-astra-high-20261101-kl-top-k:three-model-transport-20261102T0152Z-KL-Top-K-parked",
-      "run_id": "kl-astra-high-20261101-kl-top-k",
-      "dataset": "TopK",
-      "at": "2026-11-02T02:02:24.142177+00:00",
-      "kind": "paused",
-      "reason": "模型连接中断；原调用已关闭，保留已完成结果，该组暂停"
-    },
-    {
-      "id": "kl-astra-high-20261101-kl-mega:three-model-transport-20261102T0152Z-KL-Mega-parked",
-      "run_id": "kl-astra-high-20261101-kl-mega",
-      "dataset": "Mega",
-      "at": "2026-11-02T02:02:24.142177+00:00",
-      "kind": "paused",
-      "reason": "模型连接中断；原调用已关闭，保留已完成结果，该组暂停"
-    },
-    {
       "id": "kl-astra-high-20261101-kl-mqa:user-three-parallel-pause-mqa-20261102-001:paused-after-apply1",
       "run_id": "kl-astra-high-20261101-kl-mqa",
       "dataset": "MQA",
@@ -2133,60 +2109,12 @@
       "reason": "原任务实际启动"
     },
     {
-      "id": "kl-astra-high-20261101-kl-top-k:user-resume-kl-20261102-001:KL-Top-K",
-      "run_id": "kl-astra-high-20261101-kl-top-k",
-      "dataset": "TopK",
-      "at": "2026-11-02T00:02:16.439445+00:00",
-      "kind": "resumed",
-      "reason": "已核对原操作后恢复"
-    },
-    {
-      "id": "kl-astra-high-20261101-kl-mega:user-resume-kl-20261102-001:KL-Mega",
-      "run_id": "kl-astra-high-20261101-kl-mega",
-      "dataset": "Mega",
-      "at": "2026-11-02T00:02:16.439445+00:00",
-      "kind": "resumed",
-      "reason": "已核对原操作后恢复"
-    },
-    {
-      "id": "kl-astra-high-20261101-kl-fa3:user-resume-kl-20261102-001:KL-FA3",
-      "run_id": "kl-astra-high-20261101-kl-fa3",
-      "dataset": "FA3",
-      "at": "2026-11-02T00:02:16.439445+00:00",
-      "kind": "resumed",
-      "reason": "已核对原操作后恢复"
-    },
-    {
       "id": "kl-astra-high-20261101-kl-based:user-resume-kl-20261102-001:KL-Based",
       "run_id": "kl-astra-high-20261101-kl-based",
       "dataset": "Based",
       "at": "2026-11-02T00:02:16.439445+00:00",
       "kind": "resumed",
       "reason": "已核对原操作后恢复"
-    },
-    {
-      "id": "kl-astra-high-20261101-kl-top-k:user-pause-all-20261102-001:KL-Top-K",
-      "run_id": "kl-astra-high-20261101-kl-top-k",
-      "dataset": "TopK",
-      "at": "2026-11-01T23:42:36.186646+00:00",
-      "kind": "paused",
-      "reason": "用户要求暂停"
-    },
-    {
-      "id": "kl-astra-high-20261101-kl-mega:user-pause-all-20261102-001:KL-Mega",
-      "run_id": "kl-astra-high-20261101-kl-mega",
-      "dataset": "Mega",
-      "at": "2026-11-01T23:42:36.186646+00:00",
-      "kind": "paused",
-      "reason": "用户要求暂停"
-    },
-    {
-      "id": "kl-astra-high-20261101-kl-fa3:user-pause-all-20261102-001:KL-FA3",
-      "run_id": "kl-astra-high-20261101-kl-fa3",
-      "dataset": "FA3",
-      "at": "2026-11-01T23:42:36.186646+00:00",
-      "kind": "paused",
-      "reason": "用户要求暂停"
     },
     {
       "id": "kl-astra-high-20261101-kl-based:user-pause-all-20261102-001:KL-Based",
@@ -2293,5 +2221,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-02T02:29:47.574634+00:00"
+  "updated_at": "2026-11-02T02:33:52.574165+00:00"
 }
