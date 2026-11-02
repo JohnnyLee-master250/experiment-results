@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-02T12:52:06.125949+00:00",
+  "source_captured_at": "2026-11-02T13:26:25.856302+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -9,8 +9,8 @@
       "problem_id": "fa3-backward-sm90",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "running",
+      "phase": "Apply 执行中",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -370,7 +370,7 @@
           "status": "running",
           "started_at": "2026-11-02T12:24:09.505308+00:00",
           "ended_at": null,
-          "elapsed_seconds": 1234.8028525710106,
+          "elapsed_seconds": 1430.5055750546844,
           "candidates": [
             {
               "accepted": false,
@@ -397,7 +397,7 @@
           ],
           "evaluations": 2,
           "infrastructure_errors": 0,
-          "reused_snapshots": 0,
+          "reused_snapshots": 1,
           "delivered": null
         }
       ],
@@ -702,8 +702,8 @@
       "problem_id": "gdn-prefill-sm100",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "running",
+      "phase": "Apply 执行中",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -838,7 +838,7 @@
           "status": "running",
           "started_at": "2026-11-02T12:47:28.534430+00:00",
           "ended_at": null,
-          "elapsed_seconds": 0.0011602938175201416,
+          "elapsed_seconds": 31.47512829209427,
           "candidates": [],
           "evaluations": 0,
           "infrastructure_errors": 0,
@@ -960,8 +960,8 @@
       "problem_id": "cuda-l2-m2048-n8192-k2048",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "waiting",
+      "phase": "等待空闲卡",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -985,8 +985,8 @@
       "problem_id": "thunderkittens-based-h100",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "waiting",
+      "phase": "等待空闲卡",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -1010,8 +1010,8 @@
       "problem_id": "sonny-mha-forward-rtx3090",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "waiting",
+      "phase": "等待空闲卡",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -1035,8 +1035,8 @@
       "problem_id": "flashinfer-gqa-decode-a100",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "waiting",
+      "phase": "等待空闲卡",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -1060,8 +1060,8 @@
       "problem_id": "deepgemm-mqa-h800",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "waiting",
+      "phase": "等待空闲卡",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -1085,8 +1085,8 @@
       "problem_id": "deepgemm-mega-mhc-sm100",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "waiting",
+      "phase": "等待空闲卡",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -1110,8 +1110,8 @@
       "problem_id": "deepselect-topk-sm90",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "waiting",
+      "phase": "等待空闲卡",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -1131,6 +1131,22 @@
     }
   ],
   "task_events": [
+    {
+      "id": "kl-astra-high-serial-20261102-kl-gdn:user-resume-after2048-20261102-001",
+      "run_id": "kl-astra-high-serial-20261102-kl-gdn",
+      "dataset": "GDN",
+      "at": "2026-11-02T13:23:21.381564+00:00",
+      "kind": "resumed",
+      "reason": "原因待核对"
+    },
+    {
+      "id": "kl-astra-high-serial-20261102-kl-fa3:user-resume-after2048-20261102-001",
+      "run_id": "kl-astra-high-serial-20261102-kl-fa3",
+      "dataset": "FA3",
+      "at": "2026-11-02T13:23:21.277626+00:00",
+      "kind": "resumed",
+      "reason": "原因待核对"
+    },
     {
       "id": "kl-astra-high-serial-20261102-kl-gdn:user-pause2048-20261102-001",
       "run_id": "kl-astra-high-serial-20261102-kl-gdn",
@@ -1180,5 +1196,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-02T12:52:03.664030+00:00"
+  "updated_at": "2026-11-02T13:26:19.388052+00:00"
 }
