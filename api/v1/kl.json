@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-02T13:26:25.856302+00:00",
+  "source_captured_at": "2026-11-02T13:30:22.783131+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -370,7 +370,7 @@
           "status": "running",
           "started_at": "2026-11-02T12:24:09.505308+00:00",
           "ended_at": null,
-          "elapsed_seconds": 1430.5055750546844,
+          "elapsed_seconds": 1730.4956323554607,
           "candidates": [
             {
               "accepted": false,
@@ -838,9 +838,21 @@
           "status": "running",
           "started_at": "2026-11-02T12:47:28.534430+00:00",
           "ended_at": null,
-          "elapsed_seconds": 31.47512829209427,
-          "candidates": [],
-          "evaluations": 0,
+          "elapsed_seconds": 331.46656736730347,
+          "candidates": [
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 7.952899932861328,
+              "reference_latency_ms": 7.3852598667144775,
+              "sequence": 1,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-02T13:24:23.117908+00:00"
+            }
+          ],
+          "evaluations": 1,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -848,7 +860,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 9,
+        "count": 10,
         "excluded_count": 0,
         "timing_statistic": "median",
         "points": [
@@ -949,6 +961,17 @@
             "counted": true,
             "accepted": true,
             "latency_ms": 7.378260135650635,
+            "best_ms": 7.378260135650635
+          },
+          {
+            "round": 10,
+            "apply": 2,
+            "inner_sequence": 1,
+            "recorded_at": "2026-11-02T13:24:23.117908+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
             "best_ms": 7.378260135650635
           }
         ]
@@ -1137,7 +1160,7 @@
       "dataset": "GDN",
       "at": "2026-11-02T13:23:21.381564+00:00",
       "kind": "resumed",
-      "reason": "原因待核对"
+      "reason": "已核对原操作后恢复"
     },
     {
       "id": "kl-astra-high-serial-20261102-kl-fa3:user-resume-after2048-20261102-001",
@@ -1145,7 +1168,7 @@
       "dataset": "FA3",
       "at": "2026-11-02T13:23:21.277626+00:00",
       "kind": "resumed",
-      "reason": "原因待核对"
+      "reason": "已核对原操作后恢复"
     },
     {
       "id": "kl-astra-high-serial-20261102-kl-gdn:user-pause2048-20261102-001",
@@ -1196,5 +1219,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-02T13:26:19.388052+00:00"
+  "updated_at": "2026-11-02T13:30:17.557085+00:00"
 }
