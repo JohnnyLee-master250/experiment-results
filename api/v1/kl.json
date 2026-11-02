@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-02T18:22:09.695998+00:00",
+  "source_captured_at": "2026-11-02T18:26:25.749571+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -9,15 +9,15 @@
       "problem_id": "fa3-backward-sm90",
       "model": "Astra",
       "effort": "high",
-      "status": "ended",
-      "phase": "待独立验收",
+      "status": "complete",
+      "phase": "已完成",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
       "evaluation_timeout_seconds": 1800,
       "started_at": "2026-11-02T08:13:04.640596+00:00",
-      "finished_at": null,
-      "independently_complete": false,
+      "finished_at": "2026-11-02T18:25:24.331976+00:00",
+      "independently_complete": true,
       "workspace_path": "/home/lbh24/codex-workspace/kl-astra-high-nine-serial-20261102-001/repo/baselines-910C/klineage-910c/workspaces/opt/20261102-serial-astra-fa3-backward-sm90",
       "applies": [
         {
@@ -2144,9 +2144,21 @@
           "status": "running",
           "started_at": "2026-11-02T18:17:02.159441+00:00",
           "ended_at": null,
-          "elapsed_seconds": 98.36124108918011,
-          "candidates": [],
-          "evaluations": 0,
+          "elapsed_seconds": 398.36273354664445,
+          "candidates": [
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 5.197419881820679,
+              "reference_latency_ms": 4.842750072479248,
+              "sequence": 1,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-02T18:18:26.980744+00:00"
+            }
+          ],
+          "evaluations": 1,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -2154,7 +2166,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 59,
+        "count": 60,
         "excluded_count": 0,
         "timing_statistic": "median",
         "points": [
@@ -2806,6 +2818,17 @@
             "accepted": false,
             "latency_ms": null,
             "best_ms": 4.787569999694824
+          },
+          {
+            "round": 60,
+            "apply": 7,
+            "inner_sequence": 1,
+            "recorded_at": "2026-11-02T18:18:26.980744+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 4.787569999694824
           }
         ]
       }
@@ -2816,17 +2839,31 @@
       "problem_id": "cuda-l2-m2048-n8192-k2048",
       "model": "Astra",
       "effort": "high",
-      "status": "waiting",
-      "phase": "等待空闲卡",
+      "status": "running",
+      "phase": "Apply 执行中",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
       "evaluation_timeout_seconds": 1800,
-      "started_at": null,
+      "started_at": "2026-11-02T18:25:25.187930+00:00",
       "finished_at": null,
       "independently_complete": false,
-      "workspace_path": null,
-      "applies": [],
+      "workspace_path": "/home/lbh24/codex-workspace/kl-astra-high-nine-serial-20261102-001/repo/baselines-910C/klineage-910c/workspaces/opt/20261102-serial-astra-cuda-l2-m2048-n8192-k2048",
+      "applies": [
+        {
+          "apply": 1,
+          "native_index": 0,
+          "status": "running",
+          "started_at": "2026-11-02T18:25:25.811145+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 0.0,
+          "candidates": [],
+          "evaluations": 0,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 0,
+          "delivered": null
+        }
+      ],
       "aligned": {
         "schema_version": 1,
         "count": 0,
@@ -2988,6 +3025,22 @@
   ],
   "task_events": [
     {
+      "id": "kl-astra-high-serial-20261102-kl-gemm:started:2026-11-02T18:25:25.187930+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-gemm",
+      "dataset": "CUDA-L2",
+      "at": "2026-11-02T18:25:25.187930+00:00",
+      "kind": "started",
+      "reason": "原任务实际启动"
+    },
+    {
+      "id": "kl-astra-high-serial-20261102-kl-fa3:completed:2026-11-02T18:25:24.331976+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-fa3",
+      "dataset": "FA3",
+      "at": "2026-11-02T18:25:24.331976+00:00",
+      "kind": "completed",
+      "reason": "独立验收完成"
+    },
+    {
       "id": "kl-astra-high-serial-20261102-kl-gdn:user-resume-20261103-001",
       "run_id": "kl-astra-high-serial-20261102-kl-gdn",
       "dataset": "GDN",
@@ -3084,5 +3137,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-02T18:22:08.405445+00:00"
+  "updated_at": "2026-11-02T18:26:24.626313+00:00"
 }
