@@ -9,7 +9,7 @@ const DASH={Sol6:'',Astra:'7 4',DeepSeek:'2 4','DeepSeek-high':'9 3 2 3'};
 let manifest,data,cache=new Map(),visible=new Set(),datasetId=new URL(location).searchParams.get('dataset')||'GQA',mode='best',activeSamples=null,loadSeq=0,needsReload=false;
 let focusedRun=null,initialRun=new URL(location).searchParams.get('run');
 let eventLimit=12;
-let category=new URL(location).searchParams.get("category")==="kl"?"kl":"bv";
+let category=["kl","aligned"].includes(new URL(location).searchParams.get("category"))?new URL(location).searchParams.get("category"):"bv";
 const state={xmin:1,xmax:30,ymin:null,ymax:null,ymode:'focus',uncertainty:false};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=(v,n=6)=>v==null?'—':Number(v).toLocaleString('en-US',{maximumFractionDigits:n,minimumFractionDigits:Math.min(3,n)});
@@ -43,13 +43,13 @@ async function refresh(force=false){
   const changed=!manifest||m.updated_at!==manifest.updated_at;
   manifest=m;renderNextUpdate();renderTaskEvents();if(!data){$('#updated').textContent=date(m.updated_at);$('#updated').dateTime=m.updated_at;}
   $('#connection').classList.remove('stale');showNotice('');
-  if(changed||force||needsReload){cache.clear();renderNav();renderRunning();if(category==="kl")await loadKL(datasetId);else await loadDataset(datasetId,!data||data.id!==datasetId,initialRun);if(!needsReload)initialRun=null;}
+  if(changed||force||needsReload){cache.clear();renderNav();renderRunning();if(category==="kl")await loadKL(datasetId);else if(category==="aligned")await loadAligned(datasetId);else await loadDataset(datasetId,!data||data.id!==datasetId,initialRun);if(!needsReload)initialRun=null;}
  }catch(e){$('#connection').classList.add('stale');showNotice(`更新暂不可用${data?'，保留上次数据':''} · ${e.message}`);}
  finally{$('#refresh').disabled=false;}
 }
 function renderNav(){
  $('#datasets').innerHTML=manifest.datasets.map(d=>`<button type="button" data-dataset="${esc(d.id)}" aria-current="${d.id===datasetId}">${esc(d.id)}</button>`).join('');
- $$('[data-dataset]').forEach(b=>b.onclick=()=>category==="kl"?loadKL(b.dataset.dataset):loadDataset(b.dataset.dataset,true));
+ $$('[data-dataset]').forEach(b=>b.onclick=()=>category==="kl"?loadKL(b.dataset.dataset):category==="aligned"?loadAligned(b.dataset.dataset):loadDataset(b.dataset.dataset,true));
 }
 function renderRunning(){
  const runs=[...(manifest.running_runs||[]),...(manifest.kl?.running_runs||[])];
@@ -57,7 +57,7 @@ function renderRunning(){
  $('#running-links').innerHTML=runs.map(r=>{
   const href=`?${new URLSearchParams({dataset:r.dataset,run:r.id,category:r.category||'bv'})}${r.category==='kl'?'#kl-overview':'#curves'}`;
  const phase={reviewing:'审查中',evaluating:'评测中',profiling:'测量中',ready:'运行中',initializing:'准备中',finished:'收尾中',queued:'排队中'}[r.phase]||'运行中';
-  return `<a class="running-link ${focusedRun===r.id?'current':''}" href="${esc(href)}" data-category-target="${r.category||'bv'}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}" style="--color:${COLORS[r.method]||'#526c89'}" title="${esc(r.model+' / '+r.effort)} · 已记录 ${r.reported_attempts}/${r.budget} 轮；待审查记录不代表独立完成"><span class="swatch"></span><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(r.method)}</strong><span class="running-round">${r.reported_attempts}<span> / ${r.budget} ${r.category==='kl'?'Apply':'轮'}</span></span><span class="running-phase">${phase}</span><span aria-hidden="true">↗</span></a>`;
+  return `<a class="running-link ${focusedRun===r.id?'current':''}" href="${esc(href)}" data-category-target="${r.category||'bv'}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}" style="--color:${COLORS[r.method]||'#526c89'}" title="${esc(r.model+' / '+r.effort)} · 已记录 ${r.reported_attempts}/${r.budget} 轮；待审查记录不代表独立完成"><span class="swatch"></span><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(r.method)}</strong><span class="running-round">${r.category==='kl'?(r.current_apply??r.reported_attempts):r.reported_attempts}<span> / ${r.budget} ${r.category==='kl'?'Apply · r'+(r.internal_round??0):'轮'}</span></span><span class="running-phase">${phase}</span><span aria-hidden="true">↗</span></a>`;
  }).join('')||'<span class="running-empty">当前没有运行中的实验，各组状态见下方</span>';
  const waiting=manifest.kl?.waiting_runs||[];
  $('#waiting-bar').hidden=!waiting.length;
@@ -72,7 +72,7 @@ function renderRunning(){
  $$('[data-running]').forEach(a=>a.onclick=e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();if(a.dataset.categoryTarget==='kl'){loadKL(a.dataset.target);}else loadDataset(a.dataset.target,data?.id!==a.dataset.target,a.dataset.running,true);});
 }
 async function loadDataset(id,reset,focusRun=null,push=false){
- setCategory("bv");++klSequence;
+ setCategory("bv");++klSequence;++alignedSequence;
  const seq=++loadSeq;const meta=manifest.datasets.find(d=>d.id===id)||manifest.datasets[0];datasetId=meta.id;
  try{
   const d=cache.get(meta.id)||await getJSON(`./api/v1/${meta.url}?v=${encodeURIComponent(manifest.updated_at)}`);
@@ -254,10 +254,10 @@ $('#uncertainty').onchange=e=>{state.uncertainty=e.target.checked;renderCharts()
 $('#apply-range').onclick=applyRange;
 $('#y-mode').onchange=()=>{if($('#y-mode').value!=='manual')applyRange();};
 $('#reset').onclick=()=>{Object.assign(state,{xmin:1,xmax:30,ymode:'focus',ymin:null,ymax:null});syncRange();showNotice('');renderCharts();};
-new ResizeObserver(()=>{if(category==='kl')renderKL();else if(data)renderCharts();}).observe($('main'));
+new ResizeObserver(()=>{if(category==='kl')renderKL();else if(category==='aligned')renderAligned('#aligned-content',alignedDataset,alignedRun);else if(data)renderCharts();}).observe($('main'));
 $$('[data-category]').forEach(b=>b.onclick=()=>chooseCategory(b.dataset.category));
 setCategory(category);
 setInterval(()=>{if(!document.hidden){renderNextUpdate();refresh();}},60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
-window.addEventListener('popstate',()=>{const url=new URL(location);setCategory(url.searchParams.get('category'));if(category==='kl')loadKL(url.searchParams.get('dataset')||'GQA');else loadDataset(url.searchParams.get('dataset')||'GQA',true,url.searchParams.get('run'));});
+window.addEventListener('popstate',()=>{const url=new URL(location);setCategory(url.searchParams.get('category'));if(category==='kl')loadKL(url.searchParams.get('dataset')||'GQA');else if(category==='aligned')loadAligned(url.searchParams.get('dataset')||'GQA');else loadDataset(url.searchParams.get('dataset')||'GQA',true,url.searchParams.get('run'));});
 refresh();

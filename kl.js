@@ -13,23 +13,23 @@ function selectV0AstraReference(dataset){
 const KL_LABELS={not_run:'未开始',running:'运行中',complete:'已完成',ended:'待验收',waiting:'等待中',blocked:'已暂停',paused:'已暂停',completed:'已交付',failed:'失败',interrupted:'中断',unknown:'待核对',passed:'通过',infrastructure_error:'基础设施异常'};
 function klStatus(s){return KL_LABELS[s]||'待核对';}
 function setCategory(id){
- category=id==='kl'?'kl':'bv';
- $('#bv-panel').hidden=category!=='bv';$('#kl-panel').hidden=category!=='kl';
+ category=['kl','aligned'].includes(id)?id:'bv';
+ $('#bv-panel').hidden=category!=='bv';$('#kl-panel').hidden=category!=='kl';$('#aligned-panel').hidden=category!=='aligned';
  $$('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===category)));
 }
 async function chooseCategory(id){
  setCategory(id);initialRun=null;
- return category==='kl'?loadKL(datasetId):loadDataset(datasetId,true);
+ return category==='kl'?loadKL(datasetId):category==='aligned'?loadAligned(datasetId):loadDataset(datasetId,true);
 }
 async function loadKL(id){
- const seq=++klSequence;++loadSeq;setCategory('kl');datasetId=id;
+ const seq=++klSequence;++loadSeq;++alignedSequence;setCategory('kl');datasetId=id;
  try{
   if(!klData||klData.updated_at!==manifest.updated_at)klData=await getJSON(`./api/v1/${manifest.kl.url}?v=${encodeURIComponent(manifest.updated_at)}`);
   const meta=manifest.datasets.find(d=>d.id===id),key=`${manifest.updated_at}:${id}`;
   if(!klReferenceCache.has(key)){
    const dataset=await getJSON(`./api/v1/${meta.url}?v=${encodeURIComponent(manifest.updated_at)}`);
    if(dataset.updated_at!==manifest.updated_at)throw Error('参考曲线发布版本尚在同步');
-   klReferenceCache.set(key,selectV0AstraReference(dataset));
+   klReferenceCache.set(key,selectV0AstraReference(dataset));klDatasetCache.set(key,dataset);
   }
   if(seq!==klSequence||category!=='kl')return;
   if(klData.updated_at!==manifest.updated_at)throw Error('发布版本尚在同步');
@@ -69,7 +69,7 @@ function klChart(target,points,label,maxX,selectable=false,reference=null){
 }
 function renderKL(){
  if(category!=='kl'||!manifest)return;
- const meta=manifest.datasets.find(d=>d.id===datasetId);$('#kl-name').textContent=(meta?.title||datasetId)+' · KL';
+ const meta=manifest.datasets.find(d=>d.id===datasetId);renderAligned('#kl-aligned',klDatasetCache.get(`${manifest.updated_at}:${datasetId}`),klRun);$('#kl-name').textContent=(meta?.title||datasetId)+' · KL';
  if(!klData){$('#kl-body').hidden=true;$('#kl-state').textContent='正在读取 KL 数据…';return;}
  if(!klRun){$('#kl-body').hidden=true;$('#kl-state').textContent='此测试集尚未登记 KL 实验';return;}
  $('#kl-body').hidden=false;const r=klRun,done=r.applies.filter(a=>a.status==='completed').length;
@@ -97,4 +97,71 @@ function renderKL(){
  $('#kl-copy').disabled=!r.workspace_path;$('#kl-copy').onclick=async()=>{await navigator.clipboard.writeText(r.workspace_path);$('#kl-copy').textContent='已复制';};
  $('#kl-json').onclick=()=>download(`kl-${datasetId}.json`,JSON.stringify(r,null,2),'application/json');
  $('#kl-csv').onclick=()=>{const lines=['apply,candidate,status,latency_ms,reference_latency_ms,accepted,reused'];for(const a of r.applies)for(const c of a.candidates)lines.push([a.apply,c.sequence,c.status,c.latency_ms??'',c.reference_latency_ms??'',c.accepted,c.reused].join(','));download(`kl-${datasetId}-candidates.csv`,lines.join('\n'),'text/csv');};
+}
+
+// A shared view: only reads published numeric results, never changes experiments.
+let alignedSequence=0,alignedDataset=null,alignedRun=null;
+const alignedViews=new Map(),klDatasetCache=new Map();
+function alignedSeries(dataset,run){
+ const series=dataset.runs.filter(r=>r.method!=='B0'&&r.search.length).map(r=>({
+  id:r.id,model:r.model,effort:r.effort,method:r.method,color:COLORS[r.method],dash:DASH[r.model]||'',
+  points:r.search.map(p=>({round:p.round,y:p.status==='passed'?p.timing?.mean_ms??null:null,status:p.status}))
+ }));
+ if(run)series.push({id:run.id,model:run.model,effort:run.effort,method:'Aligned KL',color:'#E69F00',dash:DASH[run.model]||'',
+  points:(run.aligned?.points||[]).filter(p=>p.counted).map(p=>({...p,y:p.latency_ms}))});
+ return series;
+}
+async function loadAligned(id){
+ const seq=++alignedSequence;++klSequence;++loadSeq;setCategory('aligned');
+ const meta=manifest.datasets.find(d=>d.id===id)||manifest.datasets[0];datasetId=meta.id;
+ try{
+  const [d,k]=await Promise.all([
+   cache.get(meta.id)||getJSON(`./api/v1/${meta.url}?v=${encodeURIComponent(manifest.updated_at)}`),
+   klData?.updated_at===manifest.updated_at?klData:getJSON(`./api/v1/${manifest.kl.url}?v=${encodeURIComponent(manifest.updated_at)}`)
+  ]);
+  if(seq!==alignedSequence||category!=='aligned')return;
+  if(d.updated_at!==manifest.updated_at||k.updated_at!==manifest.updated_at)throw Error('发布版本尚在同步');
+  cache.set(meta.id,d);klData=k;alignedDataset=d;alignedRun=k.runs.find(r=>r.dataset===meta.id);needsReload=false;
+  const url=new URL(location);url.searchParams.set('category','aligned');url.searchParams.set('dataset',meta.id);url.searchParams.delete('apply');url.searchParams.delete('run');history.replaceState(null,'',url);
+  $('#aligned-name').textContent=`${d.title} · Aligned KL`;
+  renderNav();renderAligned('#aligned-content',d,alignedRun);showNotice('');
+  $('#updated').textContent=date(manifest.updated_at);$('#updated').dateTime=manifest.updated_at;
+ }catch(e){if(seq===alignedSequence&&category==='aligned'){needsReload=true;showNotice(`Aligned KL 读取失败，保留上次快照 · ${e.message}`);}}
+}
+function renderAligned(target,dataset,run){
+ const host=$(target);if(!host||!dataset)return;
+ const all=alignedSeries(dataset,run),key=dataset.id;
+ if(!alignedViews.has(key))alignedViews.set(key,{visible:new Set(all.map(r=>r.id)),mode:'best',zoom:false});
+ const view=alignedViews.get(key),selected=all.filter(r=>view.visible.has(r.id)),points=run?.aligned?.points||[];
+ const redraw=()=>renderAligned(target,dataset,run);
+ host.innerHTML=`<p class="kl-caption aligned-note">按时间顺序展开内部评测：rN 为累计有效评测次数，失败占一轮；复用和基础设施异常不计轮数。B/V 为均值，KL 为中位数，预算、effort 与环境不同。B0 仅正确性，不画速度线。</p>
+ <div class="aligned-controls">${[...new Set(all.map(r=>r.model))].map(model=>`<div class="model-group"><div class="model-heading"><strong>${esc(model)}</strong><label class="aligned-all"><input type="checkbox" data-aligned-model="${esc(model)}" ${all.filter(r=>r.model===model).every(r=>view.visible.has(r.id))?'checked':''}> 全部</label></div><div class="chips">${all.filter(r=>r.model===model).map(r=>`<label class="chip ${view.visible.has(r.id)?'active':''}" style="--color:${r.color}"><input type="checkbox" data-aligned-run="${esc(r.id)}" ${view.visible.has(r.id)?'checked':''}>${esc(r.method)} <small>${esc(r.effort)}</small></label>`).join('')}</div></div>`).join('')}</div>
+ <div class="plot-options"><div class="segments"><button data-aligned-mode="best" aria-pressed="${view.mode==='best'}" class="${view.mode==='best'?'selected':''}">搜索最优</button><button data-aligned-mode="raw" aria-pressed="${view.mode==='raw'}" class="${view.mode==='raw'?'selected':''}">逐次测量</button></div><label><input data-aligned-zoom type="checkbox" ${view.zoom?'checked':''}> 收敛放大</label><span>● 测量 · — 最优阶梯 · × 失败</span><button data-aligned-csv>展开记录 CSV ↓</button></div>
+ <div class="chart aligned-chart" tabindex="0" role="img" aria-label="Aligned KL 与 B/V 按有效评测次数对比"></div><div class="readout aligned-readout" aria-live="polite"></div>
+ <details class="data-section"><summary>KL 展开记录 · r${run?.aligned?.count||0}${run?.aligned?.excluded_count?' · '+run.aligned.excluded_count+' 条不计轮次':''}</summary><div class="table-wrap rounds-wrap"><table><thead><tr><th>累计轮次</th><th>Apply</th><th>内部序号</th><th>结果</th><th>延迟 ms</th><th>记录时间 SGT</th></tr></thead><tbody>${points.map(p=>`<tr><td>${p.counted?'r'+p.round:'不计轮次'}</td><td>${p.apply}</td><td>${p.inner_sequence}</td><td>${klStatus(p.status)}</td><td>${fmt(p.latency_ms)}</td><td>${date(p.recorded_at)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">暂无 KL 内部评测；保存后自动更新</td></tr>'}</tbody></table></div></details>`;
+ host.querySelectorAll('[data-aligned-run]').forEach(el=>el.onchange=()=>{el.checked?view.visible.add(el.dataset.alignedRun):view.visible.delete(el.dataset.alignedRun);redraw();});
+ host.querySelectorAll('[data-aligned-model]').forEach(el=>{const ids=all.filter(r=>r.model===el.dataset.alignedModel).map(r=>r.id),n=ids.filter(id=>view.visible.has(id)).length;el.indeterminate=n>0&&n<ids.length;el.onchange=()=>{for(const id of ids)el.checked?view.visible.add(id):view.visible.delete(id);redraw();};});
+ host.querySelectorAll('[data-aligned-mode]').forEach(el=>el.onclick=()=>{view.mode=el.dataset.alignedMode;redraw();});
+ host.querySelector('[data-aligned-zoom]').onchange=e=>{view.zoom=e.target.checked;redraw();};
+ host.querySelector('[data-aligned-csv]').onclick=()=>download(`aligned-kl-${dataset.id}.csv`,['round,apply,inner_sequence,status,counted,latency_ms,recorded_at',...points.map(p=>[p.round,p.apply,p.inner_sequence,p.status,p.counted,p.latency_ms,p.recorded_at].map(csvCell).join(','))].join('\n'),'text/csv');
+ const chart=host.querySelector('.aligned-chart'),w=Math.max(320,chart.clientWidth||800),h=340,pad={l:66,r:20,t:26,b:45},maxX=Math.max(30,...all.flatMap(r=>r.points.map(p=>p.round)));
+ let values=selected.flatMap(r=>r.points.filter(p=>p.y!=null).map(p=>p.y)),ymin=0,ymax=Math.max(.001,...values)*1.08;
+ if(view.zoom&&values.length){const tails=selected.map(r=>Math.min(...r.points.filter(p=>p.y!=null).map(p=>p.y))).filter(Number.isFinite);if(tails.length){const lo=Math.min(...tails),hi=Math.max(...tails),space=Math.max((hi-lo)*.15,hi*.035,.000001);ymin=Math.max(0,lo-space);ymax=hi+space;}}
+ const x=n=>pad.l+(n-1)/Math.max(1,maxX-1)*(w-pad.l-pad.r),y=n=>h-pad.b-(n-ymin)/(ymax-ymin)*(h-pad.t-pad.b),clip='aligned-clip-'+target.replace(/[^a-z]/g,'');
+ let svg=`<svg viewBox="0 0 ${w} ${h}" role="img"><title>Aligned KL，横轴为有效评测序号，纵轴为延迟毫秒</title><defs><clipPath id="${clip}"><rect x="${pad.l}" y="${pad.t}" width="${w-pad.l-pad.r}" height="${h-pad.t-pad.b}"/></clipPath></defs>`;
+ for(const v of ticks(ymin,ymax,5))svg+=`<line x1="${pad.l}" x2="${w-pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="#edf0f4"/><text x="${pad.l-8}" y="${y(v)+4}" text-anchor="end">${tickFmt(v)}</text>`;
+ for(const v of [...new Set([1,...ticks(1,maxX,w<500?4:8).filter(Number.isInteger),maxX])])svg+=`<text x="${x(v)}" y="${h-22}" text-anchor="middle">${v}</text>`;
+ svg+=`<text x="12" y="16">ms ↓</text><text x="${w/2}" y="${h-3}" text-anchor="middle">有效评测序号 · KL rN / B、V 轮次</text><g clip-path="url(#${clip})">`;
+ for(const r of selected){let best=null,path='',last=false;for(const p of r.points){if(p.y!=null)best=best==null?p.y:Math.min(best,p.y);const v=view.mode==='best'?best:p.y;if(v==null){last=false;continue;}path+=last?(view.mode==='best'?` H${x(p.round)} V${y(v)}`:` L${x(p.round)},${y(v)}`):` M${x(p.round)},${y(v)}`;last=true;}
+  svg+=`<path data-aligned-curve="${esc(r.id)}" d="${path}" fill="none" stroke="${r.color}" stroke-width="${r.method==='Aligned KL'?2.6:1.8}" stroke-dasharray="${r.dash}"/>`;
+  for(const p of r.points){if(p.y!=null)svg+=`<circle cx="${x(p.round)}" cy="${y(p.y)}" r="3" fill="${r.color}"><title>${esc(r.model+' '+r.method)} r${p.round}${p.apply?' · Apply '+p.apply+' / 内部 '+p.inner_sequence:''}: ${fmt(p.y)} ms</title></circle>`;else if(p.status==='failed')svg+=`<path d="M${x(p.round)-3},${h-pad.b-9}l6 6m0 -6l-6 6" stroke="${r.color}"/>`;}
+ }
+ svg+='</g></svg>';chart.innerHTML=svg;
+ const readout=host.querySelector('.aligned-readout');
+ function inspect(n){readout.innerHTML=`<strong>r${n}</strong>`+selected.map(r=>{const p=r.points.find(p=>p.round===n);return `<span style="--color:${r.color}"><i class="swatch"></i>${esc(r.model+' '+r.method)} ${p?.apply?'Apply '+p.apply+' · ':''}<strong>${fmt(p?.y)}</strong>${p?.y!=null?' ms':p?' · '+(p.status==='failed'?'失败':'无有效计时'):' · 无记录'}</span>`;}).join('');}
+ let cursor=run?.aligned?.count||1;inspect(cursor);
+ chart.onpointermove=e=>{cursor=Math.min(maxX,Math.max(1,Math.round(1+(e.clientX-chart.getBoundingClientRect().left-pad.l)/(w-pad.l-pad.r)*(maxX-1))));inspect(cursor);};
+ chart.onkeydown=e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();cursor=Math.max(1,Math.min(maxX,cursor+(e.key==='ArrowRight'?1:-1)));inspect(cursor);}};
+ if(!values.length)readout.insertAdjacentHTML('afterbegin','<span>所选曲线暂无有效计时</span>');
+ if(view.zoom)readout.insertAdjacentHTML('afterbegin',`<span>放大范围 ${fmt(ymin)}–${fmt(ymax)} ms，范围外测量已裁剪</span>`);
 }
