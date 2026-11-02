@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-02T16:57:07.582270+00:00",
+  "source_captured_at": "2026-11-02T17:12:06.904512+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -593,7 +593,7 @@
           "status": "running",
           "started_at": "2026-11-02T16:24:23.310956+00:00",
           "ended_at": null,
-          "elapsed_seconds": 1757.189322611317,
+          "elapsed_seconds": 2657.193943694234,
           "candidates": [
             {
               "accepted": false,
@@ -638,9 +638,31 @@
               "status": "failed",
               "reused": false,
               "recorded_at": "2026-11-02T16:44:41.806137+00:00"
+            },
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 3.773769974708557,
+              "reference_latency_ms": 3.739199995994568,
+              "sequence": 5,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-02T16:58:19.215231+00:00"
+            },
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 6,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-02T17:07:06.175139+00:00"
             }
           ],
-          "evaluations": 4,
+          "evaluations": 6,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -648,7 +670,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 41,
+        "count": 43,
         "excluded_count": 0,
         "timing_statistic": "median",
         "points": [
@@ -1097,6 +1119,28 @@
             "apply": 9,
             "inner_sequence": 4,
             "recorded_at": "2026-11-02T16:44:41.806137+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 3.693429946899414
+          },
+          {
+            "round": 42,
+            "apply": 9,
+            "inner_sequence": 5,
+            "recorded_at": "2026-11-02T16:58:19.215231+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 3.693429946899414
+          },
+          {
+            "round": 43,
+            "apply": 9,
+            "inner_sequence": 6,
+            "recorded_at": "2026-11-02T17:07:06.175139+00:00",
             "status": "failed",
             "counted": true,
             "accepted": false,
@@ -1638,7 +1682,7 @@
           "status": "running",
           "started_at": "2026-11-02T16:25:15.422675+00:00",
           "ended_at": null,
-          "elapsed_seconds": 1705.0757534205914,
+          "elapsed_seconds": 2605.0799250500277,
           "candidates": [
             {
               "accepted": false,
@@ -1705,9 +1749,20 @@
               "status": "passed",
               "reused": false,
               "recorded_at": "2026-11-02T16:50:43.792302+00:00"
+            },
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 7,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-02T17:06:32.432078+00:00"
             }
           ],
-          "evaluations": 6,
+          "evaluations": 7,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -1715,7 +1770,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 45,
+        "count": 46,
         "excluded_count": 0,
         "timing_statistic": "median",
         "points": [
@@ -2213,6 +2268,17 @@
             "accepted": true,
             "latency_ms": 4.8442299365997314,
             "best_ms": 4.8442299365997314
+          },
+          {
+            "round": 46,
+            "apply": 5,
+            "inner_sequence": 7,
+            "recorded_at": "2026-11-02T17:06:32.432078+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 4.8442299365997314
           }
         ]
       }
@@ -2491,5 +2557,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-02T16:57:06.263231+00:00"
+  "updated_at": "2026-11-02T17:12:05.552281+00:00"
 }
