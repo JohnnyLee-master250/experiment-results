@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-02T04:35:11.540498+00:00",
+  "source_captured_at": "2026-11-02T04:41:18.032737+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -405,16 +405,16 @@
           "status": "running",
           "started_at": "2026-11-02T02:38:36.692705+00:00",
           "ended_at": null,
-          "elapsed_seconds": 2046.7663887502806,
+          "elapsed_seconds": 2346.7680391842678,
           "candidates": [
             {
               "accepted": false,
-              "stage": null,
-              "correctness_passed": null,
+              "stage": "correctness",
+              "correctness_passed": false,
               "latency_ms": null,
               "reference_latency_ms": null,
               "sequence": 1,
-              "status": "infrastructure_error",
+              "status": "failed",
               "reused": false
             },
             {
@@ -436,11 +436,21 @@
               "sequence": 3,
               "status": "infrastructure_error",
               "reused": false
+            },
+            {
+              "accepted": false,
+              "stage": null,
+              "correctness_passed": null,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 4,
+              "status": "infrastructure_error",
+              "reused": false
             }
           ],
-          "evaluations": 0,
+          "evaluations": 1,
           "infrastructure_errors": 3,
-          "reused_snapshots": 1,
+          "reused_snapshots": 2,
           "delivered": null
         }
       ]
@@ -708,9 +718,20 @@
           "status": "running",
           "started_at": "2026-11-02T04:29:07.224339+00:00",
           "ended_at": null,
-          "elapsed_seconds": 227.2025849148631,
-          "candidates": [],
-          "evaluations": 0,
+          "elapsed_seconds": 527.2041541170329,
+          "candidates": [
+            {
+              "accepted": false,
+              "stage": "correctness",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 1,
+              "status": "failed",
+              "reused": false
+            }
+          ],
+          "evaluations": 1,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -960,7 +981,7 @@
           "status": "running",
           "started_at": "2026-11-02T02:39:50.727420+00:00",
           "ended_at": null,
-          "elapsed_seconds": 1972.7313097596161,
+          "elapsed_seconds": 2272.732699508033,
           "candidates": [
             {
               "accepted": false,
@@ -2430,5 +2451,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-02T04:35:09.844239+00:00"
+  "updated_at": "2026-11-02T04:41:16.446287+00:00"
 }
