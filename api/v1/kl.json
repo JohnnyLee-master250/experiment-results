@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-02T01:14:27.842624+00:00",
+  "source_captured_at": "2026-11-02T01:19:30.882985+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -1326,7 +1326,7 @@
           "status": "running",
           "started_at": "2026-11-02T01:06:15.877143+00:00",
           "ended_at": null,
-          "elapsed_seconds": 360.66372731886804,
+          "elapsed_seconds": 660.6652369946241,
           "candidates": [],
           "evaluations": 0,
           "infrastructure_errors": 0,
@@ -1341,8 +1341,8 @@
       "problem_id": "deepgemm-mqa-h800",
       "model": "Astra",
       "effort": "high",
-      "status": "running",
-      "phase": "Apply 执行中",
+      "status": "paused",
+      "phase": "Apply 1 已完成，按用户要求暂停；等待新的恢复授权",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -1355,10 +1355,10 @@
         {
           "apply": 1,
           "native_index": 0,
-          "status": "running",
+          "status": "completed",
           "started_at": "2026-11-02T00:18:12.610925+00:00",
-          "ended_at": null,
-          "elapsed_seconds": 3300.011873845011,
+          "ended_at": "2026-11-02T01:16:28.595899+00:00",
+          "elapsed_seconds": 3495.9849859001115,
           "candidates": [
             {
               "accepted": true,
@@ -1399,12 +1399,28 @@
               "sequence": 4,
               "status": "passed",
               "reused": false
+            },
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 5,
+              "status": "infrastructure_error",
+              "reused": false
             }
           ],
           "evaluations": 4,
-          "infrastructure_errors": 0,
-          "reused_snapshots": 0,
-          "delivered": null
+          "infrastructure_errors": 1,
+          "reused_snapshots": 1,
+          "delivered": {
+            "accepted": true,
+            "stage": null,
+            "correctness_passed": true,
+            "latency_ms": 11.311259746551514,
+            "reference_latency_ms": null
+          }
         }
       ]
     },
@@ -1651,9 +1667,20 @@
           "status": "running",
           "started_at": "2026-11-02T00:57:58.985343+00:00",
           "ended_at": null,
-          "elapsed_seconds": 857.5555074326694,
-          "candidates": [],
-          "evaluations": 0,
+          "elapsed_seconds": 1157.5570420334116,
+          "candidates": [
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 2.0650500059127808,
+              "reference_latency_ms": 2.108630061149597,
+              "sequence": 1,
+              "status": "passed",
+              "reused": false
+            }
+          ],
+          "evaluations": 1,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -1923,7 +1950,7 @@
           "status": "running",
           "started_at": "2026-11-02T01:11:32.825214+00:00",
           "ended_at": null,
-          "elapsed_seconds": 43.71407317742705,
+          "elapsed_seconds": 343.7156412974,
           "candidates": [],
           "evaluations": 0,
           "infrastructure_errors": 0,
@@ -1934,6 +1961,14 @@
     }
   ],
   "task_events": [
+    {
+      "id": "kl-astra-high-20261101-kl-mqa:user-three-parallel-pause-mqa-20261102-001:paused-after-apply1",
+      "run_id": "kl-astra-high-20261101-kl-mqa",
+      "dataset": "MQA",
+      "at": "2026-11-02T01:16:28.701140+00:00",
+      "kind": "paused",
+      "reason": "用户要求暂停"
+    },
     {
       "id": "kl-astra-high-20261101-kl-based:completed:2026-11-02T00:26:37.980788+00:00",
       "run_id": "kl-astra-high-20261101-kl-based",
@@ -2111,5 +2146,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-02T01:14:24.717706+00:00"
+  "updated_at": "2026-11-02T01:19:27.440791+00:00"
 }
