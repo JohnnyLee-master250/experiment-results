@@ -59,6 +59,10 @@ function renderRunning(){
  const phase={reviewing:'审查中',evaluating:'评测中',profiling:'测量中',ready:'运行中',initializing:'准备中',finished:'收尾中',queued:'排队中'}[r.phase]||'运行中';
   return `<a class="running-link ${focusedRun===r.id?'current':''}" href="${esc(href)}" data-category-target="${r.category||'bv'}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}" style="--color:${COLORS[r.method]||'#526c89'}" title="${esc(r.model+' / '+r.effort)} · 已记录 ${r.reported_attempts}/${r.budget} 轮；待审查记录不代表独立完成"><span class="swatch"></span><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(r.method)}</strong><span class="running-round">${r.reported_attempts}<span> / ${r.budget} ${r.category==='kl'?'Apply':'轮'}</span></span><span class="running-phase">${phase}</span><span aria-hidden="true">↗</span></a>`;
  }).join('')||'<span class="running-empty">当前没有运行中的实验，各组状态见下方</span>';
+ const waiting=manifest.kl?.waiting_runs||[];
+ $('#waiting-bar').hidden=!waiting.length;
+ $('#waiting-count').textContent=`${waiting.length} 组`;
+ $('#waiting-links').innerHTML=waiting.map(r=>`<a class="running-link" href="?category=kl&dataset=${esc(r.dataset)}&run=${esc(r.id)}#kl-overview" data-category-target="kl" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}"><strong>${esc(r.dataset)} · ${esc(r.model)} KL</strong><span>${r.reported_attempts} / ${r.budget} Apply</span><span class="running-phase">等待名额</span></a>`).join('');
  const campaign=manifest.campaign_runs||[];
  $('#campaign-status').innerHTML=campaign.map(r=>{
   const label=r.status==='complete'?'已完成':r.status==='paused'||r.status==='blocked'?'已暂停':r.status==='running'?'运行中':'未开始';

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-02T02:17:37.120945+00:00",
+  "source_captured_at": "2026-11-02T02:29:50.784762+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -196,7 +196,7 @@
           "status": "running",
           "started_at": "2026-11-01T20:12:51.868812+00:00",
           "ended_at": null,
-          "elapsed_seconds": 2152.8693123767152,
+          "elapsed_seconds": 3052.872827164829,
           "candidates": [
             {
               "accepted": false,
@@ -207,11 +207,21 @@
               "sequence": 1,
               "status": "failed",
               "reused": false
+            },
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 2,
+              "status": "failed",
+              "reused": false
             }
           ],
-          "evaluations": 1,
+          "evaluations": 2,
           "infrastructure_errors": 0,
-          "reused_snapshots": 0,
+          "reused_snapshots": 1,
           "delivered": null
         }
       ]
@@ -339,7 +349,7 @@
           "status": "running",
           "started_at": "2026-11-01T20:15:24.914240+00:00",
           "ended_at": null,
-          "elapsed_seconds": 1469.7064757235348,
+          "elapsed_seconds": 2369.709980715066,
           "candidates": [
             {
               "accepted": true,
@@ -562,9 +572,20 @@
           "status": "running",
           "started_at": "2026-11-02T02:08:45.035202+00:00",
           "ended_at": null,
-          "elapsed_seconds": 252.29423853754997,
-          "candidates": [],
-          "evaluations": 0,
+          "elapsed_seconds": 1152.297580325976,
+          "candidates": [
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 2.14313006401062,
+              "reference_latency_ms": 2.164989948272705,
+              "sequence": 1,
+              "status": "passed",
+              "reused": false
+            }
+          ],
+          "evaluations": 1,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -577,7 +598,7 @@
       "problem_id": "gdn-prefill-sm100",
       "model": "Astra",
       "effort": "high",
-      "status": "running",
+      "status": "waiting",
       "phase": "等待并行名额",
       "budget": 10,
       "apply_timeout_seconds": 3600,
@@ -1402,7 +1423,7 @@
       "problem_id": "deepgemm-mqa-h800",
       "model": "Astra",
       "effort": "high",
-      "status": "running",
+      "status": "waiting",
       "phase": "等待并行名额",
       "budget": 10,
       "apply_timeout_seconds": 3600,
@@ -2272,5 +2293,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-02T02:17:33.823264+00:00"
+  "updated_at": "2026-11-02T02:29:47.574634+00:00"
 }

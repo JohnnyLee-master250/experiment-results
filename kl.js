@@ -10,7 +10,7 @@ function selectV0AstraReference(dataset){
  const best=points.reduce((a,b)=>a.timing.mean_ms<=b.timing.mean_ms?a:b);
  return {latency_ms:best.timing.mean_ms,round:best.round,run_id:run.id,environment:run.environment};
 }
-const KL_LABELS={not_run:'未开始',running:'运行中',complete:'已完成',ended:'运行中 · 收尾',blocked:'已暂停',paused:'已暂停',completed:'已交付',failed:'失败',interrupted:'中断',unknown:'待核对',passed:'通过',infrastructure_error:'基础设施异常'};
+const KL_LABELS={not_run:'未开始',running:'运行中',complete:'已完成',ended:'待验收',waiting:'等待中',blocked:'已暂停',paused:'已暂停',completed:'已交付',failed:'失败',interrupted:'中断',unknown:'待核对',passed:'通过',infrastructure_error:'基础设施异常'};
 function klStatus(s){return KL_LABELS[s]||'待核对';}
 function setCategory(id){
  category=id==='kl'?'kl':'bv';
