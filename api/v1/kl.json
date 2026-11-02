@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-02T01:02:29.299548+00:00",
+  "source_captured_at": "2026-11-02T01:09:23.473645+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -1263,10 +1263,10 @@
         {
           "apply": 5,
           "native_index": 4,
-          "status": "running",
+          "status": "completed",
           "started_at": "2026-11-02T00:17:28.978686+00:00",
-          "ended_at": null,
-          "elapsed_seconds": 2687.5588543461636,
+          "ended_at": "2026-11-02T01:06:15.877143+00:00",
+          "elapsed_seconds": 2926.8984513143077,
           "candidates": [
             {
               "accepted": true,
@@ -1287,9 +1287,48 @@
               "sequence": 2,
               "status": "passed",
               "reused": false
+            },
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 2.3526400327682495,
+              "reference_latency_ms": 2.2454400062561035,
+              "sequence": 3,
+              "status": "failed",
+              "reused": false
+            },
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 2.2272000312805176,
+              "reference_latency_ms": null,
+              "sequence": 4,
+              "status": "passed",
+              "reused": false
             }
           ],
-          "evaluations": 2,
+          "evaluations": 4,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 1,
+          "delivered": {
+            "accepted": true,
+            "stage": null,
+            "correctness_passed": true,
+            "latency_ms": 2.2145999670028687,
+            "reference_latency_ms": 2.2556800842285156
+          }
+        },
+        {
+          "apply": 6,
+          "native_index": 5,
+          "status": "running",
+          "started_at": "2026-11-02T01:06:15.877143+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 60.66196381300688,
+          "candidates": [],
+          "evaluations": 0,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -1319,7 +1358,7 @@
           "status": "running",
           "started_at": "2026-11-02T00:18:12.610925+00:00",
           "ended_at": null,
-          "elapsed_seconds": 2400.0086826346815,
+          "elapsed_seconds": 3000.010499981232,
           "candidates": [
             {
               "accepted": true,
@@ -1340,9 +1379,29 @@
               "sequence": 2,
               "status": "passed",
               "reused": false
+            },
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 3,
+              "status": "failed",
+              "reused": false
+            },
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 11.311259746551514,
+              "reference_latency_ms": null,
+              "sequence": 4,
+              "status": "passed",
+              "reused": false
             }
           ],
-          "evaluations": 2,
+          "evaluations": 4,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -1592,7 +1651,7 @@
           "status": "running",
           "started_at": "2026-11-02T00:57:58.985343+00:00",
           "ended_at": null,
-          "elapsed_seconds": 257.552265685983,
+          "elapsed_seconds": 557.5539806047454,
           "candidates": [],
           "evaluations": 0,
           "infrastructure_errors": 0,
@@ -1814,7 +1873,7 @@
           "status": "running",
           "started_at": "2026-11-02T00:13:36.166777+00:00",
           "ended_at": null,
-          "elapsed_seconds": 2920.3697225470096,
+          "elapsed_seconds": 3220.3712003342807,
           "candidates": [
             {
               "accepted": true,
@@ -2023,5 +2082,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-02T01:02:25.811139+00:00"
+  "updated_at": "2026-11-02T01:09:20.073795+00:00"
 }
