@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-02T12:16:18.806131+00:00",
+  "source_captured_at": "2026-11-02T12:19:39.085270+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -633,7 +633,7 @@
           "status": "running",
           "started_at": "2026-11-02T12:03:16.671553+00:00",
           "ended_at": null,
-          "elapsed_seconds": 600.0005491441116,
+          "elapsed_seconds": 900.0020070169121,
           "candidates": [
             {
               "accepted": false,
@@ -667,9 +667,20 @@
               "status": "failed",
               "reused": false,
               "recorded_at": "2026-11-02T12:15:13.118764+00:00"
+            },
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 4,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-02T12:16:19.835752+00:00"
             }
           ],
-          "evaluations": 3,
+          "evaluations": 4,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -677,7 +688,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 3,
+        "count": 4,
         "excluded_count": 0,
         "timing_statistic": "median",
         "points": [
@@ -708,6 +719,17 @@
             "apply": 1,
             "inner_sequence": 3,
             "recorded_at": "2026-11-02T12:15:13.118764+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 411.3665008544922
+          },
+          {
+            "round": 4,
+            "apply": 1,
+            "inner_sequence": 4,
+            "recorded_at": "2026-11-02T12:16:19.835752+00:00",
             "status": "failed",
             "counted": true,
             "accepted": false,
@@ -927,5 +949,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-02T12:16:16.511613+00:00"
+  "updated_at": "2026-11-02T12:19:37.042925+00:00"
 }
