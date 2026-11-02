@@ -1,5 +1,15 @@
 'use strict';
 let klData=null,klRun=null,klApply=null,klSequence=0;
+let klReference=null;
+const klReferenceCache=new Map(),klReferenceVisible={overview:true,candidates:true};
+function selectV0AstraReference(dataset){
+ const run=dataset.runs.find(r=>r.model==='Astra'&&r.effort==='high'&&r.method==='V0'&&r.status==='complete');
+ if(!run)return null;
+ const points=run.search.filter(p=>p.status==='passed'&&Number.isFinite(p.timing?.mean_ms)&&p.timing.mean_ms>0);
+ if(!points.length)return null;
+ const best=points.reduce((a,b)=>a.timing.mean_ms<=b.timing.mean_ms?a:b);
+ return {latency_ms:best.timing.mean_ms,round:best.round,run_id:run.id,environment:run.environment};
+}
 const KL_LABELS={not_run:'未开始',running:'运行中',complete:'已完成',ended:'运行中 · 收尾',blocked:'已暂停',paused:'已暂停',completed:'已交付',failed:'失败',interrupted:'中断',unknown:'待核对',passed:'通过',infrastructure_error:'基础设施异常'};
 function klStatus(s){return KL_LABELS[s]||'待核对';}
 function setCategory(id){
@@ -15,8 +25,15 @@ async function loadKL(id){
  const seq=++klSequence;++loadSeq;setCategory('kl');datasetId=id;
  try{
   if(!klData||klData.updated_at!==manifest.updated_at)klData=await getJSON(`./api/v1/${manifest.kl.url}?v=${encodeURIComponent(manifest.updated_at)}`);
+  const meta=manifest.datasets.find(d=>d.id===id),key=`${manifest.updated_at}:${id}`;
+  if(!klReferenceCache.has(key)){
+   const dataset=await getJSON(`./api/v1/${meta.url}?v=${encodeURIComponent(manifest.updated_at)}`);
+   if(dataset.updated_at!==manifest.updated_at)throw Error('参考曲线发布版本尚在同步');
+   klReferenceCache.set(key,selectV0AstraReference(dataset));
+  }
   if(seq!==klSequence||category!=='kl')return;
   if(klData.updated_at!==manifest.updated_at)throw Error('发布版本尚在同步');
+  klReference=klReferenceCache.get(key);
   const runs=klData.runs.filter(r=>r.dataset===id);klRun=runs.find(r=>r.id===new URL(location).searchParams.get('run'))||runs[0];
   const wanted=Number(new URL(location).searchParams.get('apply'));
   if(!klRun?.applies.some(a=>a.apply===klApply))klApply=klRun?.applies.at(-1)?.apply??null;
@@ -29,11 +46,11 @@ async function loadKL(id){
 function selectApply(index){
  klApply=Number(index);const url=new URL(location);url.searchParams.set('category','kl');url.searchParams.set('dataset',datasetId);url.searchParams.set('apply',String(index));url.hash='kl-inner';history.replaceState(null,'',url);renderKL();
 }
-function klChart(target,points,label,maxX,selectable=false){
+function klChart(target,points,label,maxX,selectable=false,reference=null){
  const el=$(target),values=points.filter(p=>Number.isFinite(p.y)&&p.y>0);
- if(!values.length){el.innerHTML='<div class="kl-empty">暂无有效测量<br><small>结果保存后自动更新，缺失值不补成 0。</small></div>';return;}
+ if(!values.length&&!reference){el.innerHTML='<div class="kl-empty">暂无有效测量<br><small>结果保存后自动更新，缺失值不补成 0。</small></div>';return;}
  const w=Math.max(el.clientWidth||600,300),h=290,pad={l:58,r:18,t:24,b:40};
- const ymax=Math.max(...values.map(p=>p.y),...points.map(p=>p.best||0))*1.12;
+ const ymax=Math.max(...values.map(p=>p.y),...points.map(p=>p.best||0),reference?.latency_ms||0)*1.12;
  const x=v=>pad.l+(v-1)/Math.max(1,maxX-1)*(w-pad.l-pad.r),y=v=>h-pad.b-v/ymax*(h-pad.t-pad.b);
  let grid='',line='',bestLine='',last=null,lastBest=null;
  for(let i=0;i<=4;i++){const v=ymax*i/4;grid+=`<line x1="${pad.l}" x2="${w-pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="#edf0f4"/><text x="${pad.l-8}" y="${y(v)+4}" text-anchor="end">${fmt(v,3)}</text>`;}
@@ -43,6 +60,11 @@ function klChart(target,points,label,maxX,selectable=false){
   if(p.best!=null){bestLine+=(lastBest?` H${x(p.x)} V${y(p.best)}`:`M${x(p.x)},${y(p.best)}`);lastBest=p;}
  }
  el.innerHTML=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}"><text x="12" y="16">ms ↓</text>${grid}<path d="${bestLine}" fill="none" stroke="#009E73" stroke-width="2" stroke-dasharray="5 3"/><path d="${line}" fill="none" stroke="#0072B2" stroke-width="2"/>${values.map(p=>`<circle cx="${x(p.x)}" cy="${y(p.y)}" r="${selectable&&p.x===klApply?6:4}" fill="#0072B2" ${selectable?`data-apply-point="${p.x}" role="button" tabindex="0" aria-label="选择 Apply ${p.x}，${fmt(p.y)} 毫秒"`:''}><title>${esc(label)} ${p.x}: ${fmt(p.y)} ms</title></circle>`).join('')}<text x="${w/2}" y="${h-1}" text-anchor="middle">${esc(label)}</text></svg>`;
+ if(reference){
+  const svg=el.querySelector('svg');
+  svg.insertAdjacentHTML('beforeend',`<line class="kl-v0-reference" x1="${pad.l}" x2="${w-pad.r}" y1="${y(reference.latency_ms)}" y2="${y(reference.latency_ms)}" stroke="#CC79A7" stroke-width="2" stroke-dasharray="8 4"><title>V0 Astra/high 搜索最优均值：${fmt(reference.latency_ms)} ms，第 ${reference.round} 轮</title></line>`);
+  if(!values.length)svg.insertAdjacentHTML('beforeend',`<text x="${w/2}" y="${h/2}" text-anchor="middle">暂无 KL 有效测量</text>`);
+ }
  el.querySelectorAll('[data-apply-point]').forEach(p=>{p.onclick=()=>selectApply(p.dataset.applyPoint);p.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectApply(p.dataset.applyPoint);}};});
 }
 function renderKL(){
@@ -57,14 +79,20 @@ function renderKL(){
  $('#kl-apply').innerHTML=r.applies.map(a=>`<option value="${a.apply}" ${a.apply===klApply?'selected':''}>Apply ${a.apply} · ${klStatus(a.status)}</option>`).join('')||'<option value="">暂无 Apply</option>';
  $('#kl-apply').disabled=!r.applies.length;$('#kl-apply').value=klApply==null?'':String(klApply);$('#kl-apply').onchange=e=>selectApply(e.target.value);
  let best=null;const points=r.applies.map(a=>{const v=a.delivered?.accepted?a.delivered.latency_ms:null;if(v!=null)best=best==null?v:Math.min(best,v);return {x:a.apply,y:v,best};});
- klChart('#kl-overview',points,'Apply',r.budget,true);
+ for(const chart of ['overview','candidates']){
+  const toggle=$(`#kl-v0-${chart}`);toggle.disabled=!klReference;toggle.checked=!!klReference&&klReferenceVisible[chart];
+  toggle.onchange=()=>{klReferenceVisible[chart]=toggle.checked;renderKL();};
+  $(`#kl-v0-${chart}-label`).textContent=klReference?`V0 Astra/high 最快线 · ${fmt(klReference.latency_ms)} ms`:'无对应 V0 Astra 结果';
+ }
+ $('#kl-reference-note').textContent=klReference?`参考线为 V0 Astra/high 第 ${klReference.round} 轮搜索最优均值；KL 使用中位数，两者环境与计时口径不同。`:'';
+ klChart('#kl-overview',points,'Apply',r.budget,true,klReferenceVisible.overview?klReference:null);
  const a=r.applies.find(a=>a.apply===klApply),inner=a?.candidates||[];best=null;
- klChart('#kl-candidates',inner.map(c=>{const v=c.correctness_passed?c.latency_ms:null;if(c.accepted&&v!=null)best=best==null?v:Math.min(best,v);return {x:c.sequence,y:v,best};}),'内部候选序号',Math.max(2,inner.length));
+ klChart('#kl-candidates',inner.map(c=>{const v=c.correctness_passed?c.latency_ms:null;if(c.accepted&&v!=null)best=best==null?v:Math.min(best,v);return {x:c.sequence,y:v,best};}),'内部候选序号',Math.max(2,inner.length),false,klReferenceVisible.candidates?klReference:null);
  $('#kl-inner-status').textContent=a?`${klStatus(a.status)} · 已用 ${a.elapsed_seconds==null?'未知':fmt(a.elapsed_seconds/60,1)+' 分钟'} · ${a.evaluations} 次评测 · ${a.infrastructure_errors} 次基础设施异常 · ${a.reused_snapshots} 份结果复用快照`:'尚未启动；候选次数没有预设上限，受 Apply 时限约束。';
  $('#kl-candidate-rows').innerHTML=inner.map(c=>`<tr><td>${c.sequence}</td><td>${klStatus(c.status)}</td><td>${({compile:'编译',correctness:'正确性',performance:'性能门禁'})[c.stage]||'—'}</td><td>${c.accepted?'通过':c.correctness_passed?'正确性通过':'—'}</td><td class="num">${fmt(c.latency_ms)}</td><td class="num">${fmt(c.reference_latency_ms)}</td><td>${c.reused?'复用，不新增评测':'新记录'}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">暂无候选评测记录</td></tr>';
  $('#kl-apply-rows').innerHTML=r.applies.map(a=>`<tr><td><button data-apply-row="${a.apply}">Apply ${a.apply}</button></td><td>${klStatus(a.status)}</td><td>${a.evaluations}</td><td>${a.infrastructure_errors}</td><td class="num">${fmt(a.delivered?.latency_ms)}</td><td class="num">${a.elapsed_seconds==null?'—':fmt(a.elapsed_seconds/60,1)}</td><td>${date(a.ended_at)}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">已登记任务，等待正式启动</td></tr>';
  $$('[data-apply-row]').forEach(b=>b.onclick=()=>selectApply(b.dataset.applyRow));
- $('#kl-events').innerHTML=(klData.task_events||[]).filter(e=>e.run_id===r.id).map(e=>`<li><time>${date(e.at)}</time><strong>${({started:'开始',paused:'暂停',resumed:'恢复',completed:'独立完成'})[e.kind]||'待核对'}</strong><p>${esc(e.reason)}</p></li>`).join('')||'<li>尚未开始，启动后自动记录。</li>';
+ $('#kl-events').innerHTML=(klData.task_events||[]).filter(e=>e.run_id===r.id).map(e=>`<li class="task-event kl-task-event"><time datetime="${esc(e.at)}">${date(e.at)}</time><span class="event-tag ${esc(e.kind)}">${({started:'开始',paused:'暂停',resumed:'恢复',completed:'独立完成'})[e.kind]||'待核对'}</span><p>${esc(e.reason)}</p></li>`).join('')||'<li class="empty">尚未开始，启动后自动记录。</li>';
  $('#kl-path').textContent=r.workspace_path||'实际优化工作区在正式启动时创建。';
  $('#kl-copy').disabled=!r.workspace_path;$('#kl-copy').onclick=async()=>{await navigator.clipboard.writeText(r.workspace_path);$('#kl-copy').textContent='已复制';};
  $('#kl-json').onclick=()=>download(`kl-${datasetId}.json`,JSON.stringify(r,null,2),'application/json');
