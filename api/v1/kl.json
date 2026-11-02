@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-02T11:00:43.194448+00:00",
+  "source_captured_at": "2026-11-02T11:51:19.077470+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -9,8 +9,8 @@
       "problem_id": "fa3-backward-sm90",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "running",
+      "phase": "Apply 执行中",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -223,10 +223,10 @@
         {
           "apply": 3,
           "native_index": 2,
-          "status": "running",
+          "status": "completed",
           "started_at": "2026-11-02T10:06:22.553807+00:00",
-          "ended_at": null,
-          "elapsed_seconds": 2802.314954796806,
+          "ended_at": "2026-11-02T11:35:47.047340+00:00",
+          "elapsed_seconds": 2980.2039014189404,
           "candidates": [
             {
               "accepted": false,
@@ -281,6 +281,36 @@
           ],
           "evaluations": 5,
           "infrastructure_errors": 0,
+          "reused_snapshots": 2,
+          "delivered": {
+            "accepted": true,
+            "stage": null,
+            "correctness_passed": true,
+            "latency_ms": 4.073119878768921,
+            "reference_latency_ms": 4.281909942626953
+          }
+        },
+        {
+          "apply": 4,
+          "native_index": 3,
+          "status": "running",
+          "started_at": "2026-11-02T11:35:47.048537+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 837.2454068092629,
+          "candidates": [
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 3.9814800024032593,
+              "reference_latency_ms": 4.0919201374053955,
+              "sequence": 1,
+              "status": "passed",
+              "reused": false
+            }
+          ],
+          "evaluations": 1,
+          "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
         }
@@ -292,8 +322,8 @@
       "problem_id": "gdn-prefill-sm100",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "not_run",
+      "phase": "等待执行名额",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -310,8 +340,8 @@
       "problem_id": "cuda-l2-m2048-n8192-k2048",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "not_run",
+      "phase": "等待执行名额",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -328,8 +358,8 @@
       "problem_id": "thunderkittens-based-h100",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "not_run",
+      "phase": "等待执行名额",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -346,8 +376,8 @@
       "problem_id": "sonny-mha-forward-rtx3090",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "not_run",
+      "phase": "等待执行名额",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -364,8 +394,8 @@
       "problem_id": "flashinfer-gqa-decode-a100",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "not_run",
+      "phase": "等待执行名额",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -382,8 +412,8 @@
       "problem_id": "deepgemm-mqa-h800",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "not_run",
+      "phase": "等待执行名额",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -400,8 +430,8 @@
       "problem_id": "deepgemm-mega-mhc-sm100",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "not_run",
+      "phase": "等待执行名额",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -418,8 +448,8 @@
       "problem_id": "deepselect-topk-sm90",
       "model": "Astra",
       "effort": "high",
-      "status": "paused",
-      "phase": "用户定时暂停",
+      "status": "not_run",
+      "phase": "等待执行名额",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -441,5 +471,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-02T11:00:37.079052+00:00"
+  "updated_at": "2026-11-02T11:51:16.738131+00:00"
 }
