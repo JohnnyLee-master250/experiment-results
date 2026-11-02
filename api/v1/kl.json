@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-02T07:46:31.393050+00:00",
+  "source_captured_at": "2026-11-02T08:15:11.256235+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -9,17 +9,31 @@
       "problem_id": "fa3-backward-sm90",
       "model": "Astra",
       "effort": "high",
-      "status": "not_run",
-      "phase": "Prepared; waiting for explicit user launch",
+      "status": "running",
+      "phase": "Apply 执行中",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
       "evaluation_timeout_seconds": 1800,
-      "started_at": null,
+      "started_at": "2026-11-02T08:13:04.640596+00:00",
       "finished_at": null,
       "independently_complete": false,
-      "workspace_path": null,
-      "applies": []
+      "workspace_path": "/home/lbh24/codex-workspace/kl-astra-high-nine-serial-20261102-001/repo/baselines-910C/klineage-910c/workspaces/opt/20261102-serial-astra-fa3-backward-sm90",
+      "applies": [
+        {
+          "apply": 1,
+          "native_index": 0,
+          "status": "running",
+          "started_at": "2026-11-02T08:13:04.825315+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 0.0,
+          "candidates": [],
+          "evaluations": 0,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 0,
+          "delivered": null
+        }
+      ]
     },
     {
       "id": "kl-astra-high-serial-20261102-kl-gdn",
@@ -28,7 +42,7 @@
       "model": "Astra",
       "effort": "high",
       "status": "not_run",
-      "phase": "Prepared; waiting for explicit user launch",
+      "phase": "Waiting in serial queue",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -46,7 +60,7 @@
       "model": "Astra",
       "effort": "high",
       "status": "not_run",
-      "phase": "Prepared; waiting for explicit user launch",
+      "phase": "Waiting in serial queue",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -64,7 +78,7 @@
       "model": "Astra",
       "effort": "high",
       "status": "not_run",
-      "phase": "Prepared; waiting for explicit user launch",
+      "phase": "Waiting in serial queue",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -82,7 +96,7 @@
       "model": "Astra",
       "effort": "high",
       "status": "not_run",
-      "phase": "Prepared; waiting for explicit user launch",
+      "phase": "Waiting in serial queue",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -100,7 +114,7 @@
       "model": "Astra",
       "effort": "high",
       "status": "not_run",
-      "phase": "Prepared; waiting for explicit user launch",
+      "phase": "Waiting in serial queue",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -118,7 +132,7 @@
       "model": "Astra",
       "effort": "high",
       "status": "not_run",
-      "phase": "Prepared; waiting for explicit user launch",
+      "phase": "Waiting in serial queue",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -136,7 +150,7 @@
       "model": "Astra",
       "effort": "high",
       "status": "not_run",
-      "phase": "Prepared; waiting for explicit user launch",
+      "phase": "Waiting in serial queue",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -154,7 +168,7 @@
       "model": "Astra",
       "effort": "high",
       "status": "not_run",
-      "phase": "Prepared; waiting for explicit user launch",
+      "phase": "Waiting in serial queue",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -166,6 +180,15 @@
       "applies": []
     }
   ],
-  "task_events": [],
-  "updated_at": "2026-11-02T07:46:27.456720+00:00"
+  "task_events": [
+    {
+      "id": "kl-astra-high-serial-20261102-kl-fa3:started:2026-11-02T08:13:04.640596+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-fa3",
+      "dataset": "FA3",
+      "at": "2026-11-02T08:13:04.640596+00:00",
+      "kind": "started",
+      "reason": "原任务实际启动"
+    }
+  ],
+  "updated_at": "2026-11-02T08:15:06.248436+00:00"
 }
