@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-03T11:59:03.446025+00:00",
+  "source_captured_at": "2026-11-03T12:04:10.329623+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -2457,7 +2457,7 @@
           "status": "running",
           "started_at": "2026-11-03T11:52:22.030222+00:00",
           "ended_at": null,
-          "elapsed_seconds": 233.32089869026095,
+          "elapsed_seconds": 533.3224226161838,
           "candidates": [
             {
               "accepted": true,
@@ -2469,9 +2469,20 @@
               "status": "passed",
               "reused": false,
               "recorded_at": "2026-11-03T11:54:31.925369+00:00"
+            },
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 2.162750005722046,
+              "reference_latency_ms": 2.185770034790039,
+              "sequence": 2,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-03T11:59:13.798107+00:00"
             }
           ],
-          "evaluations": 1,
+          "evaluations": 2,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -2479,7 +2490,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 83,
+        "count": 84,
         "excluded_count": 0,
         "timing_statistic": "median",
         "points": [
@@ -3394,6 +3405,17 @@
             "counted": true,
             "accepted": true,
             "latency_ms": 2.1166300773620605,
+            "best_ms": 2.1166300773620605
+          },
+          {
+            "round": 84,
+            "apply": 10,
+            "inner_sequence": 2,
+            "recorded_at": "2026-11-03T11:59:13.798107+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
             "best_ms": 2.1166300773620605
           }
         ]
@@ -8779,7 +8801,7 @@
           "status": "running",
           "started_at": "2026-11-03T11:54:45.269870+00:00",
           "ended_at": null,
-          "elapsed_seconds": 7.348112629726529,
+          "elapsed_seconds": 307.34968092665076,
           "candidates": [],
           "evaluations": 0,
           "infrastructure_errors": 0,
@@ -9565,5 +9587,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-03T11:58:57.186246+00:00"
+  "updated_at": "2026-11-03T12:04:05.808293+00:00"
 }
