@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-03T17:27:29.825111+00:00",
+  "source_captured_at": "2026-11-03T17:32:28.790630+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -9369,7 +9369,7 @@
           "status": "running",
           "started_at": "2026-11-03T17:17:12.978741+00:00",
           "ended_at": null,
-          "elapsed_seconds": 549.3123099030927,
+          "elapsed_seconds": 849.3137766355649,
           "candidates": [
             {
               "accepted": false,
@@ -10524,7 +10524,7 @@
           "status": "running",
           "started_at": "2026-11-03T16:20:56.773807+00:00",
           "ended_at": null,
-          "elapsed_seconds": 1202.8026443384588,
+          "elapsed_seconds": 1502.792824042961,
           "candidates": [
             {
               "accepted": false,
@@ -10538,15 +10538,15 @@
               "recorded_at": "2026-11-03T16:22:24.952273+00:00"
             },
             {
-              "accepted": false,
+              "accepted": true,
               "stage": null,
-              "correctness_passed": null,
-              "latency_ms": null,
-              "reference_latency_ms": null,
+              "correctness_passed": true,
+              "latency_ms": 2.25314998626709,
+              "reference_latency_ms": 2.3183799982070923,
               "sequence": 2,
-              "status": "infrastructure_error",
+              "status": "passed",
               "reused": false,
-              "recorded_at": null
+              "recorded_at": "2026-11-03T17:26:48.860708+00:00"
             },
             {
               "accepted": false,
@@ -10569,9 +10569,20 @@
               "status": "infrastructure_error",
               "reused": false,
               "recorded_at": null
+            },
+            {
+              "accepted": false,
+              "stage": null,
+              "correctness_passed": null,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 5,
+              "status": "infrastructure_error",
+              "reused": false,
+              "recorded_at": null
             }
           ],
-          "evaluations": 1,
+          "evaluations": 2,
           "infrastructure_errors": 3,
           "reused_snapshots": 1,
           "delivered": null
@@ -10579,7 +10590,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 44,
+        "count": 45,
         "excluded_count": 3,
         "timing_statistic": "median",
         "points": [
@@ -11068,15 +11079,15 @@
             "best_ms": 0.03015999961644411
           },
           {
-            "round": null,
+            "round": 45,
             "apply": 5,
             "inner_sequence": 2,
-            "recorded_at": null,
-            "status": "infrastructure_error",
-            "counted": false,
-            "accepted": false,
-            "latency_ms": null,
-            "best_ms": null
+            "recorded_at": "2026-11-03T17:26:48.860708+00:00",
+            "status": "passed",
+            "counted": true,
+            "accepted": true,
+            "latency_ms": 2.25314998626709,
+            "best_ms": 0.03015999961644411
           },
           {
             "round": null,
@@ -11093,6 +11104,17 @@
             "round": null,
             "apply": 5,
             "inner_sequence": 4,
+            "recorded_at": null,
+            "status": "infrastructure_error",
+            "counted": false,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": null
+          },
+          {
+            "round": null,
+            "apply": 5,
+            "inner_sequence": 5,
             "recorded_at": null,
             "status": "infrastructure_error",
             "counted": false,
@@ -11347,5 +11369,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-03T17:27:28.373204+00:00"
+  "updated_at": "2026-11-03T17:32:27.370730+00:00"
 }
