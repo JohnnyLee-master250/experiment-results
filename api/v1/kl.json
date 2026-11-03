@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-03T19:05:59.084538+00:00",
+  "source_captured_at": "2026-11-03T19:12:27.851676+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -8653,15 +8653,15 @@
       "problem_id": "deepgemm-mqa-h800",
       "model": "Astra",
       "effort": "high",
-      "status": "ended",
-      "phase": "待独立验收",
+      "status": "complete",
+      "phase": "已完成",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
       "evaluation_timeout_seconds": 1800,
       "started_at": "2026-11-03T08:56:36.346066+00:00",
-      "finished_at": null,
-      "independently_complete": false,
+      "finished_at": "2026-11-03T19:11:20.325833+00:00",
+      "independently_complete": true,
       "workspace_path": "/home/lbh24/codex-workspace/kl-astra-high-nine-serial-20261102-001/repo/baselines-910C/klineage-910c/workspaces/opt/20261102-serial-astra-deepgemm-mqa-h800",
       "applies": [
         {
@@ -11061,7 +11061,7 @@
           "status": "running",
           "started_at": "2026-11-03T18:45:46.232598+00:00",
           "ended_at": null,
-          "elapsed_seconds": 947.158011819236,
+          "elapsed_seconds": 1547.1610060110688,
           "candidates": [
             {
               "accepted": true,
@@ -11106,9 +11106,20 @@
               "status": "failed",
               "reused": false,
               "recorded_at": "2026-11-03T19:02:11.958745+00:00"
+            },
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 2.2235000133514404,
+              "reference_latency_ms": 2.2559800148010254,
+              "sequence": 5,
+              "status": "passed",
+              "reused": false,
+              "recorded_at": "2026-11-03T19:05:31.658198+00:00"
             }
           ],
-          "evaluations": 4,
+          "evaluations": 5,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -11116,7 +11127,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 65,
+        "count": 66,
         "excluded_count": 3,
         "timing_statistic": "median",
         "points": [
@@ -11867,6 +11878,17 @@
             "accepted": false,
             "latency_ms": null,
             "best_ms": 0.03015999961644411
+          },
+          {
+            "round": 66,
+            "apply": 8,
+            "inner_sequence": 5,
+            "recorded_at": "2026-11-03T19:05:31.658198+00:00",
+            "status": "passed",
+            "counted": true,
+            "accepted": true,
+            "latency_ms": 2.2235000133514404,
+            "best_ms": 0.03015999961644411
           }
         ]
       }
@@ -11877,17 +11899,31 @@
       "problem_id": "deepselect-topk-sm90",
       "model": "Astra",
       "effort": "high",
-      "status": "waiting",
-      "phase": "等待空闲卡",
+      "status": "running",
+      "phase": "Apply 执行中",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
       "evaluation_timeout_seconds": 1800,
-      "started_at": null,
+      "started_at": "2026-11-03T19:11:21.851106+00:00",
       "finished_at": null,
       "independently_complete": false,
-      "workspace_path": null,
-      "applies": [],
+      "workspace_path": "/home/lbh24/codex-workspace/kl-astra-high-nine-serial-20261102-001/repo/baselines-910C/klineage-910c/workspaces/opt/20261102-serial-astra-deepselect-topk-sm90",
+      "applies": [
+        {
+          "apply": 1,
+          "native_index": 0,
+          "status": "running",
+          "started_at": "2026-11-03T19:11:22.473287+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 0.0,
+          "candidates": [],
+          "evaluations": 0,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 0,
+          "delivered": null
+        }
+      ],
       "aligned": {
         "schema_version": 1,
         "count": 0,
@@ -11898,6 +11934,22 @@
     }
   ],
   "task_events": [
+    {
+      "id": "kl-astra-high-serial-20261102-kl-top-k:started:2026-11-03T19:11:21.851106+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-top-k",
+      "dataset": "TopK",
+      "at": "2026-11-03T19:11:21.851106+00:00",
+      "kind": "started",
+      "reason": "原任务实际启动"
+    },
+    {
+      "id": "kl-astra-high-serial-20261102-kl-mqa:completed:2026-11-03T19:11:20.325833+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-mqa",
+      "dataset": "MQA",
+      "at": "2026-11-03T19:11:20.325833+00:00",
+      "kind": "completed",
+      "reason": "独立验收完成"
+    },
     {
       "id": "kl-astra-high-serial-20261102-kl-gdn:completed:2026-11-03T12:56:45.968310+00:00",
       "run_id": "kl-astra-high-serial-20261102-kl-gdn",
@@ -12115,5 +12167,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-03T19:05:57.536152+00:00"
+  "updated_at": "2026-11-03T19:12:26.367094+00:00"
 }
