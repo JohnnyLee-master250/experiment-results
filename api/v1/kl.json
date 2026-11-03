@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-03T08:49:26.548599+00:00",
+  "source_captured_at": "2026-11-03T08:58:05.560436+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -3363,15 +3363,15 @@
       "problem_id": "cuda-l2-m2048-n8192-k2048",
       "model": "Astra",
       "effort": "high",
-      "status": "ended",
-      "phase": "待独立验收",
+      "status": "complete",
+      "phase": "已完成",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
       "evaluation_timeout_seconds": 1800,
       "started_at": "2026-11-02T18:25:25.187930+00:00",
-      "finished_at": null,
-      "independently_complete": false,
+      "finished_at": "2026-11-03T08:56:32.818455+00:00",
+      "independently_complete": true,
       "workspace_path": "/home/lbh24/codex-workspace/kl-astra-high-nine-serial-20261102-001/repo/baselines-910C/klineage-910c/workspaces/opt/20261102-serial-astra-cuda-l2-m2048-n8192-k2048",
       "applies": [
         {
@@ -7281,7 +7281,7 @@
           "status": "running",
           "started_at": "2026-11-03T08:21:44.502367+00:00",
           "ended_at": null,
-          "elapsed_seconds": 1458.7284243954346,
+          "elapsed_seconds": 2058.7313453890383,
           "candidates": [
             {
               "accepted": false,
@@ -7326,9 +7326,42 @@
               "status": "failed",
               "reused": false,
               "recorded_at": "2026-11-03T08:41:39.590730+00:00"
+            },
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 4.909669876098633,
+              "reference_latency_ms": 0.08276000246405602,
+              "sequence": 5,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-03T08:46:14.767920+00:00"
+            },
+            {
+              "accepted": false,
+              "stage": "correctness",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 6,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-03T08:51:29.673591+00:00"
+            },
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 4.892819881439209,
+              "reference_latency_ms": 0.5374499969184399,
+              "sequence": 7,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-03T08:53:30.373673+00:00"
             }
           ],
-          "evaluations": 4,
+          "evaluations": 7,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -7336,7 +7369,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 53,
+        "count": 56,
         "excluded_count": 3,
         "timing_statistic": "median",
         "points": [
@@ -7955,6 +7988,39 @@
             "accepted": false,
             "latency_ms": null,
             "best_ms": 0.08311999961733818
+          },
+          {
+            "round": 54,
+            "apply": 8,
+            "inner_sequence": 5,
+            "recorded_at": "2026-11-03T08:46:14.767920+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 0.08311999961733818
+          },
+          {
+            "round": 55,
+            "apply": 8,
+            "inner_sequence": 6,
+            "recorded_at": "2026-11-03T08:51:29.673591+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 0.08311999961733818
+          },
+          {
+            "round": 56,
+            "apply": 8,
+            "inner_sequence": 7,
+            "recorded_at": "2026-11-03T08:53:30.373673+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 0.08311999961733818
           }
         ]
       }
@@ -7965,23 +8031,61 @@
       "problem_id": "deepgemm-mqa-h800",
       "model": "Astra",
       "effort": "high",
-      "status": "waiting",
-      "phase": "等待空闲卡",
+      "status": "running",
+      "phase": "Apply 执行中",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
       "evaluation_timeout_seconds": 1800,
-      "started_at": null,
+      "started_at": "2026-11-03T08:56:36.346066+00:00",
       "finished_at": null,
       "independently_complete": false,
-      "workspace_path": null,
-      "applies": [],
+      "workspace_path": "/home/lbh24/codex-workspace/kl-astra-high-nine-serial-20261102-001/repo/baselines-910C/klineage-910c/workspaces/opt/20261102-serial-astra-deepgemm-mqa-h800",
+      "applies": [
+        {
+          "apply": 1,
+          "native_index": 0,
+          "status": "running",
+          "started_at": "2026-11-03T08:56:36.968447+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 0.0,
+          "candidates": [
+            {
+              "accepted": false,
+              "stage": "correctness",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 1,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-03T08:57:43.027811+00:00"
+            }
+          ],
+          "evaluations": 1,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 0,
+          "delivered": null
+        }
+      ],
       "aligned": {
         "schema_version": 1,
-        "count": 0,
+        "count": 1,
         "excluded_count": 0,
         "timing_statistic": "median",
-        "points": []
+        "points": [
+          {
+            "round": 1,
+            "apply": 1,
+            "inner_sequence": 1,
+            "recorded_at": "2026-11-03T08:57:43.027811+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": null
+          }
+        ]
       }
     },
     {
@@ -8036,6 +8140,22 @@
     }
   ],
   "task_events": [
+    {
+      "id": "kl-astra-high-serial-20261102-kl-mqa:started:2026-11-03T08:56:36.346066+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-mqa",
+      "dataset": "MQA",
+      "at": "2026-11-03T08:56:36.346066+00:00",
+      "kind": "started",
+      "reason": "原任务实际启动"
+    },
+    {
+      "id": "kl-astra-high-serial-20261102-kl-gemm:completed:2026-11-03T08:56:32.818455+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-gemm",
+      "dataset": "CUDA-L2",
+      "at": "2026-11-03T08:56:32.818455+00:00",
+      "kind": "completed",
+      "reason": "独立验收完成"
+    },
     {
       "id": "kl-astra-high-serial-20261102-kl-gqa:user-quota-resume-20261103-001:KL-GQA",
       "run_id": "kl-astra-high-serial-20261102-kl-gqa",
@@ -8229,5 +8349,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-03T08:49:23.976791+00:00"
+  "updated_at": "2026-11-03T08:58:03.083389+00:00"
 }
