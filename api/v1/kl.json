@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-03T04:49:18.438278+00:00",
+  "source_captured_at": "2026-11-03T06:09:02.187490+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -3364,7 +3364,7 @@
       "model": "Astra",
       "effort": "high",
       "status": "running",
-      "phase": "原线程按剩余预算接续",
+      "phase": "原第4个Apply按剩余额度接续",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -3613,10 +3613,10 @@
         {
           "apply": 4,
           "native_index": 3,
-          "status": "running",
+          "status": "completed",
           "started_at": "2026-11-03T04:37:30.266587+00:00",
-          "ended_at": null,
-          "elapsed_seconds": 552.7911359407008,
+          "ended_at": "2026-11-03T06:07:07.427172+00:00",
+          "elapsed_seconds": 1862.1210316596553,
           "candidates": [
             {
               "accepted": true,
@@ -3628,9 +3628,50 @@
               "status": "passed",
               "reused": false,
               "recorded_at": "2026-11-03T04:38:33.466300+00:00"
+            },
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 2,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-03T05:00:42.156127+00:00"
+            },
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 2.2156100273132324,
+              "reference_latency_ms": 2.2561399936676025,
+              "sequence": 3,
+              "status": "unknown",
+              "reused": false,
+              "recorded_at": "2026-11-03T05:02:21.709430+00:00"
             }
           ],
-          "evaluations": 1,
+          "evaluations": 2,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 3,
+          "delivered": {
+            "accepted": true,
+            "stage": null,
+            "correctness_passed": true,
+            "latency_ms": 2.204569935798645,
+            "reference_latency_ms": 2.280619978904724
+          }
+        },
+        {
+          "apply": 5,
+          "native_index": 4,
+          "status": "running",
+          "started_at": "2026-11-03T06:07:07.428312+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 2.1276995539665222e-05,
+          "candidates": [],
+          "evaluations": 0,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -3638,8 +3679,8 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 17,
-        "excluded_count": 0,
+        "count": 18,
+        "excluded_count": 1,
         "timing_statistic": "median",
         "points": [
           {
@@ -3828,6 +3869,28 @@
             "accepted": true,
             "latency_ms": 2.204569935798645,
             "best_ms": 2.185029983520508
+          },
+          {
+            "round": 18,
+            "apply": 4,
+            "inner_sequence": 2,
+            "recorded_at": "2026-11-03T05:00:42.156127+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 2.185029983520508
+          },
+          {
+            "round": null,
+            "apply": 4,
+            "inner_sequence": 3,
+            "recorded_at": "2026-11-03T05:02:21.709430+00:00",
+            "status": "unknown",
+            "counted": false,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": null
           }
         ]
       }
@@ -5987,7 +6050,7 @@
       "model": "Astra",
       "effort": "high",
       "status": "running",
-      "phase": "原线程按剩余预算接续",
+      "phase": "原第4个Apply按剩余额度接续",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -6258,10 +6321,10 @@
         {
           "apply": 4,
           "native_index": 3,
-          "status": "running",
+          "status": "completed",
           "started_at": "2026-11-03T04:16:03.697394+00:00",
-          "ended_at": null,
-          "elapsed_seconds": 654.0963741369178,
+          "ended_at": "2026-11-03T06:07:19.350290+00:00",
+          "elapsed_seconds": 2099.8589428836112,
           "candidates": [
             {
               "accepted": false,
@@ -6284,9 +6347,83 @@
               "status": "passed",
               "reused": false,
               "recorded_at": "2026-11-03T04:41:13.316945+00:00"
+            },
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 2.121019959449768,
+              "reference_latency_ms": 2.185279965400696,
+              "sequence": 3,
+              "status": "passed",
+              "reused": false,
+              "recorded_at": "2026-11-03T04:45:40.334705+00:00"
+            },
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 2.16595995426178,
+              "reference_latency_ms": 2.1565399169921875,
+              "sequence": 4,
+              "status": "passed",
+              "reused": false,
+              "recorded_at": "2026-11-03T04:50:24.216375+00:00"
+            },
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 2.1295199394226074,
+              "reference_latency_ms": 4.930729866027832,
+              "sequence": 5,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-03T04:55:49.152321+00:00"
+            },
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 2.5337298810482025,
+              "reference_latency_ms": 0.1159299984574318,
+              "sequence": 6,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-03T05:00:27.824051+00:00"
+            },
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 1.8310099840164185,
+              "reference_latency_ms": 4.930009841918945,
+              "sequence": 7,
+              "status": "unknown",
+              "reused": false,
+              "recorded_at": "2026-11-03T05:05:14.544957+00:00"
             }
           ],
-          "evaluations": 2,
+          "evaluations": 6,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 7,
+          "delivered": {
+            "accepted": true,
+            "stage": null,
+            "correctness_passed": true,
+            "latency_ms": 2.121019959449768,
+            "reference_latency_ms": 2.185279965400696
+          }
+        },
+        {
+          "apply": 5,
+          "native_index": 4,
+          "status": "running",
+          "started_at": "2026-11-03T06:07:19.351457+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 2.108607441186905e-05,
+          "candidates": [],
+          "evaluations": 0,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -6294,8 +6431,8 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 18,
-        "excluded_count": 2,
+        "count": 22,
+        "excluded_count": 3,
         "timing_statistic": "median",
         "points": [
           {
@@ -6517,6 +6654,61 @@
             "accepted": true,
             "latency_ms": 2.146649956703186,
             "best_ms": 2.1317800283432007
+          },
+          {
+            "round": 19,
+            "apply": 4,
+            "inner_sequence": 3,
+            "recorded_at": "2026-11-03T04:45:40.334705+00:00",
+            "status": "passed",
+            "counted": true,
+            "accepted": true,
+            "latency_ms": 2.121019959449768,
+            "best_ms": 2.121019959449768
+          },
+          {
+            "round": 20,
+            "apply": 4,
+            "inner_sequence": 4,
+            "recorded_at": "2026-11-03T04:50:24.216375+00:00",
+            "status": "passed",
+            "counted": true,
+            "accepted": true,
+            "latency_ms": 2.16595995426178,
+            "best_ms": 2.121019959449768
+          },
+          {
+            "round": 21,
+            "apply": 4,
+            "inner_sequence": 5,
+            "recorded_at": "2026-11-03T04:55:49.152321+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 2.121019959449768
+          },
+          {
+            "round": 22,
+            "apply": 4,
+            "inner_sequence": 6,
+            "recorded_at": "2026-11-03T05:00:27.824051+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 2.121019959449768
+          },
+          {
+            "round": null,
+            "apply": 4,
+            "inner_sequence": 7,
+            "recorded_at": "2026-11-03T05:05:14.544957+00:00",
+            "status": "unknown",
+            "counted": false,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": null
           }
         ]
       }
@@ -6598,6 +6790,22 @@
     }
   ],
   "task_events": [
+    {
+      "id": "kl-astra-high-serial-20261102-kl-gqa:user-quota-resume-20261103-001:KL-GQA",
+      "run_id": "kl-astra-high-serial-20261102-kl-gqa",
+      "dataset": "GQA",
+      "at": "2026-11-03T06:06:03.199276+00:00",
+      "kind": "resumed",
+      "reason": "已核对原操作后恢复"
+    },
+    {
+      "id": "kl-astra-high-serial-20261102-kl-gemm:user-quota-resume-20261103-001:KL-GEMM",
+      "run_id": "kl-astra-high-serial-20261102-kl-gemm",
+      "dataset": "CUDA-L2",
+      "at": "2026-11-03T06:06:03.132440+00:00",
+      "kind": "resumed",
+      "reason": "已核对原操作后恢复"
+    },
     {
       "id": "kl-astra-high-serial-20261102-kl-gemm:user-resume-20261103-002:KL-GEMM",
       "run_id": "kl-astra-high-serial-20261102-kl-gemm",
@@ -6775,5 +6983,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-03T04:49:16.368748+00:00"
+  "updated_at": "2026-11-03T06:08:59.641046+00:00"
 }
