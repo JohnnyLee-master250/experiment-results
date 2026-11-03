@@ -134,7 +134,6 @@ function renderKL(){
   }).join('');
   $(`#kl-matched-${chart}`).querySelectorAll('input').forEach(toggle=>toggle.onchange=()=>{klMatchedVisible[chart][toggle.dataset.matchedKind]=toggle.checked;renderKL();});
  }
- $('#kl-reference-note').textContent=klReference?`两条新增参考线按 KL 最新累计 r${r.aligned?.count||0}，分别取 V0 截至 N 与 ⌊2N/3⌋ 轮的最快均值，最多取 30 轮。KL 使用中位数，两者环境与计时口径不同。`:'';
  klChart('#kl-overview',points,'Apply',r.budget,true,klReferenceVisible.overview?klReference:null,axes.applies,matched.filter(ref=>klMatchedVisible.overview[ref.kind]));
  const a=r.applies.find(a=>a.apply===klApply),inner=a?.candidates||[];best=null;
  klChart('#kl-candidates',inner.map(c=>{const v=c.correctness_passed?c.latency_ms:null;if(c.accepted&&v!=null)best=best==null?v:Math.min(best,v);return {x:c.sequence,y:v,best};}),'内部候选序号',Math.max(2,inner.length),false,klReferenceVisible.candidates?klReference:null,axes.candidates.get(klApply),matched.filter(ref=>klMatchedVisible.candidates[ref.kind]));
