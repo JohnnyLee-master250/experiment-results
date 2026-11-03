@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-03T02:12:29.063523+00:00",
+  "source_captured_at": "2026-11-03T02:19:07.989133+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -4459,9 +4459,21 @@
           "status": "running",
           "started_at": "2026-11-03T02:04:19.296678+00:00",
           "ended_at": null,
-          "elapsed_seconds": 243.70020736008883,
-          "candidates": [],
-          "evaluations": 0,
+          "elapsed_seconds": 843.7036170242354,
+          "candidates": [
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 2.707740068435669,
+              "reference_latency_ms": 2.7632100582122803,
+              "sequence": 1,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-03T02:08:57.815966+00:00"
+            }
+          ],
+          "evaluations": 1,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -4469,7 +4481,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 46,
+        "count": 47,
         "excluded_count": 0,
         "timing_statistic": "median",
         "points": [
@@ -4977,6 +4989,17 @@
             "counted": true,
             "accepted": true,
             "latency_ms": 2.714609980583191,
+            "best_ms": 2.714609980583191
+          },
+          {
+            "round": 47,
+            "apply": 8,
+            "inner_sequence": 1,
+            "recorded_at": "2026-11-03T02:08:57.815966+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
             "best_ms": 2.714609980583191
           }
         ]
@@ -5628,9 +5651,32 @@
           "status": "running",
           "started_at": "2026-11-03T02:11:27.312265+00:00",
           "ended_at": null,
-          "elapsed_seconds": 0.0,
-          "candidates": [],
-          "evaluations": 0,
+          "elapsed_seconds": 299.9992158031091,
+          "candidates": [
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 2.390000104904175,
+              "reference_latency_ms": null,
+              "sequence": 1,
+              "status": "passed",
+              "reused": false,
+              "recorded_at": "2026-11-03T02:12:24.396084+00:00"
+            },
+            {
+              "accepted": false,
+              "stage": "compile",
+              "correctness_passed": false,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 2,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-03T02:17:48.781636+00:00"
+            }
+          ],
+          "evaluations": 2,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -5638,10 +5684,33 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 0,
+        "count": 2,
         "excluded_count": 0,
         "timing_statistic": "median",
-        "points": []
+        "points": [
+          {
+            "round": 1,
+            "apply": 1,
+            "inner_sequence": 1,
+            "recorded_at": "2026-11-03T02:12:24.396084+00:00",
+            "status": "passed",
+            "counted": true,
+            "accepted": true,
+            "latency_ms": 2.390000104904175,
+            "best_ms": 2.390000104904175
+          },
+          {
+            "round": 2,
+            "apply": 1,
+            "inner_sequence": 2,
+            "recorded_at": "2026-11-03T02:17:48.781636+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 2.390000104904175
+          }
+        ]
       }
     },
     {
@@ -5866,5 +5935,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-03T02:12:27.737423+00:00"
+  "updated_at": "2026-11-03T02:19:06.194714+00:00"
 }
