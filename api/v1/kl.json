@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-03T13:48:22.906822+00:00",
+  "source_captured_at": "2026-11-03T13:56:29.952091+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -8653,8 +8653,8 @@
       "problem_id": "deepgemm-mqa-h800",
       "model": "Astra",
       "effort": "high",
-      "status": "running",
-      "phase": "原线程按暂停前剩余时间继续",
+      "status": "paused",
+      "phase": "用户暂停",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -9133,7 +9133,7 @@
           "status": "running",
           "started_at": "2026-11-03T13:45:48.590866+00:00",
           "ended_at": null,
-          "elapsed_seconds": 5.473289638757706e-05,
+          "elapsed_seconds": 244.05774204805493,
           "candidates": [],
           "evaluations": 0,
           "infrastructure_errors": 0,
@@ -9519,8 +9519,8 @@
       "problem_id": "deepgemm-mega-mhc-sm100",
       "model": "Astra",
       "effort": "high",
-      "status": "running",
-      "phase": "原第2个Apply按剩余预算接续",
+      "status": "paused",
+      "phase": "用户暂停",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -9674,10 +9674,10 @@
         {
           "apply": 2,
           "native_index": 1,
-          "status": "running",
+          "status": "completed",
           "started_at": "2026-11-03T11:41:26.347300+00:00",
-          "ended_at": null,
-          "elapsed_seconds": 3155.424733251989,
+          "ended_at": "2026-11-03T13:52:06.066039+00:00",
+          "elapsed_seconds": 3472.3343671715857,
           "candidates": [
             {
               "accepted": true,
@@ -9788,17 +9788,47 @@
               "status": "passed",
               "reused": false,
               "recorded_at": "2026-11-03T13:42:39.962166+00:00"
+            },
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 0.03420000150799751,
+              "reference_latency_ms": 0.038850000128149986,
+              "sequence": 11,
+              "status": "passed",
+              "reused": false,
+              "recorded_at": "2026-11-03T13:47:11.109184+00:00"
             }
           ],
-          "evaluations": 10,
+          "evaluations": 11,
           "infrastructure_errors": 0,
-          "reused_snapshots": 1,
+          "reused_snapshots": 2,
+          "delivered": {
+            "accepted": true,
+            "stage": null,
+            "correctness_passed": true,
+            "latency_ms": 0.03420000150799751,
+            "reference_latency_ms": 0.038850000128149986
+          }
+        },
+        {
+          "apply": 3,
+          "native_index": 2,
+          "status": "running",
+          "started_at": "2026-11-03T13:52:06.067199+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 2.1401792764663696e-05,
+          "candidates": [],
+          "evaluations": 0,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 0,
           "delivered": null
         }
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 21,
+        "count": 22,
         "excluded_count": 0,
         "timing_statistic": "median",
         "points": [
@@ -10032,6 +10062,17 @@
             "accepted": true,
             "latency_ms": 0.035739999264478683,
             "best_ms": 0.034199999645352364
+          },
+          {
+            "round": 22,
+            "apply": 2,
+            "inner_sequence": 11,
+            "recorded_at": "2026-11-03T13:47:11.109184+00:00",
+            "status": "passed",
+            "counted": true,
+            "accepted": true,
+            "latency_ms": 0.03420000150799751,
+            "best_ms": 0.034199999645352364
           }
         ]
       }
@@ -10042,8 +10083,8 @@
       "problem_id": "deepselect-topk-sm90",
       "model": "Astra",
       "effort": "high",
-      "status": "waiting",
-      "phase": "等待空闲卡",
+      "status": "paused",
+      "phase": "用户暂停",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -10280,5 +10321,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-03T13:48:16.704993+00:00"
+  "updated_at": "2026-11-03T13:56:26.084012+00:00"
 }
