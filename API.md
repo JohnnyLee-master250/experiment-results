@@ -51,3 +51,12 @@ KL latency uses the median of three group medians (10 warmups, 50 samples per gr
 分类顺序为 B0–B3 / V0、Aligned KL、KL；KL 页内复用相同 Aligned 对比组件。固定 update_web.py --publish 自动生成 kl.json 每组的 aligned 字段（schema_version/count/excluded_count/points），无需手工展开或改前端。按原 Apply 顺序、内部记录时间排列；没有时间时保留原记录序号，不使用文件 mtime 伪造。每个非复用 passed/failed 评测占一个累计 rN，基础设施异常/未知归因保留在展开表但不计轮次；同 Job 复用不增加。失败不填0，最优曲线只使用通过完整评测的计时。Apply 交付和正式独立验收不混作新候选。
 index.json.kl.running_runs 新增 current_apply、internal_round；运行栏显示当前 Apply/10 · rN，rN 与展开曲线一致。KL 中位数与 B/V 均值、环境/effort/预算差异在视图中标明；B0不画性能曲线。这是评测序号对齐，不宣称等时间或等预算。
 定点验证：node qa/check_aligned_kl.mjs；原 check_kl_reference.mjs、check_kl_accounting.py 和 validate_data.py 保持。常规不运行前端回归。
+
+
+## KL 横轴与按轮次匹配参考线（2026-11-03）
+
+KL Apply 图的完成刻度显示 `2(r16 133min)`：r 来自同一 `aligned.points` 有效评测计数，分钟为截至该 Apply 的 `elapsed_seconds` 总和四舍五入，沿用已对账扣除暂停的累计用时，绝不以结束减开始的墙钟时间代替、也不重复累加恢复 segments。未完成 Apply 不显示完成总时间，缺失时间标未知。内部候选刻度显示 `序号(rN)`，不显示时间；复用及基础设施/未知归因不增加 r。
+
+KL 两张速度图各新增两个可独立开关的 V0 Astra/high 参考线：以整个 KL 实验最新 `aligned.count=N` 计算，取 V0 搜索记录 `round <= min(N,30)` 与 `round <= min(floor(2*N/3),30)` 的有效通过均值最小值，不看截止轮之后的结果，不混正式结果。例如 N=24 对应 r24/r16，N=70 对应 r30/r30；无该范围内有效记录则不画线。选择旧 Apply 不改变最新轮次基准。原全程最快参考开关保留。KL 中位数与 V0 均值、环境与预算差异仍明确说明。
+
+B/V、Aligned KL 及 KL 内的对比图默认仅开启 Astra；Sol 与 DeepSeek 默认关闭，用户可手动切换。运行栏/任务记录的指定曲线链接仍会主动开启目标曲线。数据刷新保留当前选择；固定更新仍只用 `update_web.py --publish`，标签与参考线自动从数值接口计算，不新增采集、实验任务或人工维护步骤。

@@ -80,7 +80,7 @@ async function loadDataset(id,reset,focusRun=null,push=false){
   if(d.updated_at!==manifest.updated_at)throw Error('发布版本尚在同步');
   cache.set(meta.id,d);data=d;needsReload=false;
   $('#updated').textContent=date(d.updated_at);$('#updated').dateTime=d.updated_at;
-  if(reset){visible=new Set(data.runs.filter(usable).map(r=>r.id));Object.assign(state,{xmin:1,xmax:30,ymode:'focus',ymin:null,ymax:null});$('#round-run').value='all';}
+  if(reset){visible=new Set(data.runs.filter(r=>r.model==='Astra'&&usable(r)).map(r=>r.id));Object.assign(state,{xmin:1,xmax:30,ymode:'focus',ymin:null,ymax:null});$('#round-run').value='all';}
   else for(const r of data.runs)if(!r.search.length&&!r.formal)visible.delete(r.id);
   if(reset)focusedRun=null;
   const target=focusRun&&data.runs.find(r=>r.id===focusRun);
