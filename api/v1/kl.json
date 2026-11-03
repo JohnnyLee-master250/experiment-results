@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-03T06:47:09.116324+00:00",
+  "source_captured_at": "2026-11-03T06:52:17.875569+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -3744,7 +3744,7 @@
           "status": "running",
           "started_at": "2026-11-03T06:37:04.976340+00:00",
           "ended_at": null,
-          "elapsed_seconds": 538.1558540975675,
+          "elapsed_seconds": 838.1564827291295,
           "candidates": [
             {
               "accepted": true,
@@ -3756,17 +3756,28 @@
               "status": "passed",
               "reused": false,
               "recorded_at": "2026-11-03T06:39:36.624100+00:00"
+            },
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 2.255779981613159,
+              "reference_latency_ms": 2.2570300102233887,
+              "sequence": 2,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-03T06:44:51.627141+00:00"
             }
           ],
-          "evaluations": 1,
+          "evaluations": 2,
           "infrastructure_errors": 0,
-          "reused_snapshots": 0,
+          "reused_snapshots": 1,
           "delivered": null
         }
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 24,
+        "count": 25,
         "excluded_count": 1,
         "timing_statistic": "median",
         "points": [
@@ -4043,6 +4054,17 @@
             "counted": true,
             "accepted": true,
             "latency_ms": 2.2218499183654785,
+            "best_ms": 2.185029983520508
+          },
+          {
+            "round": 25,
+            "apply": 6,
+            "inner_sequence": 2,
+            "recorded_at": "2026-11-03T06:44:51.627141+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
             "best_ms": 2.185029983520508
           }
         ]
@@ -6682,7 +6704,7 @@
           "status": "running",
           "started_at": "2026-11-03T06:40:38.302827+00:00",
           "ended_at": null,
-          "elapsed_seconds": 324.8955764081329,
+          "elapsed_seconds": 624.8969147894531,
           "candidates": [
             {
               "accepted": false,
@@ -7355,5 +7377,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-03T06:47:06.819403+00:00"
+  "updated_at": "2026-11-03T06:52:15.391829+00:00"
 }
