@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-03T12:52:17.775709+00:00",
+  "source_captured_at": "2026-11-03T13:02:06.252013+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -1358,15 +1358,15 @@
       "problem_id": "gdn-prefill-sm100",
       "model": "Astra",
       "effort": "high",
-      "status": "ended",
-      "phase": "待独立验收",
+      "status": "complete",
+      "phase": "已完成",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
       "evaluation_timeout_seconds": 1800,
       "started_at": "2026-11-02T12:03:16.048617+00:00",
-      "finished_at": null,
-      "independently_complete": false,
+      "finished_at": "2026-11-03T12:56:45.968310+00:00",
+      "independently_complete": true,
       "workspace_path": "/home/lbh24/codex-workspace/kl-astra-high-nine-serial-20261102-001/repo/baselines-910C/klineage-910c/workspaces/opt/20261102-serial-astra-gdn-prefill-sm100",
       "applies": [
         {
@@ -9047,9 +9047,21 @@
           "status": "running",
           "started_at": "2026-11-03T12:47:15.660035+00:00",
           "ended_at": null,
-          "elapsed_seconds": 156.9727328484878,
-          "candidates": [],
-          "evaluations": 0,
+          "elapsed_seconds": 756.9757248591632,
+          "candidates": [
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 2.7031699419021606,
+              "reference_latency_ms": 2.741230010986328,
+              "sequence": 1,
+              "status": "passed",
+              "reused": false,
+              "recorded_at": "2026-11-03T12:49:29.353941+00:00"
+            }
+          ],
+          "evaluations": 1,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -9057,7 +9069,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 27,
+        "count": 28,
         "excluded_count": 0,
         "timing_statistic": "median",
         "points": [
@@ -9357,6 +9369,17 @@
             "accepted": true,
             "latency_ms": 2.703670024871826,
             "best_ms": 2.703670024871826
+          },
+          {
+            "round": 28,
+            "apply": 5,
+            "inner_sequence": 1,
+            "recorded_at": "2026-11-03T12:49:29.353941+00:00",
+            "status": "passed",
+            "counted": true,
+            "accepted": true,
+            "latency_ms": 2.7031699419021606,
+            "best_ms": 2.7031699419021606
           }
         ]
       }
@@ -9367,8 +9390,8 @@
       "problem_id": "deepgemm-mega-mhc-sm100",
       "model": "Astra",
       "effort": "high",
-      "status": "waiting",
-      "phase": "用户暂停；等待GDN结束后接续第2个Apply，剩余57分24秒",
+      "status": "running",
+      "phase": "原第2个Apply按剩余预算接续",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -9522,20 +9545,32 @@
         {
           "apply": 2,
           "native_index": 1,
-          "status": "interrupted",
+          "status": "running",
           "started_at": "2026-11-03T11:41:26.347300+00:00",
-          "ended_at": "2026-11-03T11:44:01.761414+00:00",
-          "elapsed_seconds": 155.414114,
-          "candidates": [],
-          "evaluations": 0,
+          "ended_at": null,
+          "elapsed_seconds": 455.4140151512846,
+          "candidates": [
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 0.03805999830365181,
+              "reference_latency_ms": 0.03813999891281128,
+              "sequence": 1,
+              "status": "passed",
+              "reused": false,
+              "recorded_at": "2026-11-03T12:57:07.608695+00:00"
+            }
+          ],
+          "evaluations": 1,
           "infrastructure_errors": 0,
-          "reused_snapshots": 0,
+          "reused_snapshots": 1,
           "delivered": null
         }
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 11,
+        "count": 12,
         "excluded_count": 0,
         "timing_statistic": "median",
         "points": [
@@ -9659,6 +9694,17 @@
             "accepted": true,
             "latency_ms": 0.038829999044537544,
             "best_ms": 0.038829999044537544
+          },
+          {
+            "round": 12,
+            "apply": 2,
+            "inner_sequence": 1,
+            "recorded_at": "2026-11-03T12:57:07.608695+00:00",
+            "status": "passed",
+            "counted": true,
+            "accepted": true,
+            "latency_ms": 0.03805999830365181,
+            "best_ms": 0.03805999830365181
           }
         ]
       }
@@ -9690,6 +9736,14 @@
     }
   ],
   "task_events": [
+    {
+      "id": "kl-astra-high-serial-20261102-kl-gdn:completed:2026-11-03T12:56:45.968310+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-gdn",
+      "dataset": "GDN",
+      "at": "2026-11-03T12:56:45.968310+00:00",
+      "kind": "completed",
+      "reason": "独立验收完成"
+    },
     {
       "id": "kl-astra-high-serial-20261102-kl-gdn:user-gdn-queue-resume-20261103-001:KL-GDN",
       "run_id": "kl-astra-high-serial-20261102-kl-gdn",
@@ -9899,5 +9953,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-03T12:52:14.164258+00:00"
+  "updated_at": "2026-11-03T13:02:02.545195+00:00"
 }
