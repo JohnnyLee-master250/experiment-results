@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-03T17:22:25.717492+00:00",
+  "source_captured_at": "2026-11-03T17:27:29.825111+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -9369,9 +9369,21 @@
           "status": "running",
           "started_at": "2026-11-03T17:17:12.978741+00:00",
           "ended_at": null,
-          "elapsed_seconds": 249.3109228182584,
-          "candidates": [],
-          "evaluations": 0,
+          "elapsed_seconds": 549.3123099030927,
+          "candidates": [
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 2.5558199882507324,
+              "reference_latency_ms": 2.626139998435974,
+              "sequence": 1,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-03T17:18:46.411867+00:00"
+            }
+          ],
+          "evaluations": 1,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -9379,7 +9391,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 49,
+        "count": 50,
         "excluded_count": 0,
         "timing_statistic": "median",
         "points": [
@@ -9921,6 +9933,17 @@
             "accepted": true,
             "latency_ms": 2.6004899740219116,
             "best_ms": 2.563289999961853
+          },
+          {
+            "round": 50,
+            "apply": 9,
+            "inner_sequence": 1,
+            "recorded_at": "2026-11-03T17:18:46.411867+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 2.563289999961853
           }
         ]
       }
@@ -9931,8 +9954,8 @@
       "problem_id": "deepgemm-mega-mhc-sm100",
       "model": "Astra",
       "effort": "high",
-      "status": "blocked",
-      "phase": "原操作结束，等待核对",
+      "status": "running",
+      "phase": "原线程按基础设施中断前剩余时间继续",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
@@ -10498,10 +10521,10 @@
         {
           "apply": 5,
           "native_index": 4,
-          "status": "failed",
+          "status": "running",
           "started_at": "2026-11-03T16:20:56.773807+00:00",
-          "ended_at": "2026-11-03T16:40:59.567854+00:00",
-          "elapsed_seconds": 1202.7929000072181,
+          "ended_at": null,
+          "elapsed_seconds": 1202.8026443384588,
           "candidates": [
             {
               "accepted": false,
@@ -10550,7 +10573,7 @@
           ],
           "evaluations": 1,
           "infrastructure_errors": 3,
-          "reused_snapshots": 0,
+          "reused_snapshots": 1,
           "delivered": null
         }
       ],
@@ -11324,5 +11347,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-03T17:22:24.224449+00:00"
+  "updated_at": "2026-11-03T17:27:28.373204+00:00"
 }
