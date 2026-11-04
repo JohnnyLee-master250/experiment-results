@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-04T06:18:26.810258+00:00",
+  "source_captured_at": "2026-11-04T06:24:36.376324+00:00",
   "measurement": "median_of_3_group_medians_50_samples",
   "runs": [
     {
@@ -12231,15 +12231,15 @@
       "problem_id": "deepselect-topk-sm90",
       "model": "Astra",
       "effort": "high",
-      "status": "ended",
-      "phase": "待独立验收",
+      "status": "complete",
+      "phase": "已完成",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 0,
       "evaluation_timeout_seconds": 1800,
       "started_at": "2026-11-03T19:11:21.851106+00:00",
-      "finished_at": null,
-      "independently_complete": false,
+      "finished_at": "2026-11-04T06:23:31.865544+00:00",
+      "independently_complete": true,
       "workspace_path": "/home/lbh24/codex-workspace/kl-astra-high-nine-serial-20261102-001/repo/baselines-910C/klineage-910c/workspaces/opt/20261102-serial-astra-deepselect-topk-sm90",
       "applies": [
         {
@@ -13467,6 +13467,14 @@
   ],
   "task_events": [
     {
+      "id": "kl-astra-high-serial-20261102-kl-top-k:completed:2026-11-04T06:23:31.865544+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-top-k",
+      "dataset": "TopK",
+      "at": "2026-11-04T06:23:31.865544+00:00",
+      "kind": "completed",
+      "reason": "独立验收完成"
+    },
+    {
       "id": "kl-astra-high-serial-20261102-kl-mega:completed:2026-11-03T21:00:50.698866+00:00",
       "run_id": "kl-astra-high-serial-20261102-kl-mega",
       "dataset": "Mega",
@@ -13707,5 +13715,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-04T06:18:25.279862+00:00"
+  "updated_at": "2026-11-04T06:24:34.818848+00:00"
 }
