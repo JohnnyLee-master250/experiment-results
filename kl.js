@@ -49,7 +49,7 @@ function klAxisAnnotations(run){
 const KL_LABELS={not_run:'未开始',running:'运行中',complete:'已完成',ended:'待验收',waiting:'等待中',blocked:'已暂停',paused:'已暂停',completed:'已交付',failed:'失败',interrupted:'中断',unknown:'待核对',passed:'通过',infrastructure_error:'基础设施异常'};
 function klStatus(s){return KL_LABELS[s]||'待核对';}
 function setCategory(id){
- category=['kl','aligned'].includes(id)?id:'bv';
+ category=['kl','aligned'].includes(id)?id:'bv';axisControls();
  $('#bv-panel').hidden=category!=='bv';$('#kl-panel').hidden=category!=='kl';$('#aligned-panel').hidden=category!=='aligned';
  $$('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===category)));
 }
@@ -85,6 +85,17 @@ function selectApply(index){
 function klChart(target,points,label,maxX,selectable=false,reference=null,axisTicks=new Map(),extraReferences=[]){
  const el=$(target),values=points.filter(p=>Number.isFinite(p.y)&&p.y>0);
  const references=[...(reference?[{...reference,kind:'full',color:'#CC79A7',dash:'8 4',caption:`V0 Astra/high 全程最快搜索均值：${fmt(reference.latency_ms)} ms，第 ${reference.round} 轮`}]:[]),...extraReferences];
+ if(axisMode!=='round'){
+  let readout=el.parentNode.querySelector('.cost-readout');
+  if(!readout){readout=document.createElement('div');readout.className='cost-readout';readout.setAttribute('aria-live','polite');el.after(readout);}
+  readout.hidden=false;
+  const series={id:klRun.id,name:'KL',color:'#0072B2',points:points.map(p=>({...p,
+   name:selectable?'Apply '+p.x:'Apply '+klApply+' · 内部 '+(axisTicks.get(p.x)?.text||p.x),
+   applyButton:selectable?p.x:null,selected:selectable&&p.x===klApply}))};
+  costChart(el,[series],{references,readout,both:true});
+  return;
+ }
+ const costReadout=el.parentNode.querySelector('.cost-readout');if(costReadout)costReadout.hidden=true;
  if(!values.length&&!references.length){el.innerHTML='<div class="kl-empty">暂无有效测量<br><small>结果保存后自动更新，缺失值不补成 0。</small></div>';return;}
  const w=Math.max(el.clientWidth||600,300),h=330;
  const longest=Math.max(1,...[...axisTicks.values()].map(t=>t.text.length))*6;
@@ -122,7 +133,7 @@ function renderKL(){
  $('#kl-run-info').textContent=`开始 ${date(r.started_at)} · 独立完成 ${date(r.finished_at)} · 候选评测 ${r.applies.reduce((n,a)=>n+a.evaluations,0)} 次`;
  $('#kl-apply').innerHTML=r.applies.map(a=>`<option value="${a.apply}" ${a.apply===klApply?'selected':''}>Apply ${a.apply} · ${klStatus(a.status)}</option>`).join('')||'<option value="">暂无 Apply</option>';
  $('#kl-apply').disabled=!r.applies.length;$('#kl-apply').value=klApply==null?'':String(klApply);$('#kl-apply').onchange=e=>selectApply(e.target.value);
- let best=null;const points=r.applies.map(a=>{const v=a.delivered?.accepted?a.delivered.latency_ms:null;if(v!=null)best=best==null?v:Math.min(best,v);return {x:a.apply,y:v,best};});
+ let best=null;const points=r.applies.map(a=>{const v=a.delivered?.accepted?a.delivered.latency_ms:null;if(v!=null)best=best==null?v:Math.min(best,v);return {x:a.apply,y:v,best,axes:a.axes,epoch:r.dataset==='Mega'&&a.apply>=5?2:1};});
  const axes=klAxisAnnotations(r),matched=klMatchedReferences(klDatasetCache.get(`${manifest.updated_at}:${datasetId}`),r);
  for(const chart of ['overview','candidates']){
   const toggle=$(`#kl-v0-${chart}`);toggle.disabled=!klReference;toggle.checked=!!klReference&&klReferenceVisible[chart];
@@ -136,7 +147,7 @@ function renderKL(){
  }
  klChart('#kl-overview',points,'Apply',r.budget,true,klReferenceVisible.overview?klReference:null,axes.applies,matched.filter(ref=>klMatchedVisible.overview[ref.kind]));
  const a=r.applies.find(a=>a.apply===klApply),inner=a?.candidates||[];best=null;
- klChart('#kl-candidates',inner.map(c=>{const v=c.correctness_passed?c.latency_ms:null;if(c.accepted&&v!=null)best=best==null?v:Math.min(best,v);return {x:c.sequence,y:v,best};}),'内部候选序号',Math.max(2,inner.length),false,klReferenceVisible.candidates?klReference:null,axes.candidates.get(klApply),matched.filter(ref=>klMatchedVisible.candidates[ref.kind]));
+ klChart('#kl-candidates',inner.map(c=>{const v=c.correctness_passed?c.latency_ms:null;if(c.accepted&&v!=null)best=best==null?v:Math.min(best,v);return {x:c.sequence,y:v,best,axes:c.axes,eligible:c.accepted,status:c.status};}),'内部候选序号',Math.max(2,inner.length),false,klReferenceVisible.candidates?klReference:null,axes.candidates.get(klApply),matched.filter(ref=>klMatchedVisible.candidates[ref.kind]));
  $('#kl-inner-status').textContent=a?`${klStatus(a.status)} · 已用 ${a.elapsed_seconds==null?'未知':fmt(a.elapsed_seconds/60,1)+' 分钟'} · ${a.evaluations} 次评测 · ${a.infrastructure_errors} 次基础设施异常 · ${a.reused_snapshots} 份结果复用快照`:'尚未启动；候选次数没有预设上限，受 Apply 时限约束。';
  $('#kl-candidate-rows').innerHTML=inner.map(c=>`<tr><td>${c.sequence}</td><td>${klStatus(c.status)}</td><td>${({compile:'编译',correctness:'正确性',performance:'性能门禁'})[c.stage]||'—'}</td><td>${c.accepted?'通过':c.correctness_passed?'正确性通过':'—'}</td><td class="num">${fmt(c.latency_ms)}</td><td class="num">${fmt(c.reference_latency_ms)}</td><td>${c.reused?'复用，不新增评测':'新记录'}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">暂无候选评测记录</td></tr>';
  $('#kl-apply-rows').innerHTML=r.applies.map(a=>`<tr><td><button data-apply-row="${a.apply}">Apply ${a.apply}</button></td><td>${klStatus(a.status)}</td><td>${a.evaluations}</td><td>${a.infrastructure_errors}</td><td class="num">${fmt(a.delivered?.latency_ms)}</td><td class="num">${a.elapsed_seconds==null?'—':fmt(a.elapsed_seconds/60,1)}</td><td>${date(a.ended_at)}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">已登记任务，等待正式启动</td></tr>';
@@ -145,7 +156,7 @@ function renderKL(){
  $('#kl-path').textContent=r.workspace_path||'实际优化工作区在正式启动时创建。';
  $('#kl-copy').disabled=!r.workspace_path;$('#kl-copy').onclick=async()=>{await navigator.clipboard.writeText(r.workspace_path);$('#kl-copy').textContent='已复制';};
  $('#kl-json').onclick=()=>download(`kl-${datasetId}.json`,JSON.stringify(r,null,2),'application/json');
- $('#kl-csv').onclick=()=>{const lines=['apply,candidate,status,latency_ms,reference_latency_ms,accepted,reused'];for(const a of r.applies)for(const c of a.candidates)lines.push([a.apply,c.sequence,c.status,c.latency_ms??'',c.reference_latency_ms??'',c.accepted,c.reused].join(','));download(`kl-${datasetId}-candidates.csv`,lines.join('\n'),'text/csv');};
+ $('#kl-csv').onclick=()=>{const lines=['apply,candidate,status,latency_ms,reference_latency_ms,accepted,reused,elapsed_seconds,reported_tokens,missing_responses,disputed,tokens_complete'];for(const a of r.applies)for(const c of a.candidates)lines.push([a.apply,c.sequence,c.status,c.latency_ms??'',c.reference_latency_ms??'',c.accepted,c.reused,c.axes?.elapsed_s,c.axes?.tokens,c.axes?.missing_responses,c.axes?.disputed,c.axes?.tokens_complete].join(','));download(`kl-${datasetId}-candidates.csv`,lines.join('\n'),'text/csv');};
 }
 
 // A shared view: only reads published numeric results, never changes experiments.
@@ -154,10 +165,10 @@ const alignedViews=new Map(),klDatasetCache=new Map();
 function alignedSeries(dataset,run){
  const series=dataset.runs.filter(r=>r.method!=='B0'&&r.search.length).map(r=>({
   id:r.id,model:r.model,effort:r.effort,method:r.method,color:COLORS[r.method],dash:DASH[r.model]||'',
-  points:r.search.map(p=>({round:p.round,y:p.status==='passed'?p.timing?.mean_ms??null:null,status:p.status}))
+  points:r.search.map(p=>({round:p.round,y:p.status==='passed'?p.timing?.mean_ms??null:null,status:p.status,axes:p.axes}))
  }));
  if(run)series.push({id:run.id,model:run.model,effort:run.effort,method:'Aligned KL',color:'#E69F00',dash:DASH[run.model]||'',
-  points:(run.aligned?.points||[]).filter(p=>p.counted).map(p=>({...p,y:p.latency_ms}))});
+  points:(run.aligned?.points||[]).filter(p=>p.counted).map(p=>({...p,y:p.latency_ms,epoch:run.dataset==='Mega'&&p.apply>=5?2:1}))});
  return series;
 }
 async function loadAligned(id){
@@ -179,11 +190,12 @@ async function loadAligned(id){
 }
 function renderAligned(target,dataset,run){
  const host=$(target);if(!host||!dataset)return;
- const all=alignedSeries(dataset,run),key=dataset.id;
- if(!alignedViews.has(key))alignedViews.set(key,{visible:new Set(all.filter(r=>r.model==='Astra').map(r=>r.id)),mode:'best',zoom:false});
+ const series=alignedSeries(dataset,run);
+ const all=axisMode==='round'?series:series.filter(r=>r.points.some(p=>p.axes)),key=dataset.id+(axisMode==='round'?'':':cost');
+ if(!alignedViews.has(key))alignedViews.set(key,{visible:new Set(all.filter(r=>axisMode!=='round'||r.model==='Astra').map(r=>r.id)),mode:'best',zoom:false});
  const view=alignedViews.get(key),selected=all.filter(r=>view.visible.has(r.id)),points=run?.aligned?.points||[];
  const redraw=()=>renderAligned(target,dataset,run);
- host.innerHTML=`<p class="kl-caption aligned-note">按时间顺序展开内部评测：rN 为累计有效评测次数，失败占一轮；复用和基础设施异常不计轮数。B/V 为均值，KL 为中位数，预算、effort 与环境不同。B0 仅正确性，不画速度线。</p>
+ host.innerHTML=`<p class="kl-caption aligned-note">B/V 均值 · KL 中位数</p>
  <div class="aligned-controls">${[...new Set(all.map(r=>r.model))].map(model=>`<div class="model-group"><div class="model-heading"><strong>${esc(model)}</strong><label class="aligned-all"><input type="checkbox" data-aligned-model="${esc(model)}" ${all.filter(r=>r.model===model).every(r=>view.visible.has(r.id))?'checked':''}> 全部</label></div><div class="chips">${all.filter(r=>r.model===model).map(r=>`<label class="chip ${view.visible.has(r.id)?'active':''}" style="--color:${r.color}"><input type="checkbox" data-aligned-run="${esc(r.id)}" ${view.visible.has(r.id)?'checked':''}>${esc(r.method)} <small>${esc(r.effort)}</small></label>`).join('')}</div></div>`).join('')}</div>
  <div class="plot-options"><div class="segments"><button data-aligned-mode="best" aria-pressed="${view.mode==='best'}" class="${view.mode==='best'?'selected':''}">搜索最优</button><button data-aligned-mode="raw" aria-pressed="${view.mode==='raw'}" class="${view.mode==='raw'?'selected':''}">逐次测量</button></div><label><input data-aligned-zoom type="checkbox" ${view.zoom?'checked':''}> 收敛放大</label><span>● 测量 · — 最优阶梯 · × 失败</span><button data-aligned-csv>展开记录 CSV ↓</button></div>
  <div class="chart aligned-chart" tabindex="0" role="img" aria-label="Aligned KL 与 B/V 按有效评测次数对比"></div><div class="readout aligned-readout" aria-live="polite"></div>
@@ -192,7 +204,12 @@ function renderAligned(target,dataset,run){
  host.querySelectorAll('[data-aligned-model]').forEach(el=>{const ids=all.filter(r=>r.model===el.dataset.alignedModel).map(r=>r.id),n=ids.filter(id=>view.visible.has(id)).length;el.indeterminate=n>0&&n<ids.length;el.onchange=()=>{for(const id of ids)el.checked?view.visible.add(id):view.visible.delete(id);redraw();};});
  host.querySelectorAll('[data-aligned-mode]').forEach(el=>el.onclick=()=>{view.mode=el.dataset.alignedMode;redraw();});
  host.querySelector('[data-aligned-zoom]').onchange=e=>{view.zoom=e.target.checked;redraw();};
- host.querySelector('[data-aligned-csv]').onclick=()=>download(`aligned-kl-${dataset.id}.csv`,['round,apply,inner_sequence,status,counted,latency_ms,recorded_at',...points.map(p=>[p.round,p.apply,p.inner_sequence,p.status,p.counted,p.latency_ms,p.recorded_at].map(csvCell).join(','))].join('\n'),'text/csv');
+ host.querySelector('[data-aligned-csv]').onclick=()=>download(`aligned-kl-${dataset.id}.csv`,['round,apply,inner_sequence,status,counted,latency_ms,recorded_at,elapsed_seconds,reported_tokens,missing_responses,disputed,tokens_complete',...points.map(p=>[p.round,p.apply,p.inner_sequence,p.status,p.counted,p.latency_ms,p.recorded_at,p.axes?.elapsed_s,p.axes?.tokens,p.axes?.missing_responses,p.axes?.disputed,p.axes?.tokens_complete].map(csvCell).join(','))].join('\n'),'text/csv');
+ if(axisMode!=='round'){
+  const chart=host.querySelector('.aligned-chart');chart.setAttribute('aria-label','Aligned KL · '+axisText());
+  costChart(chart,selected.map(r=>({...r,name:r.model+' '+r.method,points:r.points.map(p=>({...p,name:'r'+p.round+(p.apply?' · Apply '+p.apply:'' )}))})),{best:view.mode==='best',zoom:view.zoom,readout:host.querySelector('.aligned-readout')});
+  return;
+ }
  const chart=host.querySelector('.aligned-chart'),w=Math.max(320,chart.clientWidth||800),h=340,pad={l:66,r:20,t:26,b:45},maxX=Math.max(30,...all.flatMap(r=>r.points.map(p=>p.round)));
  let values=selected.flatMap(r=>r.points.filter(p=>p.y!=null).map(p=>p.y)),ymin=0,ymax=Math.max(.001,...values)*1.08;
  if(view.zoom&&values.length){const tails=selected.map(r=>Math.min(...r.points.filter(p=>p.y!=null).map(p=>p.y))).filter(Number.isFinite);if(tails.length){const lo=Math.min(...tails),hi=Math.max(...tails),space=Math.max((hi-lo)*.15,hi*.035,.000001);ymin=Math.max(0,lo-space);ymax=hi+space;}}

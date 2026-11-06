@@ -60,3 +60,11 @@ KL Apply 图的完成刻度显示 `2(r16 133min)`：r 来自同一 `aligned.poin
 KL 两张速度图各新增两个可独立开关的 V0 Astra/high 参考线：以整个 KL 实验最新 `aligned.count=N` 计算，取 V0 搜索记录 `round <= min(N,30)` 与 `round <= min(floor(2*N/3),30)` 的有效通过均值最小值，不看截止轮之后的结果，不混正式结果。例如 N=24 对应 r24/r16，N=70 对应 r30/r30；无该范围内有效记录则不画线。选择旧 Apply 不改变最新轮次基准。原全程最快参考开关保留。KL 中位数与 V0 均值、环境与预算差异仍明确说明。
 
 B/V、Aligned KL 及 KL 内的对比图默认仅开启 Astra；Sol 与 DeepSeek 默认关闭，用户可手动切换。运行栏/任务记录的指定曲线链接仍会主动开启目标曲线。数据刷新保留当前选择；固定更新仍只用 `update_web.py --publish`，标签与参考线自动从数值接口计算，不新增采集、实验任务或人工维护步骤。
+
+## Cost coordinates
+
+The chart query parameter `axis` accepts `round`, `time`, or `tokens`. Time and token coordinates cover the 15 completed Sol B/V runs and nine KL runs. Each eligible record carries an `axes` object. B/V formal measurements carry `formal_axes`. Unsupported series have no cost coordinates.
+
+`elapsed_s` is wall time from the workspace clock origin to the original evaluation finish or Apply delivery. It includes pauses and queue waits. KL's per-Apply active budget remains separately available in `elapsed_seconds`. All cumulative values use the whole task's origin even inside a selected Apply.
+
+`tokens` counts reported input plus output up to that finish time. Sol includes the original MAIN and its FULL reviewers, using timestamped cumulative counters from each distinct thread once. KL counts finished responses in the original request journals once, including resumed generations. Cached input and reasoning are subsets. KL `missing_responses` is the cumulative number of finished requests without totals. `disputed` remains true from the start of an Apply whose journal and final native counters disagree. Either condition makes `tokens_complete` false. In token mode these points use hollow triangles; the tooltip provides the gap count and reconciliation status. Formal results are marked separately and B0 uses correctness.

@@ -10,13 +10,58 @@ let manifest,data,cache=new Map(),visible=new Set(),datasetId=new URL(location).
 let focusedRun=null,initialRun=new URL(location).searchParams.get('run');
 let eventLimit=12;
 let category=["kl","aligned"].includes(new URL(location).searchParams.get("category"))?new URL(location).searchParams.get("category"):"bv";
+function requestedAxis() {
+ const axis=new URL(location).searchParams.get('axis');
+ return ['time','tokens'].includes(axis)?axis:'round';
+}
+let axisMode=requestedAxis();
+const axisVisibility=new Map();
+let costRange=null;
+function axisText() { return axisMode==='time'?'累计时间（分钟）':'累计 token（百万）'; }
+function costX(axes) {
+ if (!axes) return null;
+ return axisMode==='time'?axes.elapsed_s/60:axes.tokens/1e6;
+}
+function partial(axes) { return axisMode==='tokens' && axes?.tokens_complete===false; }
+function costDetail(point) {
+ const a=point.axes;
+ if (!a) return '';
+ const values=[fmt(a.elapsed_s/60,2)+' 分钟',a.tokens.toLocaleString('en-US')+' token'];
+ if (partial(a)) values.push('△ token 不完整'+(a.missing_responses?' · 缺 '+a.missing_responses+' 条回执':'')+(a.disputed?' · Apply 6 计数不一致':''));
+ return values.join(' · ');
+}
+function axisControls() {
+ for(const button of $$('[data-axis]')) {
+  const on=button.dataset.axis===axisMode;
+  button.classList.toggle('selected',on);
+  button.setAttribute('aria-pressed',String(on));
+ }
+ $('#partial-key').hidden=axisMode!=='tokens'||category==='bv';
+}
+function defaultRuns(dataset,axis) {
+ const key=dataset.id+':'+(axis==='round'?'round':'cost');
+ return new Set(axisVisibility.get(key) || dataset.runs.filter(r=>axis==='round'?r.model==='Astra'&&usable(r):r.method!=='B0'&&r.search.some(p=>p.axes)).map(r=>r.id));
+}
+function changeAxis(next) {
+ if (!['round','time','tokens'].includes(next)) return;
+ if (data) axisVisibility.set(data.id+':'+(axisMode==='round'?'round':'cost'),new Set(visible));
+ axisMode=next;costRange=null;
+ if(data) visible=defaultRuns(data,next);
+ const url=new URL(location);
+ if(next==='round')url.searchParams.delete('axis');else url.searchParams.set('axis',next);
+ history.replaceState(null,'',url);
+ axisControls();
+ if(category==='kl')renderKL();
+ else if(category==='aligned')renderAligned('#aligned-content',alignedDataset,alignedRun);
+ else if(data){syncRange();renderAll();}
+}
 const state={xmin:1,xmax:30,ymin:null,ymax:null,ymode:'focus',uncertainty:false};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=(v,n=6)=>v==null?'—':Number(v).toLocaleString('en-US',{maximumFractionDigits:n,minimumFractionDigits:Math.min(3,n)});
 function date(v,short=false){if(!v)return '—';return new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Singapore',year:'numeric',month:'2-digit',day:'2-digit',...(short?{}:{hour:'2-digit',minute:'2-digit',hour12:false})}).format(new Date(v));}
 function badge(s){return `<span class="badge ${esc(s)}">${esc(LABELS[s]||s)}</span>`;}
 function selected(){return data.runs.filter(r=>visible.has(r.id)&&r.method!=='B0');}
-function usable(r){return r.method!=='B0'&&(r.search.length>0||r.formal);}
+function usable(r){return r.method!=='B0'&&(axisMode==='round'?(r.search.length>0||r.formal):r.search.some(p=>p.axes));}
 function value(p){return p.timing?.mean_ms??null;}
 function candidates(r){return r.search.filter(p=>p.timing&&p.role==='candidate');}
 function series(r){
@@ -80,7 +125,7 @@ async function loadDataset(id,reset,focusRun=null,push=false){
   if(d.updated_at!==manifest.updated_at)throw Error('发布版本尚在同步');
   cache.set(meta.id,d);data=d;needsReload=false;
   $('#updated').textContent=date(d.updated_at);$('#updated').dateTime=d.updated_at;
-  if(reset){visible=new Set(data.runs.filter(r=>r.model==='Astra'&&usable(r)).map(r=>r.id));Object.assign(state,{xmin:1,xmax:30,ymode:'focus',ymin:null,ymax:null});$('#round-run').value='all';}
+  if(reset){visible=defaultRuns(data,axisMode);costRange=null;Object.assign(state,{xmin:1,xmax:30,ymode:'focus',ymin:null,ymax:null});$('#round-run').value='all';}
   else for(const r of data.runs)if(!r.search.length&&!r.formal)visible.delete(r.id);
   if(reset)focusedRun=null;
   const target=focusRun&&data.runs.find(r=>r.id===focusRun);
@@ -97,7 +142,7 @@ async function loadDataset(id,reset,focusRun=null,push=false){
 function toggle(id,on){on?visible.add(id):visible.delete(id);renderAll();}
 function toggleModel(model,on){data.runs.filter(r=>r.model===model&&usable(r)).forEach(r=>on?visible.add(r.id):visible.delete(r.id));renderAll();}
 function renderControls(){
- $('#series-controls').innerHTML=MODELS.map(model=>{
+ $('#series-controls').innerHTML=MODELS.filter(m=>axisMode==='round'||m==='Sol6').map(model=>{
   const runs=data.runs.filter(r=>r.model===model),effort=runs[0]?.effort||'',available=runs.filter(usable),count=available.filter(r=>visible.has(r.id)).length,all=available.length>0&&count===available.length,mixed=count>0&&!all;
   return `<div class="model-group"><div class="model-heading"><button type="button" data-model="${model}" aria-label="切换 ${model} 全部曲线" ${available.length?'':'disabled'}>${model}</button><span class="effort">${esc(effort)}</span><span class="model-line ${model.toLowerCase()}"></span><label class="model-toggle ${mixed?'mixed':''}" title="${count}/${available.length} 条曲线已显示"><span>${available.length?(all?'全部':mixed?'部分':'关闭'):'无数据'}</span><input type="checkbox" data-model-check="${model}" aria-label="${model} 全部曲线" aria-checked="${mixed?'mixed':String(all)}" ${all?'checked':''} ${available.length?'':'disabled'}><span class="toggle-track" aria-hidden="true"></span></label></div><div class="chips">${METHODS.map(method=>{
    const r=runs.find(x=>x.method===method),on=r&&visible.has(r.id),ok=r&&usable(r);
@@ -174,6 +219,18 @@ function bounds(runs,detail){
 }
 function star(cx,cy,r=6){let path='';for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rad=i%2?r*.43:r;path+=`${i?'L':'M'}${cx+Math.cos(a)*rad},${cy+Math.sin(a)*rad}`;}return path+'Z';}
 function renderChart(el,detail){
+ if(axisMode!=='round') {
+  const runs=selected().filter(r=>r.search.some(p=>p.axes));
+  const lines=runs.map(r=>({name:r.model+' '+r.method,id:r.id,color:COLORS[r.method],dash:DASH[r.model],
+   points:r.search.map(p=>({name:'r'+p.round,axes:p.axes,y:p.timing?.mean_ms??null,range:state.uncertainty&&p.timing?[p.timing.p10_ms,p.timing.p90_ms]:null,status:p.status}))}));
+  for(const [i,r] of runs.entries())if(r.formal && r.formal_axes)
+   lines[i].points.push({formal:true,name:'正式结果',axes:r.formal_axes,y:r.formal.mean_ms});
+  const opts={best:mode==='best',zoom:detail&&state.ymode==='focus',range:detail?costRange:null,readout:$('#hover-readout')};
+  if(detail&&state.ymode==='manual')opts.yRange=[state.ymin,state.ymax];
+  const domain=costChart(el,lines,opts);
+  if(detail)$('#detail-domain').textContent=domain?tickFmt(domain[0])+'–'+tickFmt(domain[1])+' ms':'—';
+  return;
+ }
  const runs=selected(),W=el.clientWidth||700,H=el.clientHeight||350,left=W<420?53:64,right=20,top=25,bottom=43,w=W-left-right,h=H-top-bottom;
  const xmin=detail?state.xmin:1,xmax=detail?state.xmax:30,withFinal=xmax===30,finalAt=W<500?35:32,xend=withFinal?finalAt+.9:xmax+.25;
  const [ymin,ymax]=bounds(runs,detail),sx=x=>left+(x-xmin)/(xend-xmin)*w,sy=y=>top+h-(y-ymin)/(ymax-ymin)*h;
@@ -219,26 +276,43 @@ function renderChart(el,detail){
  el.onpointerleave=()=>{el.querySelector('.crosshair')?.setAttribute('visibility','hidden');};
 }
 function renderReadout(n){
+ if(axisMode!=='round')return;
  $('#hover-readout').innerHTML=`<span><strong>${n===32?'正式结果 ★':'第 '+n+' 轮'}</strong></span>`+selected().map(r=>{
   const p=n===32?null:r.search.find(p=>p.round===n),m=n===32?r.formal:p?.timing;
   return `<span style="--color:${COLORS[r.method]}"><i class="swatch"></i>${r.model} ${r.method} <strong>${fmt(m?.mean_ms)}</strong>${m?' ms':''}</span>`;
  }).join('');
 }
-function renderCharts(){if(!data)return;renderChart($('#overview'),false);renderChart($('#detail'),true);renderReadout(32);}
-function syncRange(){for(const [id,key]of[['x-min','xmin'],['x-max','xmax'],['y-mode','ymode']])$('#'+id).value=state[key];$('#y-min').value=state.ymin??'';$('#y-max').value=state.ymax??'';}
+function renderCharts(){if(!data)return;renderChart($('#overview'),false);renderChart($('#detail'),true);renderReadout(32);renderB0Cost();}
+function syncRange(){
+ $('#range-axis-label').textContent=axisMode==='round'?'轮次':axisMode==='time'?'分钟':'百万 token';
+ for(const [id,index] of [['x-min',0],['x-max',1]]) {
+  const el=$('#'+id);el.min=axisMode==='round'?'1':'0';el.step=axisMode==='round'?'1':'any';
+  if(axisMode==='round')el.max='30';else el.removeAttribute('max');
+  el.setAttribute('aria-label',(index?'结束':'起始')+$('#range-axis-label').textContent);
+ }
+ if(axisMode!=='round'){
+  $('#x-min').value=costRange?.[0]??'';$('#x-max').value=costRange?.[1]??'';
+  $('#x-min').placeholder='0';$('#x-max').placeholder='自动';
+  $('#y-mode').value=state.ymode;$('#y-min').value=state.ymin??'';$('#y-max').value=state.ymax??'';return;
+ }
+ for(const [id,key]of[['x-min','xmin'],['x-max','xmax'],['y-mode','ymode']])$('#'+id).value=state[key];$('#y-min').value=state.ymin??'';$('#y-max').value=state.ymax??'';}
 function applyRange(){
  const min=Number($('#x-min').value),max=Number($('#x-max').value),ymode=$('#y-mode').value;
  const ymin=$('#y-min').value===''?null:Number($('#y-min').value),ymax=$('#y-max').value===''?null:Number($('#y-max').value);
- if(!Number.isInteger(min)||!Number.isInteger(max)||min<1||max>30||min>=max){showNotice('轮次范围：1–30，起始值须小于结束值。');return;}
+ if(axisMode==='round'&&(!Number.isInteger(min)||!Number.isInteger(max)||min<1||max>30||min>=max)){showNotice('轮次范围：1–30，起始值须小于结束值。');return;}
  if(ymode==='manual'&&(!(ymin>=0)||!Number.isFinite(ymax)||ymax<=ymin||ymin===null)){showNotice('请输入有效的纵轴范围：0 ≤ 最小值 < 最大值。');return;}
- Object.assign(state,{xmin:min,xmax:max,ymode,ymin,ymax});showNotice('');renderCharts();
+ if(axisMode!=='round'){
+  const blank=$('#x-max').value===''&&$('#x-min').value==='';
+  if(!blank&&(!Number.isFinite(min)||!Number.isFinite(max)||min<0||max<=min)){showNotice('横轴结束值须大于起始值。');return;}
+  costRange=blank?null:[min,max];Object.assign(state,{ymode,ymin,ymax});
+ }else Object.assign(state,{xmin:min,xmax:max,ymode,ymin,ymax});showNotice('');renderCharts();
 }
 function download(name,text,type='text/plain'){const url=URL.createObjectURL(new Blob([text],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);}
 function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"';}
 $('#csv').onclick=()=>{
- const head=['dataset','model','effort','method','round','role','status','review','mean_ms','p10_ms','p90_ms','samples','pytorch_ms','pytorch_speedup','finished_at'];
- const rows=roundRows().map(({r,p})=>[data.id,r.model,r.effort,r.method,p.round,p.role,p.status,p.review,p.timing?.mean_ms,p.timing?.p10_ms,p.timing?.p90_ms,p.timing?.sample_count,p.pytorch?.mean_ms,p.timing&&p.pytorch?p.pytorch.mean_ms/p.timing.mean_ms:null,r.finished_at]);
- selected().filter(r=>$('#round-run').value==='all'||$('#round-run').value===r.id).forEach(r=>{if(r.formal&&['all','passed'].includes($('#round-status').value))rows.push([data.id,r.model,r.effort,r.method,'Final','candidate','passed','independent',r.formal.mean_ms,r.formal.p10_ms,r.formal.p90_ms,r.formal.sample_count,r.formal_pytorch?.mean_ms,r.formal_pytorch?r.formal_pytorch.mean_ms/r.formal.mean_ms:null,r.finished_at]);});
+ const head=['dataset','model','effort','method','round','role','status','review','mean_ms','p10_ms','p90_ms','samples','pytorch_ms','pytorch_speedup','finished_at','elapsed_seconds','reported_tokens'];
+ const rows=roundRows().map(({r,p})=>[data.id,r.model,r.effort,r.method,p.round,p.role,p.status,p.review,p.timing?.mean_ms,p.timing?.p10_ms,p.timing?.p90_ms,p.timing?.sample_count,p.pytorch?.mean_ms,p.timing&&p.pytorch?p.pytorch.mean_ms/p.timing.mean_ms:null,r.finished_at,p.axes?.elapsed_s,p.axes?.tokens]);
+ selected().filter(r=>$('#round-run').value==='all'||$('#round-run').value===r.id).forEach(r=>{if(r.formal&&['all','passed'].includes($('#round-status').value))rows.push([data.id,r.model,r.effort,r.method,'Final','candidate','passed','independent',r.formal.mean_ms,r.formal.p10_ms,r.formal.p90_ms,r.formal.sample_count,r.formal_pytorch?.mean_ms,r.formal_pytorch?r.formal_pytorch.mean_ms/r.formal.mean_ms:null,r.finished_at,r.formal_axes?.elapsed_s,r.formal_axes?.tokens]);});
  download(`${data.id}-selected.csv`,'\ufeff'+[head,...rows].map(r=>r.map(csvCell).join(',')).join('\r\n'),'text/csv;charset=utf-8');
 };
 $('#json').onclick=()=>download(`${data.id}-complete.json`,JSON.stringify(data,null,2),'application/json');
@@ -253,11 +327,118 @@ function setMode(m){mode=m;$('#best-mode').classList.toggle('selected',m==='best
 $('#uncertainty').onchange=e=>{state.uncertainty=e.target.checked;renderCharts();};
 $('#apply-range').onclick=applyRange;
 $('#y-mode').onchange=()=>{if($('#y-mode').value!=='manual')applyRange();};
-$('#reset').onclick=()=>{Object.assign(state,{xmin:1,xmax:30,ymode:'focus',ymin:null,ymax:null});syncRange();showNotice('');renderCharts();};
+$('#reset').onclick=()=>{costRange=null;Object.assign(state,{xmin:1,xmax:30,ymode:'focus',ymin:null,ymax:null});syncRange();showNotice('');renderCharts();};
 new ResizeObserver(()=>{if(category==='kl')renderKL();else if(category==='aligned')renderAligned('#aligned-content',alignedDataset,alignedRun);else if(data)renderCharts();}).observe($('main'));
 $$('[data-category]').forEach(b=>b.onclick=()=>chooseCategory(b.dataset.category));
-setCategory(category);
+$$('[data-axis]').forEach(b=>b.onclick=()=>changeAxis(b.dataset.axis));
+setCategory(category);axisControls();
 setInterval(()=>{if(!document.hidden){renderNextUpdate();refresh();}},60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
-window.addEventListener('popstate',()=>{const url=new URL(location);setCategory(url.searchParams.get('category'));if(category==='kl')loadKL(url.searchParams.get('dataset')||'GQA');else if(category==='aligned')loadAligned(url.searchParams.get('dataset')||'GQA');else loadDataset(url.searchParams.get('dataset')||'GQA',true,url.searchParams.get('run'));});
+window.addEventListener('popstate',()=>{const url=new URL(location);axisMode=requestedAxis();costRange=null;setCategory(url.searchParams.get('category'));axisControls();if(category==='kl')loadKL(url.searchParams.get('dataset')||'GQA');else if(category==='aligned')loadAligned(url.searchParams.get('dataset')||'GQA');else loadDataset(url.searchParams.get('dataset')||'GQA',true,url.searchParams.get('run'));});
+
+// All cost views plot the verified coordinate on each record, including failed searches.
+function costChart(el, lines, options={}) {
+ const width=Math.max(300,el.clientWidth||700),height=options.height||el.clientHeight||330;
+ const pad={l:width<420?51:66,r:20,t:23,b:44};
+ const series=lines.map(line=>({...line,points:line.points.filter(p=>Number.isFinite(costX(p.axes)))}));
+ const items=series.flatMap(line=>line.points.map(p=>({line,p,x:costX(p.axes)}))).sort((a,b)=>a.x-b.x);
+ const note=options.readout;
+ if(!items.length){
+  el.innerHTML='<div class="cost-empty">暂无所选曲线的横轴数据</div>';
+  if(note)note.textContent='';
+  el.onkeydown=el.onpointermove=null;
+  return null;
+ }
+ const lo=options.range?.[0]??0,hi=options.range?.[1]??Math.max(.001,items.at(-1).x)*1.025;
+ const within=x=>lo<=x&&x<=hi;
+ const visibleItems=items.filter(item=>within(item.x));
+ const refs=options.references||[];
+ let vals=visibleItems.flatMap(({p})=>[p.y,...(p.range||[])]).filter(Number.isFinite);
+ let ymin=0,ymax=Math.max(.001,...vals,...refs.map(r=>r.latency_ms))*1.08;
+ if(options.zoom&&vals.length){
+  const tails=series.flatMap(r=>{
+   const measured=r.points.filter(p=>!p.formal&&Number.isFinite(p.y)&&within(costX(p.axes)));
+   return measured.length?[Math.min(...measured.map(p=>p.y))]:[];
+  }).sort((a,b)=>a-b);
+  let cluster=tails;
+  for(let i=3;i<tails.length;i++)if(tails[i]/tails[i-1]>=2){cluster=tails.slice(0,i);break;}
+  if(cluster.length){const a=cluster[0],b=cluster.at(-1),dy=Math.max((b-a)*.16,b*.04,.000001);ymin=Math.max(0,a-dy);ymax=b+dy;}
+ }
+ if(options.yRange&&Number.isFinite(options.yRange[0])&&options.yRange[1]>options.yRange[0])[ymin,ymax]=options.yRange;
+ const x=v=>pad.l+(v-lo)/(hi-lo)*(width-pad.l-pad.r);
+ const y=v=>height-pad.b-(v-ymin)/(ymax-ymin)*(height-pad.t-pad.b);
+ const base=height-pad.b,clip='cost-clip-'+(el.id||'aligned')+(el.closest('#kl-panel')?'kl':'');
+ const label=axisText(),yLabel=options.yLabel||'延迟 (ms) ↓';
+ let svg='<svg viewBox="0 0 '+width+' '+height+'" role="img"><title>'+esc(label+' / '+yLabel)+'</title><defs><clipPath id="'+clip+'"><rect x="'+(pad.l-4)+'" y="'+(pad.t-6)+'" width="'+(width-pad.l-pad.r+8)+'" height="'+(height-pad.t-pad.b+12)+'"/></clipPath></defs>';
+ for(const v of ticks(lo,hi,width<480?4:7))svg+='<text x="'+x(v)+'" y="'+(height-22)+'" text-anchor="middle">'+tickFmt(v)+'</text>';
+ for(const v of (options.binary?[0,1]:ticks(ymin,ymax,5)))svg+='<line x1="'+pad.l+'" x2="'+(width-pad.r)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#edf0f4"/><text x="'+(pad.l-8)+'" y="'+(y(v)+4)+'" text-anchor="end">'+(options.binary?(v?'通过':'未通过'):tickFmt(v))+'</text>';
+ svg+='<text x="9" y="15">'+esc(yLabel)+'</text><text x="'+(width/2)+'" y="'+(height-3)+'" text-anchor="middle">'+esc(label)+'</text><g clip-path="url(#'+clip+')">';
+ for(const r of series){
+  let best=null,path='',bestPath='',last=false,lastBest=false,epoch;
+  for(const p of r.points){
+   if(p.formal)continue;
+   if(p.epoch!==epoch){epoch=p.epoch;best=null;last=false;lastBest=false;}
+   if(Number.isFinite(p.y)&&p.eligible!==false)best=best===null?p.y:Math.min(best,p.y);
+   if(options.both&&best!==null){const px=x(costX(p.axes)),py=y(best);bestPath+=lastBest?' H'+px+' V'+py:' M'+px+','+py;lastBest=true;}
+   const v=options.best?best:p.y;
+   if(!Number.isFinite(v)){last=false;continue;}
+   const px=x(costX(p.axes)),py=y(v);
+   path+=!last?' M'+px+','+py:options.best?' H'+px+' V'+py:' L'+px+','+py;
+   last=true;
+  }
+  if(bestPath)svg+='<path d="'+bestPath+'" fill="none" stroke="#009E73" stroke-dasharray="5 3"/>';
+  svg+='<path class="curve" data-run="'+esc(r.id)+'" data-aligned-curve="'+esc(r.id)+'" d="'+path+'" fill="none" stroke="'+r.color+'" stroke-width="2" stroke-dasharray="'+(r.dash||'')+'"/>';
+ }
+ for(const ref of refs){
+  svg+='<line data-reference="'+esc(ref.kind)+'" x1="'+pad.l+'" x2="'+(width-pad.r)+'" y1="'+y(ref.latency_ms)+'" y2="'+y(ref.latency_ms)+'" stroke="'+ref.color+'" stroke-dasharray="'+ref.dash+'"><title>'+esc(ref.caption)+'</title></line>';
+ }
+ function description(item){
+  const {line,p}=item,measure=Number.isFinite(p.y)?options.binary?(p.y?'通过':'未通过'):fmt(p.y)+' ms':(p.status==='failed'?'失败':'无计时');
+  return [line.name,p.name,measure,costDetail(p)].join(' · ');
+ }
+ for(let i=0;i<items.length;i++){
+  const item=items[i],{line,p}=item,px=x(item.x);
+  if(!within(item.x))continue;
+  const py=Number.isFinite(p.y)?y(p.y):base-5;
+  const tip=esc(description(item)),partialToken=partial(p.axes);
+  const attr=' class="cost-marker" data-cost-point="'+i+'" tabindex="0" aria-label="'+tip+'"'+(p.applyButton?' data-apply-point="'+p.applyButton+'" role="button"':'')+(partialToken?' data-token-incomplete="true"':'');
+  if(p.range)svg+='<path d="M'+px+','+y(p.range[0])+' V'+y(p.range[1])+'" stroke="'+line.color+'" opacity=".45"/>';
+  if(partialToken)svg+='<path'+attr+' d="M'+px+','+(py-5)+' l5,9 h-10 Z" fill="white" stroke="#9a5200" stroke-width="1.8"><title>'+tip+'</title></path>';
+  else if(p.formal)svg+='<path'+attr+' d="'+star(px,py,6)+'" fill="'+line.color+'"><title>'+tip+'</title></path>';
+  else if(!Number.isFinite(p.y))svg+='<path'+attr+' d="M'+(px-3)+','+(py-3)+' l6,6 m0,-6 l-6,6" stroke="'+line.color+'"><title>'+tip+'</title></path>';
+  else svg+='<circle'+attr+' cx="'+px+'" cy="'+py+'" r="'+(p.selected?5:3.2)+'" fill="'+line.color+'"><title>'+tip+'</title></circle>';
+ }
+ el.innerHTML=svg+'</g></svg>';el.tabIndex=0;
+ let index=0;
+ function inspect(i){index=i;if(note)note.textContent=description(items[i]);}
+ const markers=el.querySelectorAll('[data-cost-point]');
+ for(const marker of markers){
+  const i=Number(marker.dataset.costPoint),p=items[i].p;
+  marker.onfocus=marker.onpointerenter=()=>inspect(i);
+  marker.onclick=()=>{inspect(i);if(p.applyButton)selectApply(p.applyButton);};
+  marker.onkeydown=e=>{if(p.applyButton&&['Enter',' '].includes(e.key)){e.preventDefault();selectApply(p.applyButton);}};
+ }
+ el.onkeydown=e=>{
+  if(!['ArrowLeft','ArrowRight'].includes(e.key))return;
+  e.preventDefault();
+  const candidates=items.map((v,i)=>within(v.x)?i:-1).filter(i=>i>=0);
+  if(!candidates.length)return;
+  const n=candidates.indexOf(index)+(e.key==='ArrowRight'?1:-1);
+  inspect(candidates[Math.min(candidates.length-1,Math.max(0,n))]);
+ };
+ el.onpointermove=null;
+ if(note&&visibleItems.length)inspect(items.indexOf(visibleItems.find(item=>item.p.selected)||visibleItems.at(-1)));
+ else if(note)note.textContent='所选范围暂无测量点';
+ return [ymin,ymax];
+}
+function renderB0Cost(){
+ const host=$('#b0-cost');
+ const run=data?.runs.find(r=>r.model==='Sol6'&&r.method==='B0'&&r.search.some(p=>p.axes));
+ host.hidden=axisMode==='round'||!run;
+ if(host.hidden)return;
+ host.innerHTML='<div class="chart" id="b0-cost-chart"></div><div class="cost-readout" aria-live="polite"></div>';
+ const points=run.search.map(p=>({axes:p.axes,name:'r'+p.round,y:p.status==='passed'?1:p.status==='failed'?0:null,status:p.status}));
+ costChart(host.querySelector('.chart'),[{id:run.id,name:'Sol6 B0',color:'#526c89',points}],{height:148,binary:true,yLabel:'正确性',yRange:[-.15,1.2],readout:host.querySelector('.cost-readout')});
+}
+
 refresh();
