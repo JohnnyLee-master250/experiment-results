@@ -193,11 +193,11 @@ function renderRounds(){
   const m=p.timing,status={passed:'通过',failed:'失败',excluded:'基础设施中断'}[p.status];
   return `<tr><td>${r.model}</td><td>${methodLabel(r)}</td><td>${p.round}${p.role==='b0'?' · 初始':''}</td><td>${status||'—'}</td><td class="date">${{saved:'已保存',pending:'待完成',not_required:'不适用',historical:'历史记录'}[p.review]||'—'}</td><td class="num">${fmt(m?.mean_ms)}</td><td class="num">${fmt(m?.p10_ms)}</td><td class="num">${fmt(m?.p90_ms)}</td><td class="num">${m?`<button class="sample-button" data-sample="${r.id}|${p.round}" aria-label="${r.model} ${r.method} 第 ${p.round} 轮样本">${m.sample_count}</button>`:'—'}</td><td class="num">${fmt(p.pytorch?.mean_ms)}</td><td class="num">${m&&p.pytorch?fmt(p.pytorch.mean_ms/m.mean_ms,3)+'×':'—'}</td></tr>`;
  }).join('')||'<tr><td colspan="11" class="empty">没有符合筛选条件的数据</td></tr>';
- $$('[data-sample]').forEach(b=>b.onclick=()=>{const[id,n]=b.dataset.sample.split('|'),r=data.runs.find(r=>r.id===id),p=r.search.find(p=>p.round===+n);activeSamples={r,p};$('#sample-title').textContent=`${r.model} · ${r.method} · 第 ${n} 轮`;$('#sample-stats').textContent=`均值 ${fmt(p.timing.mean_ms)} ms · P10–P90 ${fmt(p.timing.p10_ms)}–${fmt(p.timing.p90_ms)} ms · n=${p.timing.sample_count}`;$('#sample-values').textContent=p.timing.samples_ms.map((v,i)=>`${String(i+1).padStart(3,' ')}  ${v}`).join('\n');$('#samples').showModal();});
+ $$('[data-sample]').forEach(b=>b.onclick=()=>{const[id,n]=b.dataset.sample.split('|'),r=data.runs.find(r=>r.id===id),p=r.search.find(p=>p.round===+n);activeSamples={r,p};$('#sample-title').textContent=`${r.model} · ${methodLabel(r)} · 第 ${n} 轮`;$('#sample-stats').textContent=`均值 ${fmt(p.timing.mean_ms)} ms · P10–P90 ${fmt(p.timing.p10_ms)}–${fmt(p.timing.p90_ms)} ms · n=${p.timing.sample_count}`;$('#sample-values').textContent=p.timing.samples_ms.map((v,i)=>`${String(i+1).padStart(3,' ')}  ${v}`).join('\n');$('#samples').showModal();});
 }
 function renderWorkspaces(){
  const runs=data.runs.filter(r=>r.workspace_path);
- $('#workspace-paths').innerHTML=runs.map(r=>`<div class="workspace-row"><div class="workspace-label"><strong>${esc(r.model)} · ${esc(r.run_label||r.method)}</strong><span>${esc(r.effort)}</span></div><code>${esc(r.workspace_path)}</code><button type="button" data-copy-workspace="${esc(r.id)}" aria-label="复制 ${esc(r.model+' '+(r.run_label||r.method))} 工作区路径">复制</button></div>`).join('')||'<p class="empty">暂无已保存的工作区路径</p>';
+ $('#workspace-paths').innerHTML=runs.map(r=>`<div class="workspace-row"><div class="workspace-label"><strong>${esc(r.model)} · ${esc(r.run_label||methodLabel(r))}</strong><span>${esc(r.effort)}</span></div><code>${esc(r.workspace_path)}</code><button type="button" data-copy-workspace="${esc(r.id)}" aria-label="复制 ${esc(r.model+' '+(r.run_label||methodLabel(r)))} 工作区路径">复制</button></div>`).join('')||'<p class="empty">暂无已保存的工作区路径</p>';
  $$('[data-copy-workspace]').forEach(b=>b.onclick=async()=>{const r=runs.find(r=>r.id===b.dataset.copyWorkspace);try{await navigator.clipboard.writeText(r.workspace_path);b.textContent='已复制';}catch{b.textContent='请选中路径复制';}});
 }
 function renderAll(){if(!data)return;axisControls();renderControls();renderSummary();renderRoundSelector();renderRounds();renderWorkspaces();renderCharts();}
@@ -444,12 +444,12 @@ function costChart(el, lines, options={}) {
 }
 function renderB0Cost(){
  const host=$('#b0-cost');
- const run=data?.runs.find(r=>r.model==='Sol6'&&r.method==='B0'&&r.search.some(p=>p.axes));
- host.hidden=axisMode==='round'||!run;
+ const runs=data?.runs.filter(r=>r.method==='B0'&&r.search.some(p=>p.axes))||[];
+ host.hidden=axisMode==='round'||!runs.length;
  if(host.hidden)return;
  host.innerHTML='<div class="chart" id="b0-cost-chart"></div><div class="cost-readout" aria-live="polite"></div>';
- const points=run.search.map(p=>({axes:p.axes,name:'r'+p.round,y:p.status==='passed'?1:p.status==='failed'?0:null,status:p.status}));
- costChart(host.querySelector('.chart'),[{id:run.id,name:'Sol6 B0',color:'#526c89',points}],{height:148,binary:true,yLabel:'正确性',yRange:[-.15,1.2],readout:host.querySelector('.cost-readout')});
+ const lines=runs.map(run=>({id:run.id,name:run.model+' '+methodLabel(run),color:'#526c89',dash:DASH[run.model],points:run.search.map(p=>({axes:p.axes,name:'r'+p.round,y:p.status==='passed'?1:p.status==='failed'?0:null,status:p.status}))}));
+ costChart(host.querySelector('.chart'),lines,{height:148,binary:true,yLabel:'正确性',yRange:[-.15,1.2],readout:host.querySelector('.cost-readout')});
 }
 
 refresh();

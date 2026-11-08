@@ -15,7 +15,7 @@ function selectKLRun(id){
 const klReferenceCache=new Map(),klReferenceVisible={overview:true,candidates:true};
 const klMatchedVisible={overview:{same:true,reduced:true},candidates:{same:true,reduced:true}};
 function selectV0AstraReference(dataset,roundLimit=Infinity){
- const run=dataset.runs.find(r=>r.model==='Astra'&&r.effort==='high'&&r.method==='V0'&&r.status==='complete');
+ const run=dataset.runs.find(r=>!r.edition&&r.model==='Astra'&&r.effort==='high'&&r.method==='V0'&&r.status==='complete');
  if(!run)return null;
  const points=run.search.filter(p=>p.round<=roundLimit&&p.status==='passed'&&Number.isFinite(p.timing?.mean_ms)&&p.timing.mean_ms>0);
  if(!points.length)return null;
@@ -25,7 +25,7 @@ function selectV0AstraReference(dataset,roundLimit=Infinity){
 function klMatchedReferences(dataset,run){
  const latest=run?.aligned?.count;
  if(!dataset||!Number.isInteger(latest)||latest<1)return [];
- const v0=dataset.runs.find(r=>r.model==='Astra'&&r.effort==='high'&&r.method==='V0'&&r.status==='complete');
+ const v0=dataset.runs.find(r=>!r.edition&&r.model==='Astra'&&r.effort==='high'&&r.method==='V0'&&r.status==='complete');
  if(!v0)return [];
  return [{kind:'same',requested:latest,color:'#D55E00',dash:'7 4'},
          {kind:'reduced',requested:Math.floor(latest*2/3),color:'#6F61A6',dash:'3 4'}].map(spec=>{
@@ -183,7 +183,7 @@ function renderKL(){
 let alignedSequence=0,alignedDataset=null,alignedRun=null;
 const alignedViews=new Map(),klDatasetCache=new Map();
 function alignedSeries(dataset,run){
- const series=dataset.runs.filter(r=>r.method!=='B0'&&r.search.length).map(r=>({
+ const series=dataset.runs.filter(r=>!r.edition&&r.method!=='B0'&&r.search.length).map(r=>({
   id:r.id,model:r.model,effort:r.effort,method:r.method,color:COLORS[r.method],dash:DASH[r.model]||'',
   points:r.search.map(p=>({round:p.round,y:p.status==='passed'?p.timing?.mean_ms??null:null,status:p.status,axes:p.axes}))
  }));
