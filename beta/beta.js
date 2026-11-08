@@ -76,7 +76,7 @@ function betaShowView(view,push=false){
  $('#beta-logs-view').hidden=betaView!=='logs';$('#beta-queue-view').hidden=betaView!=='queue';
  $$('[data-beta-nav]').forEach(el=>el.setAttribute('aria-current',el.dataset.betaNav===betaView?'page':'false'));
  betaUpdateTitle();
- $('#beta-kicker').textContent=betaView==='logs'?'开始、暂停、恢复与独立完成':betaView==='queue'?'按实际执行顺序':betaFuture?'下一版实验 · 待接入':`${betaConfig.result_sections.find(s=>s.id===category)?.label||'实验结果'} · ${datasetId}`;
+ $('#beta-kicker').textContent=betaView==='logs'?'开始、暂停、恢复与独立完成':betaView==='queue'?'':betaFuture?'下一版实验 · 待接入':`${betaConfig.result_sections.find(s=>s.id===category)?.label||'实验结果'} · ${datasetId}`;
  if(push)betaURL(true);
  if(betaView==='logs')betaRenderLogs();
  if(previous!==betaView)betaAnimateContent($('#beta-'+(betaFuture&&betaView==='results'?'future':betaView)+'-view'));
