@@ -69,7 +69,7 @@ function series(r){
  return r.search.map(p=>{if(p.timing)best=best==null?value(p):Math.min(best,value(p));return {...p,y:mode==='best'?best:value(p)};});
 }
 function showNotice(s){$('#notice').hidden=!s;$('#notice').textContent=s;}
-async function getJSON(url){const response=await fetch(url,{cache:'no-cache'});if(!response.ok)throw Error(`HTTP ${response.status}`);return response.json();}
+async function getJSON(url){const base=document.body.dataset.apiBase;const target=base?new URL(url,new URL(base,location.href)).href:url;const response=await fetch(target,{cache:'no-cache'});if(!response.ok)throw Error(`HTTP ${response.status}`);return response.json();}
 function renderNextUpdate(){
  const next=manifest?.next_update_estimated_at,el=$('#next-update');
  el.textContent=next?`预计下次更新 ${date(next)} SGT${Date.now()>Date.parse(next)?' · 等待更新':''}`:'预计下次更新 —';
