@@ -211,3 +211,27 @@ body.beta{--accent:#0071e3;--soft:#f5f5f7;--grid:#ededf0}
 .beta-main-nav{grid-column:2}
 .beta-brand{grid-column:1;grid-row:1}
 @media(max-width:650px){.beta-nav-inner{grid-template-columns:1fr;justify-items:center}.beta-main-nav{grid-column:1}.beta-brand{display:none}}
+
+/* Snapshot controls share the navigation type scale and stay in the top bar. */
+.beta-nav-inner{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:20px}
+.beta .beta-home-status,.beta .beta-nav-status,.beta .beta-main-nav>button{font-family:inherit;font-size:12px;font-weight:400;line-height:1.4;letter-spacing:0}
+.beta .beta-home-status{display:flex;grid-column:1;grid-row:1;gap:6px;justify-self:start;color:#424245;font-variant-numeric:tabular-nums}
+.beta .beta-home-status .live-dot{flex:0 0 5px;width:5px;height:5px;margin-right:2px}
+.beta .beta-status-label,.beta .beta-status-zone{color:#6e6e73}
+.beta .beta-main-nav{grid-column:2;grid-row:1}
+.beta .beta-main-nav>button[aria-current=page]{font-weight:600}
+.beta .beta-nav-status{display:flex;grid-column:3;grid-row:1;justify-self:end;align-items:center;gap:14px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.beta .beta-nav-status .next-update,.beta .beta-nav-status .api-link{display:inline;font:inherit;color:#6e6e73}
+.beta .beta-nav-status .api-link{color:#424245}
+.beta .beta-nav-status #refresh{display:flex;align-items:center;justify-content:center;width:24px;min-height:28px;padding:0;border:0;background:none;color:#424245;font-size:18px;font-weight:400;line-height:1;border-radius:50%}
+.beta .beta-nav-status :is(a,button):hover,.beta .beta-home-status:hover{color:var(--beta-blue)}
+@media(max-width:1000px){.beta-nav-inner{gap:14px;padding-inline:20px}.beta-main-nav{gap:26px}.beta .beta-nav-status{gap:10px}.beta .beta-home-status .beta-status-zone{display:none}}
+@media(max-width:760px){
+ :root{--beta-nav-height:78px}
+ .beta-nav-inner{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:34px 44px;gap:0 12px;justify-items:stretch;padding-inline:18px}
+ .beta .beta-home-status{display:flex;grid-column:1;grid-row:1;gap:5px}
+ .beta .beta-nav-status{grid-column:2;grid-row:1;gap:9px}
+ .beta .beta-main-nav{grid-column:1/-1;grid-row:2;justify-self:center;gap:42px}
+ .beta .beta-main-nav>button{min-height:44px}
+}
+@media(max-width:380px){.beta-nav-inner{padding-inline:12px;column-gap:8px}.beta .beta-nav-status{gap:7px}.beta .beta-home-status .live-dot{display:none}.beta .beta-nav-status #refresh{width:20px}}

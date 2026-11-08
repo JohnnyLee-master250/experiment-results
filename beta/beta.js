@@ -338,7 +338,32 @@ klChart=function(...args){
 };
 
 // Reuse the analysis DOM and rendering functions; only the navigation owns placement.
-const oldHeader=$('.page-head');$('#beta-snapshot').append(oldHeader.querySelector('.update'),oldHeader.querySelector('.api-link'));oldHeader.remove();
+const oldHeader=$('.page-head'),betaHomeStatus=$('#beta-home-status'),betaNavStatus=$('#beta-nav-status');
+betaHomeStatus.href=document.body.dataset.apiBase||'./';
+betaHomeStatus.prepend($('#connection'));betaHomeStatus.append($('#updated'));
+const betaStatusZone=document.createElement('span');betaStatusZone.className='beta-status-zone';betaStatusZone.textContent='SGT';betaHomeStatus.append(betaStatusZone);
+const betaJSONLink=oldHeader.querySelector('.api-link');betaJSONLink.textContent='JSON ↓';betaJSONLink.download='experiment-results.json';betaJSONLink.setAttribute('aria-label','下载实验结果 JSON');
+const betaRefreshButton=$('#refresh');betaRefreshButton.textContent='↻';betaRefreshButton.title='Refresh';betaRefreshButton.setAttribute('aria-label','刷新实验结果');
+betaNavStatus.append($('#next-update'),betaJSONLink,betaRefreshButton);oldHeader.remove();$('#beta-snapshot').remove();
+function betaCompactDate(value,clockOnly=false){
+ const parsed=new Date(value);if(!value||Number.isNaN(parsed.getTime()))return '—';
+ const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Singapore',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(parsed).map(p=>[p.type,p.value]));
+ return `${clockOnly?'':parts.month+'-'+parts.day+' '}${parts.hour}:${parts.minute}`;
+}
+function betaUpdateHeader(){
+ const el=$('#updated'),at=manifest?.updated_at||el.dateTime,text=betaCompactDate(at);
+ if(el.textContent!==text)el.textContent=text;
+ if(at&&el.dateTime!==at)el.dateTime=at;
+ betaHomeStatus.title=at?`Updated ${date(at)} SGT · 首页`:'实验结果首页';
+ const next=manifest?.next_update_estimated_at,nextEl=$('#next-update');
+ const sameDay=next&&at&&date(next,true)===date(at,true);
+ nextEl.textContent=next?(Date.now()>Date.parse(next)?'Next pending':`Next ${betaCompactDate(next,sameDay)}`):'Next —';
+ nextEl.title=next?`Estimated ${date(next)} SGT · ${manifest.update_cadence_minutes} min cadence`:'';
+}
+renderNextUpdate=betaUpdateHeader;
+const betaTimeObserver=new window.MutationObserver(betaUpdateHeader);
+betaTimeObserver.observe($('#updated'),{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['datetime']});
+betaUpdateHeader();
 const betaRunMeta=document.createElement('div');betaRunMeta.id='beta-run-meta';betaRunMeta.className='beta-run-meta';betaRunMeta.hidden=true;$('#beta-title').after(betaRunMeta);
 const betaTitleRow=document.createElement('div');betaTitleRow.className='beta-title-row';$('#beta-title').before(betaTitleRow);betaTitleRow.append($('#beta-title'),betaRunMeta);
 $('.kl-budget').hidden=true;
