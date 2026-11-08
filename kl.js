@@ -138,6 +138,7 @@ function klChart(target,points,label,maxX,selectable=false,reference=null,axisTi
  el.querySelectorAll('[data-apply-point]').forEach(p=>{p.onclick=()=>selectApply(p.dataset.applyPoint);p.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectApply(p.dataset.applyPoint);}};});
 }
 function renderKL(){
+ if(!manifest)return;
  const queue=$('#kl-queue');if(queue)queue.innerHTML='<table><thead><tr><th>顺序</th><th>测试集</th><th>模型</th><th>状态</th></tr></thead><tbody>'+(manifest.kl.queue||[]).map(q=>`<tr><td>${q.position}</td><td><a href="?category=kl&dataset=${encodeURIComponent(q.dataset)}&run=${encodeURIComponent(q.id)}#kl-panel">${esc(q.dataset)}</a></td><td>${esc(q.model)} / ${esc(q.effort)}</td><td>${klStatus(q.status)}</td></tr>`).join('')+'</tbody></table>';
  if(category!=='kl'||!manifest)return;
  const options=klData?.runs.filter(r=>r.dataset===datasetId)||[];
