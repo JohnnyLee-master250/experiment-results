@@ -166,18 +166,20 @@ function renderComparisonControls(host,series,chosen,scope,onChange){
  const entries=series.filter(r=>byTask||r.baseMethod!=='B0');
  const keys=[...new Set(entries.map(r=>byTask?r.method:r.model))];
  if(byTask)keys.sort((a,b)=>{const order=['B0','B1','B2','B3','V0','Aligned KL'];return order.indexOf(a.split('-r')[0])-order.indexOf(b.split('-r')[0])||a.localeCompare(b);});
+ if(!byTask&&scope==='bv')keys.sort((a,b)=>MODELS.indexOf(a)-MODELS.indexOf(b));
  const groups=keys.map(key=>({key,rows:entries.filter(r=>(byTask?r.method:r.model)===key)}));
  const inputAttr=scope==='bv'?'data-series':'data-aligned-run';
  host.dataset.grouping=byTask?'task':'model';
  host.innerHTML=groups.map(({key,rows})=>{
   const available=rows.filter(r=>r.available!==false),n=available.filter(r=>chosen.has(r.id)).length,all=available.length>0&&n===available.length,mixed=n>0&&!all;
   const effort=!byTask&&new Set(rows.map(r=>r.effort)).size===1?rows[0].effort:'';
-  return `<div class="model-group"><div class="model-heading"><strong>${esc(key)}</strong>${effort?`<span class="effort">${esc(effort)}</span>`:''}<label class="model-toggle ${mixed?'mixed':''}" title="${n}/${available.length} 条曲线已显示"><span>${available.length?(all?'全部':mixed?'部分':'关闭'):'无曲线'}</span><input type="checkbox" data-curve-group="${esc(key)}" data-group-scope="${scope}" aria-label="${esc(key)} 全部曲线" aria-checked="${mixed?'mixed':String(all)}" ${all?'checked':''} ${available.length?'':'disabled'}></label></div><div class="chips">${rows.map(r=>{
+  return `<div class="model-group"><div class="model-heading"><button type="button" data-curve-group-title="${esc(key)}" aria-label="切换 ${esc(key)} 全部曲线" ${available.length?'':'disabled'}><strong>${esc(key)}</strong></button>${effort?`<span class="effort">${esc(effort)}</span>`:''}<label class="model-toggle ${mixed?'mixed':''}" title="${n}/${available.length} 条曲线已显示"><span>${available.length?(all?'全部':mixed?'部分':'关闭'):'无曲线'}</span><input type="checkbox" data-curve-group="${esc(key)}" data-group-scope="${scope}" aria-label="${esc(key)} 全部曲线" aria-checked="${mixed?'mixed':String(all)}" ${all?'checked':''} ${available.length?'':'disabled'}></label></div><div class="chips">${rows.map(r=>{
    const ok=r.available!==false,on=chosen.has(r.id),label=byTask?r.model:r.method==='Aligned KL'?'KL':r.method;
    return `<label class="chip ${on?'active':''} ${ok?'':'disabled'}" style="--color:${r.color}" title="${esc(r.baseMethod==='B0'?'正确性实验，不绘制速度曲线':r.model+' / '+r.effort+' · '+r.method)}"><input type="checkbox" ${inputAttr}="${esc(r.id)}" aria-label="${esc(r.model+' '+r.method+' 曲线')}" ${on?'checked':''} ${ok?'':'disabled'}>${esc(label)}${byTask?`<small>${esc(r.effort)}</small>`:''}</label>`;
   }).join('')}</div></div>`;
  }).join('');
  host.querySelectorAll('['+inputAttr+']').forEach(el=>el.onchange=()=>{const id=el.getAttribute(inputAttr);el.checked?chosen.add(id):chosen.delete(id);onChange();});
+ host.querySelectorAll('[data-curve-group-title]').forEach(el=>el.onclick=()=>{const rows=groups.find(g=>g.key===el.dataset.curveGroupTitle).rows.filter(r=>r.available!==false),on=!rows.every(r=>chosen.has(r.id));for(const r of rows)on?chosen.add(r.id):chosen.delete(r.id);onChange();});
  host.querySelectorAll('[data-curve-group]').forEach(el=>{const rows=groups.find(g=>g.key===el.dataset.curveGroup).rows.filter(r=>r.available!==false);el.indeterminate=el.getAttribute('aria-checked')==='mixed';el.onchange=()=>{for(const r of rows)el.checked?chosen.add(r.id):chosen.delete(r.id);onChange();};});
 }
 function renderControls(){renderComparisonControls($('#series-controls'),bvControlSeries(),visible,'bv',renderAll);}

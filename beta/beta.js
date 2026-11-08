@@ -358,7 +358,7 @@ function betaRestoreControls(snapshot,fresh){
  if(!snapshot||!fresh)return false;
  const old=snapshot.host,oldNodes=snapshot.nodes;
  const oldInputs=oldNodes.flatMap(n=>[...(n.matches?.('input,button')?[n]:[]),...(n.querySelectorAll?.('input,button')||[])]),newInputs=[...fresh.querySelectorAll('input,button')];
- const key=e=>e.tagName+':'+e.id+':'+['series','modelCheck','model','alignedRun','alignedModel','matchedKind','alignedMode','alignedZoom','alignedCompress','alignedCsv','curveGroup','groupScope'].map(k=>e.dataset[k]??'-').join(':');
+ const key=e=>e.tagName+':'+e.id+':'+['series','modelCheck','model','alignedRun','alignedModel','matchedKind','alignedMode','alignedZoom','alignedCompress','alignedCsv','curveGroup','curveGroupTitle','groupScope'].map(k=>e.dataset[k]??'-').join(':');
  if(!oldInputs.length||oldInputs.length!==newInputs.length||oldInputs.some((e,i)=>key(e)!==key(newInputs[i])))return false;
  for(let i=0;i<oldInputs.length;i++){
   const a=oldInputs[i],b=newInputs[i];a.checked=b.checked;a.indeterminate=b.indeterminate;a.disabled=b.disabled;
