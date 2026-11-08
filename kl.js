@@ -57,7 +57,7 @@ function klAxisAnnotations(run){
  }
  return {applies,candidates};
 }
-const KL_LABELS={not_run:'未开始',running:'运行中',complete:'已完成',ended:'待验收',waiting:'等待中',blocked:'已暂停',paused:'已暂停',completed:'已交付',failed:'失败',interrupted:'中断',unknown:'待核对',passed:'通过',infrastructure_error:'基础设施异常'};
+const KL_LABELS={not_run:'未开始',running:'运行中',complete:'已完成',ended:'待验收',waiting:'等待中',blocked:'已暂停',paused:'已暂停',completed:'已交付',failed:'失败',interrupted:'中断',awaiting_audit:'待验收',unknown:'待核对',passed:'通过',infrastructure_error:'基础设施异常'};
 function klStatus(s){return KL_LABELS[s]||'待核对';}
 function setCategory(id){
  category=['kl','aligned'].includes(id)?id:'bv';axisControls();

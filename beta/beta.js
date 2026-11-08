@@ -1,7 +1,7 @@
 'use strict';
 const betaConfig=JSON.parse(document.querySelector('#beta-navigation').textContent);
 let betaView=new URL(location).searchParams.get('view')||'results';
-let betaFuture=new URL(location).searchParams.get('edition')==='v0-r3';
+let betaFuture=false;
 let betaLogLimit=20,betaMenuId=null,betaCloseTimer=null,betaKLPending=null;
 let betaMenuIntentTimer=null,betaMenuIntentId=null,betaPointerY=null;
 let betaMenuCloseTimer=null,betaResultStamp=null;
@@ -49,7 +49,7 @@ function betaUpdateTitle(){
 
 function betaURL(push=false){
  const url=new URL(location);url.searchParams.set('view',betaView);
- if(betaFuture)url.searchParams.set('edition','v0-r3');else url.searchParams.delete('edition');
+ if(bvEdition!=='legacy'&&category==='bv')url.searchParams.set('edition',bvEdition);else url.searchParams.delete('edition');
  history[push?'pushState':'replaceState'](null,'',url);
 }
 function betaOpenMenu(id){
@@ -76,14 +76,14 @@ function betaShowView(view,push=false){
  $('#beta-logs-view').hidden=betaView!=='logs';$('#beta-queue-view').hidden=betaView!=='queue';
  $$('[data-beta-nav]').forEach(el=>el.setAttribute('aria-current',el.dataset.betaNav===betaView?'page':'false'));
  betaUpdateTitle();
- $('#beta-kicker').textContent=betaView==='logs'?'开始、暂停、恢复与独立完成':betaView==='queue'?'':betaFuture?'下一版实验 · 待接入':`${betaConfig.result_sections.find(s=>s.id===category)?.label||'实验结果'} · ${datasetId}`;
+ $('#beta-kicker').textContent=betaView==='logs'?'开始、暂停、恢复与独立完成':betaView==='queue'?'':betaFuture?'下一版实验 · 待接入':`${betaConfig.result_sections.find(s=>s.id===(category==='bv'&&bvEdition!=='legacy'?bvEdition:category))?.label||'实验结果'} · ${datasetId}`;
  if(push)betaURL(true);
  if(betaView==='logs')betaRenderLogs();
  if(previous!==betaView)betaAnimateContent($('#beta-'+(betaFuture&&betaView==='results'?'future':betaView)+'-view'));
 }
 async function betaChoose(categoryId,dataset=datasetId,model=null){
  betaSetPreview(null);
- betaFuture=categoryId==='v0-r3';betaCloseMenu();betaShowView('results');betaURL(true);
+ betaFuture=false;if(['bv','v0-r3','bn-r2'].includes(categoryId))bvEdition=categoryId==='bv'?'legacy':categoryId;betaCloseMenu();betaShowView('results');betaURL(true);
  if(betaFuture)return;
  initialRun=null;
  if(categoryId==='kl'){
@@ -98,7 +98,7 @@ function betaMenus(){
  $('#beta-result-menu').innerHTML=betaConfig.result_sections.map(s=>`<button data-beta-category="${esc(s.id)}">${esc(s.label)}${s.status==='planned'?'<small>待接入</small>':''}</button>`).join('');
  $('#beta-dataset-menu').innerHTML=(manifest?.datasets||[]).map(d=>`<button data-beta-dataset="${esc(d.id)}">${esc(d.id)}</button>`).join('');
  $$('[data-beta-category]').forEach(b=>b.onclick=()=>betaChoose(b.dataset.betaCategory));
- $$('[data-beta-dataset]').forEach(b=>b.onclick=()=>betaChoose(betaFuture?'v0-r3':category,b.dataset.betaDataset));
+ $$('[data-beta-dataset]').forEach(b=>b.onclick=()=>betaChoose(category==='bv'&&bvEdition!=='legacy'?bvEdition:category,b.dataset.betaDataset));
  $$('.beta-menu-column').forEach(col=>[...col.querySelectorAll('button,a')].forEach((b,i)=>b.style.setProperty('--reveal-delay',`${45+i*24}ms`)));
 }
 async function betaEnsureKL(){
@@ -122,16 +122,16 @@ function betaRenderLogs(){
  const ds=$('#beta-log-dataset').value,kind=$('#beta-log-kind').value,cat=$('#beta-log-category').value;
  const events=betaEvents().filter(e=>(ds==='all'||e.runs.some(r=>r.dataset===ds))&&(kind==='all'||kind===e.kind)&&(cat==='all'||cat===e.category));
  $('#beta-log-count').textContent=`${events.length} 条`;
- $('#beta-timeline').innerHTML=events.slice(0,betaLogLimit).map(e=>`<li class="${esc(e.kind)}"><time datetime="${esc(e.at)}">${date(e.at)} SGT${e.time_basis==='observed'?' · 记录时间':''}</time><div class="beta-event-body"><span class="beta-event-kind">${betaLabels[e.kind]||esc(e.kind)}</span><div class="beta-event-links">${e.runs.map(r=>`<a href="?view=results&category=${e.category}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-event="${esc(r.id)}" data-event-category="${e.category}" data-event-dataset="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(r.model)} ${esc(r.method==='V0'?'V0-r2':r.method)} ↗</a>`).join('')}</div><p>${esc(e.reason)}</p></div></li>`).join('')||'<li class="empty">暂无记录</li>';
+ $('#beta-timeline').innerHTML=events.slice(0,betaLogLimit).map(e=>`<li class="${esc(e.kind)}"><time datetime="${esc(e.at)}">${date(e.at)} SGT${e.time_basis==='observed'?' · 记录时间':''}</time><div class="beta-event-body"><span class="beta-event-kind">${betaLabels[e.kind]||esc(e.kind)}</span><div class="beta-event-links">${e.runs.map(r=>`<a href="?view=results&category=${e.category}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-event="${esc(r.id)}" data-event-category="${e.category}" data-event-dataset="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(r.model)} ${esc(methodLabel(r))} ↗</a>`).join('')}</div><p>${esc(e.reason)}</p></div></li>`).join('')||'<li class="empty">暂无记录</li>';
  $('#beta-log-more').hidden=events.length<=betaLogLimit;
  $$('[data-beta-event]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.eventCategory==='kl')await loadKL(a.dataset.eventDataset,a.dataset.betaEvent);else await loadDataset(a.dataset.eventDataset,true,a.dataset.betaEvent,true);betaSync();});
  betaSyncSelectChoices();
  if(betaView==='logs'&&previous!==$('#beta-timeline').innerHTML)betaAnimateContent($('#beta-timeline'));
 }
 function betaQueueTable(){
- const rows=manifest?.kl?.queue||[];
- $('#kl-queue').innerHTML=`<table><thead><tr><th>顺序</th><th>测试集</th><th>模型</th><th>环境</th><th>状态</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.position}</td><td><a href="?view=results&category=kl&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-queued="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} ↗</a></td><td>${esc(r.model)} <small>${esc(r.effort)}</small></td><td>${esc(r.environment_name)}</td><td>${klStatus(r.status)}</td></tr>`).join('')}</tbody></table>`;
- $$('[data-beta-queued]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaFuture=false;betaShowView('results');betaURL(true);await loadKL(a.dataset.target,a.dataset.betaQueued);betaSync();});
+ const rows=[...(manifest?.bv_revisions?.queue||[]).map(r=>({...r,position:r.queue_position,category:'bv'})),...(manifest?.kl?.queue||[]).map(r=>({...r,category:'kl',method:'KL'}))];
+ $('#kl-queue').innerHTML=`<table><thead><tr><th>顺序</th><th>测试集</th><th>模型</th><th>环境</th><th>状态</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.position}</td><td><a href="?view=results&category=${r.category}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-category-target="${r.category}" data-beta-queued="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(methodLabel(r))} ↗</a></td><td>${esc(r.model)} <small>${esc(r.effort)}</small></td><td>${esc(r.environment_name)}</td><td>${klStatus(r.status)}</td></tr>`).join('')}</tbody></table>`;
+ $$('[data-beta-queued]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.betaCategoryTarget==='bv')await loadDataset(a.dataset.target,true,a.dataset.betaQueued,true);else await loadKL(a.dataset.target,a.dataset.betaQueued);betaSync();});
 }
 function betaV0Labels(node=$('#beta-results-view')){
  for(const child of [...node.childNodes]){
@@ -146,7 +146,7 @@ function betaSync(){
  if(!manifest)return;
  betaMenus();betaQueueTable();betaV0Labels();betaShowView(betaView);
  $('#beta-running-total').textContent=(manifest.running_runs?.length||0)+(manifest.kl?.running_runs?.length||0);
- $('#beta-waiting-total').textContent=manifest.kl?.waiting_runs?.length||0;
+ $('#beta-waiting-total').textContent=(manifest.waiting_runs||manifest.kl?.waiting_runs)?.length||0;
  betaRenderBanner();
  const current=$('#beta-log-dataset').value;
  $('#beta-log-dataset').innerHTML='<option value="all">全部测试集</option>'+manifest.datasets.map(d=>`<option value="${esc(d.id)}">${esc(d.id)}</option>`).join('');$('#beta-log-dataset').value=current||'all';
@@ -159,7 +159,7 @@ function betaSync(){
 
 function betaRenderBanner(){
  const banner=$('#beta-live-banner'),runs=[...(manifest.running_runs||[]),...(manifest.kl?.running_runs||[])];
- const html=runs.length?'正在运行： '+runs.map(r=>`<a href="?view=results&category=${r.category==='kl'||r.method==='KL'?'kl':'bv'}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-banner-run="${esc(r.id)}" data-target="${esc(r.dataset)}" data-category="${r.category==='kl'||r.method==='KL'?'kl':'bv'}">${esc(r.dataset)} · ${esc(r.model)} ${esc(r.method)}${r.method==='KL'?` · Apply ${r.current_apply??r.reported_attempts} · r${r.internal_round??0}`:` · ${r.reported_attempts}/${r.budget} 轮`} <span aria-hidden="true">↗</span></a>`).join('<span class="beta-banner-divider" aria-hidden="true">·</span>'):'当前暂无运行任务 <a href="?view=queue" data-beta-banner-queue>查看队列 ↗</a>';
+ const html=runs.length?'正在运行： '+runs.map(r=>`<a href="?view=results&category=${r.category==='kl'||r.method==='KL'?'kl':'bv'}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-banner-run="${esc(r.id)}" data-target="${esc(r.dataset)}" data-category="${r.category==='kl'||r.method==='KL'?'kl':'bv'}">${esc(r.dataset)} · ${esc(r.model)} ${esc(methodLabel(r))}${r.method==='KL'?` · Apply ${r.current_apply??r.reported_attempts} · r${r.internal_round??0}`:` · ${r.reported_attempts}/${r.budget} 轮`} <span aria-hidden="true">↗</span></a>`).join('<span class="beta-banner-divider" aria-hidden="true">·</span>'):'当前暂无运行任务 <a href="?view=queue" data-beta-banner-queue>查看队列 ↗</a>';
  if(banner.innerHTML!==html){banner.innerHTML=html;
   banner.querySelectorAll('[data-beta-banner-run]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaSetPreview(null);betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.category==='kl')await loadKL(a.dataset.target,a.dataset.betaBannerRun);else await loadDataset(a.dataset.target,true,a.dataset.betaBannerRun,true);betaSync();});
   banner.querySelector('[data-beta-banner-queue]')?.addEventListener('click',e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaShowView('queue',true);});
@@ -418,7 +418,7 @@ $$('[data-beta-view]').forEach(b=>b.onclick=()=>{betaShowView(b.dataset.betaView
 $$('[data-beta-queue]').forEach(b=>b.onclick=()=>{betaShowView('queue',true);betaCloseMenu();const id=b.dataset.betaQueue;const el=id.startsWith('card')?$(`[data-card="${id}"]`):id==='schedule'?$('#kl-queue'):id==='waiting'?$('#waiting-bar'):id==='running'?$('#running-links'):null;el?.scrollIntoView({behavior:'smooth',block:'center'});});
 $$('.beta-log-filters select').forEach(el=>el.onchange=()=>{betaLogLimit=20;betaRenderLogs();});
 $('#beta-log-more').onclick=()=>{betaLogLimit+=20;betaRenderLogs();};
-window.addEventListener('popstate',()=>{const url=new URL(location);betaFuture=url.searchParams.get('edition')==='v0-r3';betaShowView(url.searchParams.get('view')||'results');betaCloseMenu();});
+window.addEventListener('popstate',()=>{const url=new URL(location);betaFuture=false;bvEdition=requestedBVEdition();betaShowView(url.searchParams.get('view')||'results');betaCloseMenu();});
 betaMenus();betaShowView(betaView);if(manifest)betaSync();
 
 // Animate user-triggered changes only in the affected content, never sibling controls.
