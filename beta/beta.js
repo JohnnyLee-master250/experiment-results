@@ -1,6 +1,14 @@
 'use strict';
 const betaConfig=JSON.parse(document.querySelector('#beta-navigation').textContent);
-let betaView=new URL(location).searchParams.get('view')||'results';
+function betaRequestedView(url=new URL(location)){
+ const explicit=url.searchParams.get('view');if(['results','logs','queue'].includes(explicit))return explicit;
+ return url.hash||['category','dataset','run','edition','apply','axis'].some(key=>url.searchParams.has(key))?'results':'queue';
+}
+function betaRetainDefaultView(url,view){
+ // Keep a default queue entry a queue entry when the data loader fills dataset parameters.
+ if(view==='queue'&&!url.searchParams.has('view')){url.searchParams.set('view','queue');history.replaceState(null,'',url);}
+}
+let betaView=betaRequestedView();betaRetainDefaultView(new URL(location),betaView);
 let betaFuture=false;
 let betaLogLimit=20,betaMenuId=null,betaCloseTimer=null,betaKLPending=null;
 let betaMenuIntentTimer=null,betaMenuIntentId=null,betaPointerY=null;
@@ -382,7 +390,7 @@ function betaUpdateHeader(){
  const el=$('#updated'),at=manifest?.updated_at||el.dateTime,text=betaCompactDate(at);
  if(el.textContent!==text)el.textContent=text;
  if(at&&el.dateTime!==at)el.dateTime=at;
- betaHomeStatus.title=at?`Updated ${date(at)} SGT · 首页`:'实验结果首页';
+ betaHomeStatus.title=at?`Updated ${date(at)} SGT · 首页`:'队列首页';
  const next=manifest?.next_update_estimated_at,nextEl=$('#next-update');
  const sameDay=next&&at&&date(next,true)===date(at,true);
  nextEl.textContent=next?(Date.now()>Date.parse(next)?'Next pending':`Next ${betaCompactDate(next,sameDay)}`):'Next —';
@@ -447,7 +455,7 @@ $$('[data-beta-view]').forEach(b=>b.onclick=()=>{betaShowView(b.dataset.betaView
 $$('[data-beta-queue]').forEach(b=>b.onclick=()=>{betaShowView('queue',true);betaCloseMenu();const id=b.dataset.betaQueue;const el=id.startsWith('card')?$(`[data-card="${id}"]`):id==='schedule'?$('#kl-queue'):id==='waiting'?$('#waiting-bar'):id==='running'?$('#running-links'):null;el?.scrollIntoView({behavior:'smooth',block:'center'});});
 $$('.beta-log-filters select').forEach(el=>el.onchange=()=>{betaLogLimit=20;betaRenderLogs();});
 $('#beta-log-more').onclick=()=>{betaLogLimit+=20;betaRenderLogs();};
-window.addEventListener('popstate',()=>{const url=new URL(location);betaFuture=false;bvEdition=requestedBVEdition();betaShowView(url.searchParams.get('view')||'results');betaCloseMenu();});
+window.addEventListener('popstate',()=>{const url=new URL(location);betaFuture=false;bvEdition=requestedBVEdition();const view=betaRequestedView(url);betaRetainDefaultView(url,view);betaShowView(view);betaCloseMenu();},{capture:true});
 betaMenus();betaShowView(betaView);if(manifest)betaSync();
 
 // Animate user-triggered changes only in the affected content, never sibling controls.

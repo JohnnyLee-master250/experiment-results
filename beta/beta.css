@@ -243,8 +243,9 @@ body.beta{--accent:#0071e3;--soft:#f5f5f7;--grid:#ededf0}
 /* Long reference labels form a separate equal-width vertical stack per chart. */
 .beta .kl-charts .kl-reference-toggle.beta-pill{display:flex;width:min(360px,calc(100% - 32px));max-width:calc(100% - 32px);box-sizing:border-box;margin:6px 16px;justify-content:flex-start;flex-wrap:nowrap}
 
-/* One shared content measure for results, logs and queues. */
-.beta main{box-sizing:border-box;width:100%;max-width:1360px;margin-inline:auto;padding-inline:clamp(48px,4.5vw,64px)}
-@media(max-width:1100px){.beta main{padding-inline:32px}}
-@media(max-width:650px){.beta main{padding-inline:24px}}
-@media(max-width:380px){.beta main{padding-inline:20px}}
+/* Modest, equal breathing room on all four sides in every main view. */
+.beta main{box-sizing:border-box;width:100%;max-width:1480px;margin-inline:auto;padding:48px}
+.beta main>.beta-hero{padding-top:0}
+@media(max-width:1100px){.beta main{padding:40px}}
+@media(max-width:650px){.beta main{padding:24px}}
+@media(max-width:380px){.beta main{padding:22px}}
