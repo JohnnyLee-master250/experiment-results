@@ -455,7 +455,7 @@ $$('[data-beta-view]').forEach(b=>b.onclick=()=>{betaShowView(b.dataset.betaView
 $$('[data-beta-queue]').forEach(b=>b.onclick=()=>{betaShowView('queue',true);betaCloseMenu();const id=b.dataset.betaQueue;const el=id.startsWith('card')?$(`[data-card="${id}"]`):id==='schedule'?$('#kl-queue'):id==='waiting'?$('#waiting-bar'):id==='running'?$('#running-links'):null;el?.scrollIntoView({behavior:'smooth',block:'center'});});
 $$('.beta-log-filters select').forEach(el=>el.onchange=()=>{betaLogLimit=20;betaRenderLogs();});
 $('#beta-log-more').onclick=()=>{betaLogLimit+=20;betaRenderLogs();};
-window.addEventListener('popstate',()=>{const url=new URL(location);betaFuture=false;bvEdition=requestedBVEdition();const view=betaRequestedView(url);betaRetainDefaultView(url,view);betaShowView(view);betaCloseMenu();},{capture:true});
+document.addEventListener('experiment:routechange',e=>{const url=new URL(e.detail);betaFuture=false;bvEdition=requestedBVEdition();const view=betaRequestedView(url);betaRetainDefaultView(url,view);betaShowView(view);betaCloseMenu();});
 betaMenus();betaShowView(betaView);if(manifest)betaSync();
 
 // Animate user-triggered changes only in the affected content, never sibling controls.

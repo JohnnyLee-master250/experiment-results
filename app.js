@@ -345,7 +345,7 @@ $$('[data-axis]').forEach(b=>b.onclick=()=>changeAxis(b.dataset.axis));
 setCategory(category);axisControls();
 setInterval(()=>{if(!document.hidden){renderNextUpdate();refresh();}},60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
-window.addEventListener('popstate',()=>{const url=new URL(location);axisMode=requestedAxis();bvEdition=requestedBVEdition();costRange=null;setCategory(url.searchParams.get('category'));axisControls();if(category==='kl')loadKL(url.searchParams.get('dataset')||'GQA');else if(category==='aligned')loadAligned(url.searchParams.get('dataset')||'GQA');else loadDataset(url.searchParams.get('dataset')||'GQA',true,url.searchParams.get('run'));});
+window.addEventListener('popstate',()=>{document.dispatchEvent(new CustomEvent('experiment:routechange',{detail:location.href}));const url=new URL(location);axisMode=requestedAxis();bvEdition=requestedBVEdition();costRange=null;setCategory(url.searchParams.get('category'));axisControls();if(category==='kl')loadKL(url.searchParams.get('dataset')||'GQA');else if(category==='aligned')loadAligned(url.searchParams.get('dataset')||'GQA');else loadDataset(url.searchParams.get('dataset')||'GQA',true,url.searchParams.get('run'));});
 
 // All cost views plot the verified coordinate on each record, including failed searches.
 function costChart(el, lines, options={}) {
