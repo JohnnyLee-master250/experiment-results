@@ -30,7 +30,7 @@ function betaResultMotion(){
  const onlyApply=betaResultStamp&&stamp.slice(0,4).every((v,i)=>v===betaResultStamp[i]);
  betaResultStamp=stamp;
  if(onlyApply){betaAnimateContent($('#kl-candidates'));betaAnimateContent($('#kl-candidate-rows'));}
- else betaAnimateContent($(category==='kl'?'#kl-body':category==='aligned'?'#aligned-content':'#bv-panel'));
+ else betaAnimateContent($(category==='kl'?'#kl-body':isComparison()?'#aligned-content':'#bv-panel'));
 }
 const betaHeader=$('#beta-header'),betaBackdrop=$('#beta-backdrop');
 const betaLabels={started:'开始运行',paused:'暂停',resumed:'恢复运行',completed:'独立完成'};
@@ -48,7 +48,7 @@ function betaTintCharts(){
 
 function betaUpdateTitle(){
  const title=manifest?.datasets.find(d=>d.id===datasetId)?.title||datasetId;
- const section=betaConfig.result_sections.find(s=>s.id===(category==='bv'&&bvEdition!=='legacy'?bvEdition:category))?.label;
+ const section=betaConfig.result_sections.find(s=>s.id===category)?.label;
  $('#beta-title').textContent=betaView==='logs'?'完成日志':betaView==='queue'?'队列情况':betaFuture?'V0-r3':title+(section?' · '+section:'');
  const metadata=$('#beta-run-meta');if(!metadata)return;
  const r=category==='kl'&&betaView==='results'&&!betaFuture?klRun:null;
@@ -58,7 +58,7 @@ function betaUpdateTitle(){
 
 function betaURL(push=false){
  const url=new URL(location);url.searchParams.set('view',betaView);
- if(bvEdition!=='legacy'&&category==='bv')url.searchParams.set('edition',bvEdition);else url.searchParams.delete('edition');
+ url.searchParams.delete('edition');
  history[push?'pushState':'replaceState'](null,'',url);
 }
 function betaOpenMenu(id){
@@ -92,14 +92,14 @@ function betaShowView(view,push=false){
 }
 async function betaChoose(categoryId,dataset=datasetId,model=null){
  betaSetPreview(null);
- betaFuture=false;if(['bv','v0-r3','bn-r2'].includes(categoryId))bvEdition=categoryId==='bv'?'legacy':categoryId;betaCloseMenu();betaShowView('results');betaURL(true);
+ betaFuture=false;if(categoryId==='v0-r3')categoryId='aligned';if(categoryId==='bn-r2')categoryId='bv';bvEdition='all';betaCloseMenu();betaShowView('results');betaURL(true);
  if(betaFuture)return;
  initialRun=null;
  if(categoryId==='kl'){
   await betaEnsureKL();
   const run=model?klData?.runs.find(r=>r.dataset===dataset&&r.model===model):null;
   await loadKL(dataset,run?.id||null);
- }else if(categoryId==='aligned')await loadAligned(dataset);
+ }else if(['aligned','all'].includes(categoryId))await loadAligned(dataset,null,categoryId);
  else await loadDataset(dataset,true);
  betaSync();
 }
@@ -107,7 +107,7 @@ function betaMenus(){
  $('#beta-result-menu').innerHTML=betaConfig.result_sections.map(s=>`<button data-beta-category="${esc(s.id)}">${esc(s.label)}${s.status==='planned'?'<small>待接入</small>':''}</button>`).join('');
  $('#beta-dataset-menu').innerHTML=(manifest?.datasets||[]).map(d=>`<button data-beta-dataset="${esc(d.id)}">${esc(d.id)}</button>`).join('');
  $$('[data-beta-category]').forEach(b=>b.onclick=()=>betaChoose(b.dataset.betaCategory));
- $$('[data-beta-dataset]').forEach(b=>b.onclick=()=>betaChoose(category==='bv'&&bvEdition!=='legacy'?bvEdition:category,b.dataset.betaDataset));
+ $$('[data-beta-dataset]').forEach(b=>b.onclick=()=>betaChoose(category,b.dataset.betaDataset));
  $$('.beta-menu-column').forEach(col=>[...col.querySelectorAll('button,a')].forEach((b,i)=>b.style.setProperty('--reveal-delay',`${45+i*24}ms`)));
 }
 async function betaEnsureKL(){
@@ -133,14 +133,14 @@ function betaRenderLogs(){
  $('#beta-log-count').textContent=`${events.length} 条`;
  $('#beta-timeline').innerHTML=events.slice(0,betaLogLimit).map(e=>`<li class="${esc(e.kind)}"><time datetime="${esc(e.at)}">${date(e.at)} SGT${e.time_basis==='observed'?' · 记录时间':''}</time><div class="beta-event-body"><span class="beta-event-kind">${betaLabels[e.kind]||esc(e.kind)}</span><div class="beta-event-links">${e.runs.map(r=>`<a href="?view=results&category=${e.category}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-event="${esc(r.id)}" data-event-category="${e.category}" data-event-dataset="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(r.model)} ${esc(methodLabel(r))} ↗</a>`).join('')}</div><p>${esc(e.reason)}</p></div></li>`).join('')||'<li class="empty">暂无记录</li>';
  $('#beta-log-more').hidden=events.length<=betaLogLimit;
- $$('[data-beta-event]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.eventCategory==='kl')await loadKL(a.dataset.eventDataset,a.dataset.betaEvent);else await loadDataset(a.dataset.eventDataset,true,a.dataset.betaEvent,true);betaSync();});
+ $$('[data-beta-event]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.eventCategory==='kl')await loadKL(a.dataset.eventDataset,a.dataset.betaEvent);else await openRun(a.dataset.eventDataset,a.dataset.betaEvent,true);betaSync();});
  betaSyncSelectChoices();
  if(betaView==='logs'&&previous!==$('#beta-timeline').innerHTML)betaAnimateContent($('#beta-timeline'));
 }
 function betaQueueTable(){
  const rows=[...(manifest?.bv_revisions?.queue||[]).map(r=>({...r,position:r.queue_position,category:'bv'})),...(manifest?.kl?.queue||[]).map(r=>({...r,category:'kl',method:'KL'}))];
- $('#kl-queue').innerHTML=`<table><thead><tr><th>顺序</th><th>测试集</th><th>模型</th><th>环境</th><th>状态</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.position}</td><td><a href="?view=results&category=${r.category}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-category-target="${r.category}" data-beta-queued="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(methodLabel(r))} ↗</a></td><td>${esc(r.model)} <small>${esc(r.effort)}</small></td><td>${esc(r.environment_name)}</td><td>${klStatus(r.status)}</td></tr>`).join('')}</tbody></table>`;
- $$('[data-beta-queued]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.betaCategoryTarget==='bv')await loadDataset(a.dataset.target,true,a.dataset.betaQueued,true);else await loadKL(a.dataset.target,a.dataset.betaQueued);betaSync();});
+ $('#kl-queue').innerHTML=`<table><thead><tr><th>顺序</th><th>测试集</th><th>模型</th><th>环境</th><th>状态</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.position}</td><td><a href="?view=results&category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-category-target="${r.category}" data-beta-queued="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(methodLabel(r))} ↗</a></td><td>${esc(r.model)} <small>${esc(r.effort)}</small></td><td>${esc(r.environment_name)}</td><td>${klStatus(r.status)}</td></tr>`).join('')}</tbody></table>`;
+ $$('[data-beta-queued]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.betaCategoryTarget==='bv')await openRun(a.dataset.target,a.dataset.betaQueued,true);else await loadKL(a.dataset.target,a.dataset.betaQueued);betaSync();});
 }
 function betaV0Labels(node=$('#beta-results-view')){
  for(const child of [...node.childNodes]){
@@ -168,9 +168,9 @@ function betaSync(){
 
 function betaRenderBanner(){
  const banner=$('#beta-live-banner'),runs=[...(manifest.running_runs||[]),...(manifest.kl?.running_runs||[])];
- const html=runs.length?'正在运行： '+runs.map(r=>`<a href="?view=results&category=${r.category==='kl'||r.method==='KL'?'kl':'bv'}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-banner-run="${esc(r.id)}" data-target="${esc(r.dataset)}" data-category="${r.category==='kl'||r.method==='KL'?'kl':'bv'}">${esc(r.dataset)} · ${esc(r.model)} ${esc(methodLabel(r))}${r.method==='KL'?` · Apply ${r.current_apply??r.reported_attempts} · r${r.internal_round??0}`:` · ${r.reported_attempts}/${r.budget} 轮`} <span aria-hidden="true">↗</span></a>`).join('<span class="beta-banner-divider" aria-hidden="true">·</span>'):'当前暂无运行任务 <a href="?view=queue" data-beta-banner-queue>查看队列 ↗</a>';
+ const html=runs.length?'正在运行： '+runs.map(r=>`<a href="?view=results&category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-banner-run="${esc(r.id)}" data-target="${esc(r.dataset)}" data-category="${runCategory(r)}">${esc(r.dataset)} · ${esc(r.model)} ${esc(methodLabel(r))}${r.method==='KL'?` · Apply ${r.current_apply??r.reported_attempts} · r${r.internal_round??0}`:` · ${r.reported_attempts}/${r.budget} 轮`} <span aria-hidden="true">↗</span></a>`).join('<span class="beta-banner-divider" aria-hidden="true">·</span>'):'当前暂无运行任务 <a href="?view=queue" data-beta-banner-queue>查看队列 ↗</a>';
  if(banner.innerHTML!==html){banner.innerHTML=html;
-  banner.querySelectorAll('[data-beta-banner-run]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaSetPreview(null);betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.category==='kl')await loadKL(a.dataset.target,a.dataset.betaBannerRun);else await loadDataset(a.dataset.target,true,a.dataset.betaBannerRun,true);betaSync();});
+  banner.querySelectorAll('[data-beta-banner-run]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaSetPreview(null);betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.category==='kl')await loadKL(a.dataset.target,a.dataset.betaBannerRun);else await openRun(a.dataset.target,a.dataset.betaBannerRun,true);betaSync();});
   banner.querySelector('[data-beta-banner-queue]')?.addEventListener('click',e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaShowView('queue',true);});
  }
  banner.hidden=false;
@@ -295,7 +295,20 @@ function betaHighlightCurves(){
  const paths=[...root.querySelectorAll(scope.startsWith('ref:')?'[data-reference]':'path[data-run],path[data-aligned-curve]')].filter(p=>scope.startsWith('ref:')?p.dataset.reference===betaPreview.kind:betaPreview.ids.includes(p.dataset.run||p.dataset.alignedCurve));
  for(const p of paths){
   p.classList.add('beta-curve-highlight');p.style.setProperty('--curve-color',p.getAttribute('stroke'));
-  const light=p.cloneNode(true);light.removeAttribute('id');light.removeAttribute('data-run');light.removeAttribute('data-aligned-curve');light.removeAttribute('data-reference');light.removeAttribute('class');light.setAttribute('data-beta-glint','');light.setAttribute('aria-hidden','true');light.classList.add('beta-curve-glint');light.style.setProperty('--curve-color',p.getAttribute('stroke'));p.parentNode.append(light);
+  if(betaReducedMotion()||!p.getTotalLength?.())continue;
+  // Each layer ends at the same moving head; overlapping lengths make a tapered,
+  // translucent tail. Normalized path length keeps one pulse per curve every 2s.
+  const layers=[[150,7,.06,0],[124,6,.09,0],[98,5.3,.13,0],[72,4.7,.18,12],[48,4.1,.28,25],[27,3.5,.44,45],[12,2.7,.68,65],[3,1.8,.95,90]];
+  for(const [length,width,opacity,white] of layers){
+   const light=p.cloneNode(false);
+   for(const attr of [...light.attributes])if(attr.name==='id'||attr.name==='class'||attr.name==='style'||attr.name.startsWith('data-'))light.removeAttribute(attr.name);
+   light.setAttribute('data-beta-glint','');light.setAttribute('aria-hidden','true');light.setAttribute('pathLength','1000');light.setAttribute('fill','none');
+   light.classList.add('beta-curve-glint');light.style.setProperty('--curve-color',p.getAttribute('stroke'));
+   light.style.setProperty('--meteor-color',`color-mix(in srgb, ${p.getAttribute('stroke')} ${100-white}%, white)`);
+   light.style.setProperty('--meteor-width',width);light.style.setProperty('--meteor-opacity',opacity);
+   light.style.setProperty('--meteor-dash',`${length} 2200`);light.style.setProperty('--meteor-start',length+90);light.style.setProperty('--meteor-end',length-1100);
+   p.parentNode.append(light);
+  }
  }
 }
 function betaRedrawPreview(scope){
@@ -344,7 +357,7 @@ function betaRestoreControls(snapshot,fresh){
  if(!snapshot||!fresh)return false;
  const old=snapshot.host,oldNodes=snapshot.nodes;
  const oldInputs=oldNodes.flatMap(n=>[...(n.matches?.('input,button')?[n]:[]),...(n.querySelectorAll?.('input,button')||[])]),newInputs=[...fresh.querySelectorAll('input,button')];
- const key=e=>e.tagName+':'+e.id+':'+['series','modelCheck','model','alignedRun','alignedModel','matchedKind','alignedMode','alignedZoom','alignedCsv'].map(k=>e.dataset[k]??'-').join(':');
+ const key=e=>e.tagName+':'+e.id+':'+['series','modelCheck','model','alignedRun','alignedModel','matchedKind','alignedMode','alignedZoom','alignedCompress','alignedCsv'].map(k=>e.dataset[k]??'-').join(':');
  if(!oldInputs.length||oldInputs.length!==newInputs.length||oldInputs.some((e,i)=>key(e)!==key(newInputs[i])))return false;
  for(let i=0;i<oldInputs.length;i++){
   const a=oldInputs[i],b=newInputs[i];a.checked=b.checked;a.indeterminate=b.indeterminate;a.disabled=b.disabled;
@@ -431,7 +444,7 @@ const originalRenderAligned=renderAligned;renderAligned=function(target,dataset,
  betaRestoreControls(controls,$(target).querySelector('.aligned-controls'));
  betaRestoreControls(options,$(target).querySelector('.plot-options'));
  betaV0Labels();betaDecorateControls();betaHighlightCurves();
- if(category==='aligned')betaResultMotion();
+ if(isComparison())betaResultMotion();
  }finally{betaControlsRendering--;}
 };
 
@@ -460,7 +473,7 @@ betaMenus();betaShowView(betaView);if(manifest)betaSync();
 
 // Animate user-triggered changes only in the affected content, never sibling controls.
 function betaControlMotion(e){
- const el=e.target;if(!el.closest)return;
+ const el=e.target;if(!el.closest||el.matches('[data-aligned-compress]'))return;
  const aligned=el.closest('#aligned-content,#kl-aligned');
  if(aligned&&el.closest('.aligned-controls,.plot-options')){betaAnimateContent(aligned.querySelector('.aligned-chart'));return;}
  if(el.closest('.kl-reference-toggle')){betaAnimateContent(el.closest('.chart-card')?.querySelector('.chart'));return;}

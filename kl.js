@@ -60,13 +60,13 @@ function klAxisAnnotations(run){
 const KL_LABELS={not_run:'未开始',running:'运行中',complete:'已完成',ended:'待验收',waiting:'等待中',blocked:'已暂停',paused:'已暂停',completed:'已交付',failed:'失败',interrupted:'中断',awaiting_audit:'待验收',unknown:'待核对',passed:'通过',infrastructure_error:'基础设施异常'};
 function klStatus(s){return KL_LABELS[s]||'待核对';}
 function setCategory(id){
- category=['kl','aligned'].includes(id)?id:'bv';axisControls();
- $('#bv-panel').hidden=category!=='bv';$('#kl-panel').hidden=category!=='kl';$('#aligned-panel').hidden=category!=='aligned';
+ category=['kl','aligned','all'].includes(id)?id:'bv';axisControls();
+ $('#bv-panel').hidden=category!=='bv';$('#kl-panel').hidden=category!=='kl';$('#aligned-panel').hidden=!isComparison();
  $$('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===category)));
 }
 async function chooseCategory(id){
  setCategory(id);initialRun=null;
- return category==='kl'?loadKL(datasetId):category==='aligned'?loadAligned(datasetId):loadDataset(datasetId,true);
+ return category==='kl'?loadKL(datasetId):isComparison()?loadAligned(datasetId,null,category):loadDataset(datasetId,true);
 }
 async function loadKL(id,focusRun=null){
  const seq=++klSequence;++loadSeq;++alignedSequence;setCategory('kl');datasetId=id;
@@ -144,7 +144,7 @@ function renderKL(){
  const options=klData?.runs.filter(r=>r.dataset===datasetId)||[];
  const selector=$('#kl-run-select');if(selector){selector.innerHTML=options.map(r=>`<option value="${esc(r.id)}" ${r.id===klRun?.id?'selected':''}>${esc(r.model+' / '+r.effort+' · '+klStatus(r.status))}</option>`).join('');selector.value=klRun?.id||'';selector.onchange=e=>selectKLRun(e.target.value);}
  if($('#kl-path-label'))$('#kl-path-label').textContent=klRun?'KL / '+klRun.model+' '+klRun.effort:'KL';
- const meta=manifest.datasets.find(d=>d.id===datasetId);renderAligned('#kl-aligned',klDatasetCache.get(`${manifest.updated_at}:${datasetId}`),klRun);$('#kl-name').textContent=(meta?.title||datasetId)+' · KL';
+ const meta=manifest.datasets.find(d=>d.id===datasetId);$('#kl-name').textContent=(meta?.title||datasetId)+' · KL';
  if(!klData){$('#kl-body').hidden=true;$('#kl-state').textContent='正在读取 KL 数据…';return;}
  if(!klRun){$('#kl-body').hidden=true;$('#kl-state').textContent='此测试集尚未登记 KL 实验';return;}
  $('#kl-body').hidden=false;const r=klRun,done=r.applies.filter(a=>a.status==='completed').length;
@@ -182,50 +182,77 @@ function renderKL(){
 // A shared view: only reads published numeric results, never changes experiments.
 let alignedSequence=0,alignedDataset=null,alignedRun=null;
 const alignedViews=new Map(),klDatasetCache=new Map();
+function alignedViewKey(dataset){return (dataset.comparison_scope||'aligned')+':'+dataset.id+':'+axisMode;}
+function alignedView(dataset,series){
+ const key=alignedViewKey(dataset);
+ if(!alignedViews.has(key))alignedViews.set(key,{visible:new Set(series.filter(r=>axisMode!=='round'||r.model==='Astra').map(r=>r.id)),mode:'best',zoom:false,compressed:false,visualScale:1});
+ return alignedViews.get(key);
+}
+function alignedPeers(dataset,run){return [...(run?[run]:[]),...(klData?.runs.filter(r=>r.dataset===dataset.id&&r.id!==run?.id)||[])];}
 function alignedSeries(dataset,run){
- const series=dataset.runs.filter(r=>!r.edition&&r.method!=='B0'&&r.search.length).map(r=>({
-  id:r.id,model:r.model,effort:r.effort,method:r.method,color:COLORS[r.method],dash:DASH[r.model]||'',
-  points:r.search.map(p=>({round:p.round,y:p.status==='passed'?p.timing?.mean_ms??null:null,status:p.status,axes:p.axes}))
+ const series=dataset.runs.filter(r=>r.method!=='B0'&&(dataset.comparison_scope==='all'||r.method==='V0')).map(r=>({
+  id:r.id,model:r.model,effort:r.effort,method:methodLabel(r),baseMethod:r.method,color:COLORS[r.method],dash:seriesDash(r),
+  points:r.search.map(p=>({round:p.round,y:p.status==='passed'?p.timing?.mean_ms??null:null,status:p.status,axes:p.axes,recorded_at:p.recorded_at}))
  }));
- const peers=[...(run?[run]:[]),...(klData?.runs.filter(r=>r.dataset===dataset.id&&r.id!==run?.id)||[])];
- for(const run of peers)series.push({id:run.id,model:run.model,effort:run.effort,method:'Aligned KL',color:'#E69F00',dash:run.model==='DeepSeek Flash'?'2 4':DASH[run.model]||'',
-  points:(run.aligned?.points||[]).filter(p=>p.counted).map(p=>({...p,y:p.latency_ms,epoch:run.id.startsWith('kl-astra-high-serial-20261102-')&&run.dataset==='Mega'&&p.apply>=5?2:1}))});
+ for(const r of alignedPeers(dataset,run))series.push({id:r.id,model:r.model,effort:r.effort,method:'Aligned KL',baseMethod:'KL',color:'#E69F00',dash:DASH[r.model]||'',
+  points:(r.aligned?.points||[]).filter(p=>p.counted).map(p=>({...p,y:p.latency_ms,epoch:r.id.startsWith('kl-astra-high-serial-20261102-')&&r.dataset==='Mega'&&p.apply>=5?2:1}))});
  return series;
 }
-async function loadAligned(id){
- const seq=++alignedSequence;++klSequence;++loadSeq;setCategory('aligned');
+async function loadAligned(id,focusRun=null,scope=isComparison()?category:'aligned',push=false){
+ scope=scope==='all'?'all':'aligned';
+ const seq=++alignedSequence;++klSequence;++loadSeq;setCategory(scope);
  const meta=manifest.datasets.find(d=>d.id===id)||manifest.datasets[0];datasetId=meta.id;
  try{
   const [d,k]=await Promise.all([
    cache.get(meta.id)||getJSON(`./api/v1/${meta.url}?v=${encodeURIComponent(manifest.updated_at)}`),
    klData?.updated_at===manifest.updated_at?klData:getJSON(`./api/v1/${manifest.kl.url}?v=${encodeURIComponent(manifest.updated_at)}`)
   ]);
-  if(seq!==alignedSequence||category!=='aligned')return;
+  if(seq!==alignedSequence||category!==scope)return;
   if(d.updated_at!==manifest.updated_at||k.updated_at!==manifest.updated_at)throw Error('发布版本尚在同步');
-  cache.set(meta.id,d);klData=k;alignedDataset=d;alignedRun=k.runs.find(r=>r.dataset===meta.id);needsReload=false;
-  const url=new URL(location);url.searchParams.set('category','aligned');url.searchParams.set('dataset',meta.id);url.searchParams.delete('apply');url.searchParams.delete('run');history.replaceState(null,'',url);
-  $('#aligned-name').textContent=`${d.title} · Aligned KL`;
-  renderNav();renderAligned('#aligned-content',d,alignedRun);showNotice('');
+  cache.set(meta.id,d);klData=k;alignedDataset={...d,comparison_scope:scope};alignedRun=k.runs.find(r=>r.dataset===meta.id);needsReload=false;
+  const series=alignedSeries(alignedDataset,alignedRun),view=alignedView(alignedDataset,series);
+  if(focusRun&&series.some(r=>r.id===focusRun)){view.visible.add(focusRun);focusedRun=focusRun;}else if(focusRun)focusedRun=null;
+  const url=new URL(location);url.searchParams.set('category',scope);url.searchParams.set('dataset',meta.id);url.searchParams.delete('apply');url.searchParams.delete('edition');
+  if(focusRun)url.searchParams.set('run',focusRun);else if(!series.some(r=>r.id===url.searchParams.get('run')))url.searchParams.delete('run');
+  if(focusRun)url.hash='aligned-content';history[push?'pushState':'replaceState'](null,'',url);
+  $('#aligned-name').textContent=`${d.title} · ${scope==='all'?'All Result':'V/Aligned KL'}`;
+  renderNav();renderAligned('#aligned-content',alignedDataset,alignedRun);showNotice('');
   $('#updated').textContent=date(manifest.updated_at);$('#updated').dateTime=manifest.updated_at;
- }catch(e){if(seq===alignedSequence&&category==='aligned'){needsReload=true;showNotice(`Aligned KL 读取失败，保留上次快照 · ${e.message}`);}}
+  if(focusRun)$('#aligned-content').scrollIntoView({block:'start'});
+ }catch(e){if(seq===alignedSequence&&category===scope){needsReload=true;showNotice(`对比数据读取失败，保留上次快照 · ${e.message}`);}}
+}
+function animateAlignedCompression(view,host,key){
+ cancelAnimationFrame(view.compressionFrame);const from=view.visualScale??1,to=view.compressed?2/3:1;
+ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){view.visualScale=to;view.paintCompression?.(to);return;}
+ const start=performance.now();
+ function frame(now){
+  if(!host.isConnected||host.dataset.comparisonKey!==key)return;
+  const t=Math.min(1,(now-start)/520),eased=t*t*(3-2*t);view.visualScale=from+(to-from)*eased;view.paintCompression?.(view.visualScale);
+  if(t<1)view.compressionFrame=requestAnimationFrame(frame);
+ }
+ view.compressionFrame=requestAnimationFrame(frame);
 }
 function renderAligned(target,dataset,run,previewIds=[]){
  const host=$(target);if(!host||!dataset)return;
  const series=alignedSeries(dataset,run);
- const all=axisMode==='round'?series:series.filter(r=>r.points.some(p=>p.axes)),key=dataset.id+(axisMode==='round'?'':':cost');
- if(!alignedViews.has(key))alignedViews.set(key,{visible:new Set(all.filter(r=>axisMode!=='round'||r.model==='Astra').map(r=>r.id)),mode:'best',zoom:false});
- const view=alignedViews.get(key),selected=all.filter(r=>view.visible.has(r.id)||previewIds.includes(r.id)),points=run?.aligned?.points||[];
+ const all=series,key=alignedViewKey(dataset),view=alignedView(dataset,series);
+ host.dataset.comparisonKey=key;
+ const selected=all.filter(r=>view.visible.has(r.id)||previewIds.includes(r.id)),peers=alignedPeers(dataset,run);
+ const points=peers.flatMap(r=>(r.aligned?.points||[]).map(p=>({...p,run_id:r.id,model:r.model,effort:r.effort})));
+ const records=dataset.runs.filter(r=>dataset.comparison_scope==='all'||r.method==='V0');
  const redraw=()=>renderAligned(target,dataset,run);
- host.innerHTML=`<p class="kl-caption aligned-note">B/V 均值 · KL 中位数</p>
+ host.innerHTML=`<p class="kl-caption aligned-note">${dataset.comparison_scope==='all'?'B/V':'V'} 均值 · KL 中位数</p>
  <div class="aligned-controls">${[...new Set(all.map(r=>r.model))].map(model=>`<div class="model-group"><div class="model-heading"><strong>${esc(model)}</strong><label class="aligned-all"><input type="checkbox" data-aligned-model="${esc(model)}" ${all.filter(r=>r.model===model).every(r=>view.visible.has(r.id))?'checked':''}> 全部</label></div><div class="chips">${all.filter(r=>r.model===model).map(r=>`<label class="chip ${view.visible.has(r.id)?'active':''}" style="--color:${r.color}"><input type="checkbox" data-aligned-run="${esc(r.id)}" ${view.visible.has(r.id)?'checked':''}>${esc(r.method)} <small>${esc(r.effort)}</small></label>`).join('')}</div></div>`).join('')}</div>
- <div class="plot-options"><div class="segments"><button data-aligned-mode="best" aria-pressed="${view.mode==='best'}" class="${view.mode==='best'?'selected':''}">搜索最优</button><button data-aligned-mode="raw" aria-pressed="${view.mode==='raw'}" class="${view.mode==='raw'?'selected':''}">逐次测量</button></div><label><input data-aligned-zoom type="checkbox" ${view.zoom?'checked':''}> 收敛放大</label><span>● 测量 · — 最优阶梯 · × 失败</span><button data-aligned-csv>展开记录 CSV ↓</button></div>
- <div class="chart aligned-chart" tabindex="0" role="img" aria-label="Aligned KL 与 B/V 按有效评测次数对比"></div><div class="readout aligned-readout" aria-live="polite"></div>
- <details class="data-section"><summary>KL 展开记录 · r${run?.aligned?.count||0}${run?.aligned?.excluded_count?' · '+run.aligned.excluded_count+' 条不计轮次':''}</summary><div class="table-wrap rounds-wrap"><table><thead><tr><th>累计轮次</th><th>Apply</th><th>内部序号</th><th>结果</th><th>延迟 ms</th><th>记录时间 SGT</th></tr></thead><tbody>${points.map(p=>`<tr><td>${p.counted?'r'+p.round:'不计轮次'}</td><td>${p.apply}</td><td>${p.inner_sequence}</td><td>${klStatus(p.status)}</td><td>${fmt(p.latency_ms)}</td><td>${date(p.recorded_at)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">暂无 KL 内部评测；保存后自动更新</td></tr>'}</tbody></table></div></details>`;
+ <div class="plot-options"><div class="segments"><button data-aligned-mode="best" aria-pressed="${view.mode==='best'}" class="${view.mode==='best'?'selected':''}">搜索最优</button><button data-aligned-mode="raw" aria-pressed="${view.mode==='raw'}" class="${view.mode==='raw'?'selected':''}">逐次测量</button></div><label class="chip aligned-compression" style="--color:#8a56d6" title="仅轮次轴：KL 轮次 ÷ 1.5，真实轮次不变"><input type="checkbox" data-aligned-compress ${view.compressed?'checked':''} ${axisMode!=='round'?'disabled':''}>KL ×⅔</label><label><input data-aligned-zoom type="checkbox" ${view.zoom?'checked':''}> 收敛放大</label><span>● 测量 · — 最优阶梯 · × 失败</span><button data-aligned-csv>展开记录 CSV ↓</button></div>
+ <div class="chart aligned-chart" tabindex="0" role="img" aria-label="${dataset.comparison_scope==='all'?'全部结果':'V 与 Aligned KL'} 按有效评测次数对比"></div><div class="readout aligned-readout" aria-live="polite"></div>
+ <details class="data-section"><summary>KL 展开记录 · ${points.length} 条</summary><div class="table-wrap rounds-wrap"><table><thead><tr><th>模型 / effort</th><th>累计轮次</th><th>Apply</th><th>内部序号</th><th>结果</th><th>延迟 ms</th><th>记录时间 SGT</th></tr></thead><tbody>${points.map(p=>`<tr><td>${esc(p.model)} / ${esc(p.effort)}</td><td>${p.counted?'r'+p.round:'不计轮次'}</td><td>${p.apply}</td><td>${p.inner_sequence}</td><td>${klStatus(p.status)}</td><td>${fmt(p.latency_ms)}</td><td>${date(p.recorded_at)}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">暂无 KL 内部评测；保存后自动更新</td></tr>'}</tbody></table></div></details>
+ <details class="data-section"><summary>${dataset.comparison_scope==='all'?'B/V':'V'} 实验记录</summary><div class="table-wrap"><table><thead><tr><th>模型 / effort</th><th>方法</th><th>状态</th><th>轮次</th><th>搜索最优 ms</th><th>正式结果 ms</th><th>完成 SGT</th></tr></thead><tbody>${records.map(r=>`<tr><td>${esc(r.model)} / ${esc(r.effort)}</td><td>${esc(methodLabel(r))}</td><td>${badge(r.status)}</td><td>${r.reported_attempts}/${r.budget}</td><td>${r.method==='B0'?'正确性 · '+(r.accepted===true?'通过':r.accepted===false?'未接受':'待定'):fmt(r.search_best_ms)}</td><td>${fmt(r.formal?.mean_ms)}</td><td>${date(r.finished_at)}</td></tr>`).join('')}</tbody></table></div></details>`;
  host.querySelectorAll('[data-aligned-run]').forEach(el=>el.onchange=()=>{el.checked?view.visible.add(el.dataset.alignedRun):view.visible.delete(el.dataset.alignedRun);redraw();});
  host.querySelectorAll('[data-aligned-model]').forEach(el=>{const ids=all.filter(r=>r.model===el.dataset.alignedModel).map(r=>r.id),n=ids.filter(id=>view.visible.has(id)).length;el.indeterminate=n>0&&n<ids.length;el.onchange=()=>{for(const id of ids)el.checked?view.visible.add(id):view.visible.delete(id);redraw();};});
+ host.querySelector('[data-aligned-compress]').onchange=e=>{view.compressed=e.target.checked;redraw();animateAlignedCompression(view,host,key);};
  host.querySelectorAll('[data-aligned-mode]').forEach(el=>el.onclick=()=>{view.mode=el.dataset.alignedMode;redraw();});
  host.querySelector('[data-aligned-zoom]').onchange=e=>{view.zoom=e.target.checked;redraw();};
- host.querySelector('[data-aligned-csv]').onclick=()=>download(`aligned-kl-${dataset.id}.csv`,['round,apply,inner_sequence,status,counted,latency_ms,recorded_at,elapsed_seconds,reported_tokens,missing_responses,disputed,tokens_complete',...points.map(p=>[p.round,p.apply,p.inner_sequence,p.status,p.counted,p.latency_ms,p.recorded_at,p.axes?.elapsed_s,p.axes?.tokens,p.axes?.missing_responses,p.axes?.disputed,p.axes?.tokens_complete].map(csvCell).join(','))].join('\n'),'text/csv');
+ host.querySelector('[data-aligned-csv]').onclick=()=>download(`aligned-kl-${dataset.id}.csv`,['run_id,model,effort,round,apply,inner_sequence,status,counted,latency_ms,recorded_at,elapsed_seconds,reported_tokens,missing_responses,disputed,tokens_complete',...points.map(p=>[p.run_id,p.model,p.effort,p.round,p.apply,p.inner_sequence,p.status,p.counted,p.latency_ms,p.recorded_at,p.axes?.elapsed_s,p.axes?.tokens,p.axes?.missing_responses,p.axes?.disputed,p.axes?.tokens_complete].map(csvCell).join(','))].join('\n'),'text/csv');
  if(axisMode!=='round'){
   const chart=host.querySelector('.aligned-chart');chart.setAttribute('aria-label','Aligned KL · '+axisText());
   costChart(chart,selected.map(r=>({...r,name:r.model+' '+r.method,points:r.points.map(p=>({...p,name:'r'+p.round+(p.apply?' · Apply '+p.apply:'' )}))})),{best:view.mode==='best',zoom:view.zoom,readout:host.querySelector('.aligned-readout')});
@@ -234,20 +261,32 @@ function renderAligned(target,dataset,run,previewIds=[]){
  const chart=host.querySelector('.aligned-chart'),w=Math.max(320,chart.clientWidth||800),h=klPlotHeight(chart,340),pad={l:66,r:20,t:26,b:45},maxX=Math.max(30,...all.flatMap(r=>r.points.map(p=>p.round)));
  let values=selected.flatMap(r=>r.points.filter(p=>p.y!=null).map(p=>p.y)),ymin=0,ymax=Math.max(.001,...values)*1.08;
  if(view.zoom&&values.length){const tails=selected.map(r=>Math.min(...r.points.filter(p=>p.y!=null).map(p=>p.y))).filter(Number.isFinite);if(tails.length){const lo=Math.min(...tails),hi=Math.max(...tails),space=Math.max((hi-lo)*.15,hi*.035,.000001);ymin=Math.max(0,lo-space);ymax=hi+space;}}
- const x=n=>pad.l+(n-1)/Math.max(1,maxX-1)*(w-pad.l-pad.r),y=n=>h-pad.b-(n-ymin)/(ymax-ymin)*(h-pad.t-pad.b),clip='aligned-clip-'+target.replace(/[^a-z]/g,'');
+ const x=n=>pad.l+n/Math.max(1,maxX)*(w-pad.l-pad.r),y=n=>h-pad.b-(n-ymin)/(ymax-ymin)*(h-pad.t-pad.b),clip='aligned-clip-'+target.replace(/[^a-z]/g,'');
  let svg=`<svg viewBox="0 0 ${w} ${h}" role="img"><title>Aligned KL，横轴为有效评测序号，纵轴为延迟毫秒</title><defs><clipPath id="${clip}"><rect x="${pad.l}" y="${pad.t}" width="${w-pad.l-pad.r}" height="${h-pad.t-pad.b}"/></clipPath></defs>`;
  for(const v of ticks(ymin,ymax,5))svg+=`<line x1="${pad.l}" x2="${w-pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="#edf0f4"/><text x="${pad.l-8}" y="${y(v)+4}" text-anchor="end">${tickFmt(v)}</text>`;
- for(const v of [...new Set([1,...ticks(1,maxX,w<500?4:8).filter(Number.isInteger),maxX])])svg+=`<text x="${x(v)}" y="${h-22}" text-anchor="middle">${v}</text>`;
- svg+=`<text x="12" y="16">ms ↓</text><text x="${w/2}" y="${h-3}" text-anchor="middle">有效评测序号 · KL rN / B、V 轮次</text><g clip-path="url(#${clip})">`;
- for(const r of selected){let best=null,path='',last=false;for(const p of r.points){if(p.y!=null)best=best==null?p.y:Math.min(best,p.y);const v=view.mode==='best'?best:p.y;if(v==null){last=false;continue;}path+=last?(view.mode==='best'?` H${x(p.round)} V${y(v)}`:` L${x(p.round)},${y(v)}`):` M${x(p.round)},${y(v)}`;last=true;}
-  svg+=`<path data-aligned-curve="${esc(r.id)}" d="${path}" fill="none" stroke="${r.color}" stroke-width="${r.method==='Aligned KL'?2.6:1.8}" stroke-dasharray="${r.dash}"/>`;
-  for(const p of r.points){if(p.y!=null)svg+=`<circle cx="${x(p.round)}" cy="${y(p.y)}" r="3" fill="${r.color}"><title>${esc(r.model+' '+r.method)} r${p.round}${p.apply?' · Apply '+p.apply+' / 内部 '+p.inner_sequence:''}: ${fmt(p.y)} ms</title></circle>`;else if(p.status==='failed')svg+=`<path d="M${x(p.round)-3},${h-pad.b-9}l6 6m0 -6l-6 6" stroke="${r.color}"/>`;}
+ for(const v of [...new Set([0,...ticks(0,maxX,w<500?4:8).filter(Number.isInteger),maxX])])svg+=`<text x="${x(v)}" y="${h-22}" text-anchor="middle">${v}</text>`;
+ svg+=`<text x="12" y="16">ms ↓</text><text x="${w/2}" y="${h-3}" text-anchor="middle">轮次${view.compressed?' · KL r ÷ 1.5':''}</text><g clip-path="url(#${clip})">`;
+ function curvePath(r,scale=1){let best=null,path='',last=false;for(const p of r.points){if(p.y!=null)best=best==null?p.y:Math.min(best,p.y);const v=view.mode==='best'?best:p.y;if(v==null){last=false;continue;}path+=last?(view.mode==='best'?` H${x(p.round*scale)} V${y(v)}`:` L${x(p.round*scale)},${y(v)}`):` M${x(p.round*scale)},${y(v)}`;last=true;}return path;}
+ const scale=view.visualScale??(view.compressed?2/3:1);
+ for(const r of selected){const kl=r.baseMethod==='KL',ratio=kl?scale:1;
+  svg+=`<g data-comparison-series="${esc(r.id)}"><path data-aligned-curve="${esc(r.id)}" d="${curvePath(r,ratio)}" fill="none" stroke="${r.color}" stroke-width="${kl?2.6:1.8}" stroke-dasharray="${r.dash}"/>`;
+  for(const p of r.points){const pos=x(p.round*ratio);if(p.y!=null)svg+=`<circle data-real-round="${p.round}" cx="${pos}" cy="${y(p.y)}" r="3" fill="${r.color}"><title>${esc(r.model+' '+r.method)} r${p.round}${p.apply?' · Apply '+p.apply+' / 内部 '+p.inner_sequence:''}: ${fmt(p.y)} ms</title></circle>`;else if(p.status==='failed')svg+=`<path data-failed-round="${p.round}" d="M${pos-3},${h-pad.b-9}l6 6m0 -6l-6 6" stroke="${r.color}"/>`;}
+  svg+='</g>';
  }
  svg+='</g></svg>';chart.innerHTML=svg;
+ view.paintCompression=ratio=>{
+  for(const r of selected.filter(r=>r.baseMethod==='KL')){
+   const group=[...chart.querySelectorAll('[data-comparison-series]')].find(el=>el.dataset.comparisonSeries===r.id);if(!group)continue;
+   group.querySelector('[data-aligned-curve]').setAttribute('d',curvePath(r,ratio));
+   group.querySelectorAll('[data-real-round]').forEach(el=>el.setAttribute('cx',x(+el.dataset.realRound*ratio)));
+   group.querySelectorAll('[data-failed-round]').forEach(el=>el.setAttribute('d',`M${x(+el.dataset.failedRound*ratio)-3},${h-pad.b-9}l6 6m0 -6l-6 6`));
+  }
+  inspect(cursor);
+ };
  const readout=host.querySelector('.aligned-readout');
- function inspect(n){readout.innerHTML=`<strong>r${n}</strong>`+selected.map(r=>{const p=r.points.find(p=>p.round===n);return `<span style="--color:${r.color}"><i class="swatch"></i>${esc(r.model+' '+r.method)} ${p?.apply?'Apply '+p.apply+' · ':''}<strong>${fmt(p?.y)}</strong>${p?.y!=null?' ms':p?' · '+(p.status==='failed'?'失败':'无有效计时'):' · 无记录'}</span>`;}).join('');}
- let cursor=run?.aligned?.count||1;inspect(cursor);
- chart.onpointermove=e=>{cursor=Math.min(maxX,Math.max(1,Math.round(1+(e.clientX-chart.getBoundingClientRect().left-pad.l)/(w-pad.l-pad.r)*(maxX-1))));inspect(cursor);};
+ function inspect(n){readout.innerHTML=`<strong>r${n}</strong>`+selected.map(r=>{const actual=r.baseMethod==='KL'?Math.round(n/(view.visualScale||1)):n,p=r.points.find(p=>p.round===actual);return `<span style="--color:${r.color}"><i class="swatch"></i>${esc(r.model+' '+r.method)} r${actual} ${p?.apply?'Apply '+p.apply+' · ':''}<strong>${fmt(p?.y)}</strong>${p?.y!=null?' ms':p?' · '+(p.status==='failed'?'失败':'无有效计时'):' · 无记录'}</span>`;}).join('');}
+ let cursor=Math.round((run?.aligned?.count||1)*(view.visualScale||1));inspect(cursor);
+ chart.onpointermove=e=>{cursor=Math.min(maxX,Math.max(1,Math.round((e.clientX-chart.getBoundingClientRect().left-pad.l)/(w-pad.l-pad.r)*maxX)));inspect(cursor);};
  chart.onkeydown=e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();cursor=Math.max(1,Math.min(maxX,cursor+(e.key==='ArrowRight'?1:-1)));inspect(cursor);}};
  if(!values.length)readout.insertAdjacentHTML('afterbegin','<span>所选曲线暂无有效计时</span>');
  if(view.zoom)readout.insertAdjacentHTML('afterbegin',`<span>放大范围 ${fmt(ymin)}–${fmt(ymax)} ms，范围外测量已裁剪</span>`);

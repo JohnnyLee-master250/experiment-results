@@ -35,9 +35,9 @@ body.beta{background:#fff;color:var(--ink);font-family:-apple-system,BlinkMacSys
 .beta .beta-running::after{opacity:.65;animation:beta-pill-light 3.4s ease-in-out infinite}.beta .beta-running{box-shadow:0 0 0 2px color-mix(in srgb,var(--pill-color) 12%,transparent),0 2px 10px color-mix(in srgb,var(--pill-color) 15%,transparent)}
 @media(hover:hover) and (pointer:fine){.beta .beta-pill:not(.beta-pill-disabled):not(.beta-hover-suppressed):hover,.beta .segments button:hover{background:var(--pill-deep);border-color:var(--pill-deep);color:white}.beta .beta-pill:not(.beta-pill-disabled):not(.beta-hover-suppressed):hover::after,.beta .segments button:hover::after{opacity:.8;animation:beta-pill-light 2s ease-in-out infinite}}
 @keyframes beta-pill-light{0%,15%{transform:translateX(-150%) rotate(12deg)}80%,100%{transform:translateX(520%) rotate(12deg)}}
-.beta .beta-curve-highlight{stroke-width:4.2!important;opacity:1!important;filter:drop-shadow(0 0 3px currentColor)}
-.beta .beta-curve-glint{stroke:#fff!important;stroke-width:1.8!important;stroke-dasharray:8 64!important;opacity:.9;pointer-events:none;filter:drop-shadow(0 0 3px var(--curve-color));animation:beta-curve-light 2.4s linear infinite}
-@keyframes beta-curve-light{to{stroke-dashoffset:-144}}
+.beta .beta-curve-highlight{stroke-width:3.4!important;stroke-dasharray:none!important;stroke-linecap:round;stroke-linejoin:round;opacity:1!important;filter:none}
+.beta .beta-curve-glint{stroke:var(--meteor-color)!important;stroke-width:var(--meteor-width)!important;stroke-dasharray:var(--meteor-dash)!important;stroke-linecap:round;stroke-linejoin:round;pointer-events:none;opacity:0;filter:drop-shadow(0 0 2px var(--curve-color));animation:beta-curve-meteor 2s cubic-bezier(.42,0,.24,1) infinite}
+@keyframes beta-curve-meteor{0%{stroke-dashoffset:var(--meteor-start);opacity:0}10%{opacity:var(--meteor-opacity)}82%{opacity:var(--meteor-opacity)}92%,100%{stroke-dashoffset:var(--meteor-end);opacity:0}}
 /* Compact, descriptive first screen. All detailed records remain below it. */
 .beta-snapshot{padding:9px 0}.beta-hero{padding:22px 0 16px;gap:24px}.beta-hero h1{font-size:clamp(30px,3vw,44px);line-height:1.12;letter-spacing:-.035em}.beta-eyebrow{font-size:11px;margin-bottom:6px}.beta-hero-status{font-size:11px;padding-bottom:2px}.beta-hero-status strong{font-size:19px}
 .beta .dataset-tabs{margin-bottom:12px;padding-bottom:11px}.beta .dataset-tabs button{padding:7px 12px}.beta .axis-picker{margin-bottom:12px;gap:12px}.beta .segments{gap:4px;padding:0;background:transparent}.beta .segments button{padding:5px 11px;min-height:30px;font-size:11px}
@@ -48,7 +48,7 @@ body.beta{background:#fff;color:var(--ink);font-family:-apple-system,BlinkMacSys
 @media(max-width:650px){.beta-hero{padding:22px 0 16px;gap:12px}.beta-hero h1{font-size:30px}.beta-hero-status{gap:18px}.beta .beta-pill{font-size:11px;padding:7px 10px}.beta .axis-picker{margin-bottom:14px}.beta .chart{height:300px}.beta .aligned-controls{grid-template-columns:1fr;margin:12px}.beta .series-controls{grid-template-columns:1fr}.beta .kl-reference-toggle{font-size:10px;margin:4px 12px;max-width:calc(100% - 24px)}}
 @media(prefers-reduced-motion:reduce){.beta *, .beta *:before,.beta *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.beta .beta-curve-glint{display:none}#beta-results-view :is(.model-group,.chart-card,.data-section,.kl-budget,.workspace-row):hover{transform:none}}
 .beta-live-banner{padding:10px 24px;background:#f5f5f7;color:#515154;text-align:center;font-size:12px;line-height:1.65;min-height:40px}.beta-live-banner a{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;white-space:nowrap;display:inline-block;margin:0 5px}.beta-live-banner a:hover{color:inherit;text-decoration-thickness:2px}.beta-banner-divider{opacity:.5;margin:0 8px}.beta-banner-intro{animation:beta-banner-settle 3.5s ease both}@keyframes beta-banner-settle{0%,68%{background:#0071e3;color:white}100%{background:#f5f5f7;color:#515154}}
-.beta .beta-curve-highlight{filter:drop-shadow(0 0 3px var(--curve-color))}
+.beta .beta-curve-highlight{filter:none}
 @media(prefers-reduced-motion:reduce){.beta-banner-intro{animation:none}.beta-live-banner{background:#f5f5f7}}
 /* Mutually exclusive choices share a neutral segmented control. */
 .beta .segments,.beta #beta-results-view>.dataset-tabs{display:flex;align-items:center;gap:4px;padding:4px;border:0;border-radius:999px;background:#f5f5f7;width:max-content;max-width:100%}
@@ -249,3 +249,7 @@ body.beta{--accent:#0071e3;--soft:#f5f5f7;--grid:#ededf0}
 @media(max-width:1100px){.beta main{padding:40px}}
 @media(max-width:650px){.beta main{padding:24px}}
 @media(max-width:380px){.beta main{padding:22px}}
+
+/* Shared per-view comparison control and consecutive detail cards. */
+.beta .plot-options .aligned-compression{flex:0 0 auto;min-width:100px}
+@media(min-width:1051px){.beta #aligned-content>details+details{grid-row:6}}
