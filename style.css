@@ -48,3 +48,6 @@
 .waiting-task>span{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
 .waiting-empty{padding:20px 10px;color:var(--muted);font-size:11px;text-align:center;border:1px dashed #d0dbe1;border-radius:6px}
 @media(max-width:650px){.waiting-columns{gap:10px}.waiting-card-heading{align-items:baseline}.waiting-environment{flex-basis:100%;order:2}.waiting-link{padding:8px 6px;gap:5px}.waiting-position{flex-basis:16px;font-size:10px}.waiting-task strong{font-size:10px}.waiting-link>span:last-child{display:none}:root{--waiting-row-height:70px}}
+
+/* Keep every model control inside its card at all container widths. */
+.model-group{min-width:0}.model-heading{min-width:0;flex-wrap:wrap}.model-heading strong{min-width:0;overflow-wrap:anywhere}.chips{min-width:0;flex-wrap:wrap}.chip{flex:1 0 auto;max-width:100%;white-space:nowrap}.chip input{flex-shrink:0}.aligned-controls{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}.aligned-all{flex-shrink:0;white-space:nowrap}

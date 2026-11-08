@@ -204,12 +204,12 @@ async function loadAligned(id){
   $('#updated').textContent=date(manifest.updated_at);$('#updated').dateTime=manifest.updated_at;
  }catch(e){if(seq===alignedSequence&&category==='aligned'){needsReload=true;showNotice(`Aligned KL 读取失败，保留上次快照 · ${e.message}`);}}
 }
-function renderAligned(target,dataset,run){
+function renderAligned(target,dataset,run,previewIds=[]){
  const host=$(target);if(!host||!dataset)return;
  const series=alignedSeries(dataset,run);
  const all=axisMode==='round'?series:series.filter(r=>r.points.some(p=>p.axes)),key=dataset.id+(axisMode==='round'?'':':cost');
  if(!alignedViews.has(key))alignedViews.set(key,{visible:new Set(all.filter(r=>axisMode!=='round'||r.model==='Astra').map(r=>r.id)),mode:'best',zoom:false});
- const view=alignedViews.get(key),selected=all.filter(r=>view.visible.has(r.id)),points=run?.aligned?.points||[];
+ const view=alignedViews.get(key),selected=all.filter(r=>view.visible.has(r.id)||previewIds.includes(r.id)),points=run?.aligned?.points||[];
  const redraw=()=>renderAligned(target,dataset,run);
  host.innerHTML=`<p class="kl-caption aligned-note">B/V 均值 · KL 中位数</p>
  <div class="aligned-controls">${[...new Set(all.map(r=>r.model))].map(model=>`<div class="model-group"><div class="model-heading"><strong>${esc(model)}</strong><label class="aligned-all"><input type="checkbox" data-aligned-model="${esc(model)}" ${all.filter(r=>r.model===model).every(r=>view.visible.has(r.id))?'checked':''}> 全部</label></div><div class="chips">${all.filter(r=>r.model===model).map(r=>`<label class="chip ${view.visible.has(r.id)?'active':''}" style="--color:${r.color}"><input type="checkbox" data-aligned-run="${esc(r.id)}" ${view.visible.has(r.id)?'checked':''}>${esc(r.method)} <small>${esc(r.effort)}</small></label>`).join('')}</div></div>`).join('')}</div>
