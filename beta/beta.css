@@ -235,3 +235,7 @@ body.beta{--accent:#0071e3;--soft:#f5f5f7;--grid:#ededf0}
  .beta .beta-main-nav>button{min-height:44px}
 }
 @media(max-width:380px){.beta-nav-inner{padding-inline:12px;column-gap:8px}.beta .beta-nav-status{gap:7px}.beta .beta-home-status .live-dot{display:none}.beta .beta-nav-status #refresh{width:20px}}
+
+/* Fixed width applies only to individual colored curve choices. */
+:root{--beta-curve-pill-width:112px}
+.beta .chips>.chip.beta-pill{flex:0 0 var(--beta-curve-pill-width);width:var(--beta-curve-pill-width);min-width:0;max-width:100%;box-sizing:border-box;padding-inline:10px}

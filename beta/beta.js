@@ -40,7 +40,8 @@ function betaTintCharts(){
 
 function betaUpdateTitle(){
  const title=manifest?.datasets.find(d=>d.id===datasetId)?.title||datasetId;
- $('#beta-title').textContent=betaView==='logs'?'完成日志':betaView==='queue'?'队列情况':betaFuture?'V0-r3':title;
+ const section=betaConfig.result_sections.find(s=>s.id===(category==='bv'&&bvEdition!=='legacy'?bvEdition:category))?.label;
+ $('#beta-title').textContent=betaView==='logs'?'完成日志':betaView==='queue'?'队列情况':betaFuture?'V0-r3':title+(section?' · '+section:'');
  const metadata=$('#beta-run-meta');if(!metadata)return;
  const r=category==='kl'&&betaView==='results'&&!betaFuture?klRun:null;
  metadata.hidden=!r;
@@ -76,7 +77,7 @@ function betaShowView(view,push=false){
  $('#beta-logs-view').hidden=betaView!=='logs';$('#beta-queue-view').hidden=betaView!=='queue';
  $$('[data-beta-nav]').forEach(el=>el.setAttribute('aria-current',el.dataset.betaNav===betaView?'page':'false'));
  betaUpdateTitle();
- $('#beta-kicker').textContent=betaView==='logs'?'开始、暂停、恢复与独立完成':betaView==='queue'?'':betaFuture?'下一版实验 · 待接入':`${betaConfig.result_sections.find(s=>s.id===(category==='bv'&&bvEdition!=='legacy'?bvEdition:category))?.label||'实验结果'} · ${datasetId}`;
+ $('#beta-kicker').hidden=true;$('#beta-kicker').textContent='';
  if(push)betaURL(true);
  if(betaView==='logs')betaRenderLogs();
  if(previous!==betaView)betaAnimateContent($('#beta-'+(betaFuture&&betaView==='results'?'future':betaView)+'-view'));
@@ -187,6 +188,7 @@ function betaDecorateControls(){
  $$('#series-controls label,.aligned-controls label,.plot-options label,.kl-reference-toggle').forEach(label=>{
   const input=label.querySelector('input[type=checkbox]');if(!input)return;
   label.classList.add('beta-pill');label.classList.toggle('beta-pill-disabled',input.disabled);
+  if(label.classList.contains('chip')&&input.dataset.alignedRun)for(const node of label.childNodes)if(node.nodeType===Node.TEXT_NODE&&node.nodeValue.includes('Aligned KL'))node.nodeValue=node.nodeValue.replace('Aligned KL','KL');
   const info=betaControlInfo(label);label.classList.toggle('beta-running',!!info?.ids.some(id=>running.has(id)));
   if(!label.style.getPropertyValue('--color'))label.style.setProperty('--color',label.classList.contains('kl-reference-toggle')?(input.dataset.matchedKind==='same'?'#D55E00':input.dataset.matchedKind==='reduced'?'#6F61A6':'#CC79A7'):'#526c89');
   const raw=label.style.getPropertyValue('--color').trim().toLowerCase(),color=betaPalette[raw]||raw;label.style.setProperty('--color',color);label.style.setProperty('--pill-text',betaThemeText(color));label.style.removeProperty('color');
@@ -240,6 +242,8 @@ function betaSyncSliders(){
   group.classList.add('beta-sliding-selection');
   const position=[active.offsetLeft,active.offsetTop,active.offsetWidth,active.offsetHeight];
   if(position.every((v,i)=>v===betaSliderPositions.get(group)?.[i]))return;
+  // Restored chart controls may have just re-entered the DOM; commit their old capsule position first.
+  if(betaSliderPositions.has(group))getComputedStyle(group,'::before').transform;
   for(const [i,key] of ['x','y','width','height'].entries())group.style.setProperty('--selection-'+key,position[i]+'px');
   if(!betaSliderPositions.has(group)){
    // Establish the initial position without a fly-in from the corner.
@@ -307,7 +311,7 @@ function betaControlSnapshot(host){return host?{host,nodes:[...host.childNodes],
 function betaRestoreControls(snapshot,fresh){
  if(!snapshot||!fresh)return false;
  const old=snapshot.host,oldNodes=snapshot.nodes;
- const oldInputs=oldNodes.flatMap(n=>[...(n.querySelectorAll?.('input,button')||[])]),newInputs=[...fresh.querySelectorAll('input,button')];
+ const oldInputs=oldNodes.flatMap(n=>[...(n.matches?.('input,button')?[n]:[]),...(n.querySelectorAll?.('input,button')||[])]),newInputs=[...fresh.querySelectorAll('input,button')];
  const key=e=>e.tagName+':'+e.id+':'+['series','modelCheck','model','alignedRun','alignedModel','matchedKind','alignedMode','alignedZoom','alignedCsv'].map(k=>e.dataset[k]??'-').join(':');
  if(!oldInputs.length||oldInputs.length!==newInputs.length||oldInputs.some((e,i)=>key(e)!==key(newInputs[i])))return false;
  for(let i=0;i<oldInputs.length;i++){
@@ -382,6 +386,7 @@ const queueSection=$('#kl-queue').closest('section');queueSection.querySelector(
 const legacyLog=$('#task-log');legacyLog.hidden=true;$('#beta-legacy-log').append(legacyLog);
 $$('a[href^="./api/"]').forEach(a=>a.setAttribute('href',(document.body.dataset.apiBase||'./')+a.getAttribute('href').slice(2)));
 const originalRenderRunning=renderRunning;renderRunning=function(){originalRenderRunning();betaBindQueueLinks();betaSync();};
+const betaOriginalSetMode=setMode;setMode=function(value){betaOriginalSetMode(value);betaScheduleSliders();};
 const originalRenderAll=renderAll;renderAll=function(){originalRenderAll();betaV0Labels();betaUpdateTitle();betaDecorateControls();betaHighlightCurves();betaResultMotion();};
 const originalRenderKL=renderKL;renderKL=function(){betaControlsRendering++;try{const saved=['overview','candidates'].map(id=>betaControlSnapshot($('#kl-matched-'+id)));originalRenderKL();saved.forEach(s=>{if(s)betaRestoreControls(s,s.host);});betaV0Labels();betaQueueTable();betaShowView(betaView);betaDecorateControls();betaHighlightCurves();betaResultMotion();}finally{betaControlsRendering--;}};
 const originalRenderNav=renderNav;renderNav=function(){originalRenderNav();betaShowView(betaView);};
