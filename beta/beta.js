@@ -235,7 +235,31 @@ function betaScheduleSliders(){
  if(betaSliderFrame!==null)return;
  betaSliderFrame=requestAnimationFrame(()=>{betaSliderFrame=null;betaSyncSliders();});
 }
+// Size only colored curve choices from the longest label in the current view.
+// Balance rows (4, or 2+2) without stretching buttons to fill a model card.
+const betaPillMeasure=document.createElement('canvas').getContext('2d');
+function betaLayoutCurvePills(){
+ for(const scope of $$('#bv-panel,#aligned-content,#kl-aligned')){
+  if(!scope.offsetWidth)continue;
+  const groups=[...scope.querySelectorAll('.chips')].filter(group=>group.clientWidth),pills=groups.flatMap(group=>[...group.querySelectorAll(':scope>.chip.beta-pill')]);
+  if(!pills.length)continue;
+  const natural=pills.map(pill=>{
+   const css=getComputedStyle(pill),parts=[...pill.childNodes].filter(node=>node.nodeType===Node.TEXT_NODE?node.nodeValue.trim():node.nodeType===Node.ELEMENT_NODE&&node.tagName!=='INPUT'&&node.textContent.trim());
+   const textWidth=parts.reduce((width,node)=>{betaPillMeasure.font=node.nodeType===Node.TEXT_NODE?css.font:getComputedStyle(node).font;return width+betaPillMeasure.measureText(node.textContent.trim()).width;},0);
+   return textWidth+parseFloat(css.paddingLeft)+parseFloat(css.paddingRight)+parseFloat(css.borderLeftWidth)+parseFloat(css.borderRightWidth)+(parts.length-1)*(parseFloat(css.columnGap)||0)+2;
+  });
+  const width=Math.min(Math.ceil(Math.max(56,...natural)/4)*4,...groups.map(group=>group.clientWidth));
+  const value=width+'px';if(scope.style.getPropertyValue('--curve-pill-width')!==value)scope.style.setProperty('--curve-pill-width',value);
+  for(const group of groups){
+   const count=group.querySelectorAll(':scope>.chip.beta-pill').length;if(!count)continue;
+   const gap=parseFloat(getComputedStyle(group).columnGap)||6,maxColumns=Math.max(1,Math.floor((group.clientWidth+gap)/(width+gap)));
+   const rows=Math.ceil(count/Math.min(count,maxColumns)),columns=String(Math.ceil(count/rows));
+   if(group.style.getPropertyValue('--curve-pill-columns')!==columns)group.style.setProperty('--curve-pill-columns',columns);
+  }
+ }
+}
 function betaSyncSliders(){
+ betaLayoutCurvePills();
  $$('.segments,.dataset-tabs').forEach(group=>{
   const active=[...group.children].find(el=>el.tagName==='BUTTON'&&(el.classList.contains('selected')||el.getAttribute('aria-pressed')==='true'||el.getAttribute('aria-current')==='true'));
   if(!active||!group.clientWidth||!active.offsetWidth)return;
