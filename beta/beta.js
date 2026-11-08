@@ -33,6 +33,7 @@ function betaOpenMenu(id){
  clearTimeout(betaCloseTimer);if(betaMenuId===id)return;betaMenuId=id;
  $$('.beta-menu').forEach(el=>{const on=el.id==='beta-menu-'+id;el.classList.toggle('open',on);el.inert=!on;el.setAttribute('aria-hidden',String(!on));});
  $$('[data-beta-nav]').forEach(el=>el.setAttribute('aria-expanded',String(el.dataset.betaNav===id)));
+ $('#beta-menu-surface').classList.toggle('open',!!id);
  betaBackdrop.hidden=!id;
 }
 function betaCloseMenu(){betaOpenMenu(null);}
