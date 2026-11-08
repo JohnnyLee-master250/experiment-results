@@ -253,3 +253,10 @@ body.beta{--accent:#0071e3;--soft:#f5f5f7;--grid:#ededf0}
 /* Shared per-view comparison control and consecutive detail cards. */
 .beta .plot-options .aligned-compression{flex:0 0 auto;min-width:100px}
 @media(min-width:1051px){.beta #aligned-content>details+details{grid-row:6}}
+
+/* A shared, compact organization switch above all comparison charts. */
+.beta .beta-grouping-control{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0 20px;color:#6e6e73;font-size:13px;font-weight:500}
+.beta .beta-grouping-control[hidden]{display:none}
+.beta .beta-grouping-control>.segments{width:max-content;max-width:100%}
+.beta [data-grouping="task"] .model-heading>strong{font-size:14px}
+.beta [data-grouping="task"] .chip small{font-size:10px;opacity:.8}

@@ -85,8 +85,9 @@ async function loadKL(id,focusRun=null){
   const wanted=Number(new URL(location).searchParams.get('apply'));
   if(!klRun?.applies.some(a=>a.apply===klApply))klApply=klRun?.applies.at(-1)?.apply??null;
   if(wanted&&klRun?.applies.some(a=>a.apply===wanted))klApply=wanted;
-  const url=new URL(location);url.searchParams.set('category','kl');url.searchParams.set('dataset',id);if(klRun)url.searchParams.set('run',klRun.id);url.searchParams.delete('apply');
+  const url=new URL(location);url.searchParams.set('category','kl');url.searchParams.set('dataset',id);if(klRun)url.searchParams.set('run',klRun.id);url.searchParams.delete('apply');if(focusRun)url.hash='';
   history.replaceState(null,'',url);renderNav();renderKL();showNotice('');
+  if(focusRun)window.scrollTo({top:0,left:0,behavior:'instant'});
   $('#updated').textContent=date(manifest.updated_at);$('#updated').dateTime=manifest.updated_at;
  }catch(e){if(seq===klSequence&&category==='kl'){$('#connection').classList.add('stale');showNotice(`KL 数据读取失败，保留上次快照 · ${e.message}`);}}
 }
@@ -214,11 +215,11 @@ async function loadAligned(id,focusRun=null,scope=isComparison()?category:'align
   if(focusRun&&series.some(r=>r.id===focusRun)){view.visible.add(focusRun);focusedRun=focusRun;}else if(focusRun)focusedRun=null;
   const url=new URL(location);url.searchParams.set('category',scope);url.searchParams.set('dataset',meta.id);url.searchParams.delete('apply');url.searchParams.delete('edition');
   if(focusRun)url.searchParams.set('run',focusRun);else if(!series.some(r=>r.id===url.searchParams.get('run')))url.searchParams.delete('run');
-  if(focusRun)url.hash='aligned-content';history[push?'pushState':'replaceState'](null,'',url);
+  if(focusRun)url.hash='';history[push?'pushState':'replaceState'](null,'',url);
   $('#aligned-name').textContent=`${d.title} · ${scope==='all'?'All Result':'V/Aligned KL'}`;
   renderNav();renderAligned('#aligned-content',alignedDataset,alignedRun);showNotice('');
   $('#updated').textContent=date(manifest.updated_at);$('#updated').dateTime=manifest.updated_at;
-  if(focusRun)$('#aligned-content').scrollIntoView({block:'start'});
+  if(focusRun)window.scrollTo({top:0,left:0,behavior:'instant'});
  }catch(e){if(seq===alignedSequence&&category===scope){needsReload=true;showNotice(`对比数据读取失败，保留上次快照 · ${e.message}`);}}
 }
 function animateAlignedCompression(view,host,key){
@@ -242,13 +243,12 @@ function renderAligned(target,dataset,run,previewIds=[]){
  const records=dataset.runs.filter(r=>dataset.comparison_scope==='all'||r.method==='V0');
  const redraw=()=>renderAligned(target,dataset,run);
  host.innerHTML=`<p class="kl-caption aligned-note">${dataset.comparison_scope==='all'?'B/V':'V'} 均值 · KL 中位数</p>
- <div class="aligned-controls">${[...new Set(all.map(r=>r.model))].map(model=>`<div class="model-group"><div class="model-heading"><strong>${esc(model)}</strong><label class="aligned-all"><input type="checkbox" data-aligned-model="${esc(model)}" ${all.filter(r=>r.model===model).every(r=>view.visible.has(r.id))?'checked':''}> 全部</label></div><div class="chips">${all.filter(r=>r.model===model).map(r=>`<label class="chip ${view.visible.has(r.id)?'active':''}" style="--color:${r.color}"><input type="checkbox" data-aligned-run="${esc(r.id)}" ${view.visible.has(r.id)?'checked':''}>${esc(r.method)} <small>${esc(r.effort)}</small></label>`).join('')}</div></div>`).join('')}</div>
+ <div class="aligned-controls"></div>
  <div class="plot-options"><div class="segments"><button data-aligned-mode="best" aria-pressed="${view.mode==='best'}" class="${view.mode==='best'?'selected':''}">搜索最优</button><button data-aligned-mode="raw" aria-pressed="${view.mode==='raw'}" class="${view.mode==='raw'?'selected':''}">逐次测量</button></div><label class="chip aligned-compression" style="--color:#8a56d6" title="仅轮次轴：KL 轮次 ÷ 1.5，真实轮次不变"><input type="checkbox" data-aligned-compress ${view.compressed?'checked':''} ${axisMode!=='round'?'disabled':''}>KL ×⅔</label><label><input data-aligned-zoom type="checkbox" ${view.zoom?'checked':''}> 收敛放大</label><span>● 测量 · — 最优阶梯 · × 失败</span><button data-aligned-csv>展开记录 CSV ↓</button></div>
  <div class="chart aligned-chart" tabindex="0" role="img" aria-label="${dataset.comparison_scope==='all'?'全部结果':'V 与 Aligned KL'} 按有效评测次数对比"></div><div class="readout aligned-readout" aria-live="polite"></div>
  <details class="data-section"><summary>KL 展开记录 · ${points.length} 条</summary><div class="table-wrap rounds-wrap"><table><thead><tr><th>模型 / effort</th><th>累计轮次</th><th>Apply</th><th>内部序号</th><th>结果</th><th>延迟 ms</th><th>记录时间 SGT</th></tr></thead><tbody>${points.map(p=>`<tr><td>${esc(p.model)} / ${esc(p.effort)}</td><td>${p.counted?'r'+p.round:'不计轮次'}</td><td>${p.apply}</td><td>${p.inner_sequence}</td><td>${klStatus(p.status)}</td><td>${fmt(p.latency_ms)}</td><td>${date(p.recorded_at)}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">暂无 KL 内部评测；保存后自动更新</td></tr>'}</tbody></table></div></details>
  <details class="data-section"><summary>${dataset.comparison_scope==='all'?'B/V':'V'} 实验记录</summary><div class="table-wrap"><table><thead><tr><th>模型 / effort</th><th>方法</th><th>状态</th><th>轮次</th><th>搜索最优 ms</th><th>正式结果 ms</th><th>完成 SGT</th></tr></thead><tbody>${records.map(r=>`<tr><td>${esc(r.model)} / ${esc(r.effort)}</td><td>${esc(methodLabel(r))}</td><td>${badge(r.status)}</td><td>${r.reported_attempts}/${r.budget}</td><td>${r.method==='B0'?'正确性 · '+(r.accepted===true?'通过':r.accepted===false?'未接受':'待定'):fmt(r.search_best_ms)}</td><td>${fmt(r.formal?.mean_ms)}</td><td>${date(r.finished_at)}</td></tr>`).join('')}</tbody></table></div></details>`;
- host.querySelectorAll('[data-aligned-run]').forEach(el=>el.onchange=()=>{el.checked?view.visible.add(el.dataset.alignedRun):view.visible.delete(el.dataset.alignedRun);redraw();});
- host.querySelectorAll('[data-aligned-model]').forEach(el=>{const ids=all.filter(r=>r.model===el.dataset.alignedModel).map(r=>r.id),n=ids.filter(id=>view.visible.has(id)).length;el.indeterminate=n>0&&n<ids.length;el.onchange=()=>{for(const id of ids)el.checked?view.visible.add(id):view.visible.delete(id);redraw();};});
+ renderComparisonControls(host.querySelector('.aligned-controls'),all,view.visible,dataset.comparison_scope||'aligned',redraw);
  host.querySelector('[data-aligned-compress]').onchange=e=>{view.compressed=e.target.checked;redraw();animateAlignedCompression(view,host,key);};
  host.querySelectorAll('[data-aligned-mode]').forEach(el=>el.onclick=()=>{view.mode=el.dataset.alignedMode;redraw();});
  host.querySelector('[data-aligned-zoom]').onchange=e=>{view.zoom=e.target.checked;redraw();};

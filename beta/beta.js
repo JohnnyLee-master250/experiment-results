@@ -84,7 +84,7 @@ function betaShowView(view,push=false){
  $('#beta-future-view').hidden=betaView!=='results'||!betaFuture;
  $('#beta-logs-view').hidden=betaView!=='logs';$('#beta-queue-view').hidden=betaView!=='queue';
  $$('[data-beta-nav]').forEach(el=>el.setAttribute('aria-current',el.dataset.betaNav===betaView?'page':'false'));
- betaUpdateTitle();
+ betaUpdateTitle();betaSyncGrouping();
  $('#beta-kicker').hidden=true;$('#beta-kicker').textContent='';
  if(push)betaURL(true);
  if(betaView==='logs')betaRenderLogs();
@@ -181,6 +181,7 @@ function betaRenderBanner(){
 function betaControlInfo(label){
  const input=label?.querySelector('input[type=checkbox]');if(!input||input.disabled)return null;
  if(input.dataset.series)return {scope:'bv',ids:[input.dataset.series]};
+ if(input.dataset.curveGroup){const group=label.closest('.model-group'),ids=[...group.querySelectorAll('.chips input:not(:disabled)')].map(el=>el.dataset.series||el.dataset.alignedRun);return {scope:input.dataset.groupScope==='bv'?'bv':'#aligned-content',ids};}
  if(input.dataset.modelCheck)return {scope:'bv',ids:data.runs.filter(r=>r.model===input.dataset.modelCheck&&usable(r)&&r.method!=='B0').map(r=>r.id)};
  const host=label.closest('.aligned-controls')?.parentElement;
  if(host){const scope='#'+host.id,source=betaAlignedSources.get(scope);if(!source)return null;
@@ -357,7 +358,7 @@ function betaRestoreControls(snapshot,fresh){
  if(!snapshot||!fresh)return false;
  const old=snapshot.host,oldNodes=snapshot.nodes;
  const oldInputs=oldNodes.flatMap(n=>[...(n.matches?.('input,button')?[n]:[]),...(n.querySelectorAll?.('input,button')||[])]),newInputs=[...fresh.querySelectorAll('input,button')];
- const key=e=>e.tagName+':'+e.id+':'+['series','modelCheck','model','alignedRun','alignedModel','matchedKind','alignedMode','alignedZoom','alignedCompress','alignedCsv'].map(k=>e.dataset[k]??'-').join(':');
+ const key=e=>e.tagName+':'+e.id+':'+['series','modelCheck','model','alignedRun','alignedModel','matchedKind','alignedMode','alignedZoom','alignedCompress','alignedCsv','curveGroup','groupScope'].map(k=>e.dataset[k]??'-').join(':');
  if(!oldInputs.length||oldInputs.length!==newInputs.length||oldInputs.some((e,i)=>key(e)!==key(newInputs[i])))return false;
  for(let i=0;i<oldInputs.length;i++){
   const a=oldInputs[i],b=newInputs[i];a.checked=b.checked;a.indeterminate=b.indeterminate;a.disabled=b.disabled;
@@ -385,6 +386,24 @@ klChart=function(...args){
  }
  betaOriginalKLChart(...renderArgs);betaHighlightCurves();
 };
+
+// One persistent black slider per comparison view; only reorganize the controls.
+const betaGrouping=document.createElement('div');betaGrouping.className='beta-grouping-control';
+betaGrouping.innerHTML='<span>分组</span><div class="segments" aria-label="曲线开关分组"><button data-comparison-group="model" class="selected" aria-pressed="true">按模型</button><button data-comparison-group="task" aria-pressed="false">按任务</button></div>';
+$('#bv-panel').before(betaGrouping);
+function betaSyncGrouping(){
+ betaGrouping.hidden=category==='kl';
+ betaGrouping.querySelectorAll('button').forEach(b=>{const on=b.dataset.comparisonGroup===comparisonGroupMode();b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));});
+ betaScheduleSliders();
+}
+betaGrouping.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+ const next=b.dataset.comparisonGroup;if(next===comparisonGroupMode())return;
+ betaSetPreview(null);comparisonGrouping.set(category,next);
+ let controls;
+ if(category==='bv'){renderControls();controls=$('#series-controls');}
+ else if(isComparison()&&alignedDataset){controls=$('#aligned-content .aligned-controls');const rows=alignedSeries(alignedDataset,alignedRun),view=alignedView(alignedDataset,rows);renderComparisonControls(controls,rows,view.visible,category,()=>renderAligned('#aligned-content',alignedDataset,alignedRun));}
+ betaSyncGrouping();betaDecorateControls();betaAnimateContent(controls);
+});
 
 // Reuse the analysis DOM and rendering functions; only the navigation owns placement.
 const oldHeader=$('.page-head'),betaHomeStatus=$('#beta-home-status'),betaNavStatus=$('#beta-nav-status');
