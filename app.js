@@ -105,16 +105,19 @@ function renderRunning(){
   return `<a class="running-link ${focusedRun===r.id?'current':''}" href="${esc(href)}" data-category-target="${r.category||'bv'}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}" style="--color:${COLORS[r.method]||'#526c89'}" title="${esc(r.model+' / '+r.effort)} · 已记录 ${r.reported_attempts}/${r.budget} 轮；待审查记录不代表独立完成"><span class="swatch"></span><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(r.method)}</strong><span class="running-round">${r.category==='kl'?(r.current_apply??r.reported_attempts):r.reported_attempts}<span> / ${r.budget} ${r.category==='kl'?'Apply · r'+(r.internal_round??0):'轮'}</span></span><span class="running-phase">${phase}</span><span aria-hidden="true">↗</span></a>`;
  }).join('')||'<span class="running-empty">当前没有运行中的实验，各组状态见下方</span>';
  const waiting=manifest.kl?.waiting_runs||[];
- $('#waiting-bar').hidden=!waiting.length;
+ const cards=manifest.kl?.waiting_cards||[];
+ const scrollPositions=new Map($$('#waiting-links .waiting-list').map(el=>[el.dataset.card,el.scrollTop]));
+ $('#waiting-bar').hidden=!cards.length;
  $('#waiting-count').textContent=`${waiting.length} 组`;
- $('#waiting-links').innerHTML=waiting.map(r=>`<a class="running-link" href="?category=kl&dataset=${esc(r.dataset)}&run=${esc(r.id)}#kl-overview" data-category-target="kl" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}"><strong>${esc(r.dataset)} · ${esc(r.model)} KL</strong><span>${r.reported_attempts} / ${r.budget} Apply</span><span class="running-phase">等待名额</span></a>`).join('');
+ $('#waiting-links').innerHTML=cards.map(card=>`<section class="waiting-card" aria-labelledby="waiting-${esc(card.id)}"><div class="waiting-card-heading"><strong id="waiting-${esc(card.id)}">${esc(card.label)}</strong><span class="waiting-environment">${esc(card.environment_name)}</span><span class="waiting-card-count">${card.runs.length} 组</span></div><ol class="waiting-list" data-card="${esc(card.id)}" tabindex="0" aria-label="${esc(card.label)}等待队列，按执行顺序">${card.runs.map(r=>`<li><a class="running-link waiting-link" href="?category=kl&dataset=${esc(r.dataset)}&run=${esc(r.id)}#kl-overview" data-category-target="kl" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}"><span class="waiting-position" title="原队列第 ${r.queue_position} 项">${r.queue_position}</span><span class="waiting-task"><strong>${esc(r.dataset)} · ${esc(r.model)} KL</strong><span>${r.reported_attempts} / ${r.budget} Apply</span></span><span aria-hidden="true">↗</span></a></li>`).join('')||'<li class="waiting-empty">暂无等待任务</li>'}</ol></section>`).join('');
+ $$('#waiting-links .waiting-list').forEach(el=>{el.scrollTop=scrollPositions.get(el.dataset.card)||0;});
  const campaign=manifest.campaign_runs||[];
  $('#campaign-status').innerHTML=campaign.map(r=>{
   const label=r.status==='complete'?'已完成':r.status==='paused'||r.status==='blocked'?'已暂停':r.status==='running'?'运行中':'未开始';
   return `<a href="?category=bv&dataset=${esc(r.dataset)}&run=${esc(r.id)}#curves" data-campaign-run="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} ${esc(r.method)} <strong>${r.reported_attempts}/${r.budget}</strong><span>${label}</span></a>`;
  }).join('');
  $$('[data-campaign-run]').forEach(a=>a.onclick=e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();loadDataset(a.dataset.target,data?.id!==a.dataset.target,a.dataset.campaignRun,true);});
- $$('[data-running]').forEach(a=>a.onclick=e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();if(a.dataset.categoryTarget==='kl'){loadKL(a.dataset.target);}else loadDataset(a.dataset.target,data?.id!==a.dataset.target,a.dataset.running,true);});
+ $$('[data-running]').forEach(a=>a.onclick=e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();if(a.dataset.categoryTarget==='kl'){return loadKL(a.dataset.target,a.dataset.running);}else return loadDataset(a.dataset.target,data?.id!==a.dataset.target,a.dataset.running,true);});
 }
 async function loadDataset(id,reset,focusRun=null,push=false){
  setCategory("bv");++klSequence;++alignedSequence;

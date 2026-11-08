@@ -68,7 +68,7 @@ async function chooseCategory(id){
  setCategory(id);initialRun=null;
  return category==='kl'?loadKL(datasetId):category==='aligned'?loadAligned(datasetId):loadDataset(datasetId,true);
 }
-async function loadKL(id){
+async function loadKL(id,focusRun=null){
  const seq=++klSequence;++loadSeq;++alignedSequence;setCategory('kl');datasetId=id;
  try{
   if(!klData||klData.updated_at!==manifest.updated_at)klData=await getJSON(`./api/v1/${manifest.kl.url}?v=${encodeURIComponent(manifest.updated_at)}`);
@@ -81,7 +81,7 @@ async function loadKL(id){
   if(seq!==klSequence||category!=='kl')return;
   if(klData.updated_at!==manifest.updated_at)throw Error('发布版本尚在同步');
   klReference=klReferenceCache.get(key);
-  const runs=klData.runs.filter(r=>r.dataset===id);klRun=selectedKL(runs);if(klRun)klRunChoices.set(id,klRun.id);
+  const runs=klData.runs.filter(r=>r.dataset===id);klRun=runs.find(r=>r.id===focusRun)||selectedKL(runs);if(klRun)klRunChoices.set(id,klRun.id);
   const wanted=Number(new URL(location).searchParams.get('apply'));
   if(!klRun?.applies.some(a=>a.apply===klApply))klApply=klRun?.applies.at(-1)?.apply??null;
   if(wanted&&klRun?.applies.some(a=>a.apply===wanted))klApply=wanted;
