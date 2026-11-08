@@ -1,6 +1,17 @@
 'use strict';
 let klData=null,klRun=null,klApply=null,klSequence=0;
 let klReference=null;
+const klRunChoices=new Map();
+function selectedKL(runs){
+ const wanted=new URL(location).searchParams.get('run')||klRunChoices.get(datasetId);
+ return runs.find(r=>r.id===wanted)||runs[0];
+}
+function selectKLRun(id){
+ klRun=klData.runs.find(r=>r.id===id&&r.dataset===datasetId);
+ if(!klRun)return;
+ klRunChoices.set(datasetId,id);klApply=klRun.applies.at(-1)?.apply??null;
+ const url=new URL(location);url.searchParams.set('run',id);url.searchParams.delete('apply');history.replaceState(null,'',url);renderKL();
+}
 const klReferenceCache=new Map(),klReferenceVisible={overview:true,candidates:true};
 const klMatchedVisible={overview:{same:true,reduced:true},candidates:{same:true,reduced:true}};
 function selectV0AstraReference(dataset,roundLimit=Infinity){
@@ -70,11 +81,11 @@ async function loadKL(id){
   if(seq!==klSequence||category!=='kl')return;
   if(klData.updated_at!==manifest.updated_at)throw Error('发布版本尚在同步');
   klReference=klReferenceCache.get(key);
-  const runs=klData.runs.filter(r=>r.dataset===id);klRun=runs.find(r=>r.id===new URL(location).searchParams.get('run'))||runs[0];
+  const runs=klData.runs.filter(r=>r.dataset===id);klRun=selectedKL(runs);if(klRun)klRunChoices.set(id,klRun.id);
   const wanted=Number(new URL(location).searchParams.get('apply'));
   if(!klRun?.applies.some(a=>a.apply===klApply))klApply=klRun?.applies.at(-1)?.apply??null;
   if(wanted&&klRun?.applies.some(a=>a.apply===wanted))klApply=wanted;
-  const url=new URL(location);url.searchParams.set('category','kl');url.searchParams.set('dataset',id);url.searchParams.delete('run');url.searchParams.delete('apply');
+  const url=new URL(location);url.searchParams.set('category','kl');url.searchParams.set('dataset',id);if(klRun)url.searchParams.set('run',klRun.id);url.searchParams.delete('apply');
   history.replaceState(null,'',url);renderNav();renderKL();showNotice('');
   $('#updated').textContent=date(manifest.updated_at);$('#updated').dateTime=manifest.updated_at;
  }catch(e){if(seq===klSequence&&category==='kl'){$('#connection').classList.add('stale');showNotice(`KL 数据读取失败，保留上次快照 · ${e.message}`);}}
@@ -123,7 +134,11 @@ function klChart(target,points,label,maxX,selectable=false,reference=null,axisTi
  el.querySelectorAll('[data-apply-point]').forEach(p=>{p.onclick=()=>selectApply(p.dataset.applyPoint);p.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectApply(p.dataset.applyPoint);}};});
 }
 function renderKL(){
+ const queue=$('#kl-queue');if(queue)queue.innerHTML='<table><thead><tr><th>顺序</th><th>测试集</th><th>模型</th><th>状态</th></tr></thead><tbody>'+(manifest.kl.queue||[]).map(q=>`<tr><td>${q.position}</td><td><a href="?category=kl&dataset=${encodeURIComponent(q.dataset)}&run=${encodeURIComponent(q.id)}#kl-panel">${esc(q.dataset)}</a></td><td>${esc(q.model)} / ${esc(q.effort)}</td><td>${klStatus(q.status)}</td></tr>`).join('')+'</tbody></table>';
  if(category!=='kl'||!manifest)return;
+ const options=klData?.runs.filter(r=>r.dataset===datasetId)||[];
+ const selector=$('#kl-run-select');if(selector){selector.innerHTML=options.map(r=>`<option value="${esc(r.id)}" ${r.id===klRun?.id?'selected':''}>${esc(r.model+' / '+r.effort+' · '+klStatus(r.status))}</option>`).join('');selector.value=klRun?.id||'';selector.onchange=e=>selectKLRun(e.target.value);}
+ if($('#kl-path-label'))$('#kl-path-label').textContent=klRun?'KL / '+klRun.model+' '+klRun.effort:'KL';
  const meta=manifest.datasets.find(d=>d.id===datasetId);renderAligned('#kl-aligned',klDatasetCache.get(`${manifest.updated_at}:${datasetId}`),klRun);$('#kl-name').textContent=(meta?.title||datasetId)+' · KL';
  if(!klData){$('#kl-body').hidden=true;$('#kl-state').textContent='正在读取 KL 数据…';return;}
  if(!klRun){$('#kl-body').hidden=true;$('#kl-state').textContent='此测试集尚未登记 KL 实验';return;}
@@ -167,8 +182,9 @@ function alignedSeries(dataset,run){
   id:r.id,model:r.model,effort:r.effort,method:r.method,color:COLORS[r.method],dash:DASH[r.model]||'',
   points:r.search.map(p=>({round:p.round,y:p.status==='passed'?p.timing?.mean_ms??null:null,status:p.status,axes:p.axes}))
  }));
- if(run)series.push({id:run.id,model:run.model,effort:run.effort,method:'Aligned KL',color:'#E69F00',dash:DASH[run.model]||'',
-  points:(run.aligned?.points||[]).filter(p=>p.counted).map(p=>({...p,y:p.latency_ms,epoch:run.dataset==='Mega'&&p.apply>=5?2:1}))});
+ const peers=[...(run?[run]:[]),...(klData?.runs.filter(r=>r.dataset===dataset.id&&r.id!==run?.id)||[])];
+ for(const run of peers)series.push({id:run.id,model:run.model,effort:run.effort,method:'Aligned KL',color:'#E69F00',dash:DASH[run.model]||'',
+  points:(run.aligned?.points||[]).filter(p=>p.counted).map(p=>({...p,y:p.latency_ms,epoch:run.id.startsWith('kl-astra-high-serial-20261102-')&&run.dataset==='Mega'&&p.apply>=5?2:1}))});
  return series;
 }
 async function loadAligned(id){
