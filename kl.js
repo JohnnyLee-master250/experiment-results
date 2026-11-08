@@ -183,7 +183,7 @@ function alignedSeries(dataset,run){
   points:r.search.map(p=>({round:p.round,y:p.status==='passed'?p.timing?.mean_ms??null:null,status:p.status,axes:p.axes}))
  }));
  const peers=[...(run?[run]:[]),...(klData?.runs.filter(r=>r.dataset===dataset.id&&r.id!==run?.id)||[])];
- for(const run of peers)series.push({id:run.id,model:run.model,effort:run.effort,method:'Aligned KL',color:'#E69F00',dash:DASH[run.model]||'',
+ for(const run of peers)series.push({id:run.id,model:run.model,effort:run.effort,method:'Aligned KL',color:'#E69F00',dash:run.model==='DeepSeek Flash'?'2 4':DASH[run.model]||'',
   points:(run.aligned?.points||[]).filter(p=>p.counted).map(p=>({...p,y:p.latency_ms,epoch:run.id.startsWith('kl-astra-high-serial-20261102-')&&run.dataset==='Mega'&&p.apply>=5?2:1}))});
  return series;
 }
