@@ -202,13 +202,23 @@ function betaSyncSelectChoices(){
    select.hidden=true;const group=document.createElement('div');group.className='segments beta-select-segments';group.setAttribute('role','radiogroup');group.setAttribute('aria-label',select.getAttribute('aria-label')||caption.textContent);field.append(group);
   }
   const group=field.querySelector('.beta-select-segments'),options=[...select.querySelectorAll('option')],signature=options.map(o=>o.value+'\0'+o.textContent).join('\n');
-  if(group.dataset.options!==signature){group.dataset.options=signature;group.replaceChildren(...options.map(option=>{
+  if(group.dataset.options!==signature){group.dataset.options=signature;delete group.dataset.visibleSelection;group.replaceChildren(...options.map(option=>{
    const button=document.createElement('button');button.type='button';button.dataset.value=option.value;button.textContent=option.textContent;button.setAttribute('role','radio');
    button.onclick=()=>{select.value=option.value;select.dispatchEvent(new window.Event('change',{bubbles:true}));betaSyncSelectChoices();};
    button.onkeydown=e=>{const all=[...group.querySelectorAll('button:not(:disabled)')],i=all.indexOf(button);let next;if(e.key==='ArrowRight'||e.key==='ArrowDown')next=all[(i+1)%all.length];else if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=all[(i-1+all.length)%all.length];else if(e.key==='Home')next=all[0];else if(e.key==='End')next=all.at(-1);if(next){e.preventDefault();next.click();next.focus();}};
    return button;
   }));}
   [...group.children].forEach((button,i)=>{const on=button.dataset.value===select.value;button.disabled=select.disabled||options[i].disabled;button.classList.toggle('selected',on);button.setAttribute('aria-checked',String(on));button.setAttribute('aria-pressed',String(on));button.tabIndex=on?0:-1;});
+  // Reveal a changed selection within its own track without moving the page.
+  // Ordinary redraws preserve the user's manual horizontal scroll position.
+  if(group.dataset.visibleSelection!==select.value)requestAnimationFrame(()=>{
+   if(!group.isConnected||!group.clientWidth)return;
+   const active=group.querySelector('[aria-checked="true"]');if(!active)return;
+   const track=group.getBoundingClientRect(),item=active.getBoundingClientRect();
+   if(item.left<track.left+6)group.scrollLeft+=item.left-track.left-6;
+   else if(item.right>track.right-6)group.scrollLeft+=item.right-track.right+6;
+   group.dataset.visibleSelection=select.value;
+  });
  });
 }
 function betaHighlightCurves(){

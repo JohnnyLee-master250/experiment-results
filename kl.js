@@ -93,6 +93,10 @@ async function loadKL(id,focusRun=null){
 function selectApply(index){
  klApply=Number(index);const url=new URL(location);url.searchParams.set('category','kl');url.searchParams.set('dataset',datasetId);url.searchParams.set('apply',String(index));url.hash='kl-inner';history.replaceState(null,'',url);renderKL();
 }
+function klPlotHeight(el,fallback){
+ const h=typeof getComputedStyle==='function'?parseFloat(getComputedStyle(el).getPropertyValue('--kl-plot-height')):NaN;
+ return Number.isFinite(h)&&h>=200?h:fallback;
+}
 function klChart(target,points,label,maxX,selectable=false,reference=null,axisTicks=new Map(),extraReferences=[]){
  const el=$(target),values=points.filter(p=>Number.isFinite(p.y)&&p.y>0);
  const references=[...(reference?[{...reference,kind:'full',color:'#CC79A7',dash:'8 4',caption:`V0 Astra/high 全程最快搜索均值：${fmt(reference.latency_ms)} ms，第 ${reference.round} 轮`}]:[]),...extraReferences];
@@ -108,7 +112,7 @@ function klChart(target,points,label,maxX,selectable=false,reference=null,axisTi
  }
  const costReadout=el.parentNode.querySelector('.cost-readout');if(costReadout)costReadout.hidden=true;
  if(!values.length&&!references.length){el.innerHTML='<div class="kl-empty">暂无有效测量<br><small>结果保存后自动更新，缺失值不补成 0。</small></div>';return;}
- const w=Math.max(el.clientWidth||600,300),h=330;
+ const w=Math.max(el.clientWidth||600,300),h=klPlotHeight(el,330);
  const longest=Math.max(1,...[...axisTicks.values()].map(t=>t.text.length))*6;
  const rotate=longest>(w-110)/Math.max(1,maxX-1)-6;
  const pad={l:rotate?82:58,r:24,t:24,b:rotate?115:45};
@@ -226,7 +230,7 @@ function renderAligned(target,dataset,run,previewIds=[]){
   costChart(chart,selected.map(r=>({...r,name:r.model+' '+r.method,points:r.points.map(p=>({...p,name:'r'+p.round+(p.apply?' · Apply '+p.apply:'' )}))})),{best:view.mode==='best',zoom:view.zoom,readout:host.querySelector('.aligned-readout')});
   return;
  }
- const chart=host.querySelector('.aligned-chart'),w=Math.max(320,chart.clientWidth||800),h=340,pad={l:66,r:20,t:26,b:45},maxX=Math.max(30,...all.flatMap(r=>r.points.map(p=>p.round)));
+ const chart=host.querySelector('.aligned-chart'),w=Math.max(320,chart.clientWidth||800),h=klPlotHeight(chart,340),pad={l:66,r:20,t:26,b:45},maxX=Math.max(30,...all.flatMap(r=>r.points.map(p=>p.round)));
  let values=selected.flatMap(r=>r.points.filter(p=>p.y!=null).map(p=>p.y)),ymin=0,ymax=Math.max(.001,...values)*1.08;
  if(view.zoom&&values.length){const tails=selected.map(r=>Math.min(...r.points.filter(p=>p.y!=null).map(p=>p.y))).filter(Number.isFinite);if(tails.length){const lo=Math.min(...tails),hi=Math.max(...tails),space=Math.max((hi-lo)*.15,hi*.035,.000001);ymin=Math.max(0,lo-space);ymax=hi+space;}}
  const x=n=>pad.l+(n-1)/Math.max(1,maxX-1)*(w-pad.l-pad.r),y=n=>h-pad.b-(n-ymin)/(ymax-ymin)*(h-pad.t-pad.b),clip='aligned-clip-'+target.replace(/[^a-z]/g,'');
