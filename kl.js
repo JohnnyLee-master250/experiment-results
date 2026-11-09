@@ -117,17 +117,17 @@ function klChart(target,points,label,maxX,selectable=false,reference=null,axisTi
  const ymax=Math.max(...values.map(p=>p.y),...points.map(p=>p.best||0),...references.map(r=>r.latency_ms))*1.12;
  const x=v=>pad.l+(v-1)/Math.max(1,maxX-1)*(w-pad.l-pad.r),y=v=>h-pad.b-v/ymax*(h-pad.t-pad.b);
  let grid='',line='',bestLine='',last=null,lastBest=null;
- for(let i=0;i<=4;i++){const v=ymax*i/4;grid+=`<line x1="${pad.l}" x2="${w-pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="#edf0f4"/><text x="${pad.l-8}" y="${y(v)+4}" text-anchor="end">${fmt(v,3)}</text>`;}
+ for(let i=0;i<=4;i++){const v=ymax*i/4;grid+=`<line data-chart-key="y-grid:${v}" x1="${pad.l}" x2="${w-pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="#edf0f4"/><text data-chart-key="y-tick:${v}" x="${pad.l-8}" y="${y(v)+4}" text-anchor="end">${fmt(v,3)}</text>`;}
  for(let i=1;i<=maxX;i++){
   if(maxX>25&&i!==1&&i!==maxX&&i%5)continue;
   const tick=axisTicks.get(i),yy=h-pad.b+20;
-  grid+=`<text class="kl-axis-tick" data-x="${i}" x="${x(i)}" y="${yy}" text-anchor="${rotate?'end':i===1?'start':i===maxX?'end':'middle'}" ${rotate?`transform="rotate(-60 ${x(i)} ${yy})"`:''}>${esc(tick?.text||String(i))}<title>${esc(tick?.detail||`${label} ${i}`)}</title></text>`;
+  grid+=`<text data-chart-key="x-tick:${i}" class="kl-axis-tick" data-x="${i}" x="${x(i)}" y="${yy}" text-anchor="${rotate?'end':i===1?'start':i===maxX?'end':'middle'}" ${rotate?`transform="rotate(-60 ${x(i)} ${yy})"`:''}>${esc(tick?.text||String(i))}<title>${esc(tick?.detail||`${label} ${i}`)}</title></text>`;
  }
  for(const p of points){
   if(p.y!=null){line+=(last?' L':'M')+`${x(p.x)},${y(p.y)}`;last=p;}else last=null;
   if(p.best!=null){bestLine+=(lastBest?` H${x(p.x)} V${y(p.best)}`:`M${x(p.x)},${y(p.best)}`);lastBest=p;}
  }
- let markup=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}"><text x="12" y="16">ms ↓</text>${grid}<path d="${bestLine}" fill="none" stroke="#009E73" stroke-width="2" stroke-dasharray="5 3"/><path d="${line}" fill="none" stroke="#0072B2" stroke-width="2"/>${values.map(p=>`<circle cx="${x(p.x)}" cy="${y(p.y)}" r="${selectable&&p.x===klApply?6:4}" fill="#0072B2" ${selectable?`data-apply-point="${p.x}" role="button" tabindex="0" aria-label="选择 Apply ${p.x}，${fmt(p.y)} 毫秒"`:''}><title>${esc(label)} ${p.x}: ${fmt(p.y)} ms</title></circle>`).join('')}<text x="${w/2}" y="${h-1}" text-anchor="middle">${esc(label)}</text>`;
+ let markup=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}"><text data-chart-key="y-label" x="12" y="16">ms ↓</text>${grid}<path data-chart-key="kl-best" d="${bestLine}" fill="none" stroke="#009E73" stroke-width="2" stroke-dasharray="5 3"/><path data-chart-key="kl-measurements" d="${line}" fill="none" stroke="#0072B2" stroke-width="2"/>${values.map(p=>`<circle cx="${x(p.x)}" cy="${y(p.y)}" r="${selectable&&p.x===klApply?6:4}" fill="#0072B2" ${selectable?`data-apply-point="${p.x}" role="button" tabindex="0" aria-label="选择 Apply ${p.x}，${fmt(p.y)} 毫秒"`:''}><title>${esc(label)} ${p.x}: ${fmt(p.y)} ms</title></circle>`).join('')}<text data-chart-key="x-label" x="${w/2}" y="${h-1}" text-anchor="middle">${esc(label)}</text>`;
  if(references.length){
   for(const ref of references)markup+=`<line class="${ref.kind==='full'?'kl-v0-reference':'kl-v0-matched'}" data-reference="${ref.kind}" x1="${pad.l}" x2="${w-pad.r}" y1="${y(ref.latency_ms)}" y2="${y(ref.latency_ms)}" stroke="${ref.color}" stroke-width="2" stroke-dasharray="${ref.dash}"><title>${esc(ref.caption)}${ref.kind==='full'?'':` · 最快记录为 r${ref.round}`}</title></line>`;
   if(!values.length)markup+=`<text x="${w/2}" y="${h/2}" text-anchor="middle">暂无 KL 有效测量</text>`;
@@ -276,9 +276,9 @@ function renderAligned(target,dataset,run,previewIds=[]){
  if(view.zoom&&values.length){const tails=selected.map(r=>Math.min(...displayed(r).filter(p=>inRange(p)&&p.viewY!=null).map(p=>p.viewY))).filter(Number.isFinite);if(tails.length){const lo=Math.min(...tails),hi=Math.max(...tails),space=Math.max((hi-lo)*.15,hi*.035,.000001);ymin=Math.max(0,lo-space);ymax=hi+space;}}
  const x=n=>pad.l+(n-minRound)/Math.max(1,maxRound-minRound)*(w-pad.l-pad.r),y=n=>h-pad.b-(n-ymin)/(ymax-ymin)*(h-pad.t-pad.b),clip='aligned-clip-'+target.replace(/[^a-z]/g,'');
  let svg=`<svg viewBox="0 0 ${w} ${h}" role="img"><title>Aligned KL，横轴为有效评测序号，纵轴为延迟毫秒</title><defs><clipPath id="${clip}"><rect x="${pad.l}" y="${pad.t}" width="${w-pad.l-pad.r}" height="${h-pad.t-pad.b}"/></clipPath></defs>`;
- for(const v of ticks(ymin,ymax,5))svg+=`<line x1="${pad.l}" x2="${w-pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="#edf0f4"/><text x="${pad.l-8}" y="${y(v)+4}" text-anchor="end">${tickFmt(v)}</text>`;
- for(const v of [...new Set([minRound,...ticks(minRound,maxRound,w<500?4:8).filter(Number.isInteger),maxRound])])svg+=`<text x="${x(v)}" y="${h-22}" text-anchor="middle">${v}</text>`;
- svg+=`<text x="12" y="16">ms ↓</text><text x="${w/2}" y="${h-3}" text-anchor="middle">轮次${view.compressed?' · KL r ÷ 1.5':''}</text><g clip-path="url(#${clip})">`;
+ for(const v of ticks(ymin,ymax,5))svg+=`<line data-chart-key="y-grid:${v}" x1="${pad.l}" x2="${w-pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="#edf0f4"/><text data-chart-key="y-tick:${v}" x="${pad.l-8}" y="${y(v)+4}" text-anchor="end">${tickFmt(v)}</text>`;
+ for(const v of [...new Set([minRound,...ticks(minRound,maxRound,w<500?4:8).filter(Number.isInteger),maxRound])])svg+=`<text data-chart-key="x-tick:${v}" x="${x(v)}" y="${h-22}" text-anchor="middle">${v}</text>`;
+ svg+=`<text data-chart-key="y-label" x="12" y="16">ms ↓</text><text data-chart-key="x-label" x="${w/2}" y="${h-3}" text-anchor="middle">轮次${view.compressed?' · KL r ÷ 1.5':''}</text><g clip-path="url(#${clip})">`;
  function curvePath(r,scale=1){let best=null,path='',last=false;for(const p of r.points){if(p.y!=null)best=best==null?p.y:Math.min(best,p.y);const v=view.mode==='best'?best:p.y;if(v==null){last=false;continue;}path+=last?(view.mode==='best'?` H${x(p.round*scale)} V${y(v)}`:` L${x(p.round*scale)},${y(v)}`):` M${x(p.round*scale)},${y(v)}`;last=true;}return path;}
  const scale=view.visualScale??(view.compressed?2/3:1);
  for(const r of selected){const kl=r.baseMethod==='KL',ratio=kl?scale:1;

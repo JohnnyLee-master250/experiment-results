@@ -162,27 +162,33 @@ function chartTween(from,to){
 function chartNodeKey(el,index){
  if(el.nodeType!==1)return '#'+index;
  for(const name of ['data-chart-key','data-comparison-series','data-run','data-aligned-curve','data-reference','data-real-round','data-failed-round','data-cost-point','clip-path','id'])if(el.hasAttribute(name))return el.tagName+':'+name+':'+el.getAttribute(name);
- if(el.tagName.toLowerCase()==='text')return 'text:'+el.textContent;
+ if(el.tagName.toLowerCase()==='text')return 'text:'+el.getAttribute('text-anchor')+':'+el.getAttribute('class')+':'+el.textContent;
  return el.tagName+':'+index;
 }
 function chartCurvePaths(el){return el.matches?.('path[data-run],path[data-aligned-curve]')?[el]:[...el.querySelectorAll?.('path[data-run],path[data-aligned-curve]')||[]];}
+const chartPulseEffects=new WeakMap();
 function chartPulse(el,leaving=false,delay=0){
  if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return null;
  const paths=chartCurvePaths(el);if(!paths.length)return null;
- const animations=[];
+ const animations=[],cleanups=[];
  for(const p of paths){
+  chartPulseEffects.get(p)?.();
   const length=p.getTotalLength?.();if(!length)continue;
+  const effects=[],lights=[];
+  const cleanup=()=>{effects.forEach(a=>a.cancel());lights.forEach(light=>light.remove());delete p.dataset.chartEntering;if(chartPulseEffects.get(p)===cleanup)chartPulseEffects.delete(p);};
+  chartPulseEffects.set(p,cleanup);cleanups.push(cleanup);
   p.dataset.chartEntering='true';
-  const anim=p.animate([{strokeDasharray:`${length} ${length}`,strokeDashoffset:leaving?0:length,opacity:1},{strokeDasharray:`${length} ${length}`,strokeDashoffset:leaving?-length:0,opacity:leaving?0:1}],{duration:leaving?260:340,easing:'cubic-bezier(.16,.75,.22,1)',delay,fill:'backwards'});
-  anim.onfinish=()=>delete p.dataset.chartEntering;animations.push(anim);
+  const anim=p.animate([{strokeDasharray:`${length} ${length}`,strokeDashoffset:leaving?0:length,opacity:1},{strokeDasharray:`${length} ${length}`,strokeDashoffset:leaving?-length:0,opacity:leaving?0:1}],{duration:leaving?260:340,easing:'cubic-bezier(.16,.75,.22,1)',delay,fill:leaving?'both':'backwards'});
+  anim.onfinish=()=>delete p.dataset.chartEntering;animations.push(anim);effects.push(anim);
   for(const [tail,width,opacity] of [[110,6,.18],[50,4,.4],[8,2.5,.95]]){
    const light=p.cloneNode(false);for(const attr of [...light.attributes])if(attr.name==='class'||attr.name==='style'||attr.name.startsWith('data-'))light.removeAttribute(attr.name);
    light.dataset.chartPulse='';light._curveSource=p;light.setAttribute('pathLength','1000');light.setAttribute('stroke-dasharray',`${tail} 2200`);light.setAttribute('stroke-width',width);light.setAttribute('stroke-linecap','round');light.setAttribute('fill','none');light.setAttribute('aria-hidden','true');light.style.pointerEvents='none';
-   light.style.stroke=`color-mix(in srgb, ${p.getAttribute('stroke')} 65%, white)`;p.parentNode.append(light);
-   const pulse=light.animate([{strokeDashoffset:tail,opacity},{strokeDashoffset:tail-1050,opacity:0}],{duration:leaving?260:340,delay,easing:'cubic-bezier(.16,.75,.22,1)',fill:'both'});pulse.onfinish=()=>light.remove();animations.push(pulse);
+   light.style.stroke=`color-mix(in srgb, ${p.getAttribute('stroke')} 65%, white)`;p.parentNode.append(light);lights.push(light);
+   const pulse=light.animate([{strokeDashoffset:tail,opacity},{strokeDashoffset:tail-1050,opacity:0}],{duration:leaving?260:340,delay,easing:'cubic-bezier(.16,.75,.22,1)',fill:'both'});pulse.onfinish=()=>light.remove();animations.push(pulse);effects.push(pulse);
   }
  }
- if(el.tagName.toLowerCase()==='g')animations.push(el.animate([{opacity:leaving?1:.25},{opacity:leaving?0:1}],{duration:260,easing:'ease-out'}));
+ if(el.tagName.toLowerCase()==='g')animations.push(el.animate([{opacity:leaving?1:.25},{opacity:leaving?0:1}],{duration:260,easing:'ease-out',fill:leaving?'forwards':'none'}));
+ animations.cleanup=()=>{cleanups.forEach(cleanup=>cleanup());animations.forEach(a=>a.cancel());};
  return animations;
 }
 function renderChartMarkup(el,markup){
@@ -202,10 +208,10 @@ function renderChartMarkup(el,markup){
   const previousNodes=[...parent.childNodes].filter(n=>!n.hasAttribute?.('data-beta-glint')&&!n.hasAttribute?.('data-chart-pulse'));
   const byKey=new Map(previousNodes.map((n,i)=>[chartNodeKey(n,i),n]));const used=new Set();let cursor=parent.firstChild;
   [...next.childNodes].forEach((n,i)=>{
-   const key=chartNodeKey(n,i);let current=byKey.get(key);
+   const key=chartNodeKey(n,i);let current=byKey.get(key);if(used.has(current))current=null;
    if(!current||current.nodeType!==n.nodeType||current.nodeName!==n.nodeName){current=n.cloneNode(true);parent.insertBefore(current,cursor);entered.push(current);}
    else{
-    const exiting=chartExits.get(current);if(exiting){clearTimeout(exiting.timer);exiting.animations?.forEach(a=>a.cancel());chartExits.delete(current);current.querySelectorAll?.('[data-chart-entering]').forEach(p=>delete p.dataset.chartEntering);}
+    const exiting=chartExits.get(current);if(exiting){clearTimeout(exiting.timer);exiting.animations?.cleanup?.();chartExits.delete(current);entered.push(current);}
     if(current.nodeType===1){
      for(const attr of [...current.attributes])if(!n.hasAttribute(attr.name)&&!['data-chart-entering','style','class'].includes(attr.name))current.removeAttribute(attr.name);
      for(const attr of [...n.attributes])if(current.getAttribute(attr.name)!==attr.value){
@@ -220,7 +226,7 @@ function renderChartMarkup(el,markup){
   });
   for(const n of previousNodes)if(!used.has(n)&&!chartExits.has(n)){
    const animations=chartPulse(n,true);
-   if(animations?.length){const timer=setTimeout(()=>{n.remove();chartExits.delete(n);},270);chartExits.set(n,{timer,animations});}
+   if(animations?.length){const timer=setTimeout(()=>{n.remove();animations.cleanup?.();chartExits.delete(n);},270);chartExits.set(n,{timer,animations});}
    else n.remove();
   }
  }
@@ -430,10 +436,10 @@ function renderChart(el,detail){
  const [ymin,ymax]=bounds(runs,detail,[xmin,xmax]),sx=x=>left+(x-xmin)/(xend-xmin)*w,sy=y=>top+h-(y-ymin)/(ymax-ymin)*h;
  const id=detail?'detail':'overview',clip=`clip-${id}`,yticks=ticks(ymin,ymax,H>300?5:3),xticks=ticks(xmin,xmax,W<500?4:7).filter(Number.isInteger);
  let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" aria-hidden="true"><defs><clipPath id="${clip}"><rect x="${left}" y="${top}" width="${w}" height="${h}"/></clipPath></defs>`;
- svg+=yticks.map(v=>`<line x1="${left}" x2="${W-right}" y1="${sy(v)}" y2="${sy(v)}" stroke="#edf0f4"/><text x="${left-10}" y="${sy(v)+4}" text-anchor="end">${tickFmt(v)}</text>`).join('');
- svg+=xticks.map(v=>`<text x="${sx(v)}" y="${H-22}" text-anchor="middle">${v}</text>`).join('');
- svg+=`<line x1="${left}" x2="${W-right}" y1="${top+h}" y2="${top+h}" stroke="#dce2e8"/><text x="${left}" y="13" class="axis-label">延迟 (ms) ↓</text><text x="${left+w/2}" y="${H-4}" text-anchor="middle" class="axis-label">轮次</text>`;
- if(withFinal)svg+=`<line x1="${sx(finalAt-1)}" x2="${sx(finalAt-1)}" y1="${top}" y2="${top+h}" stroke="#dce2e8" stroke-dasharray="3 4"/><text x="${sx(finalAt)}" y="${H-22}" text-anchor="middle">Final</text>`;
+ svg+=yticks.map(v=>`<line data-chart-key="y-grid:${v}" x1="${left}" x2="${W-right}" y1="${sy(v)}" y2="${sy(v)}" stroke="#edf0f4"/><text data-chart-key="y-tick:${v}" x="${left-10}" y="${sy(v)+4}" text-anchor="end">${tickFmt(v)}</text>`).join('');
+ svg+=xticks.map(v=>`<text data-chart-key="x-tick:${v}" x="${sx(v)}" y="${H-22}" text-anchor="middle">${v}</text>`).join('');
+ svg+=`<line data-chart-key="x-baseline" x1="${left}" x2="${W-right}" y1="${top+h}" y2="${top+h}" stroke="#dce2e8"/><text data-chart-key="y-label" x="${left}" y="13" class="axis-label">延迟 (ms) ↓</text><text data-chart-key="x-label" x="${left+w/2}" y="${H-4}" text-anchor="middle" class="axis-label">轮次</text>`;
+ if(withFinal)svg+=`<line data-chart-key="final-separator" x1="${sx(finalAt-1)}" x2="${sx(finalAt-1)}" y1="${top}" y2="${top+h}" stroke="#dce2e8" stroke-dasharray="3 4"/><text data-chart-key="final-label" x="${sx(finalAt)}" y="${H-22}" text-anchor="middle">Final</text>`;
  svg+=`<g clip-path="url(#${clip})">`;
  for(const r of runs){
   const col=comparisonColor(r,'bv'),pts=series(r);let d='',last=null;
@@ -456,7 +462,7 @@ function renderChart(el,detail){
   if(r.formal)svg+=`<path class="formal-star" d="${star(sx(finalAt),sy(r.formal.mean_ms),detail?6:5)}" fill="${col}" stroke="white" stroke-width=".7"/>`;
   svg+='</g>';
  }
- svg+=`</g><line class="crosshair" x1="0" x2="0" y1="${top}" y2="${top+h}" stroke="#8d9aaa" stroke-dasharray="3 3" visibility="hidden"/></svg>`;
+ svg+=`</g><line data-chart-key="crosshair" class="crosshair" x1="0" x2="0" y1="${top}" y2="${top+h}" stroke="#8d9aaa" stroke-dasharray="3 3" visibility="hidden"/></svg>`;
  if(!runs.length)svg+=`<div style="position:absolute;inset:45% 0;text-align:center;color:#76818f;font-size:12px">选择曲线</div>`;
  renderChartMarkup(el,svg);
  if(detail){
@@ -565,9 +571,9 @@ function costChart(el, lines, options={}) {
  const base=height-pad.b,clip='cost-clip-'+(el.id||'aligned')+(el.closest('#kl-panel')?'kl':'');
  const label=axisText(),yLabel=options.yLabel||'延迟 (ms) ↓';
  let svg='<svg viewBox="0 0 '+width+' '+height+'" role="img"><title>'+esc(label+' / '+yLabel)+'</title><defs><clipPath id="'+clip+'"><rect x="'+(pad.l-4)+'" y="'+(pad.t-6)+'" width="'+(width-pad.l-pad.r+8)+'" height="'+(height-pad.t-pad.b+12)+'"/></clipPath></defs>';
- for(const v of ticks(lo,hi,width<480?4:7))svg+='<text x="'+x(v)+'" y="'+(height-22)+'" text-anchor="middle">'+tickFmt(v)+'</text>';
- for(const v of (options.binary?[0,1]:ticks(ymin,ymax,5)))svg+='<line x1="'+pad.l+'" x2="'+(width-pad.r)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#edf0f4"/><text x="'+(pad.l-8)+'" y="'+(y(v)+4)+'" text-anchor="end">'+(options.binary?(v?'通过':'未通过'):tickFmt(v))+'</text>';
- svg+='<text x="9" y="15">'+esc(yLabel)+'</text><text x="'+(width/2)+'" y="'+(height-3)+'" text-anchor="middle">'+esc(label)+'</text><g clip-path="url(#'+clip+')">';
+ for(const v of ticks(lo,hi,width<480?4:7))svg+='<text data-chart-key="x-tick:'+v+'" x="'+x(v)+'" y="'+(height-22)+'" text-anchor="middle">'+tickFmt(v)+'</text>';
+ for(const v of (options.binary?[0,1]:ticks(ymin,ymax,5)))svg+='<line data-chart-key="y-grid:'+v+'" x1="'+pad.l+'" x2="'+(width-pad.r)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#edf0f4"/><text data-chart-key="y-tick:'+v+'" x="'+(pad.l-8)+'" y="'+(y(v)+4)+'" text-anchor="end">'+(options.binary?(v?'通过':'未通过'):tickFmt(v))+'</text>';
+ svg+='<text data-chart-key="y-label" x="9" y="15">'+esc(yLabel)+'</text><text data-chart-key="x-label" x="'+(width/2)+'" y="'+(height-3)+'" text-anchor="middle">'+esc(label)+'</text><g clip-path="url(#'+clip+')">';
  for(const r of series){
   let best=null,path='',bestPath='',last=false,lastBest=false,epoch;
   for(const p of r.points){

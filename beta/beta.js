@@ -286,15 +286,17 @@ function betaSyncSliders(){
 }
 function betaHighlightCurves(){
  betaTintCharts();
- $$('[data-beta-glint]').forEach(e=>e.remove());
- $$('.beta-curve-highlight').forEach(e=>e.classList.remove('beta-curve-highlight'));
- if(!betaPreview)return;
- const scope=betaPreview.scope,root=scope==='bv'?$('#bv-panel'):scope.startsWith('ref:')?$(scope.slice(4)):$(scope);
- if(!root)return;
- const paths=[...root.querySelectorAll(scope.startsWith('ref:')?'[data-reference]':'path[data-run],path[data-aligned-curve]')].filter(p=>scope.startsWith('ref:')?p.dataset.reference===betaPreview.kind:betaPreview.ids.includes(p.dataset.run||p.dataset.alignedCurve));
+ const scope=betaPreview?.scope,root=!scope?null:scope==='bv'?$('#bv-panel'):scope.startsWith('ref:')?$(scope.slice(4)):$(scope);
+ const paths=root?[...root.querySelectorAll(scope.startsWith('ref:')?'[data-reference]':'path[data-run],path[data-aligned-curve]')].filter(p=>scope.startsWith('ref:')?p.dataset.reference===betaPreview.kind:betaPreview.ids.includes(p.dataset.run||p.dataset.alignedCurve)):[];
+ const emphasized=new Set(paths);
+ $$('[data-beta-glint]').forEach(e=>{if(!emphasized.has(e._curveSource)||e.parentNode!==e._curveSource?.parentNode)e.remove();});
+ $$('.beta-curve-highlight').forEach(e=>{if(!emphasized.has(e))e.classList.remove('beta-curve-highlight');});
  for(const p of paths){
   p.classList.add('beta-curve-highlight');p.style.setProperty('--curve-color',p.getAttribute('stroke'));
   if(betaReducedMotion()||!p.getTotalLength?.())continue;
+  // A selection commit or axis redraw must not restart an existing hover pulse.
+  const retained=[...p.parentNode.querySelectorAll('[data-beta-glint]')].filter(e=>e._curveSource===p);
+  if(retained.length){for(const light of retained)for(const attr of ['d','x1','x2','y1','y2']){const value=p.getAttribute(attr);if(value!==null)light.setAttribute(attr,value);}continue;}
   // Each layer ends at the same moving head; overlapping lengths make a tapered,
   // translucent tail. Normalized path length keeps one pulse per curve every 2s.
   const layers=[[150,7,.06,0],[124,6,.09,0],[98,5.3,.13,0],[72,4.7,.18,12],[48,4.1,.28,25],[27,3.5,.44,45],[12,2.7,.68,65],[3,1.8,.95,90]];
@@ -325,16 +327,21 @@ function betaPreviewEvent(e,on){
  if(betaControlsRendering)return;
  const label=e.target.closest?.('.beta-pill');if(!label||label.contains(e.relatedTarget))return;
  if(e.pointerType==='touch')return;
+ if(!on&&e.type==='focusout'&&label.matches(':hover'))return;
  if(on){if(!label.classList.contains('beta-hover-suppressed'))betaSetPreview(betaControlInfo(label));}
  else {if(e.type==='pointerout')label.classList.remove('beta-hover-suppressed');betaSetPreview(null);}
 }
-document.addEventListener('click',e=>{
- const label=e.target.closest?.('.beta-pill');if(!label||label.querySelector('input')?.disabled)return;
- if(label.matches(':hover'))label.classList.add('beta-hover-suppressed');
- // Checkbox pre-activation already changed checked. Let its change handler commit
- // that value before any control rendering can restore the previous selection.
- betaPreview=null;
-},true);
+function betaCommitHover(e){
+ const input=e.target;if(!input.matches?.('input[type=checkbox]')||input.disabled)return;
+ const label=input.closest('.beta-pill');if(!label)return;
+ const hovered=label.matches(':hover'),on=input.checked||input.indeterminate;
+ label.classList.toggle('beta-hover-suppressed',hovered&&!on);
+ // Capture the checkbox's new value before its handler replaces the controls.
+ // Label clicks also dispatch an input click; only that activation owns state.
+ betaPreview=hovered&&on?betaControlInfo(label):null;
+}
+document.addEventListener('click',betaCommitHover,true);
+document.addEventListener('change',betaCommitHover,true);
 document.addEventListener('pointerover',e=>betaPreviewEvent(e,true));
 document.addEventListener('pointerout',e=>betaPreviewEvent(e,false));
 document.addEventListener('focusin',e=>betaPreviewEvent(e,true));
