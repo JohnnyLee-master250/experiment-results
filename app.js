@@ -172,6 +172,65 @@ function renderRoundRange(chart,scope,maximum,redraw){
 window.addEventListener('pointerup',()=>{rangeDragging=false;});
 window.addEventListener('pointercancel',()=>{rangeDragging=false;});
 
+// A plot gesture and the dual slider share one range state. No data is re-fetched.
+function configureRoundBrush(chart,config){
+ let brush=chart._roundBrush;
+ if(!brush){
+  brush=chart._roundBrush={config:null,drag:null,suppressClickUntil:0};
+  const cancel=()=>{
+   const drag=brush.drag;brush.drag=null;chart.classList.remove('range-brushing');
+   drag?.overlay?.remove();
+   if(drag&&chart.hasPointerCapture?.(drag.id))chart.releasePointerCapture(drag.id);
+  };
+  brush.cancel=cancel;
+  const point=e=>{
+   const rect=chart.getBoundingClientRect(),c=brush.config;
+   return {x:(e.clientX-rect.left)*c.width/rect.width,y:(e.clientY-rect.top)*c.height/rect.height};
+  };
+  const selection=x=>{
+   const c=brush.config,d=brush.drag;
+   const round=v=>c.min+(Math.max(c.left,Math.min(c.right,v))-c.left)/(c.right-c.left)*(c.max-c.min);
+   const a=round(d.x),b=round(x),lo=Math.max(c.min,Math.floor(Math.min(a,b))),hi=Math.min(c.max,Math.ceil(Math.max(a,b)));
+   return [Math.min(lo,c.max-1),Math.max(lo+1,hi)];
+  };
+  chart.addEventListener('pointerdown',e=>{
+   const c=brush.config;if(!c||e.button!==0||e.isPrimary===false||e.target.closest('button,input,a'))return;
+   const p=point(e);if(p.x<c.left||p.x>c.right||p.y<c.top||p.y>c.bottom)return;
+   cancel();brush.drag={id:e.pointerId,x:p.x,lastX:p.x,startClientX:e.clientX,active:false};
+   chart.setPointerCapture(e.pointerId);e.preventDefault();
+  },true);
+  chart.addEventListener('pointermove',e=>{
+   const d=brush.drag;if(!d||d.id!==e.pointerId)return;
+   const c=brush.config,p=point(e);d.lastX=p.x;
+   if(!d.active&&Math.abs(e.clientX-d.startClientX)<5)return;
+   if(!d.active){
+    d.active=true;chart.classList.add('range-brushing');chart.querySelector('.crosshair')?.setAttribute('visibility','hidden');
+    d.overlay=document.createElement('div');d.overlay.className='chart-range-brush';d.overlay.setAttribute('aria-hidden','true');
+    d.overlay.innerHTML='<span class="chart-range-brush-value"></span>';chart.append(d.overlay);
+   }
+   const lo=Math.max(c.left,Math.min(c.right,Math.min(d.x,p.x))),hi=Math.max(c.left,Math.min(c.right,Math.max(d.x,p.x)));
+   Object.assign(d.overlay.style,{left:lo/c.width*100+'%',width:(hi-lo)/c.width*100+'%',top:c.top/c.height*100+'%',height:(c.bottom-c.top)/c.height*100+'%'});
+   d.overlay.firstChild.textContent=selection(p.x).join(' – ');
+   e.preventDefault();e.stopImmediatePropagation();
+  },true);
+  chart.addEventListener('pointerup',e=>{
+   const d=brush.drag;if(!d||d.id!==e.pointerId)return;
+   const c=brush.config,range=d.active?selection(point(e).x):null;cancel();
+   if(!range)return;
+   brush.suppressClickUntil=performance.now()+400;
+   const key=c.scope+':'+c.dataset;
+   if(range[0]===0&&range[1]===Math.ceil(c.maximum))roundWindows.delete(key);else roundWindows.set(key,range);
+   rangeDragging=false;e.preventDefault();e.stopImmediatePropagation();c.redraw();
+  },true);
+  chart.addEventListener('click',e=>{if(performance.now()<brush.suppressClickUntil){e.preventDefault();e.stopImmediatePropagation();}},true);
+  chart.addEventListener('pointercancel',cancel);chart.addEventListener('lostpointercapture',cancel);
+  chart.addEventListener('keydown',e=>{if(e.key==='Escape'&&brush.drag){cancel();e.preventDefault();e.stopImmediatePropagation();}},true);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&brush.drag)cancel();});
+ }
+ brush.cancel();brush.config=config?{...config,dataset:datasetId}:null;
+ chart.classList.toggle('round-brush-enabled',!!config);
+}
+
 // Reconcile chart nodes instead of replacing the axes with each curve toggle.
 const chartTransitions=new WeakMap(),chartExits=new WeakMap();
 const chartNumbers=/-?(?:\d*\.\d+|\d+\.?\d*)(?:e[-+]?\d+)?/gi;
@@ -440,6 +499,7 @@ function bounds(runs,detail,windowRange=[state.xmin,state.xmax]){
 }
 function star(cx,cy,r=6){let path='';for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rad=i%2?r*.43:r;path+=`${i?'L':'M'}${cx+Math.cos(a)*rad},${cy+Math.sin(a)*rad}`;}return path+'Z';}
 function renderChart(el,detail){
+ configureRoundBrush(el,null);
  renderRoundRange(el,'bv',roundBudget(),renderCharts);
  if(axisMode!=='round') {
   const runs=selected().filter(r=>r.search.some(p=>p.axes));
@@ -487,6 +547,7 @@ function renderChart(el,detail){
  svg+=`</g><line data-chart-key="crosshair" class="crosshair" x1="0" x2="0" y1="${top}" y2="${top+h}" stroke="#8d9aaa" stroke-dasharray="3 3" visibility="hidden"/></svg>`;
  if(!runs.length)svg+=`<div style="position:absolute;inset:45% 0;text-align:center;color:#76818f;font-size:12px">选择曲线</div>`;
  renderChartMarkup(el,svg);
+ configureRoundBrush(el,{scope:'bv',maximum:roundBudget(),min:xmin,max:xmax,width:W,height:H,left,right:sx(xmax),top,bottom:top+h,redraw:renderCharts});
  if(detail){
   const clipped=runs.filter(r=>{const p=series(r).filter(p=>p.y!=null&&p.round>=xmin&&p.round<=xmax);return p.length&&!p.some(p=>p.y>=ymin&&p.y<=ymax);}).length;
   $('#detail-domain').textContent=`${tickFmt(ymin)}–${tickFmt(ymax)} ms${clipped?' · '+clipped+' 条在范围外':''}`;

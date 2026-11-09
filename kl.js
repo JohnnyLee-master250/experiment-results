@@ -266,7 +266,7 @@ function renderAligned(target,dataset,run,previewIds=[]){
  host.querySelector('[data-aligned-csv]').onclick=()=>download(`aligned-kl-${dataset.id}.csv`,['run_id,model,effort,round,apply,inner_sequence,status,counted,latency_ms,recorded_at,elapsed_seconds,reported_tokens,missing_responses,disputed,tokens_complete',...points.map(p=>[p.run_id,p.model,p.effort,p.round,p.apply,p.inner_sequence,p.status,p.counted,p.latency_ms,p.recorded_at,p.axes?.elapsed_s,p.axes?.tokens,p.axes?.missing_responses,p.axes?.disputed,p.axes?.tokens_complete].map(csvCell).join(','))].join('\n'),'text/csv');
  if(axisMode!=='round'){
   if(retainedRange)retainedRange.hidden=true;
-  const chart=host.querySelector('.aligned-chart');chart.setAttribute('aria-label','Aligned KL · '+axisText());
+  const chart=host.querySelector('.aligned-chart');configureRoundBrush(chart,null);chart.setAttribute('aria-label','Aligned KL · '+axisText());
   costChart(chart,selected.map(r=>({...r,name:r.model+' '+r.method,points:r.points.map(p=>({...p,name:'r'+p.round+(p.apply?' · Apply '+p.apply:'' )}))})),{best:view.mode==='best',zoom:view.zoom,readout:host.querySelector('.aligned-readout')});
   return;
  }
@@ -290,6 +290,7 @@ function renderAligned(target,dataset,run,previewIds=[]){
   svg+='</g>';
  }
  svg+='</g></svg>';renderChartMarkup(chart,svg);
+ configureRoundBrush(chart,{scope:dataset.comparison_scope||'aligned',maximum:maxX,min:minRound,max:maxRound,width:w,height:h,left:pad.l,right:w-pad.r,top:pad.t,bottom:h-pad.b,redraw});
  view.paintCompression=ratio=>{
   for(const r of selected.filter(r=>r.baseMethod==='KL')){
    const group=[...chart.querySelectorAll('[data-comparison-series]')].find(el=>el.dataset.comparisonSeries===r.id);if(!group)continue;
