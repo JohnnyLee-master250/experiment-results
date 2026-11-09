@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-09T17:50:54.554746+00:00",
+  "source_captured_at": "2026-11-09T17:56:43.702263+00:00",
   "queue_cards": [
     {
       "id": "card1",
@@ -24020,8 +24020,8 @@
       "queue_position": 3,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "blocked",
-      "phase": "已安全隔离，等待修复",
+      "status": "waiting",
+      "phase": "已修复，等待原断点接续",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 3,
@@ -24070,8 +24070,8 @@
       "queue_position": 5,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "blocked",
-      "phase": "已安全隔离，等待修复",
+      "status": "waiting",
+      "phase": "已修复，等待原断点接续",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 3,
@@ -24120,8 +24120,8 @@
       "queue_position": 7,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "blocked",
-      "phase": "已安全隔离，等待修复",
+      "status": "waiting",
+      "phase": "已修复，等待原断点接续",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 3,
@@ -24170,8 +24170,8 @@
       "queue_position": 9,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "blocked",
-      "phase": "已安全隔离，等待修复",
+      "status": "waiting",
+      "phase": "已修复，等待原断点接续",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 3,
@@ -25550,10 +25550,10 @@
         {
           "apply": 8,
           "native_index": 7,
-          "status": "running",
+          "status": "completed",
           "started_at": "2026-11-09T17:03:53.597038+00:00",
-          "ended_at": null,
-          "elapsed_seconds": 2815.5364575898275,
+          "ended_at": "2026-11-09T17:54:15.825453+00:00",
+          "elapsed_seconds": 3022.2284157332033,
           "candidates": [
             {
               "accepted": false,
@@ -25752,9 +25752,53 @@
                 "disputed": false,
                 "tokens_complete": false
               }
+            },
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 2.1174800395965576,
+              "reference_latency_ms": 2.148240089416504,
+              "sequence": 12,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-09T17:48:03.045898+00:00",
+              "axes": {
+                "elapsed_s": 29970.818,
+                "tokens": 66705421,
+                "missing_responses": 52,
+                "disputed": false,
+                "tokens_complete": false
+              }
             }
           ],
-          "evaluations": 11,
+          "evaluations": 12,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 1,
+          "delivered": {
+            "accepted": true,
+            "stage": null,
+            "correctness_passed": true,
+            "latency_ms": 2.1181899309158325,
+            "reference_latency_ms": 2.1329100131988525
+          },
+          "axes": {
+            "elapsed_s": 30035.333,
+            "tokens": 67264184,
+            "missing_responses": 52,
+            "disputed": false,
+            "tokens_complete": false
+          }
+        },
+        {
+          "apply": 9,
+          "native_index": 8,
+          "status": "running",
+          "started_at": "2026-11-09T17:54:15.825453+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 126.72677003033459,
+          "candidates": [],
+          "evaluations": 0,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -25762,7 +25806,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 72,
+        "count": 73,
         "excluded_count": 2,
         "timing_statistic": "median",
         "points": [
@@ -27091,6 +27135,24 @@
               "disputed": false,
               "tokens_complete": false
             }
+          },
+          {
+            "round": 73,
+            "apply": 8,
+            "inner_sequence": 12,
+            "recorded_at": "2026-11-09T17:48:03.045898+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 2.013369917869568,
+            "axes": {
+              "elapsed_s": 29970.818,
+              "tokens": 66705421,
+              "missing_responses": 52,
+              "disputed": false,
+              "tokens_complete": false
+            }
           }
         ]
       }
@@ -27192,8 +27254,8 @@
       "queue_position": 2,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "blocked",
-      "phase": "已安全隔离，等待修复",
+      "status": "waiting",
+      "phase": "已修复，等待原断点接续",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 3,
@@ -28459,8 +28521,8 @@
       "queue_position": 4,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "blocked",
-      "phase": "已安全隔离，等待修复",
+      "status": "waiting",
+      "phase": "已修复，等待原断点接续",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 3,
@@ -28509,8 +28571,8 @@
       "queue_position": 6,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "blocked",
-      "phase": "已安全隔离，等待修复",
+      "status": "waiting",
+      "phase": "已修复，等待原断点接续",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 3,
@@ -28559,8 +28621,8 @@
       "queue_position": 8,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "blocked",
-      "phase": "已安全隔离，等待修复",
+      "status": "waiting",
+      "phase": "已修复，等待原断点接续",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 3,
@@ -28609,8 +28671,8 @@
       "queue_position": 10,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "blocked",
-      "phase": "已安全隔离，等待修复",
+      "status": "waiting",
+      "phase": "已修复，等待原断点接续",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 3,
@@ -31030,11 +31092,27 @@
       "reason": "独立验收完成"
     },
     {
+      "id": "kl-astra-high-serial-20261102-kl-top-k:resumed:2026-11-04T04:33:54.802769+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-top-k",
+      "dataset": "TopK",
+      "at": "2026-11-04T04:33:54.802769+00:00",
+      "kind": "resumed",
+      "reason": "独立验收完成"
+    },
+    {
       "id": "kl-astra-high-serial-20261102-kl-mega:completed:2026-11-03T21:00:50.698866+00:00",
       "run_id": "kl-astra-high-serial-20261102-kl-mega",
       "dataset": "Mega",
       "at": "2026-11-03T21:00:50.698866+00:00",
       "kind": "completed",
+      "reason": "独立验收完成"
+    },
+    {
+      "id": "kl-astra-high-serial-20261102-kl-mega:resumed:2026-11-03T20:54:19.345567+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-mega",
+      "dataset": "Mega",
+      "at": "2026-11-03T20:54:19.345567+00:00",
+      "kind": "resumed",
       "reason": "独立验收完成"
     },
     {
@@ -31054,6 +31132,14 @@
       "reason": "独立验收完成"
     },
     {
+      "id": "kl-astra-high-serial-20261102-kl-mqa:resumed:2026-11-03T14:46:21.300738+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-mqa",
+      "dataset": "MQA",
+      "at": "2026-11-03T14:46:21.300738+00:00",
+      "kind": "resumed",
+      "reason": "独立验收完成"
+    },
+    {
       "id": "kl-astra-high-serial-20261102-kl-gdn:completed:2026-11-03T12:56:45.968310+00:00",
       "run_id": "kl-astra-high-serial-20261102-kl-gdn",
       "dataset": "GDN",
@@ -31070,6 +31156,14 @@
       "reason": "已核对原操作后恢复"
     },
     {
+      "id": "kl-astra-high-serial-20261102-kl-gdn:resumed:2026-11-03T11:51:14.470231+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-gdn",
+      "dataset": "GDN",
+      "at": "2026-11-03T11:51:14.470231+00:00",
+      "kind": "resumed",
+      "reason": "独立验收完成"
+    },
+    {
       "id": "kl-astra-high-serial-20261102-kl-mega:started:2026-11-03T11:02:02.913089+00:00",
       "run_id": "kl-astra-high-serial-20261102-kl-mega",
       "dataset": "Mega",
@@ -31083,6 +31177,14 @@
       "dataset": "GQA",
       "at": "2026-11-03T11:02:00.153400+00:00",
       "kind": "completed",
+      "reason": "独立验收完成"
+    },
+    {
+      "id": "kl-astra-high-serial-20261102-kl-gqa:resumed:2026-11-03T10:54:51.845416+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-gqa",
+      "dataset": "GQA",
+      "at": "2026-11-03T10:54:51.845416+00:00",
+      "kind": "resumed",
       "reason": "独立验收完成"
     },
     {
@@ -31108,6 +31210,14 @@
       "at": "2026-11-03T06:06:03.132440+00:00",
       "kind": "resumed",
       "reason": "已核对原操作后恢复"
+    },
+    {
+      "id": "kl-astra-high-serial-20261102-kl-gemm:resumed:2026-11-03T06:06:02.260772+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-gemm",
+      "dataset": "CUDA-L2",
+      "at": "2026-11-03T06:06:02.260772+00:00",
+      "kind": "resumed",
+      "reason": "独立验收完成"
     },
     {
       "id": "kl-astra-high-serial-20261102-kl-gemm:user-resume-20261103-002:KL-GEMM",
@@ -31174,6 +31284,22 @@
       "reason": "独立验收完成"
     },
     {
+      "id": "kl-astra-high-serial-20261102-kl-sonny:resumed:2026-11-02T16:23:39.708183+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-sonny",
+      "dataset": "Sonny",
+      "at": "2026-11-02T16:23:39.708183+00:00",
+      "kind": "resumed",
+      "reason": "独立验收完成"
+    },
+    {
+      "id": "kl-astra-high-serial-20261102-kl-based:resumed:2026-11-02T16:23:39.708171+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-based",
+      "dataset": "Based",
+      "at": "2026-11-02T16:23:39.708171+00:00",
+      "kind": "resumed",
+      "reason": "独立验收完成"
+    },
+    {
       "id": "kl-astra-high-serial-20261102-kl-gdn:user-resume-20261103-001",
       "run_id": "kl-astra-high-serial-20261102-kl-gdn",
       "dataset": "GDN",
@@ -31188,6 +31314,14 @@
       "at": "2026-11-02T16:23:39.603163+00:00",
       "kind": "resumed",
       "reason": "已核对原操作后恢复"
+    },
+    {
+      "id": "kl-astra-high-serial-20261102-kl-fa3:resumed:2026-11-02T16:23:39.602425+00:00",
+      "run_id": "kl-astra-high-serial-20261102-kl-fa3",
+      "dataset": "FA3",
+      "at": "2026-11-02T16:23:39.602425+00:00",
+      "kind": "resumed",
+      "reason": "独立验收完成"
     },
     {
       "id": "kl-astra-high-serial-20261102-kl-gdn:user-pause-immediate-20261102-001",
@@ -31270,5 +31404,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-09T17:50:52.854356+00:00"
+  "updated_at": "2026-11-09T17:56:41.902407+00:00"
 }
