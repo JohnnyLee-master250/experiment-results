@@ -259,10 +259,10 @@ function renderAligned(target,dataset,run,previewIds=[]){
   else host.append(child);
  }
  renderComparisonControls(host.querySelector('.aligned-controls'),all,view.visible,dataset.comparison_scope||'aligned',redraw);
- chartResetButton(host.querySelector('.aligned-chart'),'comparison',()=>{roundWindows.delete((dataset.comparison_scope||'aligned')+':'+dataset.id);view.zoom=false;view.compressed=false;view.visualScale=1;redraw();});
+ chartResetButton(host.querySelector('.aligned-chart'),'comparison',()=>{roundWindows.delete((dataset.comparison_scope||'aligned')+':'+dataset.id);clearLatencyWindows(dataset.comparison_scope||'aligned',dataset.id);view.zoom=false;view.compressed=false;view.visualScale=1;redraw();});
  host.querySelector('[data-aligned-compress]').onchange=e=>{view.compressed=e.target.checked;view.visualScale=view.compressed?2/3:1;redraw();};
  host.querySelectorAll('[data-aligned-mode]').forEach(el=>el.onclick=()=>{view.mode=el.dataset.alignedMode;redraw();});
- host.querySelector('[data-aligned-zoom]').onchange=e=>{view.zoom=e.target.checked;redraw();};
+ host.querySelector('[data-aligned-zoom]').onchange=e=>{clearLatencyWindows(dataset.comparison_scope||'aligned',dataset.id);view.zoom=e.target.checked;redraw();};
  host.querySelector('[data-aligned-csv]').onclick=()=>download(`aligned-kl-${dataset.id}.csv`,['run_id,model,effort,round,apply,inner_sequence,status,counted,latency_ms,recorded_at,elapsed_seconds,reported_tokens,missing_responses,disputed,tokens_complete',...points.map(p=>[p.run_id,p.model,p.effort,p.round,p.apply,p.inner_sequence,p.status,p.counted,p.latency_ms,p.recorded_at,p.axes?.elapsed_s,p.axes?.tokens,p.axes?.missing_responses,p.axes?.disputed,p.axes?.tokens_complete].map(csvCell).join(','))].join('\n'),'text/csv');
  if(axisMode!=='round'){
   if(retainedRange)retainedRange.hidden=true;
@@ -277,6 +277,7 @@ function renderAligned(target,dataset,run,previewIds=[]){
  const inRange=p=>p.viewX>=minRound&&p.viewX<=maxRound;
  let values=selected.flatMap(r=>displayed(r).filter(p=>inRange(p)&&p.viewY!=null).flatMap(p=>[p.viewY,p.y]).filter(Number.isFinite)),ymin=0,ymax=Math.max(.001,...values)*1.08;
  if(view.zoom&&values.length){const tails=selected.map(r=>Math.min(...displayed(r).filter(p=>inRange(p)&&p.viewY!=null).map(p=>p.viewY))).filter(Number.isFinite);if(tails.length){const lo=Math.min(...tails),hi=Math.max(...tails),space=Math.max((hi-lo)*.15,hi*.035,.000001);ymin=Math.max(0,lo-space);ymax=hi+space;}}
+ [ymin,ymax]=latencyWindow(chart,dataset.comparison_scope||'aligned',[ymin,ymax]);
  const x=n=>pad.l+(n-minRound)/Math.max(1,maxRound-minRound)*(w-pad.l-pad.r),y=n=>h-pad.b-(n-ymin)/(ymax-ymin)*(h-pad.t-pad.b),clip='aligned-clip-'+target.replace(/[^a-z]/g,'');
  let svg=`<svg viewBox="0 0 ${w} ${h}" role="img"><title>Aligned KL，横轴为有效评测序号，纵轴为延迟毫秒</title><defs><clipPath id="${clip}"><rect x="${pad.l}" y="${pad.t}" width="${w-pad.l-pad.r}" height="${h-pad.t-pad.b}"/></clipPath></defs>`;
  for(const v of ticks(ymin,ymax,5))svg+=`<line data-chart-key="y-grid:${v}" x1="${pad.l}" x2="${w-pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="#edf0f4"/><text data-chart-key="y-tick:${v}" x="${pad.l-8}" y="${y(v)+4}" text-anchor="end">${tickFmt(v)}</text>`;
@@ -290,7 +291,7 @@ function renderAligned(target,dataset,run,previewIds=[]){
   svg+='</g>';
  }
  svg+='</g></svg>';renderChartMarkup(chart,svg);
- configureRoundBrush(chart,{scope:dataset.comparison_scope||'aligned',maximum:maxX,min:minRound,max:maxRound,width:w,height:h,left:pad.l,right:w-pad.r,top:pad.t,bottom:h-pad.b,redraw});
+ configureRoundBrush(chart,{scope:dataset.comparison_scope||'aligned',maximum:maxX,min:minRound,max:maxRound,ymin,ymax,width:w,height:h,left:pad.l,right:w-pad.r,top:pad.t,bottom:h-pad.b,redraw});
  view.paintCompression=ratio=>{
   for(const r of selected.filter(r=>r.baseMethod==='KL')){
    const group=[...chart.querySelectorAll('[data-comparison-series]')].find(el=>el.dataset.comparisonSeries===r.id);if(!group)continue;

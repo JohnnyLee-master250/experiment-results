@@ -121,7 +121,7 @@ function comparisonColor(run,scope=category){
  return (revised?REVISION_COLORS[methodLabel(run)]:COLORS[run.baseMethod||run.method])||(['KL','Aligned KL'].includes(run.baseMethod||run.method)?'#e69a00':'#526c89');
 }
 function resetBVView(){
- roundWindows.delete('bv:'+datasetId);costRange=null;Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'focus',ymin:null,ymax:null});syncRange();showNotice('');renderCharts();
+ roundWindows.delete('bv:'+datasetId);clearLatencyWindows('bv');costRange=null;Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'focus',ymin:null,ymax:null});syncRange();showNotice('');renderCharts();
 }
 function chartResetButton(chart,key,action){
  const parent=chart.closest('.chart-card')?.querySelector('.chart-title')||chart.parentElement.querySelector('.plot-options');if(!parent)return;
@@ -138,7 +138,10 @@ function datasetHasResults(id){
 
 
 
-const roundWindows=new Map();let rangeDragging=false,rangeRenderFrame=null;
+const roundWindows=new Map(),latencyWindows=new Map();let rangeDragging=false,rangeRenderFrame=null;
+function latencyKey(chart,scope,dataset=datasetId){return scope+':'+dataset+':'+(chart.id||'plot');}
+function clearLatencyWindows(scope,dataset=datasetId){const prefix=scope+':'+dataset+':';for(const key of latencyWindows.keys())if(key.startsWith(prefix))latencyWindows.delete(key);}
+function latencyWindow(chart,scope,automatic){return latencyWindows.get(latencyKey(chart,scope))||automatic;}
 function comparisonWindow(scope,maximum){
  const max=Math.max(1,Math.ceil(maximum)),custom=roundWindows.get(scope+':'+datasetId);
  const hi=custom?Math.max(1,Math.min(max,custom[1])):max;
@@ -158,6 +161,7 @@ function renderRoundRange(chart,scope,maximum,redraw){
   box.querySelector(`[data-range-value="${i}"]`).textContent=range[i];
   input.onpointerdown=()=>{rangeDragging=true;};
   input.oninput=()=>{
+   clearLatencyWindows(scope);
    const next=comparisonWindow(scope,max),value=Number(input.value);
    next[i]=i?Math.max(next[0]+1,value):Math.min(next[1]-1,value);if(next[0]===0&&next[1]===max)roundWindows.delete(key);else roundWindows.set(key,next);
    input.value=String(next[i]);box.querySelector(`[data-range-value="${i}"]`).textContent=next[i];
@@ -167,19 +171,18 @@ function renderRoundRange(chart,scope,maximum,redraw){
   };
  });
  box.style.setProperty('--range-start',range[0]/max*100+'%');box.style.setProperty('--range-end',range[1]/max*100+'%');
- box.ondblclick=()=>{roundWindows.delete(key);redraw();};
+ box.ondblclick=()=>{roundWindows.delete(key);clearLatencyWindows(scope);redraw();};
 }
 window.addEventListener('pointerup',()=>{rangeDragging=false;});
 window.addEventListener('pointercancel',()=>{rangeDragging=false;});
 
-// A plot gesture and the dual slider share one range state. No data is re-fetched.
+// Plot selection and the dual slider share round bounds; latency belongs to this chart.
 function configureRoundBrush(chart,config){
  let brush=chart._roundBrush;
  if(!brush){
   brush=chart._roundBrush={config:null,drag:null,suppressClickUntil:0};
   const cancel=()=>{
-   const drag=brush.drag;brush.drag=null;chart.classList.remove('range-brushing');
-   drag?.overlay?.remove();
+   const drag=brush.drag;brush.drag=null;chart.classList.remove('range-brushing');drag?.overlay?.remove();
    if(drag&&chart.hasPointerCapture?.(drag.id))chart.releasePointerCapture(drag.id);
   };
   brush.cancel=cancel;
@@ -187,43 +190,57 @@ function configureRoundBrush(chart,config){
    const rect=chart.getBoundingClientRect(),c=brush.config;
    return {x:(e.clientX-rect.left)*c.width/rect.width,y:(e.clientY-rect.top)*c.height/rect.height};
   };
-  const selection=x=>{
-   const c=brush.config,d=brush.drag;
-   const round=v=>c.min+(Math.max(c.left,Math.min(c.right,v))-c.left)/(c.right-c.left)*(c.max-c.min);
-   const a=round(d.x),b=round(x),lo=Math.max(c.min,Math.floor(Math.min(a,b))),hi=Math.min(c.max,Math.ceil(Math.max(a,b)));
-   return [Math.min(lo,c.max-1),Math.max(lo+1,hi)];
+  const selection=e=>{
+   const c=brush.config,d=brush.drag,p=point(e),clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+   // Eight screen pixels tolerate hand jitter while allowing either axis on its own.
+   const useX=Math.abs(e.clientX-d.startClientX)>=8,useY=Math.abs(e.clientY-d.startClientY)>=8;
+   const left=useX?clamp(Math.min(d.x,p.x),c.left,c.right):c.left,right=useX?clamp(Math.max(d.x,p.x),c.left,c.right):c.right;
+   const top=useY?clamp(Math.min(d.y,p.y),c.top,c.bottom):c.top,bottom=useY?clamp(Math.max(d.y,p.y),c.top,c.bottom):c.bottom;
+   const round=x=>c.min+(x-c.left)/(c.right-c.left)*(c.max-c.min);
+   const lo=clamp(Math.floor(round(left)),c.min,c.max-1),hi=clamp(Math.ceil(round(right)),lo+1,c.max);
+   const latency=y=>c.ymax-(y-c.top)/(c.bottom-c.top)*(c.ymax-c.ymin);
+   return {useX,useY,left,right,top,bottom,rounds:[lo,hi],latencies:[latency(bottom),latency(top)]};
   };
   chart.addEventListener('pointerdown',e=>{
    const c=brush.config;if(!c||e.button!==0||e.isPrimary===false||e.target.closest('button,input,a'))return;
    const p=point(e);if(p.x<c.left||p.x>c.right||p.y<c.top||p.y>c.bottom)return;
-   cancel();brush.drag={id:e.pointerId,x:p.x,lastX:p.x,startClientX:e.clientX,active:false};
+   cancel();brush.drag={id:e.pointerId,x:p.x,y:p.y,startClientX:e.clientX,startClientY:e.clientY,active:false};
    chart.setPointerCapture(e.pointerId);e.preventDefault();
   },true);
   chart.addEventListener('pointermove',e=>{
    const d=brush.drag;if(!d||d.id!==e.pointerId)return;
-   const c=brush.config,p=point(e);d.lastX=p.x;
-   if(!d.active&&Math.abs(e.clientX-d.startClientX)<5)return;
+   const c=brush.config,s=selection(e);if(!d.active&&!s.useX&&!s.useY)return;
    if(!d.active){
     d.active=true;chart.classList.add('range-brushing');chart.querySelector('.crosshair')?.setAttribute('visibility','hidden');
     d.overlay=document.createElement('div');d.overlay.className='chart-range-brush';d.overlay.setAttribute('aria-hidden','true');
     d.overlay.innerHTML='<span class="chart-range-brush-value"></span>';chart.append(d.overlay);
    }
-   const lo=Math.max(c.left,Math.min(c.right,Math.min(d.x,p.x))),hi=Math.max(c.left,Math.min(c.right,Math.max(d.x,p.x)));
-   Object.assign(d.overlay.style,{left:lo/c.width*100+'%',width:(hi-lo)/c.width*100+'%',top:c.top/c.height*100+'%',height:(c.bottom-c.top)/c.height*100+'%'});
-   d.overlay.firstChild.textContent=selection(p.x).join(' – ');
+   Object.assign(d.overlay.style,{left:s.left/c.width*100+'%',width:(s.right-s.left)/c.width*100+'%',top:s.top/c.height*100+'%',height:(s.bottom-s.top)/c.height*100+'%'});
+   const label=d.overlay.firstChild;
+   label.textContent=[s.useX?'r'+s.rounds.join(' – r'):'',s.useY?s.latencies.map(tickFmt).join(' – ')+' ms':''].filter(Boolean).join(' · ');
+   // Keep the concise hint inside the plot even for a narrow selection at its edge.
+   const rect=chart.getBoundingClientRect(),px=rect.width/c.width,center=(s.left+s.right)/2;
+   const half=label.getBoundingClientRect().width/(2*px),anchor=Math.max(c.left+half+4,Math.min(c.right-half-4,center));
+   label.style.left=(anchor-s.left)*px+'px';label.style.top=(Math.min(s.top+7,c.bottom-34)-s.top)*rect.height/c.height+'px';
    e.preventDefault();e.stopImmediatePropagation();
   },true);
-  chart.addEventListener('pointerup',e=>{
+  window.addEventListener('pointerup',e=>{
    const d=brush.drag;if(!d||d.id!==e.pointerId)return;
-   const c=brush.config,range=d.active?selection(point(e).x):null;cancel();
-   if(!range)return;
+   const c=brush.config,s=d.active?selection(e):null;cancel();
+   if(!s||(!s.useX&&!s.useY))return;
    brush.suppressClickUntil=performance.now()+400;
    const key=c.scope+':'+c.dataset;
-   if(range[0]===0&&range[1]===Math.ceil(c.maximum))roundWindows.delete(key);else roundWindows.set(key,range);
+   if(s.useX){
+    if(s.rounds[0]===0&&s.rounds[1]===Math.ceil(c.maximum))roundWindows.delete(key);else roundWindows.set(key,s.rounds);
+    // Pure horizontal selection keeps the original automatic vertical fitting behavior.
+    if(!s.useY)clearLatencyWindows(c.scope,c.dataset);
+   }
+   if(s.useY&&s.latencies[1]>s.latencies[0])latencyWindows.set(latencyKey(chart,c.scope,c.dataset),s.latencies);
    rangeDragging=false;e.preventDefault();e.stopImmediatePropagation();c.redraw();
   },true);
   chart.addEventListener('click',e=>{if(performance.now()<brush.suppressClickUntil){e.preventDefault();e.stopImmediatePropagation();}},true);
   chart.addEventListener('pointercancel',cancel);chart.addEventListener('lostpointercapture',cancel);
+  window.addEventListener('blur',cancel);
   chart.addEventListener('keydown',e=>{if(e.key==='Escape'&&brush.drag){cancel();e.preventDefault();e.stopImmediatePropagation();}},true);
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&brush.drag)cancel();});
  }
@@ -515,7 +532,7 @@ function renderChart(el,detail){
  }
  const runs=selected(),W=el.clientWidth||700,H=el.clientHeight||350,left=W<420?53:64,right=20,top=25,bottom=43,w=W-left-right,h=H-top-bottom;
  const [xmin,xmax]=comparisonWindow('bv',roundBudget()),withFinal=xmax===roundBudget()&&runs.some(r=>r.formal),finalAt=roundBudget()+(W<500?5:2),xend=withFinal?finalAt+.9:xmax+.25;
- const [ymin,ymax]=bounds(runs,detail,[xmin,xmax]),sx=x=>left+(x-xmin)/(xend-xmin)*w,sy=y=>top+h-(y-ymin)/(ymax-ymin)*h;
+ const [ymin,ymax]=latencyWindow(el,'bv',bounds(runs,detail,[xmin,xmax])),sx=x=>left+(x-xmin)/(xend-xmin)*w,sy=y=>top+h-(y-ymin)/(ymax-ymin)*h;
  const id=detail?'detail':'overview',clip=`clip-${id}`,yticks=ticks(ymin,ymax,H>300?5:3),xticks=ticks(xmin,xmax,W<500?4:7).filter(Number.isInteger);
  let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" aria-hidden="true"><defs><clipPath id="${clip}"><rect x="${left}" y="${top}" width="${w}" height="${h}"/></clipPath></defs>`;
  svg+=yticks.map(v=>`<line data-chart-key="y-grid:${v}" x1="${left}" x2="${W-right}" y1="${sy(v)}" y2="${sy(v)}" stroke="#edf0f4"/><text data-chart-key="y-tick:${v}" x="${left-10}" y="${sy(v)+4}" text-anchor="end">${tickFmt(v)}</text>`).join('');
@@ -547,7 +564,7 @@ function renderChart(el,detail){
  svg+=`</g><line data-chart-key="crosshair" class="crosshair" x1="0" x2="0" y1="${top}" y2="${top+h}" stroke="#8d9aaa" stroke-dasharray="3 3" visibility="hidden"/></svg>`;
  if(!runs.length)svg+=`<div style="position:absolute;inset:45% 0;text-align:center;color:#76818f;font-size:12px">选择曲线</div>`;
  renderChartMarkup(el,svg);
- configureRoundBrush(el,{scope:'bv',maximum:roundBudget(),min:xmin,max:xmax,width:W,height:H,left,right:sx(xmax),top,bottom:top+h,redraw:renderCharts});
+ configureRoundBrush(el,{scope:'bv',maximum:roundBudget(),min:xmin,max:xmax,ymin,ymax,width:W,height:H,left,right:sx(xmax),top,bottom:top+h,redraw:renderCharts});
  if(detail){
   const clipped=runs.filter(r=>{const p=series(r).filter(p=>p.y!=null&&p.round>=xmin&&p.round<=xmax);return p.length&&!p.some(p=>p.y>=ymin&&p.y<=ymax);}).length;
   $('#detail-domain').textContent=`${tickFmt(ymin)}–${tickFmt(ymax)} ms${clipped?' · '+clipped+' 条在范围外':''}`;
@@ -589,7 +606,7 @@ function applyRange(){
   const blank=$('#x-max').value===''&&$('#x-min').value==='';
   if(!blank&&(!Number.isFinite(min)||!Number.isFinite(max)||min<0||max<=min)){showNotice('横轴结束值须大于起始值。');return;}
   costRange=blank?null:[min,max];Object.assign(state,{ymode,ymin,ymax});
- }else {Object.assign(state,{xmin:min,xmax:max,ymode,ymin,ymax});roundWindows.set('bv:'+datasetId,[min,max]);}showNotice('');renderCharts();
+ }else {clearLatencyWindows('bv');Object.assign(state,{xmin:min,xmax:max,ymode,ymin,ymax});roundWindows.set('bv:'+datasetId,[min,max]);}showNotice('');renderCharts();
 }
 function download(name,text,type='text/plain'){const url=URL.createObjectURL(new Blob([text],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);}
 function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"';}
