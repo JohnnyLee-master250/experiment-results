@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-09T16:22:19.413635+00:00",
+  "source_captured_at": "2026-11-09T16:28:18.626712+00:00",
   "queue_cards": [
     {
       "id": "card1",
@@ -25382,9 +25382,28 @@
           "status": "running",
           "started_at": "2026-11-09T16:19:39.862667+00:00",
           "ended_at": null,
-          "elapsed_seconds": 152.02143699023873,
-          "candidates": [],
-          "evaluations": 0,
+          "elapsed_seconds": 484.63180048111826,
+          "candidates": [
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 2.113229990005493,
+              "reference_latency_ms": 2.1281200647354126,
+              "sequence": 1,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-09T16:20:57.272619+00:00",
+              "axes": {
+                "elapsed_s": 24750.222,
+                "tokens": 50345346,
+                "missing_responses": 45,
+                "disputed": false,
+                "tokens_complete": false
+              }
+            }
+          ],
+          "evaluations": 1,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -25392,7 +25411,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 53,
+        "count": 54,
         "excluded_count": 2,
         "timing_statistic": "median",
         "points": [
@@ -26375,6 +26394,24 @@
             "axes": {
               "elapsed_s": 24254.386,
               "tokens": 48974480,
+              "missing_responses": 45,
+              "disputed": false,
+              "tokens_complete": false
+            }
+          },
+          {
+            "round": 54,
+            "apply": 7,
+            "inner_sequence": 1,
+            "recorded_at": "2026-11-09T16:20:57.272619+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 2.029020071029663,
+            "axes": {
+              "elapsed_s": 24750.222,
+              "tokens": 50345346,
               "missing_responses": 45,
               "disputed": false,
               "tokens_complete": false
@@ -30558,5 +30595,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-09T16:22:17.650047+00:00"
+  "updated_at": "2026-11-09T16:28:16.738654+00:00"
 }
