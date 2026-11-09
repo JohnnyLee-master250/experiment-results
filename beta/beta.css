@@ -35,7 +35,7 @@ body.beta{background:#fff;color:var(--ink);font-family:-apple-system,BlinkMacSys
 .beta .beta-running::after{opacity:.65;animation:beta-pill-light 3.4s ease-in-out infinite}.beta .beta-running{box-shadow:0 0 0 2px color-mix(in srgb,var(--pill-color) 12%,transparent),0 2px 10px color-mix(in srgb,var(--pill-color) 15%,transparent)}
 @media(hover:hover) and (pointer:fine){.beta .beta-pill:not(.beta-pill-disabled):not(.beta-hover-suppressed):hover,.beta .segments button:hover{background:var(--pill-deep);border-color:var(--pill-deep);color:white}.beta .beta-pill:not(.beta-pill-disabled):not(.beta-hover-suppressed):hover::after,.beta .segments button:hover::after{opacity:.8;animation:beta-pill-light 2s ease-in-out infinite}}
 @keyframes beta-pill-light{0%,15%{transform:translateX(-150%) rotate(12deg)}80%,100%{transform:translateX(520%) rotate(12deg)}}
-.beta .beta-curve-highlight{stroke-width:3.4!important;stroke-dasharray:none!important;stroke-linecap:round;stroke-linejoin:round;opacity:1!important;filter:none}
+.beta .beta-curve-highlight{stroke-width:3.4!important;stroke-dasharray:none;stroke-linecap:round;stroke-linejoin:round;opacity:1;filter:none}
 .beta .beta-curve-glint{stroke:var(--meteor-color)!important;stroke-width:var(--meteor-width)!important;stroke-dasharray:var(--meteor-dash)!important;stroke-linecap:round;stroke-linejoin:round;pointer-events:none;opacity:0;filter:drop-shadow(0 0 2px var(--curve-color));animation:beta-curve-meteor 2s cubic-bezier(.42,0,.24,1) infinite}
 @keyframes beta-curve-meteor{0%{stroke-dashoffset:var(--meteor-start);opacity:0}10%{opacity:var(--meteor-opacity)}82%{opacity:var(--meteor-opacity)}92%,100%{stroke-dashoffset:var(--meteor-end);opacity:0}}
 /* Compact, descriptive first screen. All detailed records remain below it. */
@@ -260,3 +260,33 @@ body.beta{--accent:#0071e3;--soft:#f5f5f7;--grid:#ededf0}
 .beta .beta-grouping-control>.segments{width:max-content;max-width:100%}
 .beta [data-grouping="task"] .model-heading>strong{font-size:14px}
 .beta [data-grouping="task"] .chip small{font-size:10px;opacity:.8}
+
+/* Immediate selection while only the requested result panel waits for data. */
+.beta .result-loading,.beta .result-load-error{position:relative;min-height:420px}
+.beta .result-loading> :not(.result-load-state),.beta .result-load-error> :not(.result-load-state){visibility:hidden;pointer-events:none}
+.beta .result-load-state{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:12px;color:#6e6e73;font-size:15px;min-height:280px}
+.beta .result-spinner{width:20px;height:20px;border:2px solid #e4e4e8;border-top-color:#0071e3;border-radius:50%;animation:result-spin .65s linear infinite}
+@keyframes result-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.beta .result-spinner{animation:none;border-top-color:#6e6e73}}
+
+.beta .comparison-range{display:flex;align-items:center;gap:12px;width:250px;max-width:100%;min-width:180px;margin-left:auto;padding:4px 2px;box-sizing:border-box;align-self:center}
+.beta .comparison-range[hidden]{display:none}
+.beta .comparison-range output{font-size:12px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;color:#1d1d1f;min-width:22px;text-align:center}
+.beta .range-track{height:26px;position:relative;flex:1;min-width:100px;margin:0 10px}
+.beta .range-track:before,.beta .range-selected{position:absolute;content:'';height:8px;top:9px;left:0;right:0;border-radius:999px;background:#e7e7ec}
+.beta .range-selected{left:var(--range-start);right:calc(100% - var(--range-end));background:#bcbcc3}
+.beta .range-track input{position:absolute;inset:0;width:calc(100% + 20px);margin:0 -10px;padding:0;border:0;height:26px;appearance:none;-webkit-appearance:none;background:transparent;pointer-events:none;box-shadow:none;outline:none}
+.beta .range-track input::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:20px;height:20px;background:#526c89;border:0;border-radius:50%;box-shadow:0 1px 3px #0002;pointer-events:auto;cursor:grab;transition:transform 100ms ease,box-shadow 100ms ease}
+.beta .range-track input::-moz-range-thumb{width:20px;height:20px;background:#526c89;border:0;border-radius:50%;box-shadow:0 1px 3px #0002;pointer-events:auto;cursor:grab;transition:transform 100ms ease}
+.beta .range-track input:hover::-webkit-slider-thumb,.beta .range-track input:active::-webkit-slider-thumb{transform:scale(1.15);box-shadow:0 2px 6px #0003}
+.beta .range-track input:hover::-moz-range-thumb,.beta .range-track input:active::-moz-range-thumb{transform:scale(1.15)}
+.beta .range-track input:focus-visible::-webkit-slider-thumb{outline:3px solid #0071e366;outline-offset:3px}
+@media(min-width:1051px){
+ .beta #aligned-content>.comparison-range{grid-column:2;grid-row:3;justify-self:end;margin:0}
+ .beta #aligned-content>.aligned-chart{grid-row:4}
+ .beta #aligned-content>.aligned-readout{grid-row:5}
+ .beta #aligned-content>.aligned-controls{grid-row:2/6}
+ .beta #aligned-content>details{grid-row:6}
+ .beta #aligned-content>details+details{grid-row:7}
+}
+@media(max-width:600px){.beta .chart-title{flex-wrap:wrap}.beta .comparison-range{width:220px;min-width:160px;gap:8px}}

@@ -51,7 +51,7 @@ function betaUpdateTitle(){
  const section=betaConfig.result_sections.find(s=>s.id===category)?.label;
  $('#beta-title').textContent=betaView==='logs'?'完成日志':betaView==='queue'?'队列情况':betaFuture?'V0-r3':title+(section?' · '+section:'');
  const metadata=$('#beta-run-meta');if(!metadata)return;
- const r=category==='kl'&&betaView==='results'&&!betaFuture?klRun:null;
+ const r=category==='kl'&&betaView==='results'&&!betaFuture&&klRun?.dataset===datasetId?klRun:null;
  metadata.hidden=!r;
  if(r){const apply=r.current_apply??r.applies.at(-1)?.apply??0;metadata.innerHTML=`<span class="beta-run-progress">Apply ${apply} <span>·</span> r${r.aligned?.count??0}</span><div class="beta-run-times"><span>开始 ${date(r.started_at)}</span><span>结束 ${date(r.finished_at)}</span></div>`;}
 }
@@ -96,10 +96,8 @@ async function betaChoose(categoryId,dataset=datasetId,model=null){
  if(betaFuture)return;
  initialRun=null;
  if(categoryId==='kl'){
-  await betaEnsureKL();
-  const run=model?klData?.runs.find(r=>r.dataset===dataset&&r.model===model):null;
-  await loadKL(dataset,run?.id||null);
- }else if(['aligned','all'].includes(categoryId))await loadAligned(dataset,null,categoryId);
+  await loadKL(dataset,null,model);
+ }else if(isComparison(categoryId))await loadAligned(dataset,null,categoryId);
  else await loadDataset(dataset,true);
  betaSync();
 }
@@ -303,7 +301,7 @@ function betaHighlightCurves(){
   for(const [length,width,opacity,white] of layers){
    const light=p.cloneNode(false);
    for(const attr of [...light.attributes])if(attr.name==='id'||attr.name==='class'||attr.name==='style'||attr.name.startsWith('data-'))light.removeAttribute(attr.name);
-   light.setAttribute('data-beta-glint','');light.setAttribute('aria-hidden','true');light.setAttribute('pathLength','1000');light.setAttribute('fill','none');
+   light._curveSource=p;light.setAttribute('data-beta-glint','');light.setAttribute('aria-hidden','true');light.setAttribute('pathLength','1000');light.setAttribute('fill','none');
    light.classList.add('beta-curve-glint');light.style.setProperty('--curve-color',p.getAttribute('stroke'));
    light.style.setProperty('--meteor-color',`color-mix(in srgb, ${p.getAttribute('stroke')} ${100-white}%, white)`);
    light.style.setProperty('--meteor-width',width);light.style.setProperty('--meteor-opacity',opacity);
@@ -400,8 +398,8 @@ betaGrouping.querySelectorAll('button').forEach(b=>b.onclick=()=>{
  const next=b.dataset.comparisonGroup;if(next===comparisonGroupMode())return;
  betaSetPreview(null);comparisonGrouping.set(category,next);
  let controls;
- if(category==='bv'){renderControls();controls=$('#series-controls');}
- else if(isComparison()&&alignedDataset){controls=$('#aligned-content .aligned-controls');const rows=alignedSeries(alignedDataset,alignedRun),view=alignedView(alignedDataset,rows);renderComparisonControls(controls,rows,view.visible,category,()=>renderAligned('#aligned-content',alignedDataset,alignedRun));}
+ if(category==='bv'){renderAll();controls=$('#series-controls');}
+ else if(isComparison()&&alignedDataset){renderAligned('#aligned-content',alignedDataset,alignedRun);controls=$('#aligned-content .aligned-controls');}
  betaSyncGrouping();betaDecorateControls();betaAnimateContent(controls);
 });
 
@@ -494,11 +492,11 @@ betaMenus();betaShowView(betaView);if(manifest)betaSync();
 function betaControlMotion(e){
  const el=e.target;if(!el.closest||el.matches('[data-aligned-compress]'))return;
  const aligned=el.closest('#aligned-content,#kl-aligned');
- if(aligned&&el.closest('.aligned-controls,.plot-options')){betaAnimateContent(aligned.querySelector('.aligned-chart'));return;}
- if(el.closest('.kl-reference-toggle')){betaAnimateContent(el.closest('.chart-card')?.querySelector('.chart'));return;}
+ if(aligned&&el.closest('.aligned-controls,.plot-options'))return;
+ if(el.closest('.kl-reference-toggle'))return;
  if(el.matches('#round-run,#round-status')){betaAnimateContent($('#rounds'));return;}
  if(el.matches('#y-mode,#apply-range,#reset')){betaAnimateContent($('#detail'));return;}
- if(el.closest('#series-controls')||el.matches('[data-row],#uncertainty,#best-mode,#raw-mode')){$$('#bv-panel .chart').forEach(betaAnimateContent);}
+ if(el.closest('#series-controls')||el.matches('[data-row],#uncertainty,#best-mode,#raw-mode'))return;
 }
 document.addEventListener('change',betaControlMotion);
 document.addEventListener('click',e=>{if(e.target.closest?.('button'))betaControlMotion(e);});

@@ -12,15 +12,17 @@ let eventLimit=12;
 function requestedBVEdition(){return 'all';}
 let bvEdition=requestedBVEdition();
 function methodLabel(run){const label=run?.method_version||run?.method||'';return /^B[0-3]$/.test(label)?label+'-r1':label==='V0'?'V0-r2':label;}
-function isComparison(){return category==='aligned'||category==='all';}
-function runCategory(run){return run?.method==='KL'||run?.category==='kl'?'kl':run?.method==='V0'||/^V0-r/.test(run?.method_version||'')?'aligned':'bv';}
+function isComparison(scope=category){return ['aligned','all','all-with-b01'].includes(scope);}
+function comparisonHasB(scope){return scope==='all'||scope==='all-with-b01';}
+function showBVRun(run,scope){return scope==='all-with-b01'||!['B0','B1'].includes(run.method);}
+function runCategory(run){if(['B0','B1'].includes(run?.method))return 'all-with-b01';return run?.method==='KL'||run?.category==='kl'?'kl':run?.method==='V0'||/^V0-r/.test(run?.method_version||'')?'aligned':'bv';}
 function runById(id){return [...(manifest?.running_runs||[]),...(manifest?.bv_revisions?.runs||[]),...(manifest?.campaign_runs||[])].find(r=>r.id===id);}
-function openRun(dataset,id,push=true){const r=runById(id);return runCategory(r)==='aligned'?loadAligned(dataset,id,'aligned',push):loadDataset(dataset,true,id,push);}
+function openRun(dataset,id,push=true){const r=runById(id);return isComparison(runCategory(r))?loadAligned(dataset,id,runCategory(r),push):loadDataset(dataset,true,id,push);}
 function seriesDash(run){return run?.edition?(run.method==='V0'?'10 3 2 3':'4 3'):(DASH[run?.model]||'');}
-function roundBudget(){return Math.max(...(data?.runs||[]).map(r=>r.budget||30),bvEdition==='legacy'?30:50);}
+function roundBudget(){return Math.max(30,...(data?selected():[]).flatMap(r=>(r.search||[]).map(p=>p.round)));}
 function editionKey(dataset){return dataset.id+':'+(dataset.edition||'legacy');}
 
-let category=["kl","aligned","all"].includes(new URL(location).searchParams.get("category"))?new URL(location).searchParams.get("category"):"bv";
+let category=["kl","aligned","all","all-with-b01"].includes(new URL(location).searchParams.get("category"))?new URL(location).searchParams.get("category"):"bv";
 function requestedAxis() {
  const axis=new URL(location).searchParams.get('axis');
  return ['time','tokens'].includes(axis)?axis:'round';
@@ -80,7 +82,165 @@ function series(r){
  return r.search.map(p=>{if(p.timing)best=best==null?value(p):Math.min(best,value(p));return {...p,y:mode==='best'?best:value(p)};});
 }
 function showNotice(s){$('#notice').hidden=!s;$('#notice').textContent=s;}
-async function getJSON(url){const base=document.body.dataset.apiBase;const target=base?new URL(url,new URL(base,location.href)).href:url;const response=await fetch(target,{cache:'no-cache'});if(!response.ok)throw Error(`HTTP ${response.status}`);return response.json();}
+function getJSON(url){const base=document.body.dataset.apiBase;const target=base?new URL(url,new URL(base,location.href)).href:url;if(pendingJSON.has(target))return pendingJSON.get(target);const request=fetch(target,{cache:'no-cache'}).then(response=>{if(!response.ok)throw Error(`HTTP ${response.status}`);return response.json();}).finally(()=>pendingJSON.delete(target));pendingJSON.set(target,request);return request;}
+
+// The UI follows intent immediately; network completion may only fill that intent.
+let resultRequest=null;
+const pendingJSON=new Map();
+function beginResultRequest(scope,id,focusRun=null,push=false){
+ const token={scope,id};resultRequest=token;
+ const url=new URL(location);url.searchParams.set('category',scope);url.searchParams.set('dataset',id);url.searchParams.delete('apply');url.searchParams.delete('edition');
+ if(focusRun)url.searchParams.set('run',focusRun);else url.searchParams.delete('run');
+ if(focusRun)url.hash='';history[push?'pushState':'replaceState'](null,'',url);
+ renderNav();
+ for(const p of $$('#bv-panel,#kl-panel,#aligned-panel')){p.classList.remove('result-loading','result-load-error');p.removeAttribute('aria-busy');p.querySelector(':scope>.result-load-state')?.remove();}
+ const panel=$(scope==='bv'?'#bv-panel':scope==='kl'?'#kl-panel':'#aligned-panel');
+ panel.classList.add('result-loading');panel.setAttribute('aria-busy','true');
+ const status=document.createElement('div');status.className='result-load-state';status.setAttribute('role','status');status.innerHTML='<span class="result-spinner" aria-hidden="true"></span><span>加载中…</span>';panel.append(status);
+ if(focusRun)window.scrollTo({top:0,left:0,behavior:'instant'});
+ return token;
+}
+function finishResultRequest(token,error=null){
+ if(resultRequest!==token)return;resultRequest=null;
+ const panel=$(token.scope==='bv'?'#bv-panel':token.scope==='kl'?'#kl-panel':'#aligned-panel');
+ panel.classList.remove('result-loading');panel.removeAttribute('aria-busy');
+ panel.querySelector(':scope>.result-load-state')?.remove();
+ if(error){panel.classList.add('result-load-error');const el=document.createElement('div');el.className='result-load-state';el.setAttribute('role','alert');el.innerHTML='<span>数据暂未加载</span><button type="button">重试</button>';el.querySelector('button').onclick=()=>chooseCategory(token.scope);panel.append(el);}
+}
+function datasetJSON(meta,version=manifest.updated_at){
+ const saved=cache.get(meta.id);if(saved?.updated_at===version)return Promise.resolve(saved);
+ return getJSON(`./api/v1/${meta.url}?v=${encodeURIComponent(version)}`).then(d=>{if(d.updated_at!==version)throw Error('发布版本尚在同步');if(manifest.updated_at===version)cache.set(meta.id,d);return d;});
+}
+function publishedKL(version=manifest.updated_at){return klData?.updated_at===version?Promise.resolve(klData):getJSON(`./api/v1/${manifest.kl.url}?v=${encodeURIComponent(version)}`);}
+const MODEL_COLORS={'Sol6':'#ed6400','Astra':'#0071e3','DeepSeek':'#7956c9','DeepSeek-high':'#d9398c','Sol 6.1':'#009b68','DeepSeek Flash':'#b87a00'};
+function comparisonColor(run,scope=category){return comparisonGroupMode(scope)==='task'?(MODEL_COLORS[run.model]||'#526c89'):(COLORS[run.baseMethod||run.method]||(run.baseMethod==='KL'||run.method==='KL'?'#e69a00':'#526c89'));}
+
+
+const roundWindows=new Map();let rangeDragging=false,rangeRenderFrame=null;
+function comparisonWindow(scope,maximum){
+ const max=Math.max(1,Math.ceil(maximum)),custom=roundWindows.get(scope+':'+datasetId);
+ const hi=custom?Math.max(1,Math.min(max,custom[1])):max;
+ return [custom?Math.max(0,Math.min(hi-1,custom[0])):0,hi];
+}
+function renderRoundRange(chart,scope,maximum,redraw){
+ let box=chart._rangeBox;
+ if(!box?.isConnected){box=document.createElement('div');box.className='comparison-range';chart._rangeBox=box;const title=chart.closest('.chart-card')?.querySelector('.chart-title');if(title)title.append(box);else chart.before(box);}
+ box.hidden=axisMode!=='round';if(box.hidden)return;
+ const key=scope+':'+datasetId,max=Math.max(1,Math.ceil(maximum)),range=comparisonWindow(scope,max);
+ if(!box.querySelector('input'))box.innerHTML='<output data-range-value="0" aria-label="起始轮次"></output><div class="range-track"><span class="range-selected"></span><input type="range" data-range-bound="0" aria-label="起始轮次" min="0" step="1"><input type="range" data-range-bound="1" aria-label="截止轮次" min="0" step="1"></div><output data-range-value="1" aria-label="截止轮次"></output>';
+ box.title='拖动调整轮次范围；双击恢复自动范围';
+ box.dataset.rangeKey=key;
+ const inputs=[...box.querySelectorAll('input')];
+ inputs.forEach((input,i)=>{
+  input.max=String(max);input.value=String(range[i]);input.setAttribute('aria-valuetext','r'+range[i]);
+  box.querySelector(`[data-range-value="${i}"]`).textContent=range[i];
+  input.onpointerdown=()=>{rangeDragging=true;};
+  input.oninput=()=>{
+   const next=comparisonWindow(scope,max),value=Number(input.value);
+   next[i]=i?Math.max(next[0]+1,value):Math.min(next[1]-1,value);if(next[0]===0&&next[1]===max)roundWindows.delete(key);else roundWindows.set(key,next);
+   input.value=String(next[i]);box.querySelector(`[data-range-value="${i}"]`).textContent=next[i];
+   box.style.setProperty('--range-start',next[0]/max*100+'%');box.style.setProperty('--range-end',next[1]/max*100+'%');
+   if(rangeRenderFrame!==null)cancelAnimationFrame(rangeRenderFrame);
+   rangeRenderFrame=requestAnimationFrame(()=>{rangeRenderFrame=null;redraw();});
+  };
+ });
+ box.style.setProperty('--range-start',range[0]/max*100+'%');box.style.setProperty('--range-end',range[1]/max*100+'%');
+ box.ondblclick=()=>{roundWindows.delete(key);redraw();};
+}
+window.addEventListener('pointerup',()=>{rangeDragging=false;});
+window.addEventListener('pointercancel',()=>{rangeDragging=false;});
+
+// Reconcile chart nodes instead of replacing the axes with each curve toggle.
+const chartTransitions=new WeakMap(),chartExits=new WeakMap();
+const chartNumbers=/-?(?:\d*\.\d+|\d+\.?\d*)(?:e[-+]?\d+)?/gi;
+function chartTween(from,to){
+ if(from==null||from===to)return null;
+ const a=from.match(chartNumbers),z=to.match(chartNumbers);
+ if(!a||!z||a.length!==z.length||from.replace(chartNumbers,'#')!==to.replace(chartNumbers,'#'))return null;
+ const start=a.map(Number),end=z.map(Number);return t=>{let i=0;return to.replace(chartNumbers,()=>String(start[i]+(end[i]-start[i++])*t));};
+}
+function chartNodeKey(el,index){
+ if(el.nodeType!==1)return '#'+index;
+ for(const name of ['data-chart-key','data-comparison-series','data-run','data-aligned-curve','data-reference','data-real-round','data-failed-round','data-cost-point','clip-path','id'])if(el.hasAttribute(name))return el.tagName+':'+name+':'+el.getAttribute(name);
+ if(el.tagName.toLowerCase()==='text')return 'text:'+el.textContent;
+ return el.tagName+':'+index;
+}
+function chartCurvePaths(el){return el.matches?.('path[data-run],path[data-aligned-curve]')?[el]:[...el.querySelectorAll?.('path[data-run],path[data-aligned-curve]')||[]];}
+function chartPulse(el,leaving=false,delay=0){
+ if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return null;
+ const paths=chartCurvePaths(el);if(!paths.length)return null;
+ const animations=[];
+ for(const p of paths){
+  const length=p.getTotalLength?.();if(!length)continue;
+  p.dataset.chartEntering='true';
+  const anim=p.animate([{strokeDasharray:`${length} ${length}`,strokeDashoffset:leaving?0:length,opacity:1},{strokeDasharray:`${length} ${length}`,strokeDashoffset:leaving?-length:0,opacity:leaving?0:1}],{duration:leaving?260:340,easing:'cubic-bezier(.16,.75,.22,1)',delay,fill:'backwards'});
+  anim.onfinish=()=>delete p.dataset.chartEntering;animations.push(anim);
+  for(const [tail,width,opacity] of [[110,6,.18],[50,4,.4],[8,2.5,.95]]){
+   const light=p.cloneNode(false);for(const attr of [...light.attributes])if(attr.name==='class'||attr.name==='style'||attr.name.startsWith('data-'))light.removeAttribute(attr.name);
+   light.dataset.chartPulse='';light._curveSource=p;light.setAttribute('pathLength','1000');light.setAttribute('stroke-dasharray',`${tail} 2200`);light.setAttribute('stroke-width',width);light.setAttribute('stroke-linecap','round');light.setAttribute('fill','none');light.setAttribute('aria-hidden','true');light.style.pointerEvents='none';
+   light.style.stroke=`color-mix(in srgb, ${p.getAttribute('stroke')} 65%, white)`;p.parentNode.append(light);
+   const pulse=light.animate([{strokeDashoffset:tail,opacity},{strokeDashoffset:tail-1050,opacity:0}],{duration:leaving?260:340,delay,easing:'cubic-bezier(.16,.75,.22,1)',fill:'both'});pulse.onfinish=()=>light.remove();animations.push(pulse);
+  }
+ }
+ if(el.tagName.toLowerCase()==='g')animations.push(el.animate([{opacity:leaving?1:.25},{opacity:leaving?0:1}],{duration:260,easing:'ease-out'}));
+ return animations;
+}
+function renderChartMarkup(el,markup){
+ const template=document.createElement('template');template.innerHTML=markup;
+ const fresh=template.content.querySelector('svg'),old=el.querySelector(':scope>svg');
+ const context=[category,datasetId,axisMode].join(':');
+ if(!fresh||!old||el.dataset.chartContext!==context){
+  el.innerHTML=markup;el.dataset.chartContext=context;
+  const svg=el.querySelector('svg');if(svg&&!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches){
+   [...svg.children].filter(n=>['line','text'].includes(n.tagName.toLowerCase())).forEach(n=>n.animate([{opacity:0},{opacity:1}],{duration:160,easing:'ease-out'}));
+   chartPulse(svg,false,90);
+  }return;
+ }
+ const previous=chartTransitions.get(old);if(previous)cancelAnimationFrame(previous);
+ const changes=[],entered=[];
+ function sync(parent,next){
+  const previousNodes=[...parent.childNodes].filter(n=>!n.hasAttribute?.('data-beta-glint')&&!n.hasAttribute?.('data-chart-pulse'));
+  const byKey=new Map(previousNodes.map((n,i)=>[chartNodeKey(n,i),n]));const used=new Set();let cursor=parent.firstChild;
+  [...next.childNodes].forEach((n,i)=>{
+   const key=chartNodeKey(n,i);let current=byKey.get(key);
+   if(!current||current.nodeType!==n.nodeType||current.nodeName!==n.nodeName){current=n.cloneNode(true);parent.insertBefore(current,cursor);entered.push(current);}
+   else{
+    const exiting=chartExits.get(current);if(exiting){clearTimeout(exiting.timer);exiting.animations?.forEach(a=>a.cancel());chartExits.delete(current);current.querySelectorAll?.('[data-chart-entering]').forEach(p=>delete p.dataset.chartEntering);}
+    if(current.nodeType===1){
+     for(const attr of [...current.attributes])if(!n.hasAttribute(attr.name)&&!['data-chart-entering','style','class'].includes(attr.name))current.removeAttribute(attr.name);
+     for(const attr of [...n.attributes])if(current.getAttribute(attr.name)!==attr.value){
+      const tween=['d','x','y','x1','x2','y1','y2','cx','cy','width','height','transform'].includes(attr.name)?chartTween(current.getAttribute(attr.name),attr.value):null;
+      if(tween)changes.push({node:current,name:attr.name,tween,end:attr.value});else current.setAttribute(attr.name,attr.value);
+     }
+     sync(current,n);
+    }else if(current.nodeValue!==n.nodeValue)current.nodeValue=n.nodeValue;
+    if(current!==cursor)parent.insertBefore(current,cursor);
+   }
+   used.add(current);cursor=current.nextSibling;
+  });
+  for(const n of previousNodes)if(!used.has(n)&&!chartExits.has(n)){
+   const animations=chartPulse(n,true);
+   if(animations?.length){const timer=setTimeout(()=>{n.remove();chartExits.delete(n);},270);chartExits.set(n,{timer,animations});}
+   else n.remove();
+  }
+ }
+ for(const attr of [...fresh.attributes])if(old.getAttribute(attr.name)!==attr.value)old.setAttribute(attr.name,attr.value);
+ sync(old,fresh);
+ for(const n of [...el.children])if(n!==old)n.remove();
+ for(const n of [...template.content.children])if(n!==fresh)el.append(n);
+ const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+ const start=performance.now(),duration=rangeDragging?80:340;
+ function frame(now){
+  const t=reduced?1:Math.min(1,(now-start)/duration),ease=1-Math.pow(1-t,3);
+  for(const c of changes)if(c.node.isConnected)c.node.setAttribute(c.name,t===1?c.end:c.tween(ease));
+  old.querySelectorAll('[data-beta-glint],[data-chart-pulse]').forEach(light=>{if(light._curveSource)for(const name of ['d','x1','x2','y1','y2']){const value=light._curveSource.getAttribute(name);if(value!==null)light.setAttribute(name,value);}});
+  if(t<1)chartTransitions.set(old,requestAnimationFrame(frame));else chartTransitions.delete(old);
+ }
+ if(changes.length)frame(start);
+ // Draw immediately in the same event; do not wait for the axis transition.
+ for(const n of entered)if(n.isConnected)chartPulse(n);
+}
+
 function renderNextUpdate(){
  const next=manifest?.next_update_estimated_at,el=$('#next-update');
  el.textContent=next?`预计下次更新 ${date(next)} SGT${Date.now()>Date.parse(next)?' · 等待更新':''}`:'预计下次更新 —';
@@ -104,7 +264,8 @@ async function refresh(force=false){
  finally{$('#refresh').disabled=false;}
 }
 function renderNav(){
- $('#datasets').innerHTML=manifest.datasets.map(d=>`<button type="button" data-dataset="${esc(d.id)}" aria-current="${d.id===datasetId}">${esc(d.id)}</button>`).join('');
+ if($('#datasets').dataset.items!==manifest.datasets.map(d=>d.id).join('|')){$('#datasets').dataset.items=manifest.datasets.map(d=>d.id).join('|');$('#datasets').innerHTML=manifest.datasets.map(d=>`<button type="button" data-dataset="${esc(d.id)}" aria-current="${d.id===datasetId}">${esc(d.id)}</button>`).join('');}
+ $$('[data-dataset]').forEach(b=>b.setAttribute('aria-current',String(b.dataset.dataset===datasetId)));
  $$('[data-dataset]').forEach(b=>b.onclick=()=>category==="kl"?loadKL(b.dataset.dataset):isComparison()?loadAligned(b.dataset.dataset,null,category):loadDataset(b.dataset.dataset,true));
 }
 function renderRunning(){
@@ -135,11 +296,12 @@ async function loadDataset(id,reset,focusRun=null,push=false){
  reset=reset||data?.edition!==bvEdition;
  setCategory("bv");++klSequence;++alignedSequence;
  const seq=++loadSeq;const meta=manifest.datasets.find(d=>d.id===id)||manifest.datasets[0];datasetId=meta.id;
+ const request=beginResultRequest('bv',meta.id,focusRun,push);
  try{
-  const d=cache.get(meta.id)||await getJSON(`./api/v1/${meta.url}?v=${encodeURIComponent(manifest.updated_at)}`);
+  const d=await datasetJSON(meta);
   if(seq!==loadSeq||category!=='bv')return;
   if(d.updated_at!==manifest.updated_at)throw Error('发布版本尚在同步');
-  cache.set(meta.id,d);data={...d,edition:bvEdition,runs:d.runs};needsReload=false;
+  cache.set(meta.id,d);data={...d,edition:bvEdition,runs:d.runs.filter(r=>showBVRun(r,'bv'))};needsReload=false;
   $('#updated').textContent=date(d.updated_at);$('#updated').dateTime=d.updated_at;
   if(reset){visible=defaultRuns(data,axisMode);costRange=null;Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'focus',ymin:null,ymax:null});$('#round-run').value='all';}
   else for(const r of data.runs)if(!r.search.length&&!r.formal)visible.delete(r.id);
@@ -149,18 +311,18 @@ async function loadDataset(id,reset,focusRun=null,push=false){
   const url=new URL(location);url.searchParams.delete('edition');url.searchParams.set('dataset',meta.id);url.searchParams.set('category','bv');url.searchParams.delete('apply');
   if(focusedRun)url.searchParams.set('run',focusedRun);else url.searchParams.delete('run');
   if(target)url.hash='';
-  history[push?'pushState':'replaceState'](null,'',url);renderNav();renderRunning();
+  history.replaceState(null,'',url);renderNav();renderRunning();
   $('#dataset-name').textContent=data.title;$('#workload').textContent=data.workload;
-  syncRange();renderAll();showNotice('');
+  syncRange();renderAll();showNotice('');finishResultRequest(request);
   if(target)window.scrollTo({top:0,left:0,behavior:'instant'});
- }catch(e){if(seq===loadSeq){needsReload=true;$('#connection').classList.add('stale');showNotice(`数据读取失败，保留上次快照 · ${e.message}`);}}
+ }catch(e){if(seq===loadSeq){finishResultRequest(request,e);needsReload=true;$('#connection').classList.add('stale');showNotice(`数据读取失败，保留上次快照 · ${e.message}`);}}
 }
 function toggle(id,on){on?visible.add(id):visible.delete(id);renderAll();}
 function toggleModel(model,on){data.runs.filter(r=>r.model===model&&usable(r)).forEach(r=>on?visible.add(r.id):visible.delete(r.id));renderAll();}
 // Display grouping is independent of curve visibility, axes and comparison scope.
 const comparisonGrouping=new Map();
 function comparisonGroupMode(scope=category){return comparisonGrouping.get(scope)||'model';}
-function bvControlSeries(){return data.runs.filter(r=>axisMode==='round'||r.search.some(p=>p.axes)).map(r=>({...r,method:methodLabel(r),baseMethod:r.method,color:COLORS[r.method]||'#526c89',available:usable(r)}));}
+function bvControlSeries(){return data.runs.filter(r=>axisMode==='round'||r.search.some(p=>p.axes)).map(r=>({...r,method:methodLabel(r),baseMethod:r.method,color:comparisonColor(r,'bv'),available:usable(r)}));}
 function renderComparisonControls(host,series,chosen,scope,onChange){
  const byTask=comparisonGroupMode(scope)==='task';
  const entries=series.filter(r=>byTask||r.baseMethod!=='B0');
@@ -196,7 +358,7 @@ function renderSummary(){
  $('#summary tbody').innerHTML=data.runs.filter(r=>r.method!=='B0').map(r=>{
   const best=r.search.find(p=>p.round===r.search_best_round),range=best?.timing?`${fmt(best.timing.p10_ms,4)}–${fmt(best.timing.p90_ms,4)}`:'—';
   const group=previous&&previous!==r.model?'group-line':'';previous=r.model;
-  return `<tr class="${group}" style="--color:${COLORS[r.method]}"><td><input class="row-check" type="checkbox" data-row="${r.id}" aria-label="显示 ${r.model} ${r.method}" ${visible.has(r.id)?'checked':''} ${usable(r)?'':'disabled'}></td><td><span class="model-label">${r.model}</span><span class="effort-label">${esc(r.effort)}</span></td><td><span class="swatch"></span> ${methodLabel(r)}</td><td>${badge(r.status)}</td><td>${r.reported_attempts} / ${r.budget}</td><td class="date">${date(r.finished_at)}</td><td class="num">${fmt(r.search_best_ms)}</td><td class="num">${range}</td><td class="num">${fmt(r.formal?.mean_ms)}</td><td class="num">${r.formal&&r.formal_pytorch?fmt(r.formal_pytorch.mean_ms/r.formal.mean_ms,3)+'×':'—'}</td></tr>`;
+  return `<tr class="${group}" style="--color:${comparisonColor(r,'bv')}"><td><input class="row-check" type="checkbox" data-row="${r.id}" aria-label="显示 ${r.model} ${r.method}" ${visible.has(r.id)?'checked':''} ${usable(r)?'':'disabled'}></td><td><span class="model-label">${r.model}</span><span class="effort-label">${esc(r.effort)}</span></td><td><span class="swatch"></span> ${methodLabel(r)}</td><td>${badge(r.status)}</td><td>${r.reported_attempts} / ${r.budget}</td><td class="date">${date(r.finished_at)}</td><td class="num">${fmt(r.search_best_ms)}</td><td class="num">${range}</td><td class="num">${fmt(r.formal?.mean_ms)}</td><td class="num">${r.formal&&r.formal_pytorch?fmt(r.formal_pytorch.mean_ms/r.formal.mean_ms,3)+'×':'—'}</td></tr>`;
  }).join('');
  $$('[data-row]').forEach(e=>e.onchange=()=>toggle(e.dataset.row,e.checked));
  $('#correctness tbody').innerHTML=data.runs.filter(r=>r.method==='B0').map(r=>`<tr><td>${r.model} <span class="effort-label">${esc(r.effort)}</span></td><td>${methodLabel(r)}</td><td>${badge(r.status)}</td><td>${r.reported_attempts} / ${r.budget}</td><td>${r.accepted===true?'通过':r.accepted===false?'未接受':'—'}</td><td class="date">${date(r.finished_at)}</td></tr>`).join('');
@@ -225,22 +387,23 @@ function ticks(lo,hi,count){
  const out=[];for(let v=Math.ceil(lo/step)*step;v<=hi+step*1e-7;v+=step)out.push(Math.abs(v)<step*1e-8?0:v);return out;
 }
 function tickFmt(v){if(v===0)return '0';if(Math.abs(v)>=1000)return String(+v.toFixed(0));if(Math.abs(v)>=10)return String(+v.toFixed(2));return String(+v.toFixed(5));}
-function bounds(runs,detail){
- const measured=runs.flatMap(r=>r.search.filter(p=>p.timing).map(p=>p.timing[state.uncertainty?'p90_ms':'mean_ms'])).concat(runs.map(r=>r.formal?.mean_ms).filter(Number.isFinite));
- if(!detail)return [0,Math.max(...measured,1e-3)*1.06];
+function bounds(runs,detail,windowRange=[state.xmin,state.xmax]){
+ const [lowRound,highRound]=windowRange;
+ const measured=runs.flatMap(r=>r.search.filter(p=>p.timing&&p.round>=lowRound&&p.round<=highRound).map(p=>p.timing[state.uncertainty?'p90_ms':'mean_ms'])).concat(runs.map(r=>r.formal?.mean_ms).filter(Number.isFinite));
+ if(!detail){const vals=[...measured,...runs.flatMap(r=>series(r).filter(p=>p.round>=lowRound&&p.round<=highRound&&p.y!=null).map(p=>p.y))];return [0,Math.max(...vals,1e-3)*1.06];}
  if(state.ymode==='manual'&&Number.isFinite(state.ymin)&&Number.isFinite(state.ymax)&&state.ymax>state.ymin)return [state.ymin,state.ymax];
  let values=[];
  if(state.ymode==='all'){
-  runs.forEach(r=>series(r).filter(p=>p.round>=state.xmin&&p.round<=state.xmax&&p.y!=null).forEach(p=>values.push(p.y)));
+  runs.forEach(r=>series(r).filter(p=>p.round>=lowRound&&p.round<=highRound&&p.y!=null).forEach(p=>values.push(p.y)));
   if(state.xmax===roundBudget())runs.forEach(r=>{if(r.formal)values.push(r.formal.mean_ms);});
  }else{
-  values=runs.map(r=>{const pts=series(r).filter(p=>p.y!=null&&p.round<=state.xmax);return pts.length?pts[pts.length-1].y:null;}).filter(Number.isFinite);
+  values=runs.map(r=>{const pts=series(r).filter(p=>p.y!=null&&p.round<=highRound);return pts.length?pts[pts.length-1].y:null;}).filter(Number.isFinite);
   // Zoom the lower terminal cluster, retaining at least three series where available.
   // The overview and explicit outside-range count preserve the excluded scale context.
   const sorted=values.slice().sort((a,b)=>a-b);let cut=-1;
   for(let i=Math.min(3,sorted.length-1);i<sorted.length;i++){if(i>0&&sorted[i]/sorted[i-1]>=2){cut=i;break;}}
   if(cut>0)values=sorted.slice(0,cut);
-  const focused=runs.find(r=>r.id===focusedRun),terminal=focused&&series(focused).filter(p=>p.y!=null&&p.round<=state.xmax).at(-1);
+  const focused=runs.find(r=>r.id===focusedRun),terminal=focused&&series(focused).filter(p=>p.y!=null&&p.round<=highRound).at(-1);
   if(terminal)values.push(terminal.y);
  }
  if(!values.length)return [0,1];
@@ -249,9 +412,10 @@ function bounds(runs,detail){
 }
 function star(cx,cy,r=6){let path='';for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rad=i%2?r*.43:r;path+=`${i?'L':'M'}${cx+Math.cos(a)*rad},${cy+Math.sin(a)*rad}`;}return path+'Z';}
 function renderChart(el,detail){
+ renderRoundRange(el,'bv',roundBudget(),renderCharts);
  if(axisMode!=='round') {
   const runs=selected().filter(r=>r.search.some(p=>p.axes));
-  const lines=runs.map(r=>({name:r.model+' '+methodLabel(r),id:r.id,color:COLORS[r.method],dash:seriesDash(r),
+  const lines=runs.map(r=>({name:r.model+' '+methodLabel(r),id:r.id,color:comparisonColor(r,'bv'),dash:seriesDash(r),
    points:r.search.map(p=>({name:'r'+p.round,axes:p.axes,y:p.timing?.mean_ms??null,range:state.uncertainty&&p.timing?[p.timing.p10_ms,p.timing.p90_ms]:null,status:p.status}))}));
   for(const [i,r] of runs.entries())if(r.formal && r.formal_axes)
    lines[i].points.push({formal:true,name:'正式结果',axes:r.formal_axes,y:r.formal.mean_ms});
@@ -262,8 +426,8 @@ function renderChart(el,detail){
   return;
  }
  const runs=selected(),W=el.clientWidth||700,H=el.clientHeight||350,left=W<420?53:64,right=20,top=25,bottom=43,w=W-left-right,h=H-top-bottom;
- const xmin=detail?state.xmin:1,xmax=detail?state.xmax:roundBudget(),withFinal=xmax===roundBudget(),finalAt=roundBudget()+(W<500?5:2),xend=withFinal?finalAt+.9:xmax+.25;
- const [ymin,ymax]=bounds(runs,detail),sx=x=>left+(x-xmin)/(xend-xmin)*w,sy=y=>top+h-(y-ymin)/(ymax-ymin)*h;
+ const [xmin,xmax]=comparisonWindow('bv',roundBudget()),withFinal=xmax===roundBudget()&&runs.some(r=>r.formal),finalAt=roundBudget()+(W<500?5:2),xend=withFinal?finalAt+.9:xmax+.25;
+ const [ymin,ymax]=bounds(runs,detail,[xmin,xmax]),sx=x=>left+(x-xmin)/(xend-xmin)*w,sy=y=>top+h-(y-ymin)/(ymax-ymin)*h;
  const id=detail?'detail':'overview',clip=`clip-${id}`,yticks=ticks(ymin,ymax,H>300?5:3),xticks=ticks(xmin,xmax,W<500?4:7).filter(Number.isInteger);
  let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" aria-hidden="true"><defs><clipPath id="${clip}"><rect x="${left}" y="${top}" width="${w}" height="${h}"/></clipPath></defs>`;
  svg+=yticks.map(v=>`<line x1="${left}" x2="${W-right}" y1="${sy(v)}" y2="${sy(v)}" stroke="#edf0f4"/><text x="${left-10}" y="${sy(v)+4}" text-anchor="end">${tickFmt(v)}</text>`).join('');
@@ -272,7 +436,7 @@ function renderChart(el,detail){
  if(withFinal)svg+=`<line x1="${sx(finalAt-1)}" x2="${sx(finalAt-1)}" y1="${top}" y2="${top+h}" stroke="#dce2e8" stroke-dasharray="3 4"/><text x="${sx(finalAt)}" y="${H-22}" text-anchor="middle">Final</text>`;
  svg+=`<g clip-path="url(#${clip})">`;
  for(const r of runs){
-  const col=COLORS[r.method],pts=series(r);let d='',last=null;
+  const col=comparisonColor(r,'bv'),pts=series(r);let d='',last=null;
   for(const p of pts){
    if(p.y==null){if(mode==='raw'){d+=' ';last=null;}continue;}
    if(!last)d+=`M${sx(p.round)},${sy(p.y)}`;
@@ -280,7 +444,7 @@ function renderChart(el,detail){
    else d+=`L${sx(p.round)},${sy(p.y)}`;
    last=p;
   }
-  svg+=`<path class="curve" data-run="${esc(r.id)}" d="${d}" fill="none" stroke="${col}" stroke-width="${r.id===focusedRun?3:1.8}" stroke-dasharray="${seriesDash(r)}" opacity=".88"/>`;
+  svg+=`<g data-comparison-series="${esc(r.id)}"><path class="curve" data-run="${esc(r.id)}" d="${d}" fill="none" stroke="${col}" stroke-width="${r.id===focusedRun?3:1.8}" stroke-dasharray="${seriesDash(r)}" opacity=".88"/>`;
   for(const p of pts){
    if(p.timing){
     if(state.uncertainty)svg+=`<path d="M${sx(p.round)},${sy(p.timing.p10_ms)}V${sy(p.timing.p90_ms)}M${sx(p.round)-2.5},${sy(p.timing.p10_ms)}h5M${sx(p.round)-2.5},${sy(p.timing.p90_ms)}h5" stroke="${col}" fill="none" opacity=".35"/>`;
@@ -290,10 +454,11 @@ function renderChart(el,detail){
    }
   }
   if(r.formal)svg+=`<path class="formal-star" d="${star(sx(finalAt),sy(r.formal.mean_ms),detail?6:5)}" fill="${col}" stroke="white" stroke-width=".7"/>`;
+  svg+='</g>';
  }
  svg+=`</g><line class="crosshair" x1="0" x2="0" y1="${top}" y2="${top+h}" stroke="#8d9aaa" stroke-dasharray="3 3" visibility="hidden"/></svg>`;
  if(!runs.length)svg+=`<div style="position:absolute;inset:45% 0;text-align:center;color:#76818f;font-size:12px">选择曲线</div>`;
- el.innerHTML=svg;
+ renderChartMarkup(el,svg);
  if(detail){
   const clipped=runs.filter(r=>{const p=series(r).filter(p=>p.y!=null&&p.round>=xmin&&p.round<=xmax);return p.length&&!p.some(p=>p.y>=ymin&&p.y<=ymax);}).length;
   $('#detail-domain').textContent=`${tickFmt(ymin)}–${tickFmt(ymax)} ms${clipped?' · '+clipped+' 条在范围外':''}`;
@@ -309,7 +474,7 @@ function renderReadout(n){
  if(axisMode!=='round')return;
  $('#hover-readout').innerHTML=`<span><strong>${n===roundBudget()+2?'正式结果 ★':'第 '+n+' 轮'}</strong></span>`+selected().map(r=>{
   const p=n===roundBudget()+2?null:r.search.find(p=>p.round===n),m=n===roundBudget()+2?r.formal:p?.timing;
-  return `<span style="--color:${COLORS[r.method]}"><i class="swatch"></i>${r.model} ${methodLabel(r)} <strong>${fmt(m?.mean_ms)}</strong>${m?' ms':''}</span>`;
+  return `<span style="--color:${comparisonColor(r,'bv')}"><i class="swatch"></i>${r.model} ${methodLabel(r)} <strong>${fmt(m?.mean_ms)}</strong>${m?' ms':''}</span>`;
  }).join('');
 }
 function renderCharts(){if(!data)return;renderChart($('#overview'),false);renderChart($('#detail'),true);renderReadout(roundBudget()+2);renderB0Cost();}
@@ -335,7 +500,7 @@ function applyRange(){
   const blank=$('#x-max').value===''&&$('#x-min').value==='';
   if(!blank&&(!Number.isFinite(min)||!Number.isFinite(max)||min<0||max<=min)){showNotice('横轴结束值须大于起始值。');return;}
   costRange=blank?null:[min,max];Object.assign(state,{ymode,ymin,ymax});
- }else Object.assign(state,{xmin:min,xmax:max,ymode,ymin,ymax});showNotice('');renderCharts();
+ }else {Object.assign(state,{xmin:min,xmax:max,ymode,ymin,ymax});roundWindows.set('bv:'+datasetId,[min,max]);}showNotice('');renderCharts();
 }
 function download(name,text,type='text/plain'){const url=URL.createObjectURL(new Blob([text],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);}
 function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"';}
@@ -357,7 +522,7 @@ function setMode(m){mode=m;$('#best-mode').classList.toggle('selected',m==='best
 $('#uncertainty').onchange=e=>{state.uncertainty=e.target.checked;renderCharts();};
 $('#apply-range').onclick=applyRange;
 $('#y-mode').onchange=()=>{if($('#y-mode').value!=='manual')applyRange();};
-$('#reset').onclick=()=>{costRange=null;Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'focus',ymin:null,ymax:null});syncRange();showNotice('');renderCharts();};
+$('#reset').onclick=()=>{roundWindows.delete('bv:'+datasetId);costRange=null;Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'focus',ymin:null,ymax:null});syncRange();showNotice('');renderCharts();};
 new ResizeObserver(()=>{if(category==='kl')renderKL();else if(isComparison())renderAligned('#aligned-content',alignedDataset,alignedRun);else if(data)renderCharts();}).observe($('main'));
 $$('[data-category]').forEach(b=>b.onclick=()=>chooseCategory(b.dataset.category));
 $$('[data-axis]').forEach(b=>b.onclick=()=>changeAxis(b.dataset.axis));
@@ -438,7 +603,7 @@ function costChart(el, lines, options={}) {
   else if(!Number.isFinite(p.y))svg+='<path'+attr+' d="M'+(px-3)+','+(py-3)+' l6,6 m0,-6 l-6,6" stroke="'+line.color+'"><title>'+tip+'</title></path>';
   else svg+='<circle'+attr+' cx="'+px+'" cy="'+py+'" r="'+(p.selected?5:3.2)+'" fill="'+line.color+'"><title>'+tip+'</title></circle>';
  }
- el.innerHTML=svg+'</g></svg>';el.tabIndex=0;
+ renderChartMarkup(el,svg+'</g></svg>');el.tabIndex=0;
  let index=0;
  function inspect(i){index=i;if(note)note.textContent=description(items[i]);}
  const markers=el.querySelectorAll('[data-cost-point]');
