@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-09T12:35:46.113731+00:00",
+  "source_captured_at": "2026-11-09T12:57:01.701827+00:00",
   "queue_cards": [
     {
       "id": "card1",
@@ -24220,8 +24220,8 @@
       "queue_position": 11,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "running",
-      "phase": "运行中",
+      "status": "paused",
+      "phase": "已暂停",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 3,
@@ -24540,10 +24540,10 @@
         {
           "apply": 3,
           "native_index": 2,
-          "status": "running",
+          "status": "paused",
           "started_at": "2026-11-09T12:03:40.064456+00:00",
           "ended_at": null,
-          "elapsed_seconds": 1916.921355661936,
+          "elapsed_seconds": 2857.5800637854263,
           "candidates": [
             {
               "accepted": false,
@@ -24688,9 +24688,45 @@
                 "disputed": false,
                 "tokens_complete": false
               }
+            },
+            {
+              "accepted": true,
+              "stage": null,
+              "correctness_passed": true,
+              "latency_ms": 2.0778199434280396,
+              "reference_latency_ms": 2.1643799543380737,
+              "sequence": 9,
+              "status": "passed",
+              "reused": false,
+              "recorded_at": "2026-11-09T12:36:05.517484+00:00",
+              "axes": {
+                "elapsed_s": 11255.365,
+                "tokens": 20337680,
+                "missing_responses": 6,
+                "disputed": false,
+                "tokens_complete": false
+              }
+            },
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": 2.0932000875473022,
+              "reference_latency_ms": 2.164650082588196,
+              "sequence": 10,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-09T12:41:45.279555+00:00",
+              "axes": {
+                "elapsed_s": 11598.018,
+                "tokens": 21900428,
+                "missing_responses": 6,
+                "disputed": false,
+                "tokens_complete": false
+              }
             }
           ],
-          "evaluations": 8,
+          "evaluations": 10,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -24698,7 +24734,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 22,
+        "count": 24,
         "excluded_count": 0,
         "timing_statistic": "median",
         "points": [
@@ -25097,6 +25133,42 @@
               "disputed": false,
               "tokens_complete": false
             }
+          },
+          {
+            "round": 23,
+            "apply": 3,
+            "inner_sequence": 9,
+            "recorded_at": "2026-11-09T12:36:05.517484+00:00",
+            "status": "passed",
+            "counted": true,
+            "accepted": true,
+            "latency_ms": 2.0778199434280396,
+            "best_ms": 2.0587600469589233,
+            "axes": {
+              "elapsed_s": 11255.365,
+              "tokens": 20337680,
+              "missing_responses": 6,
+              "disputed": false,
+              "tokens_complete": false
+            }
+          },
+          {
+            "round": 24,
+            "apply": 3,
+            "inner_sequence": 10,
+            "recorded_at": "2026-11-09T12:41:45.279555+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 2.0587600469589233,
+            "axes": {
+              "elapsed_s": 11598.018,
+              "tokens": 21900428,
+              "missing_responses": 6,
+              "disputed": false,
+              "tokens_complete": false
+            }
           }
         ]
       }
@@ -25111,7 +25183,7 @@
       "queue_position": 13,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "waiting",
+      "status": "not_run",
       "phase": "待启动",
       "budget": 10,
       "apply_timeout_seconds": 3600,
@@ -25140,7 +25212,7 @@
       "queue_position": 15,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "waiting",
+      "status": "not_run",
       "phase": "待启动",
       "budget": 10,
       "apply_timeout_seconds": 3600,
@@ -25169,7 +25241,7 @@
       "queue_position": 17,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "waiting",
+      "status": "not_run",
       "phase": "待启动",
       "budget": 10,
       "apply_timeout_seconds": 3600,
@@ -28815,7 +28887,7 @@
       "queue_position": 12,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "waiting",
+      "status": "not_run",
       "phase": "待启动",
       "budget": 10,
       "apply_timeout_seconds": 3600,
@@ -28844,7 +28916,7 @@
       "queue_position": 14,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "waiting",
+      "status": "not_run",
       "phase": "待启动",
       "budget": 10,
       "apply_timeout_seconds": 3600,
@@ -28873,7 +28945,7 @@
       "queue_position": 16,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "waiting",
+      "status": "not_run",
       "phase": "待启动",
       "budget": 10,
       "apply_timeout_seconds": 3600,
@@ -28902,7 +28974,7 @@
       "queue_position": 18,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "waiting",
+      "status": "not_run",
       "phase": "待启动",
       "budget": 10,
       "apply_timeout_seconds": 3600,
@@ -28923,6 +28995,14 @@
     }
   ],
   "task_events": [
+    {
+      "id": "kl-gpt-sol-serial-20261108-kl-sol-gqa:paused:2026-11-09T12:51:52.832505+00:00",
+      "run_id": "kl-gpt-sol-serial-20261108-kl-sol-gqa",
+      "dataset": "GQA",
+      "at": "2026-11-09T12:51:52.832505+00:00",
+      "kind": "paused",
+      "reason": "用户要求暂停"
+    },
     {
       "id": "kl-gpt-sol-serial-20261108-kl-sol-gqa:started:2026-11-09T09:33:40.227089+00:00",
       "run_id": "kl-gpt-sol-serial-20261108-kl-sol-gqa",
@@ -29276,5 +29356,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-09T12:35:42.645998+00:00"
+  "updated_at": "2026-11-09T12:56:59.214698+00:00"
 }
