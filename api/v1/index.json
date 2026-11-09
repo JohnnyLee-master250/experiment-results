@@ -1,17 +1,53 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-09T20:54:57.566279+00:00",
-  "published_at": "2026-11-09T20:55:01.405426+00:00",
+  "updated_at": "2026-11-09T21:00:46.991781+00:00",
+  "published_at": "2026-11-09T21:00:50.245815+00:00",
   "refresh_seconds": 60,
   "counts": {
     "datasets": 9,
     "runs_with_records": 99,
-    "saved_records": 2257,
-    "performance_samples": 178200
+    "saved_records": 2258,
+    "performance_samples": 178300
   },
   "update_cadence_minutes": 5.0,
-  "next_update_estimated_at": "2026-11-09T20:59:57.566279+00:00",
+  "next_update_estimated_at": "2026-11-09T21:05:46.991781+00:00",
   "task_events": [
+    {
+      "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-mega:resumed:2026-11-09T20:55:15.814629+00:00",
+      "at": "2026-11-09T20:55:15.814629+00:00",
+      "kind": "resumed",
+      "runs": [
+        {
+          "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-mega",
+          "dataset": "Mega",
+          "model": "Astra",
+          "method": "V0",
+          "method_version": "V0-r3",
+          "edition": "v0-r3",
+          "category": "bv"
+        }
+      ],
+      "reason": "从原断点恢复",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-fa3:completed:2026-11-09T20:54:11.911723+00:00",
+      "at": "2026-11-09T20:54:11.911723+00:00",
+      "kind": "completed",
+      "runs": [
+        {
+          "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-fa3",
+          "dataset": "FA3",
+          "model": "Astra",
+          "method": "V0",
+          "method_version": "V0-r3",
+          "edition": "v0-r3",
+          "category": "bv"
+        }
+      ],
+      "reason": "独立验收完成",
+      "time_basis": "recorded"
+    },
     {
       "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-gemm:resumed:2026-11-09T18:17:01.380165+00:00",
       "at": "2026-11-09T18:17:01.380165+00:00",
@@ -2009,7 +2045,7 @@
       "budget": 30,
       "phase": "finished",
       "status": "complete",
-      "source_captured_at": "2026-11-09T20:54:57.566279+00:00"
+      "source_captured_at": "2026-11-09T21:00:46.991781+00:00"
     },
     {
       "dataset": "GQA",
@@ -2021,7 +2057,7 @@
       "budget": 30,
       "phase": "finished",
       "status": "complete",
-      "source_captured_at": "2026-11-09T20:54:57.566279+00:00"
+      "source_captured_at": "2026-11-09T21:00:46.991781+00:00"
     },
     {
       "dataset": "GQA",
@@ -2033,7 +2069,7 @@
       "budget": 30,
       "phase": "finished",
       "status": "complete",
-      "source_captured_at": "2026-11-09T20:54:57.566279+00:00"
+      "source_captured_at": "2026-11-09T21:00:46.991781+00:00"
     },
     {
       "dataset": "MQA",
@@ -2045,7 +2081,7 @@
       "budget": 30,
       "phase": "finished",
       "status": "complete",
-      "source_captured_at": "2026-11-09T20:54:57.566279+00:00"
+      "source_captured_at": "2026-11-09T21:00:46.991781+00:00"
     },
     {
       "dataset": "MQA",
@@ -2057,7 +2093,7 @@
       "budget": 30,
       "phase": "finished",
       "status": "complete",
-      "source_captured_at": "2026-11-09T20:54:57.566279+00:00"
+      "source_captured_at": "2026-11-09T21:00:46.991781+00:00"
     },
     {
       "dataset": "MQA",
@@ -2069,7 +2105,7 @@
       "budget": 30,
       "phase": "finished",
       "status": "complete",
-      "source_captured_at": "2026-11-09T20:54:57.566279+00:00"
+      "source_captured_at": "2026-11-09T21:00:46.991781+00:00"
     }
   ],
   "datasets": [
@@ -2078,85 +2114,66 @@
       "title": "CUDA-L2 GEMM",
       "suite": "cuda-l2-five-rtx3090",
       "url": "cuda-l2.json",
-      "updated_at": "2026-11-09T20:54:57.566279+00:00"
+      "updated_at": "2026-11-09T21:00:46.991781+00:00"
     },
     {
       "id": "Sonny",
       "title": "FA forward",
       "suite": "sonny-mha-forward-rtx3090",
       "url": "sonny.json",
-      "updated_at": "2026-11-09T20:54:57.566279+00:00"
+      "updated_at": "2026-11-09T21:00:46.991781+00:00"
     },
     {
       "id": "GQA",
       "title": "GQA decode",
       "suite": "flashinfer-gqa-decode-a100",
       "url": "gqa.json",
-      "updated_at": "2026-11-09T20:54:57.566279+00:00"
+      "updated_at": "2026-11-09T21:00:46.991781+00:00"
     },
     {
       "id": "FA3",
       "title": "FA3 backward",
       "suite": "fa3-backward-sm90",
       "url": "fa3.json",
-      "updated_at": "2026-11-09T20:54:57.566279+00:00"
+      "updated_at": "2026-11-09T21:00:46.991781+00:00"
     },
     {
       "id": "GDN",
       "title": "GDN prefill",
       "suite": "gdn-prefill-sm100",
       "url": "gdn.json",
-      "updated_at": "2026-11-09T20:54:57.566279+00:00"
+      "updated_at": "2026-11-09T21:00:46.991781+00:00"
     },
     {
       "id": "Based",
       "title": "Based",
       "suite": "thunderkittens-based-h100",
       "url": "based.json",
-      "updated_at": "2026-11-09T20:54:57.566279+00:00"
+      "updated_at": "2026-11-09T21:00:46.991781+00:00"
     },
     {
       "id": "Mega",
       "title": "Mega mHC",
       "suite": "deepgemm-mega-mhc-sm100",
       "url": "mega.json",
-      "updated_at": "2026-11-09T20:54:57.566279+00:00"
+      "updated_at": "2026-11-09T21:00:46.991781+00:00"
     },
     {
       "id": "MQA",
       "title": "MQA",
       "suite": "deepgemm-mqa-h800",
       "url": "mqa.json",
-      "updated_at": "2026-11-09T20:54:57.566279+00:00"
+      "updated_at": "2026-11-09T21:00:46.991781+00:00"
     },
     {
       "id": "TopK",
       "title": "Top-K",
       "suite": "deepselect-topk-sm90",
       "url": "topk.json",
-      "updated_at": "2026-11-09T20:54:57.566279+00:00"
+      "updated_at": "2026-11-09T21:00:46.991781+00:00"
     }
   ],
   "running_runs": [
-    {
-      "dataset": "FA3",
-      "category": "bv",
-      "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-fa3",
-      "model": "Astra",
-      "effort": "high",
-      "method": "V0",
-      "method_version": "V0-r3",
-      "edition": "v0-r3",
-      "reported_attempts": 50,
-      "budget": 50,
-      "phase": "finished",
-      "status": "running",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
-      "card_id": "card1",
-      "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 3,
-      "queue_group": "bv-r2-v0-r3-20261108-001"
-    },
     {
       "dataset": "CUDA-L2",
       "category": "bv",
@@ -2168,12 +2185,12 @@
       "edition": "v0-r3",
       "reported_attempts": 32,
       "budget": 50,
-      "phase": "profiling",
+      "phase": "reviewing",
       "status": "running",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 5,
+      "queue_position": 4,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -2187,12 +2204,12 @@
       "edition": "v0-r3",
       "reported_attempts": 32,
       "budget": 50,
-      "phase": "ready",
+      "phase": "evaluating",
       "status": "running",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 7,
+      "queue_position": 6,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -2204,11 +2221,30 @@
       "method": "V0",
       "method_version": "V0-r3",
       "edition": "v0-r3",
-      "reported_attempts": 36,
+      "reported_attempts": 37,
+      "budget": 50,
+      "phase": "pending_review",
+      "status": "running",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
+      "card_id": "card1",
+      "environment_name": "DevEnvC_NJbzD",
+      "queue_position": 8,
+      "queue_group": "bv-r2-v0-r3-20261108-001"
+    },
+    {
+      "dataset": "Mega",
+      "category": "bv",
+      "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-mega",
+      "model": "Astra",
+      "effort": "high",
+      "method": "V0",
+      "method_version": "V0-r3",
+      "edition": "v0-r3",
+      "reported_attempts": 10,
       "budget": 50,
       "phase": "ready",
       "status": "running",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
       "queue_position": 9,
@@ -2227,10 +2263,10 @@
       "budget": 50,
       "phase": "ready",
       "status": "running",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 11,
+      "queue_position": 10,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     }
   ],
@@ -2242,32 +2278,32 @@
     },
     "ds-max-nine-datasets-20261028-001": {
       "label": "ds-max-nine-datasets-20261028-001",
-      "captured_at": "2026-11-09T20:54:57.566279+00:00",
+      "captured_at": "2026-11-09T21:00:46.991781+00:00",
       "verification": "只读采集已保存结果；运行中数据为阶段快照"
     },
     "sol6-medium-sonny-20261030-001": {
       "label": "sol6-medium-sonny-20261030-001",
-      "captured_at": "2026-11-09T20:54:57.566279+00:00",
+      "captured_at": "2026-11-09T21:00:46.991781+00:00",
       "verification": "只读采集已保存结果；运行中数据为阶段快照"
     },
     "sol6-medium-v0-gqa-mqa-20261031-001": {
       "label": "sol6-medium-v0-gqa-mqa-20261031-001",
-      "captured_at": "2026-11-09T20:54:57.566279+00:00",
+      "captured_at": "2026-11-09T21:00:46.991781+00:00",
       "verification": "只读采集已保存结果；运行中数据为阶段快照"
     },
     "sol6-medium-b0-b3-gqa-mqa-20261101-001": {
       "label": "sol6-medium-b0-b3-gqa-mqa-20261101-001",
-      "captured_at": "2026-11-09T20:54:57.566279+00:00",
+      "captured_at": "2026-11-09T21:00:46.991781+00:00",
       "verification": "只读采集已保存结果；运行中数据为阶段快照"
     },
     "deepseek-high-20261021": {
       "label": "deepseek-high-20261021",
-      "captured_at": "2026-11-09T20:54:57.566279+00:00",
+      "captured_at": "2026-11-09T21:00:46.991781+00:00",
       "verification": "只读采集已保存结果；运行中数据为阶段快照"
     },
     "bv-r2-v0-r3-20261108-001": {
       "label": "V0-r3 / B0–B3-r2 · 2026-11-08",
-      "captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "captured_at": "2026-11-09T21:00:49.070032+00:00",
       "verification": "原记录只读快照；完成须独立验收"
     }
   },
@@ -2297,7 +2333,7 @@
   "kl": {
     "url": "kl.json",
     "run_count": 27,
-    "source_captured_at": "2026-11-09T20:54:59.449300+00:00",
+    "source_captured_at": "2026-11-09T21:00:48.709133+00:00",
     "running_runs": [
       {
         "id": "kl-deepseek-serial-20261108-kl-ds-fa3",
@@ -2309,7 +2345,7 @@
         "category": "kl",
         "budget": 10,
         "current_apply": 4,
-        "internal_round": 47,
+        "internal_round": 48,
         "reported_attempts": 3
       }
     ],
@@ -2811,7 +2847,7 @@
         "method": "KL",
         "reported_attempts": 3,
         "current_apply": 4,
-        "internal_round": 47
+        "internal_round": 48
       },
       {
         "id": "kl-gpt-sol-serial-20261108-kl-sol-gdn",
@@ -3074,25 +3110,6 @@
   "bv_revisions": {
     "runs": [
       {
-        "dataset": "Mega",
-        "category": "bv",
-        "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-mega",
-        "model": "Astra",
-        "effort": "high",
-        "method": "V0",
-        "method_version": "V0-r3",
-        "edition": "v0-r3",
-        "reported_attempts": 10,
-        "budget": 50,
-        "phase": "等待原断点接续",
-        "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
-        "card_id": "card1",
-        "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 1,
-        "queue_group": "bv-r2-v0-r3-20261108-001"
-      },
-      {
         "dataset": "GQA",
         "category": "bv",
         "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-gqa",
@@ -3105,10 +3122,10 @@
         "budget": 50,
         "phase": "等待原断点接续",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 2,
+        "queue_position": 1,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3123,11 +3140,11 @@
         "reported_attempts": 50,
         "budget": 50,
         "phase": "finished",
-        "status": "running",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "status": "complete",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 3,
+        "queue_position": 2,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3143,10 +3160,10 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 4,
+        "queue_position": 3,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3160,12 +3177,12 @@
         "edition": "v0-r3",
         "reported_attempts": 32,
         "budget": 50,
-        "phase": "profiling",
+        "phase": "reviewing",
         "status": "running",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 5,
+        "queue_position": 4,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3181,10 +3198,10 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 6,
+        "queue_position": 5,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3198,12 +3215,12 @@
         "edition": "v0-r3",
         "reported_attempts": 32,
         "budget": 50,
-        "phase": "ready",
+        "phase": "evaluating",
         "status": "running",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 7,
+        "queue_position": 6,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3215,11 +3232,30 @@
         "method": "V0",
         "method_version": "V0-r3",
         "edition": "v0-r3",
-        "reported_attempts": 36,
+        "reported_attempts": 37,
+        "budget": 50,
+        "phase": "pending_review",
+        "status": "running",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
+        "card_id": "card1",
+        "environment_name": "DevEnvC_NJbzD",
+        "queue_position": 8,
+        "queue_group": "bv-r2-v0-r3-20261108-001"
+      },
+      {
+        "dataset": "Mega",
+        "category": "bv",
+        "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-mega",
+        "model": "Astra",
+        "effort": "high",
+        "method": "V0",
+        "method_version": "V0-r3",
+        "edition": "v0-r3",
+        "reported_attempts": 10,
         "budget": 50,
         "phase": "ready",
         "status": "running",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
         "queue_position": 9,
@@ -3238,10 +3274,10 @@
         "budget": 50,
         "phase": "ready",
         "status": "running",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 11,
+        "queue_position": 10,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3257,10 +3293,10 @@
         "budget": 50,
         "phase": "故障已隔离",
         "status": "paused",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 42,
+        "queue_position": 41,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3276,10 +3312,10 @@
         "budget": 50,
         "phase": "pending_review",
         "status": "paused",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 43,
+        "queue_position": 42,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3295,10 +3331,10 @@
         "budget": 50,
         "phase": "ready",
         "status": "paused",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 44,
+        "queue_position": 43,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3314,10 +3350,10 @@
         "budget": 50,
         "phase": "pending_review",
         "status": "paused",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 45,
+        "queue_position": 44,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3333,10 +3369,10 @@
         "budget": 50,
         "phase": "故障已隔离",
         "status": "paused",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 46,
+        "queue_position": 45,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3352,10 +3388,10 @@
         "budget": 50,
         "phase": "pending_review",
         "status": "paused",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 47,
+        "queue_position": 46,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3371,10 +3407,10 @@
         "budget": 50,
         "phase": "pending_review",
         "status": "paused",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 51,
+        "queue_position": 50,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3390,10 +3426,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 52,
+        "queue_position": 51,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3409,10 +3445,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 53,
+        "queue_position": 52,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3428,10 +3464,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 54,
+        "queue_position": 53,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3447,10 +3483,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 55,
+        "queue_position": 54,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3466,10 +3502,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 56,
+        "queue_position": 55,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3485,10 +3521,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 60,
+        "queue_position": 59,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3504,10 +3540,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 61,
+        "queue_position": 60,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3523,10 +3559,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 62,
+        "queue_position": 61,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3542,10 +3578,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 63,
+        "queue_position": 62,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3561,10 +3597,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 64,
+        "queue_position": 63,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3580,10 +3616,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 65,
+        "queue_position": 64,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3599,10 +3635,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 69,
+        "queue_position": 68,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3618,10 +3654,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 70,
+        "queue_position": 69,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3637,10 +3673,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 71,
+        "queue_position": 70,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3656,10 +3692,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 72,
+        "queue_position": 71,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3675,10 +3711,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 73,
+        "queue_position": 72,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3694,10 +3730,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 74,
+        "queue_position": 73,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3713,10 +3749,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 78,
+        "queue_position": 77,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3732,10 +3768,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 79,
+        "queue_position": 78,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3751,10 +3787,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 80,
+        "queue_position": 79,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3770,10 +3806,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 81,
+        "queue_position": 80,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3789,10 +3825,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 82,
+        "queue_position": 81,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3808,10 +3844,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 83,
+        "queue_position": 82,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3827,10 +3863,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 87,
+        "queue_position": 86,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3846,10 +3882,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 88,
+        "queue_position": 87,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3865,10 +3901,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 89,
+        "queue_position": 88,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3884,10 +3920,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 90,
+        "queue_position": 89,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3903,10 +3939,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 91,
+        "queue_position": 90,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3922,10 +3958,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 92,
+        "queue_position": 91,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3941,10 +3977,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 96,
+        "queue_position": 95,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3960,10 +3996,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 97,
+        "queue_position": 96,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3979,10 +4015,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 98,
+        "queue_position": 97,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3998,10 +4034,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 99,
+        "queue_position": 98,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4017,10 +4053,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 100,
+        "queue_position": 99,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4036,10 +4072,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 101,
+        "queue_position": 100,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4055,10 +4091,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 105,
+        "queue_position": 104,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4074,10 +4110,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 106,
+        "queue_position": 105,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4093,10 +4129,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 107,
+        "queue_position": 106,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4112,10 +4148,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 108,
+        "queue_position": 107,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4131,10 +4167,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 109,
+        "queue_position": 108,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4150,10 +4186,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 110,
+        "queue_position": 109,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4169,10 +4205,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 114,
+        "queue_position": 113,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4188,10 +4224,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 115,
+        "queue_position": 114,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4207,10 +4243,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 116,
+        "queue_position": 115,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4226,10 +4262,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 117,
+        "queue_position": 116,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4245,10 +4281,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 118,
+        "queue_position": 117,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4264,34 +4300,15 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 119,
+        "queue_position": 118,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       }
     ],
     "queue": [
       {
-        "dataset": "Mega",
-        "category": "bv",
-        "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-mega",
-        "model": "Astra",
-        "effort": "high",
-        "method": "V0",
-        "method_version": "V0-r3",
-        "edition": "v0-r3",
-        "reported_attempts": 10,
-        "budget": 50,
-        "phase": "等待原断点接续",
-        "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
-        "card_id": "card1",
-        "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 1,
-        "queue_group": "bv-r2-v0-r3-20261108-001"
-      },
-      {
         "dataset": "GQA",
         "category": "bv",
         "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-gqa",
@@ -4304,10 +4321,10 @@
         "budget": 50,
         "phase": "等待原断点接续",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 2,
+        "queue_position": 1,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4322,11 +4339,11 @@
         "reported_attempts": 50,
         "budget": 50,
         "phase": "finished",
-        "status": "running",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "status": "complete",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 3,
+        "queue_position": 2,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4342,10 +4359,10 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 4,
+        "queue_position": 3,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4359,12 +4376,12 @@
         "edition": "v0-r3",
         "reported_attempts": 32,
         "budget": 50,
-        "phase": "profiling",
+        "phase": "reviewing",
         "status": "running",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 5,
+        "queue_position": 4,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4380,10 +4397,10 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 6,
+        "queue_position": 5,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4397,12 +4414,12 @@
         "edition": "v0-r3",
         "reported_attempts": 32,
         "budget": 50,
-        "phase": "ready",
+        "phase": "evaluating",
         "status": "running",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 7,
+        "queue_position": 6,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4414,11 +4431,30 @@
         "method": "V0",
         "method_version": "V0-r3",
         "edition": "v0-r3",
-        "reported_attempts": 36,
+        "reported_attempts": 37,
+        "budget": 50,
+        "phase": "pending_review",
+        "status": "running",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
+        "card_id": "card1",
+        "environment_name": "DevEnvC_NJbzD",
+        "queue_position": 8,
+        "queue_group": "bv-r2-v0-r3-20261108-001"
+      },
+      {
+        "dataset": "Mega",
+        "category": "bv",
+        "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-mega",
+        "model": "Astra",
+        "effort": "high",
+        "method": "V0",
+        "method_version": "V0-r3",
+        "edition": "v0-r3",
+        "reported_attempts": 10,
         "budget": 50,
         "phase": "ready",
         "status": "running",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
         "queue_position": 9,
@@ -4437,10 +4473,10 @@
         "budget": 50,
         "phase": "ready",
         "status": "running",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 11,
+        "queue_position": 10,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4456,10 +4492,10 @@
         "budget": 50,
         "phase": "故障已隔离",
         "status": "paused",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 42,
+        "queue_position": 41,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4475,10 +4511,10 @@
         "budget": 50,
         "phase": "pending_review",
         "status": "paused",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 43,
+        "queue_position": 42,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4494,10 +4530,10 @@
         "budget": 50,
         "phase": "ready",
         "status": "paused",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 44,
+        "queue_position": 43,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4513,10 +4549,10 @@
         "budget": 50,
         "phase": "pending_review",
         "status": "paused",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 45,
+        "queue_position": 44,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4532,10 +4568,10 @@
         "budget": 50,
         "phase": "故障已隔离",
         "status": "paused",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 46,
+        "queue_position": 45,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4551,10 +4587,10 @@
         "budget": 50,
         "phase": "pending_review",
         "status": "paused",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 47,
+        "queue_position": 46,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4570,10 +4606,10 @@
         "budget": 50,
         "phase": "pending_review",
         "status": "paused",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 51,
+        "queue_position": 50,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4589,10 +4625,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 52,
+        "queue_position": 51,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4608,10 +4644,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 53,
+        "queue_position": 52,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4627,10 +4663,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 54,
+        "queue_position": 53,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4646,10 +4682,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 55,
+        "queue_position": 54,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4665,10 +4701,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 56,
+        "queue_position": 55,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4684,10 +4720,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 60,
+        "queue_position": 59,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4703,10 +4739,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 61,
+        "queue_position": 60,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4722,10 +4758,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 62,
+        "queue_position": 61,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4741,10 +4777,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 63,
+        "queue_position": 62,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4760,10 +4796,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 64,
+        "queue_position": 63,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4779,10 +4815,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 65,
+        "queue_position": 64,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4798,10 +4834,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 69,
+        "queue_position": 68,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4817,10 +4853,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 70,
+        "queue_position": 69,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4836,10 +4872,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 71,
+        "queue_position": 70,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4855,10 +4891,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 72,
+        "queue_position": 71,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4874,10 +4910,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 73,
+        "queue_position": 72,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4893,10 +4929,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 74,
+        "queue_position": 73,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4912,10 +4948,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 78,
+        "queue_position": 77,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4931,10 +4967,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 79,
+        "queue_position": 78,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4950,10 +4986,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 80,
+        "queue_position": 79,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4969,10 +5005,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 81,
+        "queue_position": 80,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4988,10 +5024,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 82,
+        "queue_position": 81,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5007,10 +5043,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 83,
+        "queue_position": 82,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5026,10 +5062,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 87,
+        "queue_position": 86,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5045,10 +5081,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 88,
+        "queue_position": 87,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5064,10 +5100,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 89,
+        "queue_position": 88,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5083,10 +5119,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 90,
+        "queue_position": 89,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5102,10 +5138,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 91,
+        "queue_position": 90,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5121,10 +5157,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 92,
+        "queue_position": 91,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5140,10 +5176,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 96,
+        "queue_position": 95,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5159,10 +5195,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 97,
+        "queue_position": 96,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5178,10 +5214,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 98,
+        "queue_position": 97,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5197,10 +5233,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 99,
+        "queue_position": 98,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5216,10 +5252,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 100,
+        "queue_position": 99,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5235,10 +5271,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 101,
+        "queue_position": 100,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5254,10 +5290,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 105,
+        "queue_position": 104,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5273,10 +5309,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 106,
+        "queue_position": 105,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5292,10 +5328,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 107,
+        "queue_position": 106,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5311,10 +5347,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 108,
+        "queue_position": 107,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5330,10 +5366,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 109,
+        "queue_position": 108,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5349,10 +5385,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 110,
+        "queue_position": 109,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5368,10 +5404,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 114,
+        "queue_position": 113,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5387,10 +5423,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 115,
+        "queue_position": 114,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5406,10 +5442,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 116,
+        "queue_position": 115,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5425,10 +5461,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 117,
+        "queue_position": 116,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5444,10 +5480,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 118,
+        "queue_position": 117,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5463,10 +5499,10 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+        "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_NJbzD",
-        "queue_position": 119,
+        "queue_position": 118,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       }
     ],
@@ -5488,25 +5524,6 @@
       "environment_name": "DevEnvC_NJbzD",
       "runs": [
         {
-          "dataset": "Mega",
-          "category": "bv",
-          "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-mega",
-          "model": "Astra",
-          "effort": "high",
-          "method": "V0",
-          "method_version": "V0-r3",
-          "edition": "v0-r3",
-          "reported_attempts": 10,
-          "budget": 50,
-          "phase": "等待原断点接续",
-          "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
-          "card_id": "card1",
-          "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 1,
-          "queue_group": "bv-r2-v0-r3-20261108-001"
-        },
-        {
           "dataset": "GQA",
           "category": "bv",
           "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-gqa",
@@ -5519,10 +5536,10 @@
           "budget": 50,
           "phase": "等待原断点接续",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 2,
+          "queue_position": 1,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5538,10 +5555,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 52,
+          "queue_position": 51,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5557,10 +5574,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 53,
+          "queue_position": 52,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5576,10 +5593,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 54,
+          "queue_position": 53,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5595,10 +5612,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 55,
+          "queue_position": 54,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5614,10 +5631,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 56,
+          "queue_position": 55,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5633,10 +5650,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 60,
+          "queue_position": 59,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5652,10 +5669,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 61,
+          "queue_position": 60,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5671,10 +5688,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 62,
+          "queue_position": 61,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5690,10 +5707,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 63,
+          "queue_position": 62,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5709,10 +5726,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 64,
+          "queue_position": 63,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5728,10 +5745,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 65,
+          "queue_position": 64,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5747,10 +5764,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 69,
+          "queue_position": 68,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5766,10 +5783,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 70,
+          "queue_position": 69,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5785,10 +5802,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 71,
+          "queue_position": 70,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5804,10 +5821,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 72,
+          "queue_position": 71,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5823,10 +5840,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 73,
+          "queue_position": 72,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5842,10 +5859,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 74,
+          "queue_position": 73,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5861,10 +5878,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 78,
+          "queue_position": 77,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5880,10 +5897,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 79,
+          "queue_position": 78,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5899,10 +5916,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 80,
+          "queue_position": 79,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5918,10 +5935,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 81,
+          "queue_position": 80,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5937,10 +5954,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 82,
+          "queue_position": 81,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5956,10 +5973,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 83,
+          "queue_position": 82,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5975,10 +5992,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 87,
+          "queue_position": 86,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5994,10 +6011,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 88,
+          "queue_position": 87,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6013,10 +6030,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 89,
+          "queue_position": 88,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6032,10 +6049,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 90,
+          "queue_position": 89,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6051,10 +6068,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 91,
+          "queue_position": 90,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6070,10 +6087,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 92,
+          "queue_position": 91,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6089,10 +6106,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 96,
+          "queue_position": 95,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6108,10 +6125,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 97,
+          "queue_position": 96,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6127,10 +6144,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 98,
+          "queue_position": 97,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6146,10 +6163,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 99,
+          "queue_position": 98,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6165,10 +6182,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 100,
+          "queue_position": 99,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6184,10 +6201,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 101,
+          "queue_position": 100,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6203,10 +6220,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 105,
+          "queue_position": 104,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6222,10 +6239,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 106,
+          "queue_position": 105,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6241,10 +6258,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 107,
+          "queue_position": 106,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6260,10 +6277,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 108,
+          "queue_position": 107,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6279,10 +6296,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 109,
+          "queue_position": 108,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6298,10 +6315,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 110,
+          "queue_position": 109,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6317,10 +6334,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 114,
+          "queue_position": 113,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6336,10 +6353,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 115,
+          "queue_position": 114,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6355,10 +6372,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 116,
+          "queue_position": 115,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6374,10 +6391,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 117,
+          "queue_position": 116,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6393,10 +6410,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 118,
+          "queue_position": 117,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -6412,10 +6429,10 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+          "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
           "card_id": "card1",
           "environment_name": "DevEnvC_NJbzD",
-          "queue_position": 119,
+          "queue_position": 118,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         }
       ]
@@ -6655,25 +6672,6 @@
   ],
   "waiting_runs": [
     {
-      "dataset": "Mega",
-      "category": "bv",
-      "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-mega",
-      "model": "Astra",
-      "effort": "high",
-      "method": "V0",
-      "method_version": "V0-r3",
-      "edition": "v0-r3",
-      "reported_attempts": 10,
-      "budget": 50,
-      "phase": "等待原断点接续",
-      "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
-      "card_id": "card1",
-      "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 1,
-      "queue_group": "bv-r2-v0-r3-20261108-001"
-    },
-    {
       "dataset": "GQA",
       "category": "bv",
       "id": "bv-r2-v0-r3-20261108-001-v0-r3-astra-gqa",
@@ -6686,10 +6684,10 @@
       "budget": 50,
       "phase": "等待原断点接续",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 2,
+      "queue_position": 1,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6705,10 +6703,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 52,
+      "queue_position": 51,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6724,10 +6722,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 53,
+      "queue_position": 52,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6743,10 +6741,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 54,
+      "queue_position": 53,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6762,10 +6760,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 55,
+      "queue_position": 54,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6781,10 +6779,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 56,
+      "queue_position": 55,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6800,10 +6798,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 60,
+      "queue_position": 59,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6819,10 +6817,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 61,
+      "queue_position": 60,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6838,10 +6836,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 62,
+      "queue_position": 61,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6857,10 +6855,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 63,
+      "queue_position": 62,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6876,10 +6874,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 64,
+      "queue_position": 63,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6895,10 +6893,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 65,
+      "queue_position": 64,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6914,10 +6912,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 69,
+      "queue_position": 68,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6933,10 +6931,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 70,
+      "queue_position": 69,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6952,10 +6950,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 71,
+      "queue_position": 70,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6971,10 +6969,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 72,
+      "queue_position": 71,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6990,10 +6988,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 73,
+      "queue_position": 72,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7009,10 +7007,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 74,
+      "queue_position": 73,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7028,10 +7026,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 78,
+      "queue_position": 77,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7047,10 +7045,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 79,
+      "queue_position": 78,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7066,10 +7064,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 80,
+      "queue_position": 79,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7085,10 +7083,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 81,
+      "queue_position": 80,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7104,10 +7102,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 82,
+      "queue_position": 81,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7123,10 +7121,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 83,
+      "queue_position": 82,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7142,10 +7140,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 87,
+      "queue_position": 86,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7161,10 +7159,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 88,
+      "queue_position": 87,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7180,10 +7178,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 89,
+      "queue_position": 88,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7199,10 +7197,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 90,
+      "queue_position": 89,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7218,10 +7216,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 91,
+      "queue_position": 90,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7237,10 +7235,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 92,
+      "queue_position": 91,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7256,10 +7254,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 96,
+      "queue_position": 95,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7275,10 +7273,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 97,
+      "queue_position": 96,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7294,10 +7292,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 98,
+      "queue_position": 97,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7313,10 +7311,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 99,
+      "queue_position": 98,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7332,10 +7330,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 100,
+      "queue_position": 99,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7351,10 +7349,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 101,
+      "queue_position": 100,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7370,10 +7368,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 105,
+      "queue_position": 104,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7389,10 +7387,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 106,
+      "queue_position": 105,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7408,10 +7406,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 107,
+      "queue_position": 106,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7427,10 +7425,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 108,
+      "queue_position": 107,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7446,10 +7444,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 109,
+      "queue_position": 108,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7465,10 +7463,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 110,
+      "queue_position": 109,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7484,10 +7482,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 114,
+      "queue_position": 113,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7503,10 +7501,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 115,
+      "queue_position": 114,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7522,10 +7520,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 116,
+      "queue_position": 115,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7541,10 +7539,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 117,
+      "queue_position": 116,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7560,10 +7558,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 118,
+      "queue_position": 117,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7579,10 +7577,10 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 119,
+      "queue_position": 118,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -7825,10 +7823,10 @@
       "budget": 50,
       "phase": "故障已隔离",
       "status": "paused",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 42,
+      "queue_position": 41,
       "queue_group": "bv-r2-v0-r3-20261108-001",
       "pause_reason": "任务已暂停，具体原因待核对",
       "handling_status": "保留原结果与断点"
@@ -7846,10 +7844,10 @@
       "budget": 50,
       "phase": "pending_review",
       "status": "paused",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 43,
+      "queue_position": 42,
       "queue_group": "bv-r2-v0-r3-20261108-001",
       "pause_reason": "任务已暂停，具体原因待核对",
       "handling_status": "保留原结果与断点"
@@ -7867,10 +7865,10 @@
       "budget": 50,
       "phase": "ready",
       "status": "paused",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 44,
+      "queue_position": 43,
       "queue_group": "bv-r2-v0-r3-20261108-001",
       "pause_reason": "任务已暂停，具体原因待核对",
       "handling_status": "保留原结果与断点"
@@ -7888,10 +7886,10 @@
       "budget": 50,
       "phase": "pending_review",
       "status": "paused",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 45,
+      "queue_position": 44,
       "queue_group": "bv-r2-v0-r3-20261108-001",
       "pause_reason": "任务已暂停，具体原因待核对",
       "handling_status": "保留原结果与断点"
@@ -7909,10 +7907,10 @@
       "budget": 50,
       "phase": "故障已隔离",
       "status": "paused",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 46,
+      "queue_position": 45,
       "queue_group": "bv-r2-v0-r3-20261108-001",
       "pause_reason": "任务已暂停，具体原因待核对",
       "handling_status": "保留原结果与断点"
@@ -7930,10 +7928,10 @@
       "budget": 50,
       "phase": "pending_review",
       "status": "paused",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 47,
+      "queue_position": 46,
       "queue_group": "bv-r2-v0-r3-20261108-001",
       "pause_reason": "任务已暂停，具体原因待核对",
       "handling_status": "保留原结果与断点"
@@ -7951,10 +7949,10 @@
       "budget": 50,
       "phase": "pending_review",
       "status": "paused",
-      "source_captured_at": "2026-11-09T20:54:59.863462+00:00",
+      "source_captured_at": "2026-11-09T21:00:49.070032+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_NJbzD",
-      "queue_position": 51,
+      "queue_position": 50,
       "queue_group": "bv-r2-v0-r3-20261108-001",
       "pause_reason": "任务已暂停，具体原因待核对",
       "handling_status": "保留原结果与断点"
