@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-09T09:17:03.116804+00:00",
+  "source_captured_at": "2026-11-09T09:36:10.710809+00:00",
   "queue_cards": [
     {
       "id": "card1",
@@ -24220,17 +24220,31 @@
       "queue_position": 11,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "waiting",
-      "phase": "待启动",
+      "status": "running",
+      "phase": "运行中",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 3,
       "evaluation_timeout_seconds": 1800,
-      "started_at": null,
+      "started_at": "2026-11-09T09:33:40.227089+00:00",
       "finished_at": null,
       "independently_complete": false,
-      "workspace_path": null,
-      "applies": [],
+      "workspace_path": "/home/lbh24/codex-workspace/kl-ds-sol-serial-20261108-001/workspaces/opt/gpt-sol-flashinfer-gqa-decode-a100",
+      "applies": [
+        {
+          "apply": 1,
+          "native_index": 0,
+          "status": "running",
+          "started_at": "2026-11-09T09:33:40.495102+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 147.9739269707352,
+          "candidates": [],
+          "evaluations": 0,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 0,
+          "delivered": null
+        }
+      ],
       "aligned": {
         "schema_version": 1,
         "count": 0,
@@ -28062,6 +28076,14 @@
   ],
   "task_events": [
     {
+      "id": "kl-gpt-sol-serial-20261108-kl-sol-gqa:started:2026-11-09T09:33:40.227089+00:00",
+      "run_id": "kl-gpt-sol-serial-20261108-kl-sol-gqa",
+      "dataset": "GQA",
+      "at": "2026-11-09T09:33:40.227089+00:00",
+      "kind": "started",
+      "reason": "原任务实际启动"
+    },
+    {
       "id": "kl-deepseek-serial-20261108-kl-ds-sonny:started:2026-11-09T02:03:44.035087+00:00",
       "run_id": "kl-deepseek-serial-20261108-kl-ds-sonny",
       "dataset": "Sonny",
@@ -28406,5 +28428,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-09T09:16:53.740075+00:00"
+  "updated_at": "2026-11-09T09:36:05.461215+00:00"
 }
