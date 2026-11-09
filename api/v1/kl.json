@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-09T00:05:37.676044+00:00",
+  "source_captured_at": "2026-11-09T00:15:44.941225+00:00",
   "queue_cards": [
     {
       "id": "card1",
@@ -21379,8 +21379,8 @@
       "queue_position": 1,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "blocked",
-      "phase": "等待核对，禁止新派发",
+      "status": "ended",
+      "phase": "10 Apply 已保存，待独立验收",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 3,
@@ -24252,17 +24252,31 @@
       "queue_position": 2,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "waiting",
-      "phase": "待启动",
+      "status": "running",
+      "phase": "运行中",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 3,
       "evaluation_timeout_seconds": 1800,
-      "started_at": null,
+      "started_at": "2026-11-09T00:14:25.038975+00:00",
       "finished_at": null,
       "independently_complete": false,
-      "workspace_path": null,
-      "applies": [],
+      "workspace_path": "/home/lbh24/codex-workspace/kl-ds-sol-serial-20261108-001/workspaces/opt/deepseek-fa3-backward-sm90",
+      "applies": [
+        {
+          "apply": 1,
+          "native_index": 0,
+          "status": "running",
+          "started_at": "2026-11-09T00:14:25.304717+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 76.53829975612462,
+          "candidates": [],
+          "evaluations": 0,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 0,
+          "delivered": null
+        }
+      ],
       "aligned": {
         "schema_version": 1,
         "count": 0,
@@ -24505,6 +24519,14 @@
     }
   ],
   "task_events": [
+    {
+      "id": "kl-deepseek-serial-20261108-kl-ds-fa3:started:2026-11-09T00:14:25.038975+00:00",
+      "run_id": "kl-deepseek-serial-20261108-kl-ds-fa3",
+      "dataset": "FA3",
+      "at": "2026-11-09T00:14:25.038975+00:00",
+      "kind": "started",
+      "reason": "原任务实际启动"
+    },
     {
       "id": "kl-gpt-sol-serial-20261108-kl-sol-fa3:resumed:2026-11-08T23:50:05.822076+00:00",
       "run_id": "kl-gpt-sol-serial-20261108-kl-sol-fa3",
@@ -24778,5 +24800,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-09T00:05:34.220566+00:00"
+  "updated_at": "2026-11-09T00:15:41.824141+00:00"
 }
