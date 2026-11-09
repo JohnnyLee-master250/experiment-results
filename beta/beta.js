@@ -222,7 +222,7 @@ function betaSyncSelectChoices(){
    button.onkeydown=e=>{const all=[...group.querySelectorAll('button:not(:disabled)')],i=all.indexOf(button);let next;if(e.key==='ArrowRight'||e.key==='ArrowDown')next=all[(i+1)%all.length];else if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=all[(i-1+all.length)%all.length];else if(e.key==='Home')next=all[0];else if(e.key==='End')next=all.at(-1);if(next){e.preventDefault();next.click();next.focus();}};
    return button;
   }));}
-  [...group.children].forEach((button,i)=>{const on=button.dataset.value===select.value;button.disabled=select.disabled||options[i].disabled;button.classList.toggle('selected',on);button.setAttribute('aria-checked',String(on));button.setAttribute('aria-pressed',String(on));button.tabIndex=on?0:-1;});
+  [...group.children].forEach((button,i)=>{const on=button.dataset.value===select.value;button.disabled=select.disabled||options[i].disabled;button.classList.toggle('no-results',options[i].dataset.noResults==='true');button.title=options[i].dataset.noResults==='true'?'尚无评测结果 · 可查看等待状态':'';button.classList.toggle('selected',on);button.setAttribute('aria-checked',String(on));button.setAttribute('aria-pressed',String(on));button.tabIndex=on?0:-1;});
   // Reveal a changed selection within its own track without moving the page.
   // Ordinary redraws preserve the user's manual horizontal scroll position.
   if(group.dataset.visibleSelection!==select.value)requestAnimationFrame(()=>{

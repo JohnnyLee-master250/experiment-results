@@ -139,8 +139,9 @@ function renderKL(){
  if(!manifest)return;
  const queue=$('#kl-queue');if(queue)queue.innerHTML='<table><thead><tr><th>顺序</th><th>测试集</th><th>模型</th><th>状态</th></tr></thead><tbody>'+(manifest.kl.queue||[]).map(q=>`<tr><td>${q.position}</td><td><a href="?category=kl&dataset=${encodeURIComponent(q.dataset)}&run=${encodeURIComponent(q.id)}#kl-panel">${esc(q.dataset)}</a></td><td>${esc(q.model)} / ${esc(q.effort)}</td><td>${klStatus(q.status)}</td></tr>`).join('')+'</tbody></table>';
  if(category!=='kl'||!manifest)return;
+ renderNav();
  const options=klData?.runs.filter(r=>r.dataset===datasetId)||[];
- const selector=$('#kl-run-select');if(selector){selector.innerHTML=options.map(r=>`<option value="${esc(r.id)}" ${r.id===klRun?.id?'selected':''}>${esc(r.model+' / '+r.effort+' · '+klStatus(r.status))}</option>`).join('');selector.value=klRun?.id||'';selector.onchange=e=>selectKLRun(e.target.value);}
+ const selector=$('#kl-run-select');if(selector){selector.innerHTML=options.map(r=>`<option value="${esc(r.id)}" data-no-results="${!r.applies.some(a=>a.delivered?.accepted||(a.candidates||[]).length)}" ${r.id===klRun?.id?'selected':''}>${esc(r.model+' / '+r.effort+' · '+klStatus(r.status))}</option>`).join('');selector.value=klRun?.id||'';selector.onchange=e=>selectKLRun(e.target.value);}
  if($('#kl-path-label'))$('#kl-path-label').textContent=klRun?'KL / '+klRun.model+' '+klRun.effort:'KL';
  const meta=manifest.datasets.find(d=>d.id===datasetId);$('#kl-name').textContent=(meta?.title||datasetId)+' · KL';
  if(!klData){$('#kl-body').hidden=true;$('#kl-state').textContent='正在读取 KL 数据…';return;}
@@ -164,6 +165,7 @@ function renderKL(){
   $(`#kl-matched-${chart}`).querySelectorAll('input').forEach(toggle=>toggle.onchange=()=>{klMatchedVisible[chart][toggle.dataset.matchedKind]=toggle.checked;renderKL();});
  }
  klChart('#kl-overview',points,'Apply',r.budget,true,klReferenceVisible.overview?klReference:null,axes.applies,matched.filter(ref=>klMatchedVisible.overview[ref.kind]));
+ for(const which of ['overview','candidates'])chartResetButton($('#kl-'+which),'kl-'+which,()=>{klReferenceVisible[which]=true;klMatchedVisible[which]={same:true,reduced:true};if(which==='candidates')klApply=klRun.applies.at(-1)?.apply??null;renderKL();});
  const a=r.applies.find(a=>a.apply===klApply),inner=a?.candidates||[];best=null;
  klChart('#kl-candidates',inner.map(c=>{const v=c.correctness_passed?c.latency_ms:null;if(c.accepted&&v!=null)best=best==null?v:Math.min(best,v);return {x:c.sequence,y:v,best,axes:c.axes,eligible:c.accepted,status:c.status};}),'内部候选序号',Math.max(2,inner.length),false,klReferenceVisible.candidates?klReference:null,axes.candidates.get(klApply),matched.filter(ref=>klMatchedVisible.candidates[ref.kind]));
  $('#kl-inner-status').textContent=a?`${klStatus(a.status)} · 已用 ${a.elapsed_seconds==null?'未知':fmt(a.elapsed_seconds/60,1)+' 分钟'} · ${a.evaluations} 次评测 · ${a.infrastructure_errors} 次基础设施异常 · ${a.reused_snapshots} 份结果复用快照`:'尚未启动；候选次数没有预设上限，受 Apply 时限约束。';
@@ -189,10 +191,10 @@ function alignedView(dataset,series){
 function alignedPeers(dataset,run){return [...(run?[run]:[]),...(klData?.runs.filter(r=>r.dataset===dataset.id&&r.id!==run?.id)||[])];}
 function alignedSeries(dataset,run){
  const series=dataset.runs.filter(r=>r.method!=='B0'&&showBVRun(r,dataset.comparison_scope)&&(comparisonHasB(dataset.comparison_scope)||r.method==='V0')).map(r=>({
-  id:r.id,model:r.model,effort:r.effort,method:methodLabel(r),baseMethod:r.method,color:comparisonColor(r,dataset.comparison_scope||'aligned'),dash:seriesDash(r),
+  id:r.id,model:r.model,effort:r.effort,method:methodLabel(r),baseMethod:r.method,available:r.search.length>0,color:comparisonColor(r,dataset.comparison_scope||'aligned'),dash:seriesDash(r),
   points:r.search.map(p=>({round:p.round,y:p.status==='passed'?p.timing?.mean_ms??null:null,status:p.status,axes:p.axes,recorded_at:p.recorded_at}))
  }));
- for(const r of alignedPeers(dataset,run))series.push({id:r.id,model:r.model,effort:r.effort,method:'Aligned KL',baseMethod:'KL',color:comparisonColor({...r,baseMethod:'KL'},dataset.comparison_scope||'aligned'),dash:DASH[r.model]||'',
+ for(const r of alignedPeers(dataset,run))series.push({id:r.id,model:r.model,effort:r.effort,method:'Aligned KL',baseMethod:'KL',available:(r.aligned?.points||[]).some(p=>p.counted),color:comparisonColor({...r,baseMethod:'KL'},dataset.comparison_scope||'aligned'),dash:DASH[r.model]||'',
   points:(r.aligned?.points||[]).filter(p=>p.counted).map(p=>({...p,y:p.latency_ms,epoch:r.id.startsWith('kl-astra-high-serial-20261102-')&&r.dataset==='Mega'&&p.apply>=5?2:1}))});
  return series;
 }
@@ -257,6 +259,7 @@ function renderAligned(target,dataset,run,previewIds=[]){
   else host.append(child);
  }
  renderComparisonControls(host.querySelector('.aligned-controls'),all,view.visible,dataset.comparison_scope||'aligned',redraw);
+ chartResetButton(host.querySelector('.aligned-chart'),'comparison',()=>{roundWindows.delete((dataset.comparison_scope||'aligned')+':'+dataset.id);view.zoom=false;view.compressed=false;view.visualScale=1;redraw();});
  host.querySelector('[data-aligned-compress]').onchange=e=>{view.compressed=e.target.checked;view.visualScale=view.compressed?2/3:1;redraw();};
  host.querySelectorAll('[data-aligned-mode]').forEach(el=>el.onclick=()=>{view.mode=el.dataset.alignedMode;redraw();});
  host.querySelector('[data-aligned-zoom]').onchange=e=>{view.zoom=e.target.checked;redraw();};

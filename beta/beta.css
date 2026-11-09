@@ -290,3 +290,13 @@ body.beta{--accent:#0071e3;--soft:#f5f5f7;--grid:#ededf0}
  .beta #aligned-content>details+details{grid-row:7}
 }
 @media(max-width:600px){.beta .chart-title{flex-wrap:wrap}.beta .comparison-range{width:220px;min-width:160px;gap:8px}}
+
+/* Chart tools and empty result states share one compact, accessible treatment. */
+.beta #reset{display:none}
+.beta .chart-reset,.beta .plot-options>.chart-reset{display:inline-flex;align-items:center;justify-content:center;flex:0 0 34px;width:34px;height:34px;min-height:34px;padding:0;border:1px solid #d2d2d7;border-radius:50%;background:#fff;color:#526c89;font-size:25px;font-weight:400;line-height:1;transition:transform .18s,background .18s,color .18s}
+.beta .chart-title>.chart-reset{margin-left:8px}
+.beta .chart-reset:hover{transform:scale(1.08);background:#f1f3f6;color:#1d1d1f}
+.beta .chip.disabled,.beta .chip.beta-pill-disabled{background:#efeff2!important;border-color:#d9d9df!important;color:#96969e!important;opacity:1;filter:none;cursor:not-allowed}
+.beta .chip.disabled::before,.beta .chip.disabled::after{display:none}
+.beta .dataset-tabs button.no-results,.beta .beta-select-segments button.no-results{color:#9898a0}
+.beta .dataset-tabs button.no-results[aria-current=true],.beta .beta-select-segments button.no-results.selected{color:#dedee4}

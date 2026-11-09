@@ -113,7 +113,29 @@ function datasetJSON(meta,version=manifest.updated_at){
 }
 function publishedKL(version=manifest.updated_at){return klData?.updated_at===version?Promise.resolve(klData):getJSON(`./api/v1/${manifest.kl.url}?v=${encodeURIComponent(version)}`);}
 const MODEL_COLORS={'Sol6':'#ed6400','Astra':'#0071e3','DeepSeek':'#7956c9','DeepSeek-high':'#d9398c','Sol 6.1':'#009b68','DeepSeek Flash':'#b87a00'};
-function comparisonColor(run,scope=category){return comparisonGroupMode(scope)==='task'?(MODEL_COLORS[run.model]||'#526c89'):(COLORS[run.baseMethod||run.method]||(run.baseMethod==='KL'||run.method==='KL'?'#e69a00':'#526c89'));}
+const REVISION_COLORS={'B1-r2':'#0086b3','B2-r2':'#e63d37','B3-r2':'#784be7','V0-r3':'#0071e3'};
+const REVISION_MODEL_COLORS={'Sol6':'#df3547','Astra':'#784be7','DeepSeek':'#bd38d1','DeepSeek-high':'#d54e30','Sol 6.1':'#009ca8','DeepSeek Flash':'#8d9500'};
+function comparisonColor(run,scope=category){
+ const revised=['bv','aligned'].includes(scope)&&Object.hasOwn(REVISION_COLORS,methodLabel(run));
+ if(comparisonGroupMode(scope)==='task')return (revised?REVISION_MODEL_COLORS[run.model]:MODEL_COLORS[run.model])||'#526c89';
+ return (revised?REVISION_COLORS[methodLabel(run)]:COLORS[run.baseMethod||run.method])||(['KL','Aligned KL'].includes(run.baseMethod||run.method)?'#e69a00':'#526c89');
+}
+function resetBVView(){
+ roundWindows.delete('bv:'+datasetId);costRange=null;Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'focus',ymin:null,ymax:null});syncRange();showNotice('');renderCharts();
+}
+function chartResetButton(chart,key,action){
+ const parent=chart.closest('.chart-card')?.querySelector('.chart-title')||chart.parentElement.querySelector('.plot-options');if(!parent)return;
+ let button=parent.querySelector('[data-chart-reset="'+key+'"]');
+ if(!button){button=document.createElement('button');button.type='button';button.dataset.chartReset=key;button.className='chart-reset';button.textContent='↻';button.title='重置视图';button.setAttribute('aria-label','重置视图');parent.append(button);}
+ button.onclick=()=>{action();button.animate?.([{transform:'rotate(0)'},{transform:'rotate(360deg)'}],{duration:320,easing:'ease-out'});};
+}
+function datasetHasResults(id){
+ if(category==='kl'&&klData){const rows=klData.runs.filter(r=>r.dataset===id&&(!klRun||r.model===klRun.model));return rows.some(r=>r.applies.some(a=>a.delivered?.accepted||(a.candidates||[]).length));}
+ const d=cache.get(id);if(!d)return null;
+ const hasBV=d.runs.some(r=>r.method!=='B0'&&showBVRun(r,category)&&(category!=='aligned'||r.method==='V0')&&r.search.length);
+ return hasBV||(isComparison()&&klData?.runs.some(r=>r.dataset===id&&(r.aligned?.points||[]).some(p=>p.counted)))||false;
+}
+
 
 
 const roundWindows=new Map();let rangeDragging=false,rangeRenderFrame=null;
@@ -271,7 +293,7 @@ async function refresh(force=false){
 }
 function renderNav(){
  if($('#datasets').dataset.items!==manifest.datasets.map(d=>d.id).join('|')){$('#datasets').dataset.items=manifest.datasets.map(d=>d.id).join('|');$('#datasets').innerHTML=manifest.datasets.map(d=>`<button type="button" data-dataset="${esc(d.id)}" aria-current="${d.id===datasetId}">${esc(d.id)}</button>`).join('');}
- $$('[data-dataset]').forEach(b=>b.setAttribute('aria-current',String(b.dataset.dataset===datasetId)));
+ $$('[data-dataset]').forEach(b=>{b.setAttribute('aria-current',String(b.dataset.dataset===datasetId));const empty=datasetHasResults(b.dataset.dataset)===false;b.classList.toggle('no-results',empty);b.title=empty?'尚无评测结果 · 可查看等待状态':'';});
  $$('[data-dataset]').forEach(b=>b.onclick=()=>category==="kl"?loadKL(b.dataset.dataset):isComparison()?loadAligned(b.dataset.dataset,null,category):loadDataset(b.dataset.dataset,true));
 }
 function renderRunning(){
@@ -342,8 +364,8 @@ function renderComparisonControls(host,series,chosen,scope,onChange){
   const available=rows.filter(r=>r.available!==false),n=available.filter(r=>chosen.has(r.id)).length,all=available.length>0&&n===available.length,mixed=n>0&&!all;
   const effort=!byTask&&new Set(rows.map(r=>r.effort)).size===1?rows[0].effort:'';
   return `<div class="model-group"><div class="model-heading"><button type="button" data-curve-group-title="${esc(key)}" aria-label="切换 ${esc(key)} 全部曲线" ${available.length?'':'disabled'}><strong>${esc(key)}</strong></button>${effort?`<span class="effort">${esc(effort)}</span>`:''}<label class="model-toggle ${mixed?'mixed':''}" title="${n}/${available.length} 条曲线已显示"><span>${available.length?(all?'全部':mixed?'部分':'关闭'):'无曲线'}</span><input type="checkbox" data-curve-group="${esc(key)}" data-group-scope="${scope}" aria-label="${esc(key)} 全部曲线" aria-checked="${mixed?'mixed':String(all)}" ${all?'checked':''} ${available.length?'':'disabled'}></label></div><div class="chips">${rows.map(r=>{
-   const ok=r.available!==false,on=chosen.has(r.id),label=byTask?r.model:r.method==='Aligned KL'?'KL':r.method;
-   return `<label class="chip ${on?'active':''} ${ok?'':'disabled'}" style="--color:${r.color}" title="${esc(r.baseMethod==='B0'?'正确性实验，不绘制速度曲线':r.model+' / '+r.effort+' · '+r.method)}"><input type="checkbox" ${inputAttr}="${esc(r.id)}" aria-label="${esc(r.model+' '+r.method+' 曲线')}" ${on?'checked':''} ${ok?'':'disabled'}>${esc(label)}${byTask?`<small>${esc(r.effort)}</small>`:''}</label>`;
+   const ok=r.available!==false,on=ok&&chosen.has(r.id),label=byTask?r.model:r.method==='Aligned KL'?'KL':r.method;
+   return `<label class="chip ${on?'active':''} ${ok?'':'disabled'}" style="--color:${r.color}" title="${esc(r.baseMethod==='B0'?'正确性实验，不绘制速度曲线':r.model+' / '+r.effort+' · '+r.method+(ok?'':' · 尚无评测结果'))}"><input type="checkbox" ${inputAttr}="${esc(r.id)}" aria-label="${esc(r.model+' '+r.method+' 曲线')}" ${on?'checked':''} ${ok?'':'disabled'}>${esc(label)}${byTask?`<small>${esc(r.effort)}</small>`:''}</label>`;
   }).join('')}</div></div>`;
  }).join('');
  host.querySelectorAll('['+inputAttr+']').forEach(el=>el.onchange=()=>{const id=el.getAttribute(inputAttr);el.checked?chosen.add(id):chosen.delete(id);onChange();});
@@ -528,7 +550,8 @@ function setMode(m){mode=m;$('#best-mode').classList.toggle('selected',m==='best
 $('#uncertainty').onchange=e=>{state.uncertainty=e.target.checked;renderCharts();};
 $('#apply-range').onclick=applyRange;
 $('#y-mode').onchange=()=>{if($('#y-mode').value!=='manual')applyRange();};
-$('#reset').onclick=()=>{roundWindows.delete('bv:'+datasetId);costRange=null;Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'focus',ymin:null,ymax:null});syncRange();showNotice('');renderCharts();};
+$('#reset').onclick=resetBVView;
+for(const id of ['overview','detail'])chartResetButton($('#'+id),id,resetBVView);
 new ResizeObserver(()=>{if(category==='kl')renderKL();else if(isComparison())renderAligned('#aligned-content',alignedDataset,alignedRun);else if(data)renderCharts();}).observe($('main'));
 $$('[data-category]').forEach(b=>b.onclick=()=>chooseCategory(b.dataset.category));
 $$('[data-axis]').forEach(b=>b.onclick=()=>changeAxis(b.dataset.axis));
