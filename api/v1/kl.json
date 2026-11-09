@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-09T16:16:15.438754+00:00",
+  "source_captured_at": "2026-11-09T16:22:19.413635+00:00",
   "queue_cards": [
     {
       "id": "card1",
@@ -25172,10 +25172,10 @@
         {
           "apply": 6,
           "native_index": 5,
-          "status": "running",
+          "status": "completed",
           "started_at": "2026-11-09T15:28:01.463628+00:00",
-          "ended_at": null,
-          "elapsed_seconds": 2867.6382579309866,
+          "ended_at": "2026-11-09T16:19:39.862667+00:00",
+          "elapsed_seconds": 3098.3990309191868,
           "candidates": [
             {
               "accepted": false,
@@ -25338,9 +25338,53 @@
                 "disputed": false,
                 "tokens_complete": false
               }
+            },
+            {
+              "accepted": false,
+              "stage": "performance",
+              "correctness_passed": true,
+              "latency_ms": null,
+              "reference_latency_ms": null,
+              "sequence": 10,
+              "status": "failed",
+              "reused": false,
+              "recorded_at": "2026-11-09T16:15:05.630384+00:00",
+              "axes": {
+                "elapsed_s": 24254.386,
+                "tokens": 48974480,
+                "missing_responses": 45,
+                "disputed": false,
+                "tokens_complete": false
+              }
             }
           ],
-          "evaluations": 9,
+          "evaluations": 10,
+          "infrastructure_errors": 0,
+          "reused_snapshots": 1,
+          "delivered": {
+            "accepted": true,
+            "stage": null,
+            "correctness_passed": true,
+            "latency_ms": 2.029020071029663,
+            "reference_latency_ms": 2.147969961166382
+          },
+          "axes": {
+            "elapsed_s": 24359.37,
+            "tokens": 49452953,
+            "missing_responses": 45,
+            "disputed": false,
+            "tokens_complete": false
+          }
+        },
+        {
+          "apply": 7,
+          "native_index": 6,
+          "status": "running",
+          "started_at": "2026-11-09T16:19:39.862667+00:00",
+          "ended_at": null,
+          "elapsed_seconds": 152.02143699023873,
+          "candidates": [],
+          "evaluations": 0,
           "infrastructure_errors": 0,
           "reused_snapshots": 0,
           "delivered": null
@@ -25348,7 +25392,7 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 52,
+        "count": 53,
         "excluded_count": 2,
         "timing_statistic": "median",
         "points": [
@@ -26313,6 +26357,24 @@
             "axes": {
               "elapsed_s": 24041.455,
               "tokens": 48048092,
+              "missing_responses": 45,
+              "disputed": false,
+              "tokens_complete": false
+            }
+          },
+          {
+            "round": 53,
+            "apply": 6,
+            "inner_sequence": 10,
+            "recorded_at": "2026-11-09T16:15:05.630384+00:00",
+            "status": "failed",
+            "counted": true,
+            "accepted": false,
+            "latency_ms": null,
+            "best_ms": 2.029020071029663,
+            "axes": {
+              "elapsed_s": 24254.386,
+              "tokens": 48974480,
               "missing_responses": 45,
               "disputed": false,
               "tokens_complete": false
@@ -30496,5 +30558,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-09T16:16:13.638473+00:00"
+  "updated_at": "2026-11-09T16:22:17.650047+00:00"
 }
