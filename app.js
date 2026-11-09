@@ -380,6 +380,11 @@ function renderRunning(){
  const phase={reviewing:'审查中',evaluating:'评测中',profiling:'测量中',ready:'运行中',initializing:'准备中',finished:'收尾中',queued:'排队中'}[r.phase]||'运行中';
   return `<a class="running-link ${focusedRun===r.id?'current':''}" href="${esc(href)}" data-category-target="${runCategory(r)}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}" style="--color:${COLORS[r.method]||'#526c89'}" title="${esc(r.model+' / '+r.effort)} · 已记录 ${r.reported_attempts}/${r.budget} 轮；待审查记录不代表独立完成"><span class="swatch"></span><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(methodLabel(r))}</strong><span class="running-round">${r.category==='kl'?(r.current_apply??r.reported_attempts):r.reported_attempts}<span> / ${r.budget} ${r.category==='kl'?'Apply · r'+(r.internal_round??0):'轮'}</span></span><span class="running-phase">${phase}</span><span aria-hidden="true">↗</span></a>`;
  }).join('')||'<span class="running-empty">当前没有运行中的实验，各组状态见下方</span>';
+ const paused=manifest.paused_runs||[];
+ const pausedScroll=$('#paused-links').scrollTop;
+ $('#paused-count').textContent=`${paused.length} 组`;
+ $('#paused-links').innerHTML=paused.map(r=>`<a class="running-link paused-link" href="?category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-category-target="${runCategory(r)}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}"><span class="paused-task"><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(methodLabel(r))}</strong><span>${r.card_id==='card1'?'卡 1':r.card_id==='card2'?'卡 2':esc(r.environment_name||'')} · ${r.reported_attempts} / ${r.budget} ${r.method==='KL'?'Apply':'轮'}</span></span><span class="paused-detail"><span>${esc(r.pause_reason)}</span><small>${esc(r.handling_status)}</small></span><span aria-hidden="true">↗</span></a>`).join('')||'<span class="running-empty">当前没有暂停的任务</span>';
+ $('#paused-links').scrollTop=pausedScroll;
  const waiting=manifest.waiting_runs||manifest.kl?.waiting_runs||[];
  const cards=manifest.waiting_cards||manifest.kl?.waiting_cards||[];
  const scrollPositions=new Map($$('#waiting-links .waiting-list').map(el=>[el.dataset.card,el.scrollTop]));

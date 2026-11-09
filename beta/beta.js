@@ -450,7 +450,7 @@ $$('#beta-results-view section.data-section').filter(section=>section.querySelec
  summary.append(caption,...[...head.children].filter(el=>el!==title));head.remove();details.append(summary,...section.childNodes);section.replaceWith(details);
 });
 for(const id of ['kl-overview','kl-candidates']){const chart=$('#'+id);chart.parentNode.querySelector('.chart-title').after(chart);}
-const queueView=$('#beta-queue-view');queueView.append($('.running-bar'),$('#waiting-bar'),$('#campaign-status'));
+const queueView=$('#beta-queue-view');queueView.append($('.running-bar'),$('#paused-bar'),$('#waiting-bar'),$('#campaign-status'));
 const queueSection=$('#kl-queue').closest('section');queueSection.querySelector('h3').textContent='完整队列';queueSection.querySelector('.section-head>span').textContent='原队列顺序';queueView.append(queueSection);
 const legacyLog=$('#task-log');legacyLog.hidden=true;$('#beta-legacy-log').append(legacyLog);
 $$('a[href^="./api/"]').forEach(a=>a.setAttribute('href',(document.body.dataset.apiBase||'./')+a.getAttribute('href').slice(2)));
