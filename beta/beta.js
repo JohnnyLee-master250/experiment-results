@@ -1,7 +1,7 @@
 'use strict';
 const betaConfig=JSON.parse(document.querySelector('#beta-navigation').textContent);
 function betaRequestedView(url=new URL(location)){
- const explicit=url.searchParams.get('view');if(['results','logs','queue'].includes(explicit))return explicit;
+ const explicit=url.searchParams.get('view');if(['results','logs','queue','workspaces'].includes(explicit))return explicit;
  return url.hash||['category','dataset','run','edition','apply','axis'].some(key=>url.searchParams.has(key))?'results':'queue';
 }
 function betaRetainDefaultView(url,view){
@@ -49,7 +49,7 @@ function betaTintCharts(){
 function betaUpdateTitle(){
  const title=manifest?.datasets.find(d=>d.id===datasetId)?.title||datasetId;
  const section=betaConfig.result_sections.find(s=>s.id===category)?.label;
- $('#beta-title').textContent=betaView==='logs'?'完成日志':betaView==='queue'?'队列情况':betaFuture?'V0-r3':title+(section?' · '+section:'');
+ $('#beta-title').textContent=betaView==='workspaces'?'工作树路径':betaView==='logs'?'完成日志':betaView==='queue'?'队列情况':betaFuture?'V0-r3':title+(section?' · '+section:'');
  const metadata=$('#beta-run-meta');if(!metadata)return;
  const r=category==='kl'&&betaView==='results'&&!betaFuture&&klRun?.dataset===datasetId?klRun:null;
  metadata.hidden=!r;
@@ -79,15 +79,17 @@ function betaScheduleMenu(id,delay=320){
 function betaCloseMenu(){betaOpenMenu(null);}
 function betaShowView(view,push=false){
  const previous=betaView;
- betaView=['results','logs','queue'].includes(view)?view:'results';
+ betaView=['results','logs','queue','workspaces'].includes(view)?view:'results';
  $('#beta-results-view').hidden=betaView!=='results'||betaFuture;
  $('#beta-future-view').hidden=betaView!=='results'||!betaFuture;
+ $('#beta-workspaces-view').hidden=betaView!=='workspaces';
  $('#beta-logs-view').hidden=betaView!=='logs';$('#beta-queue-view').hidden=betaView!=='queue';
  $$('[data-beta-nav]').forEach(el=>el.setAttribute('aria-current',el.dataset.betaNav===betaView?'page':'false'));
  betaUpdateTitle();betaSyncGrouping();
  $('#beta-kicker').hidden=true;$('#beta-kicker').textContent='';
  if(push)betaURL(true);
  if(betaView==='logs')betaRenderLogs();
+ if(betaView==='workspaces')window.workspaceDirectory?.sync();
  if(previous!==betaView)betaAnimateContent($('#beta-'+(betaFuture&&betaView==='results'?'future':betaView)+'-view'));
 }
 async function betaChoose(categoryId,dataset=datasetId,model=null){
@@ -203,7 +205,7 @@ function betaDecorateControls(){
  betaSyncSelectChoices();
 }
 function betaSyncSelectChoices(){
- $$('#beta-results-view select,#beta-logs-view select').forEach(select=>{
+ $$('#beta-results-view select,#beta-logs-view select,#beta-workspaces-view select:not([data-native])').forEach(select=>{
   if(select.closest('#beta-legacy-log'))return;
   if(select.id==='kl-apply'){
    select.hidden=false;select.classList.add('beta-apply-select');select.closest('label').classList.add('beta-apply-field');return;
@@ -441,14 +443,7 @@ const betaRunMeta=document.createElement('div');betaRunMeta.id='beta-run-meta';b
 const betaTitleRow=document.createElement('div');betaTitleRow.className='beta-title-row';$('#beta-title').before(betaTitleRow);betaTitleRow.append($('#beta-title'),betaRunMeta);
 $('.kl-budget').hidden=true;
 const betaSummarySection=$('#summary').closest('section'),betaSummaryDetails=document.createElement('details'),betaSummaryHead=document.createElement('summary');
-betaSummaryDetails.className=betaSummarySection.className;betaSummaryDetails.open=true;betaSummaryHead.innerHTML='<span>实验组</span><span>延迟 ms ↓ · 完成日期 SGT</span>';betaSummaryDetails.append(betaSummaryHead,betaSummarySection.querySelector('.table-wrap'));betaSummarySection.replaceWith(betaSummaryDetails);
-$$('#beta-results-view section.data-section').filter(section=>section.querySelector(':scope > .section-head h3')?.textContent==='实验工作区').forEach(section=>{
- const head=section.querySelector('.section-head'),title=head.querySelector('h3'),details=document.createElement('details'),summary=document.createElement('summary');
- for(const attr of section.attributes)details.setAttribute(attr.name,attr.value);
- details.classList.add('workspace-section');details.open=true;
- const caption=document.createElement('span');caption.textContent=title.textContent;if(title.id)caption.id=title.id;
- summary.append(caption,...[...head.children].filter(el=>el!==title));head.remove();details.append(summary,...section.childNodes);section.replaceWith(details);
-});
+betaSummaryDetails.className=betaSummarySection.className;betaSummaryDetails.open=false;betaSummaryHead.innerHTML='<span>实验组</span><span>延迟 ms ↓ · 完成日期 SGT</span>';betaSummaryDetails.append(betaSummaryHead,betaSummarySection.querySelector('.table-wrap'));betaSummarySection.replaceWith(betaSummaryDetails);
 for(const id of ['kl-overview','kl-candidates']){const chart=$('#'+id);chart.parentNode.querySelector('.chart-title').after(chart);}
 const queueView=$('#beta-queue-view');queueView.append($('.running-bar'),$('#paused-bar'),$('#waiting-bar'),$('#campaign-status'));
 const queueSection=$('#kl-queue').closest('section');queueSection.querySelector('h3').textContent='完整队列';queueSection.querySelector('.section-head>span').textContent='原队列顺序';queueView.append(queueSection);
@@ -530,3 +525,72 @@ betaSliderObserver.observe(document.querySelector('main'),{subtree:true,childLis
 window.addEventListener('resize',betaScheduleSliders);
 document.fonts?.ready.then(betaScheduleSliders);
 betaScheduleSliders();
+
+// Directory metadata is part of index.json; no extra collection or model work.
+window.workspaceDirectory=(()=>{
+ const labels={running:'运行中',waiting:'等待中',complete:'已完成',paused:'暂停',blocked:'受阻',awaiting_audit:'待验收',ended:'待验收',not_run:'未开始',no_data:'无记录'};
+ const methods=['all',...betaConfig.method_revisions.map(r=>r.label).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})),'KL'];
+ const selected=new Set();let rows=[],filtered=[],stamp=null,limit=40,sort='started_at',descending=true;
+ const value=id=>$('#ws-'+id).value;
+ const sgtDay=at=>at&&Number.isFinite(Date.parse(at))?new Date(Date.parse(at)+8*3600000).toISOString().slice(0,10):'';
+ function optionList(id,values){const el=$('#ws-'+id),before=el.value,html=values.map(([v,label])=>`<option value="${esc(v)}">${esc(label)}</option>`).join('');if(el.innerHTML!==html)el.innerHTML=html;el.value=values.some(([v])=>v===before)?before:'all';}
+ function setMethod(method,push=true){$('#ws-method').value=methods.includes(method)?method:'all';limit=40;selected.clear();const url=new URL(location);url.searchParams.set('view','workspaces');url.searchParams.set('ws',value('method'));history[push?'pushState':'replaceState'](null,'',url);betaFuture=false;betaShowView('workspaces');betaCloseMenu();render();window.scrollTo({top:0,left:0,behavior:'instant'});}
+ function matches(row){
+  if(value('method')!=='all'&&row.method_version!==value('method'))return false;
+  if(value('model')!=='all'&&row.model+' / '+row.effort!==value('model'))return false;
+  if(value('status')!=='all'&&(labels[row.status]||row.status)!==value('status'))return false;
+  if(value('dataset')!=='all'&&row.dataset!==value('dataset'))return false;
+  const from=value('from'),to=value('to'),day=sgtDay(row[value('date-field')]);
+  if((from||to)&&(!day||from&&day<from||to&&day>to))return false;
+  const queries=value('search').trim().toLowerCase().split(/[\n;；]+/).filter(Boolean);
+  const text=[row.dataset,row.method_version,row.model,row.effort,row.workspace_path,labels[row.status]].join(' ').toLowerCase();
+  return !queries.length||queries.some(query=>query.trim().split(/\s+/).every(word=>text.includes(word)));
+ }
+ function batch(){const chosen=filtered.filter(r=>selected.has(r.id));return chosen.length?chosen:filtered;}
+ function updateActions(){const chosen=filtered.filter(r=>selected.has(r.id));$('#ws-count').textContent=`${filtered.length} / ${rows.length}${chosen.length?' · '+chosen.length+' ✓':''}`;$('#ws-check-all').checked=!!filtered.length&&chosen.length===filtered.length;$('#ws-check-all').indeterminate=chosen.length>0&&chosen.length<filtered.length;$('#ws-copy').disabled=!batch().some(r=>r.workspace_path);$('#ws-csv').disabled=!batch().length;}
+ async function copy(text,button){try{await navigator.clipboard.writeText(text);$('#ws-feedback').textContent='已复制';if(button){button.textContent='✓';setTimeout(()=>{if(button.isConnected)button.innerHTML=copyIcon;},1400);}}catch{$('#ws-feedback').textContent='请选中路径复制';}}
+ const copyIcon='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="3"/><path d="M16 5V4a1 1 0 0 0-1-1H5a2 2 0 0 0-2 2v10a1 1 0 0 0 1 1h1"/></svg>';
+ function render(animate=false){
+  const valid=!(value('from')&&value('to')&&value('from')>value('to'));$('#ws-date-error').textContent=valid?'':'日期范围有误';
+  filtered=valid?rows.filter(matches):[];filtered.sort((a,b)=>{const av=Date.parse(a[sort]),bv=Date.parse(b[sort]);if(!Number.isFinite(av))return Number.isFinite(bv)?1:a.id.localeCompare(b.id);if(!Number.isFinite(bv))return -1;return (descending?bv-av:av-bv)||a.id.localeCompare(b.id);});
+  const ids=new Set(filtered.map(r=>r.id));for(const id of selected)if(!ids.has(id))selected.delete(id);
+  $('#ws-rows').innerHTML=filtered.slice(0,limit).map(r=>`<tr><td><input type="checkbox" data-ws-check="${esc(r.id)}" aria-label="选择 ${esc(r.dataset+' '+r.model+' '+r.method_version)}" ${selected.has(r.id)?'checked':''}></td><td class="ws-dataset">${esc(r.dataset)}</td><td><span class="ws-method-tag">${esc(r.method_version)}</span></td><td>${esc(r.model)} <small>${esc(r.effort||'')}</small></td><td>${badge(r.status)}</td><td><time datetime="${esc(r.started_at||'')}">${date(r.started_at)}</time></td><td><time datetime="${esc(r.finished_at||'')}">${date(r.finished_at)}</time></td><td class="ws-path-cell">${r.workspace_path?`<code>${esc(r.workspace_path)}</code><button class="ws-icon" data-ws-copy="${esc(r.id)}" aria-label="复制 ${esc(r.dataset+' '+r.model+' '+r.method_version)} 路径" title="复制路径">${copyIcon}</button>`:'<span class="ws-missing">—</span>'}</td></tr>`).join('')||'<tr><td colspan="8" class="empty">无匹配记录</td></tr>';
+  $$('[data-ws-check]').forEach(el=>el.onchange=()=>{if(el.checked)selected.add(el.dataset.wsCheck);else selected.delete(el.dataset.wsCheck);updateActions();});
+  $$('[data-ws-copy]').forEach(el=>el.onclick=()=>copy(rows.find(r=>r.id===el.dataset.wsCopy).workspace_path,el));
+  $('#ws-more').hidden=filtered.length<=limit;updateActions();betaSyncSelectChoices();if(animate)betaAnimateContent($('#workspace-directory-table'));
+ }
+ function sync(){
+  const payload=manifest?.workspaces;if(!payload)return;
+  if(stamp!==payload.updated_at){stamp=payload.updated_at;rows=payload.rows;
+   optionList('method',methods.map(v=>[v,v==='all'?'All':v]));
+   optionList('model',[['all','All'],...[...new Set(rows.map(r=>r.model+' / '+r.effort))].sort().map(v=>[v,v])]);
+   optionList('status',[['all','All'],...[...new Set(rows.map(r=>labels[r.status]||r.status))].map(v=>[v,v])]);
+   optionList('dataset',[['all','All'],...(manifest.datasets||[]).map(d=>[d.id,d.id])]);
+  }
+  const method=new URL(location).searchParams.get('ws')||'all';if(methods.includes(method))$('#ws-method').value=method;
+  render();
+ }
+ $('#workspace-method-menu').innerHTML=['B0','B1','B2','B3','V0','KL'].map(f=>`<div>${methods.filter(v=>v===f||v.startsWith(f+'-')).map(v=>`<button data-workspace-method="${v}">${v}</button>`).join('')}</div>`).join('');
+ $$('[data-workspace-method]').forEach(b=>b.onclick=()=>setMethod(b.dataset.workspaceMethod));
+ $$('select[id^="ws-"],input[type=date][id^="ws-"]').forEach(el=>el.onchange=()=>{limit=40;selected.clear();if(el.id==='ws-method'){setMethod(el.value);return;}render(true);});
+ $('#ws-search').oninput=()=>{limit=40;selected.clear();render();};
+ $('#ws-reset').onclick=()=>{for(const id of ['method','model','status','dataset'])$('#ws-'+id).value='all';for(const id of ['search','from','to'])$('#ws-'+id).value='';$('#ws-date-field').value='started_at';setMethod('all');};
+ $('#ws-check-all').onchange=e=>{selected.clear();if(e.target.checked)filtered.forEach(r=>selected.add(r.id));render();};
+ $('#ws-more').onclick=()=>{limit+=40;render();};
+ $('#ws-copy').onclick=()=>copy([...new Set(batch().map(r=>r.workspace_path).filter(Boolean))].join('\n'));
+ $('#ws-csv').onclick=()=>{const keys=['dataset','method_version','model','effort','status','started_at','finished_at','workspace_path'];const cell=v=>'"'+String(v??'').replaceAll('"','""')+'"';const csv=[keys.join(','),...batch().map(r=>keys.map(k=>cell(r[k])).join(','))].join('\r\n');const url=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='workspaces.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+ $$('[data-ws-sort]').forEach(b=>b.onclick=()=>{if(sort===b.dataset.wsSort)descending=!descending;else{sort=b.dataset.wsSort;descending=true;}$$('[data-ws-sort]').forEach(el=>el.textContent=(el.dataset.wsSort==='started_at'?'开始 SGT':'完成 SGT')+(el.dataset.wsSort===sort?(descending?' ↓':' ↑'):''));render(true);});
+ // One contextual directory, shared across all five result views.
+ const context=document.createElement('details');context.className='data-section workspace-section';context.id='result-workspaces';context.innerHTML='<summary><span>实验工作区</span><span>服务器路径</span></summary><div class="workspace-context-rows"></div>';$('#beta-results-view').append(context);let contextKey=null;
+ function contextSync(){
+  if(!manifest?.workspaces)return;
+  const key=datasetId+':'+category+':'+(category==='kl'?klRun?.id:'');if(contextKey!==key){context.open=false;contextKey=key;}
+  const records=manifest.workspaces.rows.filter(r=>r.dataset===datasetId&&r.workspace_path&&(category==='kl'?r.id===klRun?.id:category==='aligned'?['V0','KL'].includes(r.method):category==='bv'?r.method!=='KL'&&!['B0','B1'].includes(r.method):category==='all'?!['B0','B1'].includes(r.method):true));
+  const body=context.querySelector('.workspace-context-rows');const html=records.map(r=>`<div class="workspace-row"><div class="workspace-label"><strong>${esc(r.method_version)} / ${esc(r.model)}</strong><span>${esc(r.effort||'')}</span></div><code>${esc(r.workspace_path)}</code><button data-context-copy="${esc(r.id)}">复制</button></div>`).join('')||'<p class="empty">暂无工作区</p>';
+  if(body.innerHTML!==html){body.innerHTML=html;body.querySelectorAll('[data-context-copy]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(records.find(r=>r.id===b.dataset.contextCopy).workspace_path);b.textContent='已复制';}catch{b.textContent='请选中复制';}});}
+ }
+ const oldTitle=betaUpdateTitle;betaUpdateTitle=function(){oldTitle();contextSync();};
+ document.addEventListener('experiment:routechange',()=>{if(betaView==='workspaces')sync();});
+ contextSync();if(betaView==='workspaces')sync();
+ return {sync,contextSync};
+})();

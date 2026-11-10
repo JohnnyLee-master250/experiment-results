@@ -313,3 +313,47 @@ body.beta{--accent:#0071e3;--soft:#f5f5f7;--grid:#ededf0}
 @media(hover:hover) and (pointer:fine){.beta #beta-queue-view .paused-link:hover{transform:scale(1.004)}}
 @media(max-width:650px){.beta #beta-queue-view .paused-link{grid-template-columns:minmax(0,1fr) 18px;gap:10px;padding:14px}.paused-detail{grid-row:2;grid-column:1}.paused-link>span:last-child{grid-column:2;grid-row:1/3} .beta #paused-links{max-height:440px}}
 @media(prefers-reduced-motion:reduce){.beta #beta-queue-view .paused-link:hover{transform:none}}
+
+/* Workspaces share the same navigation surface, segmented controls and cards. */
+.beta .workspace-menu-inner{grid-template-columns:180px minmax(0,1fr);gap:38px}
+.beta #workspace-method-menu{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.beta #workspace-method-menu button{font-size:17px;white-space:nowrap;line-height:1.6}
+.beta .workspace-filters,.beta .workspace-directory{background:#fff;border:1px solid #00000008;border-radius:var(--beta-card-radius);box-shadow:0 3px 12px #1d1d1f0b}
+.beta .workspace-filters{padding:24px;display:grid;gap:14px}
+.beta .workspace-search-row{display:flex;gap:12px;align-items:center}
+.beta #ws-search{font:inherit;font-size:14px;line-height:1.6;background:#f5f5f7;color:#1d1d1f;border:1px solid transparent;border-radius:18px;padding:12px 18px;min-height:48px;max-height:140px;resize:vertical;flex:1;min-width:0;box-sizing:border-box}
+.beta #ws-search:focus{outline:2px solid #0071e344;border-color:#0071e3}
+.beta #beta-workspaces-view .beta-select-field{display:grid;grid-template-columns:50px minmax(0,1fr);gap:14px;align-items:center;min-width:0;margin:0}
+.beta #beta-workspaces-view .beta-select-label{font-size:13px;color:#6e6e73;font-weight:500}
+.beta #beta-workspaces-view .beta-select-segments{width:max-content;max-width:100%;overflow:auto;white-space:nowrap;flex-wrap:nowrap;margin:0}
+.beta #beta-workspaces-view .segments button{font-size:13px;flex-shrink:0;padding:10px 17px}
+.beta .workspace-date-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;color:#6e6e73}
+.beta .workspace-date-row .beta-select-field{display:block!important}
+.beta .workspace-date-row .beta-select-label:empty{display:none}
+.beta .workspace-date-row input{font:inherit;font-variant-numeric:tabular-nums;min-width:0;color:#1d1d1f;background:#f5f5f7;border:1px solid transparent;padding:10px 14px;border-radius:999px}
+.beta #ws-date-error{color:#bc362f}
+.beta .workspace-directory{margin-top:24px;padding:0;overflow:hidden}
+.beta .workspace-toolbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:20px 24px;font-size:13px;color:#6e6e73}
+.beta .workspace-toolbar>div{display:flex;gap:10px;margin-left:auto}
+.beta .workspace-toolbar button,.beta #ws-more,.beta .ws-icon{display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#0071e3;border:1px solid #d2d2d7;border-radius:999px;padding:8px 16px;font:inherit;transition:background .18s,color .18s,transform .18s}
+.beta .ws-icon{width:38px;height:38px;padding:0;flex:0 0 38px;font-size:23px}
+.beta .workspace-toolbar button:disabled{opacity:.35;cursor:default}
+.beta #ws-more{display:block;margin:20px auto}.beta #ws-more[hidden]{display:none}
+.beta .workspace-table-wrap{overflow-x:auto}
+.beta #workspace-directory-table{width:100%;min-width:1080px;table-layout:fixed;border-collapse:collapse;font-size:13px}
+.beta #workspace-directory-table th,.beta #workspace-directory-table td{padding:16px 10px;vertical-align:top;border-bottom:1px solid #eee}
+.beta #workspace-directory-table th{font-size:12px;font-weight:500;background:#f5f5f7;text-align:left}
+.beta #workspace-directory-table th:first-child{width:40px}.beta #workspace-directory-table th:nth-child(2){width:92px}.beta #workspace-directory-table th:nth-child(3){width:88px}.beta #workspace-directory-table th:nth-child(4){width:145px}.beta #workspace-directory-table th:nth-child(5){width:85px}.beta #workspace-directory-table th:nth-child(6),.beta #workspace-directory-table th:nth-child(7){width:140px}
+.beta #workspace-directory-table th button{padding:0;background:none;border:0;border-radius:0;font:inherit;color:inherit;white-space:nowrap}
+.beta #workspace-directory-table input{accent-color:#526c89;width:16px;height:16px}
+.beta #workspace-directory-table small{display:block;color:#6e6e73;font-size:12px;margin-top:4px}
+.beta .ws-method-tag{font-size:12px;font-weight:600;background:#f5f5f7;border-radius:999px;display:inline-block;padding:4px 9px;white-space:nowrap}
+.beta #workspace-directory-table time{font-size:12px;font-variant-numeric:tabular-nums;color:#6e6e73}
+.beta .ws-path-cell{position:relative;padding-right:54px!important}.beta .ws-path-cell code{display:block;white-space:normal;overflow-wrap:anywhere;font-size:12px;line-height:1.65;color:#6e6e73;user-select:all}.beta .ws-path-cell button{position:absolute;right:10px;top:12px}
+.beta .ws-missing{color:#86868b}.beta .ws-dataset{font-weight:600}
+.beta #result-workspaces .workspace-row{border-radius:0;background:transparent;box-shadow:none}.beta #result-workspaces .workspace-row:hover{transform:none}
+.beta #result-workspaces .workspace-label{min-width:160px}
+@media(hover:hover) and (pointer:fine){.beta .workspace-toolbar button:not(:disabled):hover,.beta .ws-icon:hover,.beta #ws-more:hover{background:#0071e3;color:white;transform:scale(1.035)}.beta #workspace-directory-table tbody tr:hover{background:#fafafa}}
+@media(max-width:900px){.beta .workspace-menu-inner{grid-template-columns:120px minmax(0,1fr)}.beta #workspace-method-menu{grid-template-columns:repeat(3,minmax(0,1fr))}.beta .workspace-menu-inner .beta-menu-primary{grid-column:auto}}
+@media(max-width:650px){.beta .workspace-menu-inner{grid-template-columns:75px minmax(0,1fr);gap:20px}.beta #workspace-method-menu button{font-size:15px}.beta .workspace-filters{padding:16px;gap:12px}.beta #beta-workspaces-view .beta-select-field{grid-template-columns:40px minmax(0,1fr);gap:8px}.beta #beta-workspaces-view .segments button{font-size:12px;padding:8px 14px}.beta .workspace-toolbar{padding:16px;gap:10px}.beta .workspace-date-row{gap:8px}.beta .workspace-date-row input{padding:9px;width:135px}.beta .workspace-date-row .ws-zone{font-size:10px}.beta .beta-main-nav{gap:15px}.beta .beta-main-nav>button{font-size:11px}.beta #result-workspaces .workspace-label{min-width:0}}
+@media(prefers-reduced-motion:reduce){.beta .ws-icon:hover{transform:none}}
