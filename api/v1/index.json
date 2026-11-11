@@ -1,17 +1,35 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-11T17:12:29.236905+00:00",
-  "published_at": "2026-11-11T17:13:19.907030+00:00",
+  "updated_at": "2026-11-11T17:18:22.981313+00:00",
+  "published_at": "2026-11-11T17:19:07.513521+00:00",
   "refresh_seconds": 60,
   "counts": {
     "datasets": 8,
     "runs_with_records": 64,
-    "saved_records": 2008,
-    "performance_samples": 184500
+    "saved_records": 2011,
+    "performance_samples": 184800
   },
-  "update_cadence_minutes": null,
-  "next_update_estimated_at": null,
+  "update_cadence_minutes": 5.0,
+  "next_update_estimated_at": "2026-11-11T17:23:22.981313+00:00",
   "task_events": [
+    {
+      "id": "bv-r2-v0-r3-20261108-001-b2-r2-sol-gqa:started:2026-11-11T17:13:32.448786+00:00",
+      "at": "2026-11-11T17:13:32.448786+00:00",
+      "kind": "started",
+      "runs": [
+        {
+          "id": "bv-r2-v0-r3-20261108-001-b2-r2-sol-gqa",
+          "dataset": "GQA",
+          "model": "Sol 6.1",
+          "method": "B2",
+          "method_version": "B2-r2",
+          "edition": "bn-r2",
+          "category": "bv"
+        }
+      ],
+      "reason": "开始运行",
+      "time_basis": "recorded"
+    },
     {
       "id": "bv-r2-v0-r3-20261108-001-b2-r2-deepseek-gdn:resumed:2026-11-11T17:07:02.568595+00:00",
       "at": "2026-11-11T17:07:02.568595+00:00",
@@ -2540,56 +2558,56 @@
       "title": "FA forward",
       "suite": "sonny-mha-forward-rtx3090",
       "url": "sonny.json",
-      "updated_at": "2026-11-11T17:12:29.236905+00:00"
+      "updated_at": "2026-11-11T17:18:22.981313+00:00"
     },
     {
       "id": "GQA",
       "title": "GQA decode",
       "suite": "flashinfer-gqa-decode-a100",
       "url": "gqa.json",
-      "updated_at": "2026-11-11T17:12:29.236905+00:00"
+      "updated_at": "2026-11-11T17:18:22.981313+00:00"
     },
     {
       "id": "FA3",
       "title": "FA3 backward",
       "suite": "fa3-backward-sm90",
       "url": "fa3.json",
-      "updated_at": "2026-11-11T17:12:29.236905+00:00"
+      "updated_at": "2026-11-11T17:18:22.981313+00:00"
     },
     {
       "id": "GDN",
       "title": "GDN prefill",
       "suite": "gdn-prefill-sm100",
       "url": "gdn.json",
-      "updated_at": "2026-11-11T17:12:29.236905+00:00"
+      "updated_at": "2026-11-11T17:18:22.981313+00:00"
     },
     {
       "id": "Based",
       "title": "Based",
       "suite": "thunderkittens-based-h100",
       "url": "based.json",
-      "updated_at": "2026-11-11T17:12:29.236905+00:00"
+      "updated_at": "2026-11-11T17:18:22.981313+00:00"
     },
     {
       "id": "Mega",
       "title": "Mega mHC",
       "suite": "deepgemm-mega-mhc-sm100",
       "url": "mega.json",
-      "updated_at": "2026-11-11T17:12:29.236905+00:00"
+      "updated_at": "2026-11-11T17:18:22.981313+00:00"
     },
     {
       "id": "MQA",
       "title": "MQA",
       "suite": "deepgemm-mqa-h800",
       "url": "mqa.json",
-      "updated_at": "2026-11-11T17:12:29.236905+00:00"
+      "updated_at": "2026-11-11T17:18:22.981313+00:00"
     },
     {
       "id": "TopK",
       "title": "Top-K",
       "suite": "deepselect-topk-sm90",
       "url": "topk.json",
-      "updated_at": "2026-11-11T17:12:29.236905+00:00"
+      "updated_at": "2026-11-11T17:18:22.981313+00:00"
     }
   ],
   "running_runs": [
@@ -2602,15 +2620,15 @@
       "method": "B2",
       "method_version": "B2-r2",
       "edition": "bn-r2",
-      "reported_attempts": 4,
+      "reported_attempts": 5,
       "budget": 50,
       "phase": "evaluating",
       "status": "running",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_c2cQD",
       "bound_card_id": "card1",
-      "queue_position": 52,
+      "queue_position": 53,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -2622,15 +2640,15 @@
       "method": "B2",
       "method_version": "B2-r2",
       "edition": "bn-r2",
-      "reported_attempts": 42,
+      "reported_attempts": 43,
       "budget": 50,
-      "phase": "ready",
+      "phase": "reviewing",
       "status": "running",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_c2cQD",
       "bound_card_id": "card1",
-      "queue_position": 54,
+      "queue_position": 55,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -2644,13 +2662,13 @@
       "edition": "bn-r2",
       "reported_attempts": 38,
       "budget": 50,
-      "phase": "reviewing",
+      "phase": "ready",
       "status": "running",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "card3",
       "environment_name": "DevEnvC_yUEBA",
       "bound_card_id": "card3",
-      "queue_position": 55,
+      "queue_position": 56,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -2664,13 +2682,13 @@
       "edition": "bn-r2",
       "reported_attempts": 35,
       "budget": 50,
-      "phase": "reviewing",
+      "phase": "ready",
       "status": "running",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_c2cQD",
       "bound_card_id": "card1",
-      "queue_position": 70,
+      "queue_position": 71,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -2686,11 +2704,11 @@
       "budget": 50,
       "phase": "evaluating",
       "status": "running",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "card3",
       "environment_name": "DevEnvC_yUEBA",
       "bound_card_id": "card3",
-      "queue_position": 74,
+      "queue_position": 75,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -2706,30 +2724,10 @@
       "budget": 50,
       "phase": "ready",
       "status": "running",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "card3",
       "environment_name": "DevEnvC_yUEBA",
       "bound_card_id": "card3",
-      "queue_position": 80,
-      "queue_group": "bv-r2-v0-r3-20261108-001"
-    },
-    {
-      "dataset": "Sonny",
-      "category": "bv",
-      "id": "bv-r2-v0-r3-20261108-001-b2-r2-deepseek-sonny",
-      "model": "DeepSeek Flash",
-      "effort": "max",
-      "method": "B2",
-      "method_version": "B2-r2",
-      "edition": "bn-r2",
-      "reported_attempts": 1,
-      "budget": 50,
-      "phase": "eval_failed",
-      "status": "running",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
-      "card_id": "card2",
-      "environment_name": "DevEnvC_M8IXB",
-      "bound_card_id": "card2",
       "queue_position": 81,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
@@ -2744,13 +2742,13 @@
       "edition": "bn-r2",
       "reported_attempts": 1,
       "budget": 50,
-      "phase": "profiling",
+      "phase": "ready",
       "status": "running",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
       "bound_card_id": "card2",
-      "queue_position": 82,
+      "queue_position": 83,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -2764,13 +2762,13 @@
       "edition": "bn-r2",
       "reported_attempts": 1,
       "budget": 50,
-      "phase": "ready",
+      "phase": "evaluating",
       "status": "running",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
       "bound_card_id": "card2",
-      "queue_position": 83,
+      "queue_position": 84,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -2784,13 +2782,13 @@
       "edition": "bn-r2",
       "reported_attempts": 1,
       "budget": 50,
-      "phase": "reviewing",
+      "phase": "ready",
       "status": "running",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
       "bound_card_id": "card2",
-      "queue_position": 84,
+      "queue_position": 85,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -2802,15 +2800,35 @@
       "method": "B2",
       "method_version": "B2-r2",
       "edition": "bn-r2",
-      "reported_attempts": 1,
+      "reported_attempts": 2,
       "budget": 50,
       "phase": "reviewing",
       "status": "running",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "card1",
       "environment_name": "DevEnvC_c2cQD",
       "bound_card_id": "card1",
-      "queue_position": 88,
+      "queue_position": 89,
+      "queue_group": "bv-r2-v0-r3-20261108-001"
+    },
+    {
+      "dataset": "GQA",
+      "category": "bv",
+      "id": "bv-r2-v0-r3-20261108-001-b2-r2-sol-gqa",
+      "model": "Sol 6.1",
+      "effort": "medium",
+      "method": "B2",
+      "method_version": "B2-r2",
+      "edition": "bn-r2",
+      "reported_attempts": 0,
+      "budget": 50,
+      "phase": "ready",
+      "status": "running",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
+      "card_id": "card2",
+      "environment_name": "DevEnvC_M8IXB",
+      "bound_card_id": "card2",
+      "queue_position": 90,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     }
   ],
@@ -2822,7 +2840,7 @@
     },
     "bv-r2-v0-r3-20261108-001": {
       "label": "V0-r3 / B0–B3-r2 · 2026-11-08",
-      "captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "captured_at": "2026-11-11T17:18:47.506935+00:00",
       "verification": "原记录只读快照；完成须独立验收"
     }
   },
@@ -2852,7 +2870,7 @@
   "kl": {
     "url": "kl.json",
     "run_count": 24,
-    "source_captured_at": "2026-11-11T17:12:57.335640+00:00",
+    "source_captured_at": "2026-11-11T17:18:41.798469+00:00",
     "running_runs": [],
     "waiting_cards": [
       {
@@ -3143,11 +3161,31 @@
         "budget": 50,
         "phase": "等待原断点接续",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": "card3",
         "queue_position": 1,
+        "queue_group": "bv-r2-v0-r3-20261108-001"
+      },
+      {
+        "dataset": "Based",
+        "category": "bv",
+        "id": "bv-r2-v0-r3-20261108-001-b2-r2-deepseek-based",
+        "model": "DeepSeek Flash",
+        "effort": "max",
+        "method": "B2",
+        "method_version": "B2-r2",
+        "edition": "bn-r2",
+        "reported_attempts": 29,
+        "budget": 50,
+        "phase": "等待原断点接续",
+        "status": "waiting",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
+        "card_id": "shared-bv",
+        "environment_name": "共享队列",
+        "bound_card_id": "card1",
+        "queue_position": 2,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3163,11 +3201,11 @@
         "budget": 50,
         "phase": "等待原断点接续",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": "card1",
-        "queue_position": 2,
+        "queue_position": 3,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3183,11 +3221,11 @@
         "budget": 50,
         "phase": "等待原断点接续",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": "card3",
-        "queue_position": 3,
+        "queue_position": 4,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3203,11 +3241,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 4,
+        "queue_position": 5,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3223,11 +3261,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 5,
+        "queue_position": 6,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3243,11 +3281,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 7,
+        "queue_position": 8,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3263,11 +3301,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 8,
+        "queue_position": 9,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3283,11 +3321,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 9,
+        "queue_position": 10,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3303,11 +3341,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 10,
+        "queue_position": 11,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3323,11 +3361,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 11,
+        "queue_position": 12,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3343,11 +3381,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 12,
+        "queue_position": 13,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3363,11 +3401,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 43,
+        "queue_position": 44,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3383,11 +3421,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 44,
+        "queue_position": 45,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3403,11 +3441,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 45,
+        "queue_position": 46,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3423,11 +3461,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 46,
+        "queue_position": 47,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3443,11 +3481,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 47,
+        "queue_position": 48,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3463,11 +3501,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 48,
+        "queue_position": 49,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3479,15 +3517,15 @@
         "method": "B2",
         "method_version": "B2-r2",
         "edition": "bn-r2",
-        "reported_attempts": 4,
+        "reported_attempts": 5,
         "budget": 50,
         "phase": "evaluating",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 52,
+        "queue_position": 53,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3503,11 +3541,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 53,
+        "queue_position": 54,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3519,15 +3557,15 @@
         "method": "B2",
         "method_version": "B2-r2",
         "edition": "bn-r2",
-        "reported_attempts": 42,
+        "reported_attempts": 43,
         "budget": 50,
-        "phase": "ready",
+        "phase": "reviewing",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 54,
+        "queue_position": 55,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3541,13 +3579,13 @@
         "edition": "bn-r2",
         "reported_attempts": 38,
         "budget": 50,
-        "phase": "reviewing",
+        "phase": "ready",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card3",
         "environment_name": "DevEnvC_yUEBA",
         "bound_card_id": "card3",
-        "queue_position": 55,
+        "queue_position": 56,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3563,11 +3601,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card3",
         "environment_name": "DevEnvC_yUEBA",
         "bound_card_id": "card3",
-        "queue_position": 56,
+        "queue_position": 57,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3583,11 +3621,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card3",
         "environment_name": "DevEnvC_yUEBA",
         "bound_card_id": "card3",
-        "queue_position": 57,
+        "queue_position": 58,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3601,33 +3639,13 @@
         "edition": "bn-r2",
         "reported_attempts": 35,
         "budget": 50,
-        "phase": "reviewing",
+        "phase": "ready",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 70,
-        "queue_group": "bv-r2-v0-r3-20261108-001"
-      },
-      {
-        "dataset": "Based",
-        "category": "bv",
-        "id": "bv-r2-v0-r3-20261108-001-b2-r2-deepseek-based",
-        "model": "DeepSeek Flash",
-        "effort": "max",
-        "method": "B2",
-        "method_version": "B2-r2",
-        "edition": "bn-r2",
-        "reported_attempts": 29,
-        "budget": 50,
-        "phase": "故障已隔离",
-        "status": "paused",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
-        "card_id": "card1",
-        "environment_name": "DevEnvC_c2cQD",
-        "bound_card_id": "card1",
-        "queue_position": 72,
+        "queue_position": 71,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3643,11 +3661,11 @@
         "budget": 50,
         "phase": "evaluating",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card3",
         "environment_name": "DevEnvC_yUEBA",
         "bound_card_id": "card3",
-        "queue_position": 74,
+        "queue_position": 75,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3663,11 +3681,11 @@
         "budget": 50,
         "phase": "eval_failed",
         "status": "blocked",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card3",
         "environment_name": "DevEnvC_yUEBA",
         "bound_card_id": "card3",
-        "queue_position": 75,
+        "queue_position": 76,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3683,11 +3701,11 @@
         "budget": 50,
         "phase": "ready",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card3",
         "environment_name": "DevEnvC_yUEBA",
         "bound_card_id": "card3",
-        "queue_position": 80,
+        "queue_position": 81,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3701,13 +3719,13 @@
         "edition": "bn-r2",
         "reported_attempts": 1,
         "budget": 50,
-        "phase": "eval_failed",
-        "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "phase": "故障已隔离",
+        "status": "paused",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card2",
         "environment_name": "DevEnvC_M8IXB",
         "bound_card_id": "card2",
-        "queue_position": 81,
+        "queue_position": 82,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3721,13 +3739,13 @@
         "edition": "bn-r2",
         "reported_attempts": 1,
         "budget": 50,
-        "phase": "profiling",
+        "phase": "ready",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card2",
         "environment_name": "DevEnvC_M8IXB",
         "bound_card_id": "card2",
-        "queue_position": 82,
+        "queue_position": 83,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3741,13 +3759,13 @@
         "edition": "bn-r2",
         "reported_attempts": 1,
         "budget": 50,
-        "phase": "ready",
+        "phase": "evaluating",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card2",
         "environment_name": "DevEnvC_M8IXB",
         "bound_card_id": "card2",
-        "queue_position": 83,
+        "queue_position": 84,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3761,13 +3779,13 @@
         "edition": "bn-r2",
         "reported_attempts": 1,
         "budget": 50,
-        "phase": "reviewing",
+        "phase": "ready",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card2",
         "environment_name": "DevEnvC_M8IXB",
         "bound_card_id": "card2",
-        "queue_position": 84,
+        "queue_position": 85,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3779,15 +3797,15 @@
         "method": "B2",
         "method_version": "B2-r2",
         "edition": "bn-r2",
-        "reported_attempts": 1,
+        "reported_attempts": 2,
         "budget": 50,
         "phase": "reviewing",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 88,
+        "queue_position": 89,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3801,13 +3819,13 @@
         "edition": "bn-r2",
         "reported_attempts": 0,
         "budget": 50,
-        "phase": "queued",
-        "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
-        "card_id": "shared-bv",
-        "environment_name": "共享队列",
-        "bound_card_id": null,
-        "queue_position": 89,
+        "phase": "ready",
+        "status": "running",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
+        "card_id": "card2",
+        "environment_name": "DevEnvC_M8IXB",
+        "bound_card_id": "card2",
+        "queue_position": 90,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3823,11 +3841,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 90,
+        "queue_position": 91,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3843,11 +3861,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 91,
+        "queue_position": 92,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3863,11 +3881,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 92,
+        "queue_position": 93,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3883,11 +3901,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 93,
+        "queue_position": 94,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3903,11 +3921,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 97,
+        "queue_position": 98,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3923,11 +3941,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 98,
+        "queue_position": 99,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3943,11 +3961,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 99,
+        "queue_position": 100,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3963,11 +3981,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 100,
+        "queue_position": 101,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -3983,11 +4001,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 101,
+        "queue_position": 102,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4003,11 +4021,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 102,
+        "queue_position": 103,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4023,11 +4041,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 106,
+        "queue_position": 107,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4043,11 +4061,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 107,
+        "queue_position": 108,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4063,11 +4081,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 108,
+        "queue_position": 109,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4083,11 +4101,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 109,
+        "queue_position": 110,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4103,11 +4121,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 110,
+        "queue_position": 111,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4123,11 +4141,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 111,
+        "queue_position": 112,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4143,11 +4161,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 115,
+        "queue_position": 116,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4163,11 +4181,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 116,
+        "queue_position": 117,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4183,11 +4201,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 117,
+        "queue_position": 118,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4203,11 +4221,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 118,
+        "queue_position": 119,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4223,11 +4241,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 119,
+        "queue_position": 120,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4243,11 +4261,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 120,
+        "queue_position": 121,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       }
     ],
@@ -4265,11 +4283,31 @@
         "budget": 50,
         "phase": "等待原断点接续",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": "card3",
         "queue_position": 1,
+        "queue_group": "bv-r2-v0-r3-20261108-001"
+      },
+      {
+        "dataset": "Based",
+        "category": "bv",
+        "id": "bv-r2-v0-r3-20261108-001-b2-r2-deepseek-based",
+        "model": "DeepSeek Flash",
+        "effort": "max",
+        "method": "B2",
+        "method_version": "B2-r2",
+        "edition": "bn-r2",
+        "reported_attempts": 29,
+        "budget": 50,
+        "phase": "等待原断点接续",
+        "status": "waiting",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
+        "card_id": "shared-bv",
+        "environment_name": "共享队列",
+        "bound_card_id": "card1",
+        "queue_position": 2,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4285,11 +4323,11 @@
         "budget": 50,
         "phase": "等待原断点接续",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": "card1",
-        "queue_position": 2,
+        "queue_position": 3,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4305,11 +4343,11 @@
         "budget": 50,
         "phase": "等待原断点接续",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": "card3",
-        "queue_position": 3,
+        "queue_position": 4,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4325,11 +4363,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 4,
+        "queue_position": 5,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4345,11 +4383,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 5,
+        "queue_position": 6,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4365,11 +4403,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 7,
+        "queue_position": 8,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4385,11 +4423,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 8,
+        "queue_position": 9,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4405,11 +4443,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 9,
+        "queue_position": 10,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4425,11 +4463,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 10,
+        "queue_position": 11,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4445,11 +4483,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 11,
+        "queue_position": 12,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4465,11 +4503,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 12,
+        "queue_position": 13,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4485,11 +4523,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 43,
+        "queue_position": 44,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4505,11 +4543,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 44,
+        "queue_position": 45,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4525,11 +4563,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 45,
+        "queue_position": 46,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4545,11 +4583,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 46,
+        "queue_position": 47,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4565,11 +4603,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 47,
+        "queue_position": 48,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4585,11 +4623,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 48,
+        "queue_position": 49,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4601,15 +4639,15 @@
         "method": "B2",
         "method_version": "B2-r2",
         "edition": "bn-r2",
-        "reported_attempts": 4,
+        "reported_attempts": 5,
         "budget": 50,
         "phase": "evaluating",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 52,
+        "queue_position": 53,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4625,11 +4663,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 53,
+        "queue_position": 54,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4641,15 +4679,15 @@
         "method": "B2",
         "method_version": "B2-r2",
         "edition": "bn-r2",
-        "reported_attempts": 42,
+        "reported_attempts": 43,
         "budget": 50,
-        "phase": "ready",
+        "phase": "reviewing",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 54,
+        "queue_position": 55,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4663,13 +4701,13 @@
         "edition": "bn-r2",
         "reported_attempts": 38,
         "budget": 50,
-        "phase": "reviewing",
+        "phase": "ready",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card3",
         "environment_name": "DevEnvC_yUEBA",
         "bound_card_id": "card3",
-        "queue_position": 55,
+        "queue_position": 56,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4685,11 +4723,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card3",
         "environment_name": "DevEnvC_yUEBA",
         "bound_card_id": "card3",
-        "queue_position": 56,
+        "queue_position": 57,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4705,11 +4743,11 @@
         "budget": 50,
         "phase": "finished",
         "status": "complete",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card3",
         "environment_name": "DevEnvC_yUEBA",
         "bound_card_id": "card3",
-        "queue_position": 57,
+        "queue_position": 58,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4723,33 +4761,13 @@
         "edition": "bn-r2",
         "reported_attempts": 35,
         "budget": 50,
-        "phase": "reviewing",
+        "phase": "ready",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 70,
-        "queue_group": "bv-r2-v0-r3-20261108-001"
-      },
-      {
-        "dataset": "Based",
-        "category": "bv",
-        "id": "bv-r2-v0-r3-20261108-001-b2-r2-deepseek-based",
-        "model": "DeepSeek Flash",
-        "effort": "max",
-        "method": "B2",
-        "method_version": "B2-r2",
-        "edition": "bn-r2",
-        "reported_attempts": 29,
-        "budget": 50,
-        "phase": "故障已隔离",
-        "status": "paused",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
-        "card_id": "card1",
-        "environment_name": "DevEnvC_c2cQD",
-        "bound_card_id": "card1",
-        "queue_position": 72,
+        "queue_position": 71,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4765,11 +4783,11 @@
         "budget": 50,
         "phase": "evaluating",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card3",
         "environment_name": "DevEnvC_yUEBA",
         "bound_card_id": "card3",
-        "queue_position": 74,
+        "queue_position": 75,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4785,11 +4803,11 @@
         "budget": 50,
         "phase": "eval_failed",
         "status": "blocked",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card3",
         "environment_name": "DevEnvC_yUEBA",
         "bound_card_id": "card3",
-        "queue_position": 75,
+        "queue_position": 76,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4805,11 +4823,11 @@
         "budget": 50,
         "phase": "ready",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card3",
         "environment_name": "DevEnvC_yUEBA",
         "bound_card_id": "card3",
-        "queue_position": 80,
+        "queue_position": 81,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4823,13 +4841,13 @@
         "edition": "bn-r2",
         "reported_attempts": 1,
         "budget": 50,
-        "phase": "eval_failed",
-        "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "phase": "故障已隔离",
+        "status": "paused",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card2",
         "environment_name": "DevEnvC_M8IXB",
         "bound_card_id": "card2",
-        "queue_position": 81,
+        "queue_position": 82,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4843,13 +4861,13 @@
         "edition": "bn-r2",
         "reported_attempts": 1,
         "budget": 50,
-        "phase": "profiling",
+        "phase": "ready",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card2",
         "environment_name": "DevEnvC_M8IXB",
         "bound_card_id": "card2",
-        "queue_position": 82,
+        "queue_position": 83,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4863,13 +4881,13 @@
         "edition": "bn-r2",
         "reported_attempts": 1,
         "budget": 50,
-        "phase": "ready",
+        "phase": "evaluating",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card2",
         "environment_name": "DevEnvC_M8IXB",
         "bound_card_id": "card2",
-        "queue_position": 83,
+        "queue_position": 84,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4883,13 +4901,13 @@
         "edition": "bn-r2",
         "reported_attempts": 1,
         "budget": 50,
-        "phase": "reviewing",
+        "phase": "ready",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card2",
         "environment_name": "DevEnvC_M8IXB",
         "bound_card_id": "card2",
-        "queue_position": 84,
+        "queue_position": 85,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4901,15 +4919,15 @@
         "method": "B2",
         "method_version": "B2-r2",
         "edition": "bn-r2",
-        "reported_attempts": 1,
+        "reported_attempts": 2,
         "budget": 50,
         "phase": "reviewing",
         "status": "running",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "card1",
         "environment_name": "DevEnvC_c2cQD",
         "bound_card_id": "card1",
-        "queue_position": 88,
+        "queue_position": 89,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4923,13 +4941,13 @@
         "edition": "bn-r2",
         "reported_attempts": 0,
         "budget": 50,
-        "phase": "queued",
-        "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
-        "card_id": "shared-bv",
-        "environment_name": "共享队列",
-        "bound_card_id": null,
-        "queue_position": 89,
+        "phase": "ready",
+        "status": "running",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
+        "card_id": "card2",
+        "environment_name": "DevEnvC_M8IXB",
+        "bound_card_id": "card2",
+        "queue_position": 90,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4945,11 +4963,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 90,
+        "queue_position": 91,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4965,11 +4983,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 91,
+        "queue_position": 92,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -4985,11 +5003,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 92,
+        "queue_position": 93,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5005,11 +5023,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 93,
+        "queue_position": 94,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5025,11 +5043,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 97,
+        "queue_position": 98,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5045,11 +5063,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 98,
+        "queue_position": 99,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5065,11 +5083,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 99,
+        "queue_position": 100,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5085,11 +5103,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 100,
+        "queue_position": 101,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5105,11 +5123,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 101,
+        "queue_position": 102,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5125,11 +5143,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 102,
+        "queue_position": 103,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5145,11 +5163,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 106,
+        "queue_position": 107,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5165,11 +5183,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 107,
+        "queue_position": 108,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5185,11 +5203,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 108,
+        "queue_position": 109,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5205,11 +5223,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 109,
+        "queue_position": 110,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5225,11 +5243,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 110,
+        "queue_position": 111,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5245,11 +5263,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 111,
+        "queue_position": 112,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5265,11 +5283,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 115,
+        "queue_position": 116,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5285,11 +5303,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 116,
+        "queue_position": 117,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5305,11 +5323,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 117,
+        "queue_position": 118,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5325,11 +5343,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 118,
+        "queue_position": 119,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5345,11 +5363,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 119,
+        "queue_position": 120,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -5365,11 +5383,11 @@
         "budget": 50,
         "phase": "queued",
         "status": "waiting",
-        "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+        "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
         "card_id": "shared-bv",
         "environment_name": "共享队列",
         "bound_card_id": null,
-        "queue_position": 120,
+        "queue_position": 121,
         "queue_group": "bv-r2-v0-r3-20261108-001"
       }
     ],
@@ -5426,11 +5444,31 @@
           "budget": 50,
           "phase": "等待原断点接续",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": "card3",
           "queue_position": 1,
+          "queue_group": "bv-r2-v0-r3-20261108-001"
+        },
+        {
+          "dataset": "Based",
+          "category": "bv",
+          "id": "bv-r2-v0-r3-20261108-001-b2-r2-deepseek-based",
+          "model": "DeepSeek Flash",
+          "effort": "max",
+          "method": "B2",
+          "method_version": "B2-r2",
+          "edition": "bn-r2",
+          "reported_attempts": 29,
+          "budget": 50,
+          "phase": "等待原断点接续",
+          "status": "waiting",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
+          "card_id": "shared-bv",
+          "environment_name": "共享队列",
+          "bound_card_id": "card1",
+          "queue_position": 2,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5446,11 +5484,11 @@
           "budget": 50,
           "phase": "等待原断点接续",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": "card1",
-          "queue_position": 2,
+          "queue_position": 3,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5466,31 +5504,11 @@
           "budget": 50,
           "phase": "等待原断点接续",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": "card3",
-          "queue_position": 3,
-          "queue_group": "bv-r2-v0-r3-20261108-001"
-        },
-        {
-          "dataset": "GQA",
-          "category": "bv",
-          "id": "bv-r2-v0-r3-20261108-001-b2-r2-sol-gqa",
-          "model": "Sol 6.1",
-          "effort": "medium",
-          "method": "B2",
-          "method_version": "B2-r2",
-          "edition": "bn-r2",
-          "reported_attempts": 0,
-          "budget": 50,
-          "phase": "queued",
-          "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
-          "card_id": "shared-bv",
-          "environment_name": "共享队列",
-          "bound_card_id": null,
-          "queue_position": 89,
+          "queue_position": 4,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5506,11 +5524,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 90,
+          "queue_position": 91,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5526,11 +5544,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 91,
+          "queue_position": 92,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5546,11 +5564,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 92,
+          "queue_position": 93,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5566,11 +5584,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 93,
+          "queue_position": 94,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5586,11 +5604,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 97,
+          "queue_position": 98,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5606,11 +5624,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 98,
+          "queue_position": 99,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5626,11 +5644,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 99,
+          "queue_position": 100,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5646,11 +5664,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 100,
+          "queue_position": 101,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5666,11 +5684,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 101,
+          "queue_position": 102,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5686,11 +5704,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 102,
+          "queue_position": 103,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5706,11 +5724,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 106,
+          "queue_position": 107,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5726,11 +5744,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 107,
+          "queue_position": 108,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5746,11 +5764,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 108,
+          "queue_position": 109,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5766,11 +5784,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 109,
+          "queue_position": 110,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5786,11 +5804,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 110,
+          "queue_position": 111,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5806,11 +5824,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 111,
+          "queue_position": 112,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5826,11 +5844,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 115,
+          "queue_position": 116,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5846,11 +5864,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 116,
+          "queue_position": 117,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5866,11 +5884,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 117,
+          "queue_position": 118,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5886,11 +5904,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 118,
+          "queue_position": 119,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5906,11 +5924,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 119,
+          "queue_position": 120,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         },
         {
@@ -5926,11 +5944,11 @@
           "budget": 50,
           "phase": "queued",
           "status": "waiting",
-          "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+          "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
           "card_id": "shared-bv",
           "environment_name": "共享队列",
           "bound_card_id": null,
-          "queue_position": 120,
+          "queue_position": 121,
           "queue_group": "bv-r2-v0-r3-20261108-001"
         }
       ]
@@ -5950,11 +5968,31 @@
       "budget": 50,
       "phase": "等待原断点接续",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": "card3",
       "queue_position": 1,
+      "queue_group": "bv-r2-v0-r3-20261108-001"
+    },
+    {
+      "dataset": "Based",
+      "category": "bv",
+      "id": "bv-r2-v0-r3-20261108-001-b2-r2-deepseek-based",
+      "model": "DeepSeek Flash",
+      "effort": "max",
+      "method": "B2",
+      "method_version": "B2-r2",
+      "edition": "bn-r2",
+      "reported_attempts": 29,
+      "budget": 50,
+      "phase": "等待原断点接续",
+      "status": "waiting",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
+      "card_id": "shared-bv",
+      "environment_name": "共享队列",
+      "bound_card_id": "card1",
+      "queue_position": 2,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -5970,11 +6008,11 @@
       "budget": 50,
       "phase": "等待原断点接续",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": "card1",
-      "queue_position": 2,
+      "queue_position": 3,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -5990,31 +6028,11 @@
       "budget": 50,
       "phase": "等待原断点接续",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": "card3",
-      "queue_position": 3,
-      "queue_group": "bv-r2-v0-r3-20261108-001"
-    },
-    {
-      "dataset": "GQA",
-      "category": "bv",
-      "id": "bv-r2-v0-r3-20261108-001-b2-r2-sol-gqa",
-      "model": "Sol 6.1",
-      "effort": "medium",
-      "method": "B2",
-      "method_version": "B2-r2",
-      "edition": "bn-r2",
-      "reported_attempts": 0,
-      "budget": 50,
-      "phase": "queued",
-      "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
-      "card_id": "shared-bv",
-      "environment_name": "共享队列",
-      "bound_card_id": null,
-      "queue_position": 89,
+      "queue_position": 4,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6030,11 +6048,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 90,
+      "queue_position": 91,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6050,11 +6068,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 91,
+      "queue_position": 92,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6070,11 +6088,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 92,
+      "queue_position": 93,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6090,11 +6108,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 93,
+      "queue_position": 94,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6110,11 +6128,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 97,
+      "queue_position": 98,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6130,11 +6148,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 98,
+      "queue_position": 99,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6150,11 +6168,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 99,
+      "queue_position": 100,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6170,11 +6188,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 100,
+      "queue_position": 101,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6190,11 +6208,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 101,
+      "queue_position": 102,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6210,11 +6228,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 102,
+      "queue_position": 103,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6230,11 +6248,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 106,
+      "queue_position": 107,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6250,11 +6268,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 107,
+      "queue_position": 108,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6270,11 +6288,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 108,
+      "queue_position": 109,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6290,11 +6308,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 109,
+      "queue_position": 110,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6310,11 +6328,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 110,
+      "queue_position": 111,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6330,11 +6348,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 111,
+      "queue_position": 112,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6350,11 +6368,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 115,
+      "queue_position": 116,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6370,11 +6388,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 116,
+      "queue_position": 117,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6390,11 +6408,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 117,
+      "queue_position": 118,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6410,11 +6428,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 118,
+      "queue_position": 119,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6430,11 +6448,11 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 119,
+      "queue_position": 120,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     },
     {
@@ -6450,37 +6468,15 @@
       "budget": 50,
       "phase": "queued",
       "status": "waiting",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "shared-bv",
       "environment_name": "共享队列",
       "bound_card_id": null,
-      "queue_position": 120,
+      "queue_position": 121,
       "queue_group": "bv-r2-v0-r3-20261108-001"
     }
   ],
   "paused_runs": [
-    {
-      "dataset": "Based",
-      "category": "bv",
-      "id": "bv-r2-v0-r3-20261108-001-b2-r2-deepseek-based",
-      "model": "DeepSeek Flash",
-      "effort": "max",
-      "method": "B2",
-      "method_version": "B2-r2",
-      "edition": "bn-r2",
-      "reported_attempts": 29,
-      "budget": 50,
-      "phase": "故障已隔离",
-      "status": "paused",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
-      "card_id": "card1",
-      "environment_name": "DevEnvC_c2cQD",
-      "bound_card_id": "card1",
-      "queue_position": 72,
-      "queue_group": "bv-r2-v0-r3-20261108-001",
-      "pause_reason": "任务已暂停，具体原因待核对",
-      "handling_status": "保留原结果与断点"
-    },
     {
       "id": "kl-gpt-sol-serial-20261108-kl-sol-based",
       "dataset": "Based",
@@ -6554,6 +6550,28 @@
       "handling_status": "待核验原调用、重试记录与预算"
     },
     {
+      "dataset": "Sonny",
+      "category": "bv",
+      "id": "bv-r2-v0-r3-20261108-001-b2-r2-deepseek-sonny",
+      "model": "DeepSeek Flash",
+      "effort": "max",
+      "method": "B2",
+      "method_version": "B2-r2",
+      "edition": "bn-r2",
+      "reported_attempts": 1,
+      "budget": 50,
+      "phase": "故障已隔离",
+      "status": "paused",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
+      "card_id": "card2",
+      "environment_name": "DevEnvC_M8IXB",
+      "bound_card_id": "card2",
+      "queue_position": 82,
+      "queue_group": "bv-r2-v0-r3-20261108-001",
+      "pause_reason": "任务已暂停，具体原因待核对",
+      "handling_status": "保留原结果与断点"
+    },
+    {
       "dataset": "Based",
       "category": "bv",
       "id": "bv-r2-v0-r3-20261108-001-b3-r2-deepseek-based",
@@ -6566,11 +6584,11 @@
       "budget": 50,
       "phase": "eval_failed",
       "status": "blocked",
-      "source_captured_at": "2026-11-11T17:13:02.992523+00:00",
+      "source_captured_at": "2026-11-11T17:18:47.506935+00:00",
       "card_id": "card3",
       "environment_name": "DevEnvC_yUEBA",
       "bound_card_id": "card3",
-      "queue_position": 75,
+      "queue_position": 76,
       "queue_group": "bv-r2-v0-r3-20261108-001",
       "pause_reason": "任务已暂停，具体原因待核对",
       "handling_status": "保留原结果与断点"
@@ -6579,7 +6597,7 @@
   "frontend_version": "05703d321f59ddad9e7c",
   "workspaces": {
     "schema_version": 1,
-    "updated_at": "2026-11-11T17:12:29.236905+00:00",
+    "updated_at": "2026-11-11T17:18:22.981313+00:00",
     "rows": [
       {
         "id": "astra-based-b1",
@@ -6633,7 +6651,7 @@
         "method_version": "B2-r2",
         "model": "DeepSeek Flash",
         "effort": "max",
-        "status": "paused",
+        "status": "waiting",
         "started_at": "2026-11-11T05:43:58.192815+00:00",
         "finished_at": null,
         "verified_at": null,
@@ -7263,12 +7281,12 @@
         "method_version": "B2-r2",
         "model": "Sol 6.1",
         "effort": "medium",
-        "status": "waiting",
-        "started_at": null,
+        "status": "running",
+        "started_at": "2026-11-11T17:13:32.448786+00:00",
         "finished_at": null,
         "verified_at": null,
         "independently_complete": false,
-        "workspace_path": null,
+        "workspace_path": "/home/lbh24/codex-workspace/bv-r2-v0-r3-20261108-001/repo/baselines-910C/B2/workspaces/B2-r2-sol-GQA/20261111T171332448786Z-gpt-flashinfer-gqa-decode-a100-single-q32-kv4-d128-l32768-fp16",
         "source_id": "bv-r2-v0-r3-20261108-001"
       },
       {
@@ -7878,7 +7896,7 @@
         "method_version": "B2-r2",
         "model": "DeepSeek Flash",
         "effort": "max",
-        "status": "running",
+        "status": "paused",
         "started_at": "2026-11-11T16:08:30.491702+00:00",
         "finished_at": null,
         "verified_at": null,
