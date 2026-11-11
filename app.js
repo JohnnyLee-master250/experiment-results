@@ -3,15 +3,16 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const FRONTEND_VERSION=$('meta[name="frontend-version"]')?.content;
 const COLORS={B1:'#0072B2',B2:'#D55E00',B3:'#CC79A7',V0:'#009E73'};
 const LABELS={running:'正在跑',complete:'已完成',paused:'已暂停',not_run:'未跑',no_data:'无数据',ended:'已结束',blocked:'待处理',waiting:'等待中',awaiting_audit:'待验收'};
-const MODELS=['Sol6','Astra','DeepSeek','DeepSeek-high','Sol 6.1','DeepSeek Flash'];
+const MODELS=['Astra','Sol 6.1','DeepSeek Flash'];
 const METHODS=['B1','B2','B3','V0'];
-const DASH={Sol6:'',Astra:'7 4',DeepSeek:'2 4','DeepSeek-high':'9 3 2 3','Sol 6.1':'','DeepSeek Flash':'2 4'};
+const DASH={Astra:'7 4','Sol 6.1':'','DeepSeek Flash':'2 4'};
 let manifest,data,cache=new Map(),visible=new Set(),datasetId=new URL(location).searchParams.get('dataset')||'GQA',mode='best',activeSamples=null,loadSeq=0,needsReload=false;
 let focusedRun=null,initialRun=new URL(location).searchParams.get('run');
 let eventLimit=12;
 function requestedBVEdition(){return 'all';}
 let bvEdition=requestedBVEdition();
 function methodLabel(run){const label=run?.method_version||run?.method||'';return /^B[0-3]$/.test(label)?label+'-r1':label==='V0'?'V0-r2':label;}
+function methodDisplayLabel(run){const label=methodLabel(run);return ['Sol 6.1','DeepSeek Flash'].includes(run?.model)&&/^B[0-3]-r\d+$/.test(label)?label.split('-r')[0]:label;}
 function isComparison(scope=category){return ['aligned','all','all-with-b01'].includes(scope);}
 function comparisonHasB(scope){return scope==='all'||scope==='all-with-b01';}
 function showBVRun(run,scope){return scope==='all-with-b01'||!['B0','B1'].includes(run.method);}
@@ -112,9 +113,9 @@ function datasetJSON(meta,version=manifest.updated_at){
  return getJSON(`./api/v1/${meta.url}?v=${encodeURIComponent(version)}`).then(d=>{if(d.updated_at!==version)throw Error('发布版本尚在同步');if(manifest.updated_at===version)cache.set(meta.id,d);return d;});
 }
 function publishedKL(version=manifest.updated_at){return klData?.updated_at===version?Promise.resolve(klData):getJSON(`./api/v1/${manifest.kl.url}?v=${encodeURIComponent(version)}`);}
-const MODEL_COLORS={'Sol6':'#ed6400','Astra':'#0071e3','DeepSeek':'#7956c9','DeepSeek-high':'#d9398c','Sol 6.1':'#009b68','DeepSeek Flash':'#b87a00'};
+const MODEL_COLORS={'Astra':'#0071e3','Sol 6.1':'#009b68','DeepSeek Flash':'#b87a00'};
 const REVISION_COLORS={'B1-r2':'#0086b3','B2-r2':'#e63d37','B3-r2':'#784be7','V0-r3':'#0071e3'};
-const REVISION_MODEL_COLORS={'Sol6':'#df3547','Astra':'#784be7','DeepSeek':'#bd38d1','DeepSeek-high':'#d54e30','Sol 6.1':'#009ca8','DeepSeek Flash':'#8d9500'};
+const REVISION_MODEL_COLORS={'Astra':'#784be7','Sol 6.1':'#009ca8','DeepSeek Flash':'#8d9500'};
 function comparisonColor(run,scope=category){
  const revised=['bv','aligned'].includes(scope)&&Object.hasOwn(REVISION_COLORS,methodLabel(run));
  if(comparisonGroupMode(scope)==='task')return (revised?REVISION_MODEL_COLORS[run.model]:MODEL_COLORS[run.model])||'#526c89';
@@ -378,24 +379,24 @@ function renderRunning(){
  $('#running-links').innerHTML=runs.map(r=>{
   const href=`?${new URLSearchParams({dataset:r.dataset,run:r.id,category:runCategory(r)})}`;
  const phase={reviewing:'审查中',evaluating:'评测中',profiling:'测量中',ready:'运行中',initializing:'准备中',finished:'收尾中',queued:'排队中'}[r.phase]||'运行中';
-  return `<a class="running-link ${focusedRun===r.id?'current':''}" href="${esc(href)}" data-category-target="${runCategory(r)}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}" style="--color:${COLORS[r.method]||'#526c89'}" title="${esc(r.model+' / '+r.effort)} · 已记录 ${r.reported_attempts}/${r.budget} 轮；待审查记录不代表独立完成"><span class="swatch"></span><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(methodLabel(r))}</strong><span class="running-round">${r.category==='kl'?(r.current_apply??r.reported_attempts):r.reported_attempts}<span> / ${r.budget} ${r.category==='kl'?'Apply · r'+(r.internal_round??0):'轮'}</span></span><span class="running-phase">${/^card[123]$/.test(r.card_id||'')?'卡 '+r.card_id.slice(4)+' · ':''}${phase}</span><span aria-hidden="true">↗</span></a>`;
+  return `<a class="running-link ${focusedRun===r.id?'current':''}" href="${esc(href)}" data-category-target="${runCategory(r)}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}" style="--color:${COLORS[r.method]||'#526c89'}" title="${esc(r.model+' / '+r.effort)} · 已记录 ${r.reported_attempts}/${r.budget} 轮；待审查记录不代表独立完成"><span class="swatch"></span><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(methodDisplayLabel(r))}</strong><span class="running-round">${r.category==='kl'?(r.current_apply??r.reported_attempts):r.reported_attempts}<span> / ${r.budget} ${r.category==='kl'?'Apply · r'+(r.internal_round??0):'轮'}</span></span><span class="running-phase">${/^card[123]$/.test(r.card_id||'')?'卡 '+r.card_id.slice(4)+' · ':''}${phase}</span><span aria-hidden="true">↗</span></a>`;
  }).join('')||'<span class="running-empty">当前没有运行中的实验，各组状态见下方</span>';
  const paused=manifest.paused_runs||[];
  const pausedScroll=$('#paused-links').scrollTop;
  $('#paused-count').textContent=`${paused.length} 组`;
- $('#paused-links').innerHTML=paused.map(r=>`<a class="running-link paused-link" href="?category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-category-target="${runCategory(r)}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}"><span class="paused-task"><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(methodLabel(r))}</strong><span>${r.card_id==='card1'?'卡 1':r.card_id==='card2'?'卡 2':r.card_id==='card3'?'卡 3':esc(r.environment_name||'')} · ${r.reported_attempts} / ${r.budget} ${r.method==='KL'?'Apply':'轮'}</span></span><span class="paused-detail"><span>${esc(r.pause_reason)}</span><small>${esc(r.handling_status)}</small></span><span aria-hidden="true">↗</span></a>`).join('')||'<span class="running-empty">当前没有暂停的任务</span>';
+ $('#paused-links').innerHTML=paused.map(r=>`<a class="running-link paused-link" href="?category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-category-target="${runCategory(r)}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}"><span class="paused-task"><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(methodDisplayLabel(r))}</strong><span>${r.card_id==='card1'?'卡 1':r.card_id==='card2'?'卡 2':r.card_id==='card3'?'卡 3':esc(r.environment_name||'')} · ${r.reported_attempts} / ${r.budget} ${r.method==='KL'?'Apply':'轮'}</span></span><span class="paused-detail"><span>${esc(r.pause_reason)}</span><small>${esc(r.handling_status)}</small></span><span aria-hidden="true">↗</span></a>`).join('')||'<span class="running-empty">当前没有暂停的任务</span>';
  $('#paused-links').scrollTop=pausedScroll;
  const waiting=manifest.waiting_runs||manifest.kl?.waiting_runs||[];
  const cards=manifest.waiting_cards||manifest.kl?.waiting_cards||[];
  const scrollPositions=new Map($$('#waiting-links .waiting-list').map(el=>[el.dataset.card,el.scrollTop]));
  $('#waiting-bar').hidden=!cards.length;
  $('#waiting-count').textContent=`${waiting.length} 组`;
- $('#waiting-links').innerHTML=cards.map(card=>`<section class="waiting-card" aria-labelledby="waiting-${esc(card.id)}"><div class="waiting-card-heading"><strong id="waiting-${esc(card.id)}">${esc(card.label)}</strong><span class="waiting-environment">${esc(card.environment_name)}</span><span class="waiting-card-count">${card.runs.length} 组</span></div><ol class="waiting-list" data-card="${esc(card.id)}" tabindex="0" aria-label="${esc(card.label)}等待队列，按执行顺序">${card.runs.map(r=>`<li><a class="running-link waiting-link" href="?category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-category-target="${runCategory(r)}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}"><span class="waiting-position" title="原队列第 ${r.queue_position} 项">${r.queue_position}</span><span class="waiting-task"><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(methodLabel(r))}</strong><span>${r.bound_card_id?'卡 '+r.bound_card_id.slice(4)+' · ':''}${r.reported_attempts} / ${r.budget} ${r.method==='KL'?'Apply':'轮'}</span></span><span aria-hidden="true">↗</span></a></li>`).join('')||'<li class="waiting-empty">暂无等待任务</li>'}</ol></section>`).join('');
+ $('#waiting-links').innerHTML=cards.map(card=>`<section class="waiting-card" aria-labelledby="waiting-${esc(card.id)}"><div class="waiting-card-heading"><strong id="waiting-${esc(card.id)}">${esc(card.label)}</strong><span class="waiting-environment">${esc(card.environment_name)}</span><span class="waiting-card-count">${card.runs.length} 组</span></div><ol class="waiting-list" data-card="${esc(card.id)}" tabindex="0" aria-label="${esc(card.label)}等待队列，按执行顺序">${card.runs.map(r=>`<li><a class="running-link waiting-link" href="?category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-category-target="${runCategory(r)}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}"><span class="waiting-position" title="原队列第 ${r.queue_position} 项">${r.queue_position}</span><span class="waiting-task"><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(methodDisplayLabel(r))}</strong><span>${r.bound_card_id?'卡 '+r.bound_card_id.slice(4)+' · ':''}${r.reported_attempts} / ${r.budget} ${r.method==='KL'?'Apply':'轮'}</span></span><span aria-hidden="true">↗</span></a></li>`).join('')||'<li class="waiting-empty">暂无等待任务</li>'}</ol></section>`).join('');
  $$('#waiting-links .waiting-list').forEach(el=>{el.scrollTop=scrollPositions.get(el.dataset.card)||0;});
  const campaign=manifest.campaign_runs||[];
  $('#campaign-status').innerHTML=campaign.map(r=>{
   const label=r.status==='complete'?'已完成':r.status==='paused'||r.status==='blocked'?'已暂停':r.status==='running'?'运行中':'未开始';
-  return `<a href="?category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-campaign-run="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} ${esc(methodLabel(r))} <strong>${r.reported_attempts}/${r.budget}</strong><span>${label}</span></a>`;
+  return `<a href="?category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-campaign-run="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} ${esc(methodDisplayLabel(r))} <strong>${r.reported_attempts}/${r.budget}</strong><span>${label}</span></a>`;
  }).join('');
  $$('[data-campaign-run]').forEach(a=>a.onclick=e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();return openRun(a.dataset.target,a.dataset.campaignRun,true);});
  $$('[data-running]').forEach(a=>a.onclick=e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();if(a.dataset.categoryTarget==='kl'){return loadKL(a.dataset.target,a.dataset.running);}else return openRun(a.dataset.target,a.dataset.running,true);});
@@ -445,7 +446,7 @@ function renderComparisonControls(host,series,chosen,scope,onChange){
   const available=rows.filter(r=>r.available!==false),n=available.filter(r=>chosen.has(r.id)).length,all=available.length>0&&n===available.length,mixed=n>0&&!all;
   const effort=!byTask&&new Set(rows.map(r=>r.effort)).size===1?rows[0].effort:'';
   return `<div class="model-group"><div class="model-heading"><button type="button" data-curve-group-title="${esc(key)}" aria-label="切换 ${esc(key)} 全部曲线" ${available.length?'':'disabled'}><strong>${esc(key)}</strong></button>${effort?`<span class="effort">${esc(effort)}</span>`:''}<label class="model-toggle ${mixed?'mixed':''}" title="${n}/${available.length} 条曲线已显示"><span>${available.length?(all?'全部':mixed?'部分':'关闭'):'无曲线'}</span><input type="checkbox" data-curve-group="${esc(key)}" data-group-scope="${scope}" aria-label="${esc(key)} 全部曲线" aria-checked="${mixed?'mixed':String(all)}" ${all?'checked':''} ${available.length?'':'disabled'}></label></div><div class="chips">${rows.map(r=>{
-   const ok=r.available!==false,on=ok&&chosen.has(r.id),label=byTask?r.model:r.method==='Aligned KL'?'KL':r.method;
+   const ok=r.available!==false,on=ok&&chosen.has(r.id),label=byTask?r.model:r.method==='Aligned KL'?'KL':methodDisplayLabel(r);
    return `<label class="chip ${on?'active':''} ${ok?'':'disabled'}" style="--color:${r.color}" title="${esc(r.baseMethod==='B0'?'正确性实验，不绘制速度曲线':r.model+' / '+r.effort+' · '+r.method+(ok?'':' · 尚无评测结果'))}"><input type="checkbox" ${inputAttr}="${esc(r.id)}" aria-label="${esc(r.model+' '+r.method+' 曲线')}" ${on?'checked':''} ${ok?'':'disabled'}>${esc(label)}${byTask?`<small>${esc(r.effort)}</small>`:''}</label>`;
   }).join('')}</div></div>`;
  }).join('');
@@ -458,7 +459,7 @@ function renderTaskEvents(){
  const labels={started:'开始',resumed:'恢复',paused:'暂停',completed:'完成'},ds=$('#event-dataset').value,kind=$('#event-kind').value;
  const events=(manifest?.task_events||[]).filter(e=>(ds==='all'||e.runs.some(r=>r.dataset===ds))&&(kind==='all'||e.kind===kind));
  $('#event-count').textContent=`${events.length} 条`;
- $('#task-events').innerHTML=events.slice(0,eventLimit).map(e=>`<li class="task-event"><time datetime="${esc(e.at)}" title="${esc(e.at)}">${date(e.at)}${e.time_basis==='observed'?'<small>记录时间</small>':''}</time><span class="event-tag ${esc(e.kind)}">${labels[e.kind]||esc(e.kind)}</span><div class="event-runs">${e.runs.map(r=>`<a href="?${new URLSearchParams({dataset:r.dataset,run:r.id,category:runCategory(r)})}" data-event-run="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(r.model)} ${esc(methodLabel(r))} ↗</a>`).join('')}</div><p>${esc(e.reason)}</p></li>`).join('')||'<li class="empty">暂无记录</li>';
+ $('#task-events').innerHTML=events.slice(0,eventLimit).map(e=>`<li class="task-event"><time datetime="${esc(e.at)}" title="${esc(e.at)}">${date(e.at)}${e.time_basis==='observed'?'<small>记录时间</small>':''}</time><span class="event-tag ${esc(e.kind)}">${labels[e.kind]||esc(e.kind)}</span><div class="event-runs">${e.runs.map(r=>`<a href="?${new URLSearchParams({dataset:r.dataset,run:r.id,category:runCategory(r)})}" data-event-run="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(r.model)} ${esc(methodDisplayLabel(r))} ↗</a>`).join('')}</div><p>${esc(e.reason)}</p></li>`).join('')||'<li class="empty">暂无记录</li>';
  $('#events-more').hidden=eventLimit>=events.length;
  $$('[data-event-run]').forEach(a=>a.onclick=e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();loadDataset(a.dataset.target,data?.id!==a.dataset.target,a.dataset.eventRun,true);});
 }
@@ -467,23 +468,23 @@ function renderSummary(){
  $('#summary tbody').innerHTML=data.runs.filter(r=>r.method!=='B0').map(r=>{
   const best=r.search.find(p=>p.round===r.search_best_round),range=best?.timing?`${fmt(best.timing.p10_ms,4)}–${fmt(best.timing.p90_ms,4)}`:'—';
   const group=previous&&previous!==r.model?'group-line':'';previous=r.model;
-  return `<tr class="${group}" style="--color:${comparisonColor(r,'bv')}"><td><input class="row-check" type="checkbox" data-row="${r.id}" aria-label="显示 ${r.model} ${r.method}" ${visible.has(r.id)?'checked':''} ${usable(r)?'':'disabled'}></td><td><span class="model-label">${r.model}</span><span class="effort-label">${esc(r.effort)}</span></td><td><span class="swatch"></span> ${methodLabel(r)}</td><td>${badge(r.status)}</td><td>${r.reported_attempts} / ${r.budget}</td><td class="date">${date(r.finished_at)}</td><td class="num">${fmt(r.search_best_ms)}</td><td class="num">${range}</td><td class="num">${fmt(r.formal?.mean_ms)}</td><td class="num">${r.formal&&r.formal_pytorch?fmt(r.formal_pytorch.mean_ms/r.formal.mean_ms,3)+'×':'—'}</td></tr>`;
+  return `<tr class="${group}" style="--color:${comparisonColor(r,'bv')}"><td><input class="row-check" type="checkbox" data-row="${r.id}" aria-label="显示 ${r.model} ${r.method}" ${visible.has(r.id)?'checked':''} ${usable(r)?'':'disabled'}></td><td><span class="model-label">${r.model}</span><span class="effort-label">${esc(r.effort)}</span></td><td><span class="swatch"></span> ${methodDisplayLabel(r)}</td><td>${badge(r.status)}</td><td>${r.reported_attempts} / ${r.budget}</td><td class="date">${date(r.finished_at)}</td><td class="num">${fmt(r.search_best_ms)}</td><td class="num">${range}</td><td class="num">${fmt(r.formal?.mean_ms)}</td><td class="num">${r.formal&&r.formal_pytorch?fmt(r.formal_pytorch.mean_ms/r.formal.mean_ms,3)+'×':'—'}</td></tr>`;
  }).join('');
  $$('[data-row]').forEach(e=>e.onchange=()=>toggle(e.dataset.row,e.checked));
- $('#correctness tbody').innerHTML=data.runs.filter(r=>r.method==='B0').map(r=>`<tr><td>${r.model} <span class="effort-label">${esc(r.effort)}</span></td><td>${methodLabel(r)}</td><td>${badge(r.status)}</td><td>${r.reported_attempts} / ${r.budget}</td><td>${r.accepted===true?'通过':r.accepted===false?'未接受':'—'}</td><td class="date">${date(r.finished_at)}</td></tr>`).join('');
+ $('#correctness tbody').innerHTML=data.runs.filter(r=>r.method==='B0').map(r=>`<tr><td>${r.model} <span class="effort-label">${esc(r.effort)}</span></td><td>${methodDisplayLabel(r)}</td><td>${badge(r.status)}</td><td>${r.reported_attempts} / ${r.budget}</td><td>${r.accepted===true?'通过':r.accepted===false?'未接受':'—'}</td><td class="date">${date(r.finished_at)}</td></tr>`).join('');
 }
 function roundRows(){
  const filter=$('#round-run').value,st=$('#round-status').value;
  return selected().filter(r=>filter==='all'||r.id===filter).flatMap(r=>r.search.filter(p=>st==='all'||p.status===st).map(p=>({r,p}))).sort((a,b)=>a.p.round-b.p.round||MODELS.indexOf(a.r.model)-MODELS.indexOf(b.r.model)||METHODS.indexOf(a.r.method)-METHODS.indexOf(b.r.method));
 }
-function renderRoundSelector(){const current=$('#round-run').value;$('#round-run').innerHTML='<option value="all">全部已选曲线</option>'+selected().map(r=>`<option value="${r.id}">${r.model} · ${methodLabel(r)}</option>`).join('');if(selected().some(r=>r.id===current))$('#round-run').value=current;}
+function renderRoundSelector(){const current=$('#round-run').value;$('#round-run').innerHTML='<option value="all">全部已选曲线</option>'+selected().map(r=>`<option value="${r.id}">${r.model} · ${methodDisplayLabel(r)}</option>`).join('');if(selected().some(r=>r.id===current))$('#round-run').value=current;}
 function renderRounds(){
  const rows=roundRows();$('#round-count').textContent=`${rows.length} 条`;
  $('#rounds tbody').innerHTML=rows.map(({r,p})=>{
   const m=p.timing,status={passed:'通过',failed:'失败',excluded:'基础设施中断'}[p.status];
-  return `<tr><td>${r.model}</td><td>${methodLabel(r)}</td><td>${p.round}${p.role==='b0'?' · 初始':''}</td><td>${status||'—'}</td><td class="date">${{saved:'已保存',pending:'待完成',not_required:'不适用',historical:'历史记录'}[p.review]||'—'}</td><td class="num">${fmt(m?.mean_ms)}</td><td class="num">${fmt(m?.p10_ms)}</td><td class="num">${fmt(m?.p90_ms)}</td><td class="num">${m?`<button class="sample-button" data-sample="${r.id}|${p.round}" aria-label="${r.model} ${r.method} 第 ${p.round} 轮样本">${m.sample_count}</button>`:'—'}</td><td class="num">${fmt(p.pytorch?.mean_ms)}</td><td class="num">${m&&p.pytorch?fmt(p.pytorch.mean_ms/m.mean_ms,3)+'×':'—'}</td></tr>`;
+  return `<tr><td>${r.model}</td><td>${methodDisplayLabel(r)}</td><td>${p.round}${p.role==='b0'?' · 初始':''}</td><td>${status||'—'}</td><td class="date">${{saved:'已保存',pending:'待完成',not_required:'不适用',historical:'历史记录'}[p.review]||'—'}</td><td class="num">${fmt(m?.mean_ms)}</td><td class="num">${fmt(m?.p10_ms)}</td><td class="num">${fmt(m?.p90_ms)}</td><td class="num">${m?`<button class="sample-button" data-sample="${r.id}|${p.round}" aria-label="${r.model} ${r.method} 第 ${p.round} 轮样本">${m.sample_count}</button>`:'—'}</td><td class="num">${fmt(p.pytorch?.mean_ms)}</td><td class="num">${m&&p.pytorch?fmt(p.pytorch.mean_ms/m.mean_ms,3)+'×':'—'}</td></tr>`;
  }).join('')||'<tr><td colspan="11" class="empty">没有符合筛选条件的数据</td></tr>';
- $$('[data-sample]').forEach(b=>b.onclick=()=>{const[id,n]=b.dataset.sample.split('|'),r=data.runs.find(r=>r.id===id),p=r.search.find(p=>p.round===+n);activeSamples={r,p};$('#sample-title').textContent=`${r.model} · ${methodLabel(r)} · 第 ${n} 轮`;$('#sample-stats').textContent=`均值 ${fmt(p.timing.mean_ms)} ms · P10–P90 ${fmt(p.timing.p10_ms)}–${fmt(p.timing.p90_ms)} ms · n=${p.timing.sample_count}`;$('#sample-values').textContent=p.timing.samples_ms.map((v,i)=>`${String(i+1).padStart(3,' ')}  ${v}`).join('\n');$('#samples').showModal();});
+ $$('[data-sample]').forEach(b=>b.onclick=()=>{const[id,n]=b.dataset.sample.split('|'),r=data.runs.find(r=>r.id===id),p=r.search.find(p=>p.round===+n);activeSamples={r,p};$('#sample-title').textContent=`${r.model} · ${methodDisplayLabel(r)} · 第 ${n} 轮`;$('#sample-stats').textContent=`均值 ${fmt(p.timing.mean_ms)} ms · P10–P90 ${fmt(p.timing.p10_ms)}–${fmt(p.timing.p90_ms)} ms · n=${p.timing.sample_count}`;$('#sample-values').textContent=p.timing.samples_ms.map((v,i)=>`${String(i+1).padStart(3,' ')}  ${v}`).join('\n');$('#samples').showModal();});
 }
 function renderAll(){if(!data)return;axisControls();renderControls();renderSummary();renderRoundSelector();renderRounds();renderCharts();}
 function ticks(lo,hi,count){
@@ -520,7 +521,7 @@ function renderChart(el,detail){
  renderRoundRange(el,'bv',roundBudget(),renderCharts);
  if(axisMode!=='round') {
   const runs=selected().filter(r=>r.search.some(p=>p.axes));
-  const lines=runs.map(r=>({name:r.model+' '+methodLabel(r),id:r.id,color:comparisonColor(r,'bv'),dash:seriesDash(r),
+  const lines=runs.map(r=>({name:r.model+' '+methodDisplayLabel(r),id:r.id,color:comparisonColor(r,'bv'),dash:seriesDash(r),
    points:r.search.map(p=>({name:'r'+p.round,axes:p.axes,y:p.timing?.mean_ms??null,range:state.uncertainty&&p.timing?[p.timing.p10_ms,p.timing.p90_ms]:null,status:p.status}))}));
   for(const [i,r] of runs.entries())if(r.formal && r.formal_axes)
    lines[i].points.push({formal:true,name:'正式结果',axes:r.formal_axes,y:r.formal.mean_ms});
@@ -580,7 +581,7 @@ function renderReadout(n){
  if(axisMode!=='round')return;
  $('#hover-readout').innerHTML=`<span><strong>${n===roundBudget()+2?'正式结果 ★':'第 '+n+' 轮'}</strong></span>`+selected().map(r=>{
   const p=n===roundBudget()+2?null:r.search.find(p=>p.round===n),m=n===roundBudget()+2?r.formal:p?.timing;
-  return `<span style="--color:${comparisonColor(r,'bv')}"><i class="swatch"></i>${r.model} ${methodLabel(r)} <strong>${fmt(m?.mean_ms)}</strong>${m?' ms':''}</span>`;
+  return `<span style="--color:${comparisonColor(r,'bv')}"><i class="swatch"></i>${r.model} ${methodDisplayLabel(r)} <strong>${fmt(m?.mean_ms)}</strong>${m?' ms':''}</span>`;
  }).join('');
 }
 function renderCharts(){if(!data)return;renderChart($('#overview'),false);renderChart($('#detail'),true);renderReadout(roundBudget()+2);renderB0Cost();}
@@ -740,7 +741,7 @@ function renderB0Cost(){
  host.hidden=axisMode==='round'||!runs.length;
  if(host.hidden)return;
  host.innerHTML='<div class="chart" id="b0-cost-chart"></div><div class="cost-readout" aria-live="polite"></div>';
- const lines=runs.map(run=>({id:run.id,name:run.model+' '+methodLabel(run),color:'#526c89',dash:DASH[run.model],points:run.search.map(p=>({axes:p.axes,name:'r'+p.round,y:p.status==='passed'?1:p.status==='failed'?0:null,status:p.status}))}));
+ const lines=runs.map(run=>({id:run.id,name:run.model+' '+methodDisplayLabel(run),color:'#526c89',dash:DASH[run.model],points:run.search.map(p=>({axes:p.axes,name:'r'+p.round,y:p.status==='passed'?1:p.status==='failed'?0:null,status:p.status}))}));
  costChart(host.querySelector('.chart'),lines,{height:148,binary:true,yLabel:'正确性',yRange:[-.15,1.2],readout:host.querySelector('.cost-readout')});
 }
 

@@ -133,7 +133,7 @@ function betaRenderLogs(){
  const ds=$('#beta-log-dataset').value,kind=$('#beta-log-kind').value,cat=$('#beta-log-category').value;
  const events=betaEvents().filter(e=>(ds==='all'||e.runs.some(r=>r.dataset===ds))&&(kind==='all'||kind===e.kind)&&(cat==='all'||cat===e.category));
  $('#beta-log-count').textContent=`${events.length} 条`;
- $('#beta-timeline').innerHTML=events.slice(0,betaLogLimit).map(e=>`<li class="${esc(e.kind)}"><time datetime="${esc(e.at)}">${date(e.at)} SGT${e.time_basis==='observed'?' · 记录时间':''}</time><div class="beta-event-body"><span class="beta-event-kind">${betaLabels[e.kind]||esc(e.kind)}</span><div class="beta-event-links">${e.runs.map(r=>`<a href="?view=results&category=${e.category}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-event="${esc(r.id)}" data-event-category="${e.category}" data-event-dataset="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(r.model)} ${esc(methodLabel(r))} ↗</a>`).join('')}</div><p>${esc(e.reason)}</p></div></li>`).join('')||'<li class="empty">暂无记录</li>';
+ $('#beta-timeline').innerHTML=events.slice(0,betaLogLimit).map(e=>`<li class="${esc(e.kind)}"><time datetime="${esc(e.at)}">${date(e.at)} SGT${e.time_basis==='observed'?' · 记录时间':''}</time><div class="beta-event-body"><span class="beta-event-kind">${betaLabels[e.kind]||esc(e.kind)}</span><div class="beta-event-links">${e.runs.map(r=>`<a href="?view=results&category=${e.category}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-event="${esc(r.id)}" data-event-category="${e.category}" data-event-dataset="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(r.model)} ${esc(methodDisplayLabel(r))} ↗</a>`).join('')}</div><p>${esc(e.reason)}</p></div></li>`).join('')||'<li class="empty">暂无记录</li>';
  $('#beta-log-more').hidden=events.length<=betaLogLimit;
  $$('[data-beta-event]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.eventCategory==='kl')await loadKL(a.dataset.eventDataset,a.dataset.betaEvent);else await openRun(a.dataset.eventDataset,a.dataset.betaEvent,true);betaSync();});
  betaSyncSelectChoices();
@@ -141,7 +141,7 @@ function betaRenderLogs(){
 }
 function betaQueueTable(){
  const rows=[...(manifest?.bv_revisions?.queue||[]).map(r=>({...r,position:r.queue_position,category:'bv'})),...(manifest?.kl?.queue||[]).map(r=>({...r,category:'kl',method:'KL'}))];
- $('#kl-queue').innerHTML=`<table><thead><tr><th>顺序</th><th>测试集</th><th>模型</th><th>环境</th><th>状态</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.position}</td><td><a href="?view=results&category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-category-target="${r.category}" data-beta-queued="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(methodLabel(r))} ↗</a></td><td>${esc(r.model)} <small>${esc(r.effort)}</small></td><td>${esc(r.environment_name)}</td><td>${klStatus(r.status)}</td></tr>`).join('')}</tbody></table>`;
+ $('#kl-queue').innerHTML=`<table><thead><tr><th>顺序</th><th>测试集</th><th>模型</th><th>环境</th><th>状态</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.position}</td><td><a href="?view=results&category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-category-target="${r.category}" data-beta-queued="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(methodDisplayLabel(r))} ↗</a></td><td>${esc(r.model)} <small>${esc(r.effort)}</small></td><td>${esc(r.environment_name)}</td><td>${klStatus(r.status)}</td></tr>`).join('')}</tbody></table>`;
  $$('[data-beta-queued]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.betaCategoryTarget==='bv')await openRun(a.dataset.target,a.dataset.betaQueued,true);else await loadKL(a.dataset.target,a.dataset.betaQueued);betaSync();});
 }
 function betaV0Labels(node=$('#beta-results-view')){
@@ -156,6 +156,7 @@ function betaBindQueueLinks(){
 function betaSync(){
  if(!manifest)return;
  betaMenus();betaQueueTable();betaV0Labels();betaShowView(betaView);
+ $('#beta-completed-total').textContent=(manifest.workspaces?.rows||[]).filter(r=>r.status==='complete').length;
  $('#beta-running-total').textContent=(manifest.running_runs?.length||0)+(manifest.kl?.running_runs?.length||0);
  $('#beta-waiting-total').textContent=(manifest.waiting_runs||manifest.kl?.waiting_runs)?.length||0;
  betaRenderBanner();
@@ -170,7 +171,7 @@ function betaSync(){
 
 function betaRenderBanner(){
  const banner=$('#beta-live-banner'),runs=[...(manifest.running_runs||[]),...(manifest.kl?.running_runs||[])];
- const html=runs.length?'正在运行： '+runs.map(r=>`<a href="?view=results&category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-banner-run="${esc(r.id)}" data-target="${esc(r.dataset)}" data-category="${runCategory(r)}">${esc(r.dataset)} · ${esc(r.model)} ${esc(methodLabel(r))}${r.method==='KL'?` · Apply ${r.current_apply??r.reported_attempts} · r${r.internal_round??0}`:` · ${r.reported_attempts}/${r.budget} 轮`} <span aria-hidden="true">↗</span></a>`).join('<span class="beta-banner-divider" aria-hidden="true">·</span>'):'当前暂无运行任务 <a href="?view=queue" data-beta-banner-queue>查看队列 ↗</a>';
+ const html=runs.length?'正在运行： '+runs.map(r=>`<a href="?view=results&category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-banner-run="${esc(r.id)}" data-target="${esc(r.dataset)}" data-category="${runCategory(r)}">${esc(r.dataset)} · ${esc(r.model)} ${esc(methodDisplayLabel(r))}${r.method==='KL'?` · Apply ${r.current_apply??r.reported_attempts} · r${r.internal_round??0}`:` · ${r.reported_attempts}/${r.budget} 轮`} <span aria-hidden="true">↗</span></a>`).join('<span class="beta-banner-divider" aria-hidden="true">·</span>'):'当前暂无运行任务 <a href="?view=queue" data-beta-banner-queue>查看队列 ↗</a>';
  if(banner.innerHTML!==html){banner.innerHTML=html;
   banner.querySelectorAll('[data-beta-banner-run]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaSetPreview(null);betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.category==='kl')await loadKL(a.dataset.target,a.dataset.betaBannerRun);else await openRun(a.dataset.target,a.dataset.betaBannerRun,true);betaSync();});
   banner.querySelector('[data-beta-banner-queue]')?.addEventListener('click',e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaShowView('queue',true);});
@@ -583,7 +584,7 @@ window.workspaceDirectory=(()=>{
   const valid=!(value('from')&&value('to')&&value('from')>value('to'));$('#ws-date-error').textContent=valid?'':'日期范围有误';
   filtered=valid?rows.filter(matches):[];filtered.sort((a,b)=>{const av=Date.parse(a[sort]),bv=Date.parse(b[sort]);if(!Number.isFinite(av))return Number.isFinite(bv)?1:a.id.localeCompare(b.id);if(!Number.isFinite(bv))return -1;return (descending?bv-av:av-bv)||a.id.localeCompare(b.id);});
   const ids=new Set(filtered.map(r=>r.id));for(const id of selected)if(!ids.has(id))selected.delete(id);
-  $('#ws-rows').innerHTML=filtered.slice(0,limit).map(r=>`<tr><td><input type="checkbox" data-ws-check="${esc(r.id)}" aria-label="选择 ${esc(r.dataset+' '+r.model+' '+r.method_version)}" ${selected.has(r.id)?'checked':''}></td><td class="ws-dataset">${esc(r.dataset)}</td><td><span class="ws-method-tag">${esc(r.method_version)}</span></td><td>${esc(r.model)} <small>${esc(r.effort||'')}</small></td><td>${badge(r.status)}</td><td><time datetime="${esc(r.started_at||'')}">${date(r.started_at)}</time></td><td><time datetime="${esc(r.finished_at||'')}">${date(r.finished_at)}</time></td><td class="ws-path-cell">${r.workspace_path?`<code>${esc(r.workspace_path)}</code><button class="ws-icon" data-ws-copy="${esc(r.id)}" aria-label="复制 ${esc(r.dataset+' '+r.model+' '+r.method_version)} 路径" title="复制路径">${copyIcon}</button>`:'<span class="ws-missing">—</span>'}</td></tr>`).join('')||'<tr><td colspan="8" class="empty">无匹配记录</td></tr>';
+  $('#ws-rows').innerHTML=filtered.slice(0,limit).map(r=>`<tr><td><input type="checkbox" data-ws-check="${esc(r.id)}" aria-label="选择 ${esc(r.dataset+' '+r.model+' '+r.method_version)}" ${selected.has(r.id)?'checked':''}></td><td class="ws-dataset">${esc(r.dataset)}</td><td><span class="ws-method-tag">${esc(methodDisplayLabel(r))}</span></td><td>${esc(r.model)} <small>${esc(r.effort||'')}</small></td><td>${badge(r.status)}</td><td><time datetime="${esc(r.started_at||'')}">${date(r.started_at)}</time></td><td><time datetime="${esc(r.finished_at||'')}">${date(r.finished_at)}</time></td><td class="ws-path-cell">${r.workspace_path?`<code>${esc(r.workspace_path)}</code><button class="ws-icon" data-ws-copy="${esc(r.id)}" aria-label="复制 ${esc(r.dataset+' '+r.model+' '+r.method_version)} 路径" title="复制路径">${copyIcon}</button>`:'<span class="ws-missing">—</span>'}</td></tr>`).join('')||'<tr><td colspan="8" class="empty">无匹配记录</td></tr>';
   $$('[data-ws-check]').forEach(el=>el.onchange=()=>{if(el.checked)selected.add(el.dataset.wsCheck);else selected.delete(el.dataset.wsCheck);updateActions();});
   $$('[data-ws-copy]').forEach(el=>el.onclick=()=>copy(rows.find(r=>r.id===el.dataset.wsCopy).workspace_path,el));
   $('#ws-more').hidden=filtered.length<=limit;updateActions();betaSyncSelectChoices();if(animate)betaAnimateContent($('#workspace-directory-table'));
@@ -615,11 +616,13 @@ window.workspaceDirectory=(()=>{
   if(!manifest?.workspaces)return;
   const key=datasetId+':'+category+':'+(category==='kl'?klRun?.id:'');if(contextKey!==key){context.open=false;contextKey=key;}
   const records=manifest.workspaces.rows.filter(r=>r.dataset===datasetId&&r.workspace_path&&(category==='kl'?r.id===klRun?.id:category==='aligned'?['V0','KL'].includes(r.method):category==='bv'?r.method!=='KL'&&!['B0','B1'].includes(r.method):category==='all'?!['B0','B1'].includes(r.method):true));
-  const body=context.querySelector('.workspace-context-rows');const html=records.map(r=>`<div class="workspace-row"><div class="workspace-label"><strong>${esc(r.method_version)} / ${esc(r.model)}</strong><span>${esc(r.effort||'')}</span></div><code>${esc(r.workspace_path)}</code><button data-context-copy="${esc(r.id)}">复制</button></div>`).join('')||'<p class="empty">暂无工作区</p>';
+  const body=context.querySelector('.workspace-context-rows');const html=records.map(r=>`<div class="workspace-row"><div class="workspace-label"><strong>${esc(methodDisplayLabel(r))} / ${esc(r.model)}</strong><span>${esc(r.effort||'')}</span></div><code>${esc(r.workspace_path)}</code><button data-context-copy="${esc(r.id)}">复制</button></div>`).join('')||'<p class="empty">暂无工作区</p>';
   if(body.innerHTML!==html){body.innerHTML=html;body.querySelectorAll('[data-context-copy]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(records.find(r=>r.id===b.dataset.contextCopy).workspace_path);b.textContent='已复制';}catch{b.textContent='请选中复制';}});}
  }
  const oldTitle=betaUpdateTitle;betaUpdateTitle=function(){oldTitle();contextSync();};
  document.addEventListener('experiment:routechange',()=>{if(betaView==='workspaces')sync();});
  contextSync();if(betaView==='workspaces')sync();
- return {sync,contextSync};
+ function openCompleted(){sync();for(const id of ['method','model','dataset'])$('#ws-'+id).value='all';$('#ws-status').value='已完成';for(const id of ['search','from','to'])$('#ws-'+id).value='';setMethod('all');}
+ $('#beta-completed-link').onclick=openCompleted;
+ return {sync,contextSync,openCompleted};
 })();
