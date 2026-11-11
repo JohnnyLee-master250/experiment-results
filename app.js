@@ -264,7 +264,7 @@ function chartTween(from,to){
 }
 function chartNodeKey(el,index){
  if(el.nodeType!==1)return '#'+index;
- for(const name of ['data-chart-key','data-comparison-series','data-run','data-aligned-curve','data-reference','data-real-round','data-failed-round','data-cost-point','clip-path','id'])if(el.hasAttribute(name))return el.tagName+':'+name+':'+el.getAttribute(name);
+ for(const name of ['data-chart-key','data-comparison-series','data-run','data-aligned-curve','data-reference','data-real-round','data-failed-round','data-cost-point','data-measure-key','clip-path','id'])if(el.hasAttribute(name))return el.tagName+':'+name+':'+el.getAttribute(name);
  if(el.tagName.toLowerCase()==='text')return 'text:'+el.getAttribute('text-anchor')+':'+el.getAttribute('class')+':'+el.textContent;
  return el.tagName+':'+index;
 }
@@ -272,6 +272,7 @@ function chartCurvePaths(el){return el.matches?.('path[data-run],path[data-align
 const chartPulseEffects=new WeakMap();
 function chartPulse(el,leaving=false,delay=0){
  if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return null;
+ if(el.matches?.('.measurement-band')){const effects=[el.animate([{opacity:leaving?1:0},{opacity:leaving?0:1}],{duration:leaving?160:220,easing:'ease-out',fill:leaving?'forwards':'none'})];effects.cleanup=()=>effects.forEach(a=>a.cancel());return effects;}
  const paths=chartCurvePaths(el);if(!paths.length)return null;
  const animations=[],cleanups=[];
  for(const p of paths){
@@ -488,7 +489,7 @@ function renderRounds(){
   const m=p.timing,status={passed:'通过',failed:'失败',excluded:'基础设施中断'}[p.status];
   return `<tr><td>${r.model}</td><td>${methodDisplayLabel(r)}</td><td>${p.round}${p.role==='b0'?' · 初始':''}</td><td>${status||'—'}</td><td class="date">${{saved:'已保存',pending:'待完成',not_required:'不适用',historical:'历史记录'}[p.review]||'—'}</td><td class="num">${fmt(m?.mean_ms)}</td><td class="num">${fmt(m?.p10_ms)}</td><td class="num">${fmt(m?.p90_ms)}</td><td class="num">${m?`<button class="sample-button" data-sample="${r.id}|${p.round}" aria-label="${r.model} ${r.method} 第 ${p.round} 轮样本">${m.sample_count}</button>`:'—'}</td><td class="num">${fmt(p.pytorch?.mean_ms)}</td><td class="num">${m&&p.pytorch?fmt(p.pytorch.mean_ms/m.mean_ms,3)+'×':'—'}</td></tr>`;
  }).join('')||'<tr><td colspan="11" class="empty">没有符合筛选条件的数据</td></tr>';
- $$('[data-sample]').forEach(b=>b.onclick=()=>{const[id,n]=b.dataset.sample.split('|'),r=data.runs.find(r=>r.id===id),p=r.search.find(p=>p.round===+n);activeSamples={r,p};$('#sample-title').textContent=`${r.model} · ${methodDisplayLabel(r)} · 第 ${n} 轮`;$('#sample-stats').textContent=`均值 ${fmt(p.timing.mean_ms)} ms · P10–P90 ${fmt(p.timing.p10_ms)}–${fmt(p.timing.p90_ms)} ms · n=${p.timing.sample_count}`;$('#sample-values').textContent=p.timing.samples_ms.map((v,i)=>`${String(i+1).padStart(3,' ')}  ${v}`).join('\n');$('#samples').showModal();});
+ $$('[data-sample]').forEach(b=>b.onclick=()=>{const[id,n]=b.dataset.sample.split('|'),r=data.runs.find(r=>r.id===id),p=r.search.find(p=>p.round===+n);openMeasurement(measurementInfo(r,{...p,y:value(p)},{color:comparisonColor(r,'bv')}));});
 }
 function renderAll(){if(!data)return;axisControls();renderControls();renderSummary();renderRoundSelector();renderRounds();renderCharts();}
 function ticks(lo,hi,count){
@@ -498,7 +499,7 @@ function ticks(lo,hi,count){
 function tickFmt(v){if(v===0)return '0';if(Math.abs(v)>=1000)return String(+v.toFixed(0));if(Math.abs(v)>=10)return String(+v.toFixed(2));return String(+v.toFixed(5));}
 function bounds(runs,detail,windowRange=[state.xmin,state.xmax]){
  const [lowRound,highRound]=windowRange;
- const measured=runs.flatMap(r=>r.search.filter(p=>p.timing&&p.round>=lowRound&&p.round<=highRound).map(p=>p.timing[state.uncertainty?'p90_ms':'mean_ms'])).concat(runs.map(r=>r.formal?.mean_ms).filter(Number.isFinite));
+ const measured=runs.flatMap(r=>r.search.filter(p=>p.timing&&p.round>=lowRound&&p.round<=highRound).map(p=>p.timing.mean_ms)).concat(runs.map(r=>r.formal?.mean_ms).filter(Number.isFinite));
  if(!detail){const vals=[...measured,...runs.flatMap(r=>series(r).filter(p=>p.round>=lowRound&&p.round<=highRound&&p.y!=null).map(p=>p.y))];return [0,Math.max(...vals,1e-3)*1.06];}
  if(state.ymode==='manual'&&Number.isFinite(state.ymin)&&Number.isFinite(state.ymax)&&state.ymax>state.ymin)return [state.ymin,state.ymax];
  let values=[];
@@ -526,9 +527,9 @@ function renderChart(el,detail){
  if(axisMode!=='round') {
   const runs=selected().filter(r=>r.search.some(p=>p.axes));
   const lines=runs.map(r=>({name:r.model+' '+methodDisplayLabel(r),id:r.id,color:comparisonColor(r,'bv'),dash:seriesDash(r),
-   points:r.search.map(p=>({name:'r'+p.round,axes:p.axes,y:p.timing?.mean_ms??null,range:state.uncertainty&&p.timing?[p.timing.p10_ms,p.timing.p90_ms]:null,status:p.status}))}));
+   points:r.search.map(p=>({name:'r'+p.round,axes:p.axes,y:p.timing?.mean_ms??null,timing:p.timing,measurement:measurementInfo(r,{...p,y:p.timing?.mean_ms}),status:p.status}))}));
   for(const [i,r] of runs.entries())if(r.formal && r.formal_axes)
-   lines[i].points.push({formal:true,name:'正式结果',axes:r.formal_axes,y:r.formal.mean_ms});
+   lines[i].points.push({formal:true,name:'正式结果',axes:r.formal_axes,y:r.formal.mean_ms,timing:r.formal,measurement:measurementInfo(r,{formal:true,y:r.formal.mean_ms,timing:r.formal})});
   const opts={best:mode==='best',zoom:detail&&state.ymode==='focus',range:detail?costRange:null,scope:'bv',redraw:renderCharts,readout:$('#hover-readout')};
   if(detail&&state.ymode==='manual')opts.yRange=[state.ymin,state.ymax];
   const domain=costChart(el,lines,opts);
@@ -537,7 +538,9 @@ function renderChart(el,detail){
  }
  const runs=selected(),W=el.clientWidth||700,H=el.clientHeight||350,left=W<420?53:64,right=20,top=25,bottom=43,w=W-left-right,h=H-top-bottom;
  const [xmin,xmax]=comparisonWindow('bv',roundBudget()),withFinal=xmax===roundBudget()&&runs.some(r=>r.formal),finalAt=roundBudget()+(W<500?5:2),xend=withFinal?finalAt+.9:xmax+.25;
- const [ymin,ymax]=latencyWindow(el,'bv',bounds(runs,detail,[xmin,xmax])),sx=x=>left+(x-xmin)/(xend-xmin)*w,sy=y=>top+h-(y-ymin)/(ymax-ymin)*h;
+ const bandBounds=runs.flatMap(r=>bandPoints(r.search.map(p=>({...p,y:value(p)})),mode==='best').filter(p=>p.round>=xmin&&p.round<=xmax).flatMap(p=>bandValues(p.bandTiming,'bv'))),baseBounds=bounds(runs,detail,[xmin,xmax]);
+ if(bandBounds.length&&state.ymode!=='manual'){baseBounds[0]=Math.min(baseBounds[0],Math.min(...bandBounds)*.98);baseBounds[1]=Math.max(baseBounds[1],Math.max(...bandBounds)*1.04);}
+ const [ymin,ymax]=latencyWindow(el,'bv',baseBounds),sx=x=>left+(x-xmin)/(xend-xmin)*w,sy=y=>top+h-(y-ymin)/(ymax-ymin)*h;
  const id=detail?'detail':'overview',clip=`clip-${id}`,yticks=ticks(ymin,ymax,H>300?5:3),xticks=ticks(xmin,xmax,W<500?4:7).filter(Number.isInteger);
  let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" aria-hidden="true"><defs><clipPath id="${clip}"><rect x="${left}" y="${top}" width="${w}" height="${h}"/></clipPath></defs>`;
  svg+=yticks.map(v=>`<line data-chart-key="y-grid:${v}" x1="${left}" x2="${W-right}" y1="${sy(v)}" y2="${sy(v)}" stroke="#edf0f4"/><text data-chart-key="y-tick:${v}" x="${left-10}" y="${sy(v)+4}" text-anchor="end">${tickFmt(v)}</text>`).join('');
@@ -554,21 +557,21 @@ function renderChart(el,detail){
    else d+=`L${sx(p.round)},${sy(p.y)}`;
    last=p;
   }
-  svg+=`<g data-comparison-series="${esc(r.id)}"><path class="curve" data-run="${esc(r.id)}" d="${d}" fill="none" stroke="${col}" stroke-width="1.8" stroke-dasharray="${seriesDash(r)}" opacity=".88"/>`;
+  svg+=`<g data-comparison-series="${esc(r.id)}">`+sampleBandSVG(r.search.map(p=>({...p,x:p.round,y:value(p)})),sx,sy,col,'bv',r.id,mode==='best')+`<path class="curve" data-run="${esc(r.id)}" d="${d}" fill="none" stroke="${col}" stroke-width="1.8" stroke-dasharray="${seriesDash(r)}" opacity=".88"/>`;
   for(const p of pts){
    if(p.timing){
-    if(state.uncertainty)svg+=`<path d="M${sx(p.round)},${sy(p.timing.p10_ms)}V${sy(p.timing.p90_ms)}M${sx(p.round)-2.5},${sy(p.timing.p10_ms)}h5M${sx(p.round)-2.5},${sy(p.timing.p90_ms)}h5" stroke="${col}" fill="none" opacity=".35"/>`;
-    svg+=`<circle cx="${sx(p.round)}" cy="${sy(value(p))}" r="${detail?2.5:1.9}" fill="${col}" opacity="${mode==='raw'?'.72':'.34'}"/>`;
+    svg+=`<circle${measurementMarker(measurementInfo(r,{...p,y:value(p)}))} cx="${sx(p.round)}" cy="${sy(value(p))}" r="${detail?2.5:1.9}" fill="${col}" opacity="${mode==='raw'?'.72':'.34'}"/>`;
    }else if(p.status==='failed'){
     const yy=top+h-5;svg+=`<path d="M${sx(p.round)-2},${yy-2}l4 4m0 -4l-4 4" fill="none" stroke="${col}" opacity=".6"/>`;
    }
   }
-  if(r.formal)svg+=`<path class="formal-star" d="${star(sx(finalAt),sy(r.formal.mean_ms),detail?6:5)}" fill="${col}" stroke="white" stroke-width=".7"/>`;
+  if(r.formal)svg+=`<path${measurementMarker(measurementInfo(r,{formal:true,y:r.formal.mean_ms,timing:r.formal}))} class="formal-star" d="${star(sx(finalAt),sy(r.formal.mean_ms),detail?6:5)}" fill="${col}" stroke="white" stroke-width=".7"/>`;
   svg+='</g>';
  }
  svg+=`</g><line data-chart-key="crosshair" class="crosshair" x1="0" x2="0" y1="${top}" y2="${top+h}" stroke="#8d9aaa" stroke-dasharray="3 3" visibility="hidden"/></svg>`;
  if(!runs.length)svg+=`<div style="position:absolute;inset:45% 0;text-align:center;color:#76818f;font-size:12px">选择曲线</div>`;
  renderChartMarkup(el,svg);
+ bindMeasurementChart(el,runs.flatMap(r=>[...r.search.filter(p=>p.timing).map(p=>measurementInfo(r,{...p,y:value(p)},{color:comparisonColor(r,'bv')})),...(r.formal?[measurementInfo(r,{formal:true,y:r.formal.mean_ms,timing:r.formal},{color:comparisonColor(r,'bv')})]:[])]),'bv',renderCharts);
  configureRoundBrush(el,{scope:'bv',maximum:roundBudget(),min:xmin,max:xmax,ymin,ymax,width:W,height:H,left,right:sx(xmax),top,bottom:top+h,redraw:renderCharts});
  if(detail){
   const clipped=runs.filter(r=>{const p=series(r).filter(p=>p.y!=null&&p.round>=xmin&&p.round<=xmax);return p.length&&!p.some(p=>p.y>=ymin&&p.y<=ymax);}).length;
@@ -656,6 +659,7 @@ function costChart(el, lines, options={}) {
  if(!items.length){
   el.innerHTML='<div class="cost-empty">暂无所选曲线的横轴数据</div>';
   if(note)note.textContent='';
+  if(!options.binary)bindMeasurementChart(el,[],scope,options.redraw||renderCharts);
   el.onkeydown=el.onpointermove=null;
   return null;
  }
@@ -663,7 +667,7 @@ function costChart(el, lines, options={}) {
  const within=x=>lo<=x&&x<=hi;
  const visibleItems=items.filter(item=>within(item.x));
  const refs=options.references||[];
- let vals=visibleItems.flatMap(({p})=>[p.y,...(p.range||[])]).filter(Number.isFinite);
+ let vals=visibleItems.flatMap(({p})=>[p.y,...bandValues(p.timing,scope)]).filter(Number.isFinite);
  let ymin=0,ymax=Math.max(.001,...vals,...refs.map(r=>r.latency_ms))*1.08;
  if(options.zoom&&vals.length){
   const tails=series.flatMap(r=>{
@@ -674,6 +678,8 @@ function costChart(el, lines, options={}) {
   for(let i=3;i<tails.length;i++)if(tails[i]/tails[i-1]>=2){cluster=tails.slice(0,i);break;}
   if(cluster.length){const a=cluster[0],b=cluster.at(-1),dy=Math.max((b-a)*.16,b*.04,.000001);ymin=Math.max(0,a-dy);ymax=b+dy;}
  }
+ const bandDomain=series.flatMap(r=>bandPoints(r.points,options.best).filter(p=>within(costX(p.axes)))).flatMap(p=>bandValues(p.bandTiming,scope));
+ if(bandDomain.length){ymin=Math.min(ymin,Math.min(...bandDomain)*.98);ymax=Math.max(ymax,Math.max(...bandDomain)*1.04);}
  if(options.yRange&&Number.isFinite(options.yRange[0])&&options.yRange[1]>options.yRange[0])[ymin,ymax]=options.yRange;
  if(custom?.y&&custom.y[1]>custom.y[0])[ymin,ymax]=custom.y;
  const x=v=>pad.l+(v-lo)/(hi-lo)*(width-pad.l-pad.r);
@@ -697,6 +703,7 @@ function costChart(el, lines, options={}) {
    path+=!last?' M'+px+','+py:options.best?' H'+px+' V'+py:' L'+px+','+py;
    last=true;
   }
+  svg+=sampleBandSVG(r.points.filter(p=>!p.formal).map(p=>({...p,x:costX(p.axes)})),x,y,r.color,scope,r.id,options.best);
   if(bestPath)svg+='<path d="'+bestPath+'" fill="none" stroke="#009E73" stroke-dasharray="5 3"/>';
   svg+='<path class="curve" data-run="'+esc(r.id)+'" data-aligned-curve="'+esc(r.id)+'" d="'+path+'" fill="none" stroke="'+r.color+'" stroke-width="2" stroke-dasharray="'+(r.dash||'')+'"/>';
  }
@@ -712,14 +719,14 @@ function costChart(el, lines, options={}) {
   if(!within(item.x))continue;
   const py=Number.isFinite(p.y)?y(p.y):base-5;
   const tip=esc(description(item)),partialToken=partial(p.axes);
-  const attr=' class="cost-marker" data-cost-point="'+i+'" tabindex="0" aria-label="'+tip+'"'+(p.applyButton?' data-apply-point="'+p.applyButton+'" role="button"':'')+(partialToken?' data-token-incomplete="true"':'');
-  if(p.range)svg+='<path d="M'+px+','+y(p.range[0])+' V'+y(p.range[1])+'" stroke="'+line.color+'" opacity=".45"/>';
+  const attr=(p.measurement?measurementMarker(p.measurement):'')+' class="cost-marker" data-cost-point="'+i+'" tabindex="0" aria-label="'+tip+'"'+(p.applyButton?' data-apply-point="'+p.applyButton+'" role="button"':'')+(partialToken?' data-token-incomplete="true"':'');
   if(partialToken)svg+='<path'+attr+' d="M'+px+','+(py-5)+' l5,9 h-10 Z" fill="white" stroke="#9a5200" stroke-width="1.8"><title>'+tip+'</title></path>';
   else if(p.formal)svg+='<path'+attr+' d="'+star(px,py,6)+'" fill="'+line.color+'"><title>'+tip+'</title></path>';
   else if(!Number.isFinite(p.y))svg+='<path'+attr+' d="M'+(px-3)+','+(py-3)+' l6,6 m0,-6 l-6,6" stroke="'+line.color+'"><title>'+tip+'</title></path>';
   else svg+='<circle'+attr+' cx="'+px+'" cy="'+py+'" r="'+(p.selected?5:3.2)+'" fill="'+line.color+'"><title>'+tip+'</title></circle>';
  }
  renderChartMarkup(el,svg+'</g></svg>');el.tabIndex=0;
+ if(!options.binary)bindMeasurementChart(el,items.filter(({p})=>p.measurement&&Number.isFinite(p.y)).map(({line,p})=>({...p.measurement,color:line.color})),scope,options.redraw||renderCharts);
  if(options.redraw)configureRoundBrush(el,{scope,continuous:true,min:lo,max:hi,ymin,ymax,width,height,left:pad.l,right:width-pad.r,top:pad.t,bottom:height-pad.b,
   formatX:values=>values.map(tickFmt).join(' – ')+(axisMode==='time'?' min':' M token'),
   applySelection:selection=>{
@@ -761,3 +768,122 @@ function renderB0Cost(){
 }
 
 refresh();
+
+
+// Saved measurement samples: display only, never experimental accounting.
+const measurementBands=new Map(),measurementSelections=new Map(),measurementStatsCache=new WeakMap();
+function sampleStats(timing){
+ if(!timing||!Array.isArray(timing.samples_ms)||!timing.samples_ms.length)return null;
+ if(measurementStatsCache.has(timing))return measurementStatsCache.get(timing);
+ const a=timing.samples_ms;if(!a.every(v=>Number.isFinite(v)&&v>0)||timing.sample_count!==a.length)return null;
+ const sorted=[...a].sort((a,b)=>a-b),q=p=>{const i=(sorted.length-1)*p,l=Math.floor(i);return sorted[l]+(sorted[Math.min(l+1,sorted.length-1)]-sorted[l])*(i-l);};
+ const result={samples:a,n:a.length,min:sorted[0],max:sorted.at(-1),p10:q(.1),p90:q(.9),q25:q(.25),q75:q(.75),median:q(.5),mean:a.reduce((s,v)=>s+v,0)/a.length,groups:timing.group_sizes||[a.length]};
+ measurementStatsCache.set(timing,result);return result;
+}
+function bandState(scope){if(!measurementBands.has(scope))measurementBands.set(scope,{extent:false,percentile:false});return measurementBands.get(scope);}
+function bandValues(timing,scope){const s=sampleStats(timing),b=bandState(scope);return !s?[]:b.extent?[s.min,s.max]:b.percentile?[s.p10,s.p90]:[];}
+function bandPoints(points,best=false){
+ let current=null,epoch;
+ return points.map(p=>{
+  if(p.epoch!==epoch){current=null;epoch=p.epoch;}
+  if(Number.isFinite(p.y)&&!p.formal&&p.eligible!==false&&(!current||p.y<current.y))current=p;
+  return {...p,bandTiming:best&&!p.formal?current?.timing:p.timing};
+ });
+}
+function sampleBandSVG(points,x,y,color,scope,key,best=false){
+ const b=bandState(scope);if(!b.extent&&!b.percentile)return '';
+ const rows=bandPoints(points,best);let svg='';
+ for(const [kind,on,alpha] of [['extent',b.extent,.10],['percentile',b.percentile,.22]]){
+  if(!on)continue;let segment=[],segments=[],lastEpoch;
+  const flush=()=>{if(segment.length)segments.push(segment);segment=[];};
+  for(const p of rows){const s=sampleStats(p.bandTiming);if(p.epoch!==lastEpoch)flush();lastEpoch=p.epoch;
+   if(!s||(!Number.isFinite(p.y)&&!best)||!Number.isFinite(p.x)){flush();continue;}
+   segment.push({x:x(p.x),lo:y(kind==='extent'?s.min:s.p10),hi:y(kind==='extent'?s.max:s.p90)});
+  }flush();
+  for(const [i,seg] of segments.entries()){
+   let d=`M${seg[0].x},${seg[0].hi}`;
+   for(const p of seg.slice(1))d+=best?`H${p.x}V${p.hi}`:`L${p.x},${p.hi}`;
+   d+=`L${seg.at(-1).x},${seg.at(-1).lo}`;
+   for(let j=seg.length-2;j>=0;j--){const p=seg[j];d+=best?`V${p.lo}H${p.x}`:`L${p.x},${p.lo}`;}d+='Z';
+   svg+=`<path data-chart-key="band:${esc(key)}:${kind}:${i}" class="measurement-band" d="${d}" fill="${color}" fill-opacity="${alpha}" stroke="${color}" stroke-opacity="${alpha+.08}" stroke-width="${seg.length===1?4:.6}" pointer-events="none"/>`;
+  }
+ }return svg;
+}
+function measurementInfo(run,point,extra={}){
+ const kl=run.method==='KL'||run.baseMethod==='KL'||extra.kl;
+ return {dataset:datasetId,run:run.id,model:run.model||run.name,effort:run.effort||'',method:kl?'KL':methodDisplayLabel(run),round:point.round,apply:point.apply,inner:point.inner_sequence,center:point.y??point.timing?.mean_ms??point.latency_ms,timing:point.timing||null,formal:!!point.formal,...extra};
+}
+function measurementLabel(info){return [info.model,info.method,info.formal?'Final':info.apply?`A${info.apply}${info.round?' · r'+info.round:''}${info.inner?' · #'+info.inner:''}`:'r'+info.round].filter(Boolean).join(' · ');}
+function measurementKey(info){return [info.dataset,info.run,info.formal?'formal':info.apply||'',info.inner||info.round||'delivered'].join('|');}
+function measurementMarker(info){return ` data-measure-key="${esc(measurementKey(info))}" tabindex="0" role="button" aria-label="${esc(measurementLabel(info)+'，查看测量样本')}"`;}
+function bindMeasurementChart(el,entries,scope,redraw){
+ el._measurements=new Map(entries.map(info=>[measurementKey(info),info]));el._measurementContext=[category,datasetId,el.id||'aligned',category==='kl'?klRun?.id:'',el.id==='kl-candidates'?klApply:''].join(':');
+ let bar=el._measurementTools;
+ if(!bar?.isConnected){
+  bar=document.createElement('div');bar.className='measurement-tools';el._measurementTools=bar;
+  const parent=el.closest('.chart-card')?.querySelector('.chart-title')||el.parentElement.querySelector(':scope>.plot-options');
+  (parent||el.parentElement).append(bar);
+ }
+ const b=bandState(scope);bar.innerHTML=`<div class="measurement-band-switches" aria-label="测量波动"><button data-band="extent" aria-pressed="${b.extent}" title="完整样本的最快至最慢；搜索最优模式跟随被选中的最优候选">最快–最慢</button><button data-band="percentile" aria-pressed="${b.percentile}" title="完整样本的第10至第90百分位；不是均值的置信区间">P10–P90</button></div><button class="measurement-capsule" aria-haspopup="dialog"><span class="measurement-selection-label"></span><span class="measurement-plus" aria-hidden="true">＋</span></button>`;
+ bar.querySelectorAll('[data-band]').forEach(button=>button.onclick=()=>{b[button.dataset.band]=!b[button.dataset.band];redraw();});
+ const capsule=bar.querySelector('.measurement-capsule');
+ const paint=()=>{
+  const selected=measurementSelections.get(el._measurementContext),info=el._measurements.get(selected);
+  capsule.disabled=!info;capsule.querySelector('.measurement-selection-label').textContent=info?`${measurementLabel(info)} · ${sampleStats(info.timing)?'n='+sampleStats(info.timing).n:'无样本'}`:'选择测量点';
+  capsule.title=info?measurementLabel(info)+' · '+(info.effort||''):'点击图中测量点';
+  el.querySelectorAll('[data-measure-key]').forEach(n=>n.classList.toggle('measurement-selected',n.dataset.measureKey===selected));
+  capsule.onclick=()=>{if(info)openMeasurement(info);};
+ };
+ el._selectMeasurement=key=>{if(!el._measurements.has(key))return;measurementSelections.set(el._measurementContext,key);paint();};
+ if(!el._measurementBound){
+  el._measurementBound=true;
+  el.addEventListener('click',e=>{
+   if(performance.now()<(el._roundBrush?.suppressClickUntil||0))return;
+   let key=e.target.closest?.('[data-measure-key]')?.dataset.measureKey;
+   if(!key){let distance=13;for(const n of el.querySelectorAll('[data-measure-key]')){const r=n.getBoundingClientRect(),d=Math.hypot(e.clientX-r.x-r.width/2,e.clientY-r.y-r.height/2);if(d<distance){distance=d;key=n.dataset.measureKey;}}}
+   if(key)el._selectMeasurement(key);
+  },true);
+  el.addEventListener('keydown',e=>{const key=e.target.closest?.('[data-measure-key]')?.dataset.measureKey;if(key&&['Enter',' '].includes(e.key)){e.preventDefault();el._selectMeasurement(key);}});
+ }
+ paint();
+}
+function measurementHistogram(stats){
+ const spread=stats.max-stats.min;if(!spread)return {lo:stats.min-Math.max(stats.min*.005,1e-6),step:Math.max(stats.min*.01,2e-6),counts:[stats.n]};
+ const width=2*(stats.q75-stats.q25)/Math.cbrt(stats.n),n=Math.max(5,Math.min(36,Math.ceil(width>0?spread/width:Math.sqrt(stats.n)))),step=spread/n,counts=Array(n).fill(0);
+ stats.samples.forEach(v=>counts[Math.min(n-1,Math.floor((v-stats.min)/step))]++);
+ return {lo:stats.min,step,counts};
+}
+function measurementPlots(info){
+ const s=sampleStats(info.timing);if(!s)return '<div class="measurement-missing">该轮未保存完整采样值</div>';
+ const W=Math.max(300,Math.min(900,innerWidth-76)),H=W<500?300:330,p={l:W<500?53:72,r:16,t:22,b:46},col=info.color||'#007aff',space=Math.max((s.max-s.min)*.12,s.max*.015,1e-6),lo=Math.max(0,s.min-space),hi=s.max+space;
+ const sy=v=>H-p.b-(v-lo)/(hi-lo)*(H-p.t-p.b),sx=i=>p.l+(i-1)/Math.max(1,s.n-1)*(W-p.l-p.r);
+ const frame=(name)=>`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${name}">`;
+ let sequence=frame('按保存顺序的全部测量样本');
+ for(const v of ticks(lo,hi,5))sequence+=`<line x1="${p.l}" x2="${W-p.r}" y1="${sy(v)}" y2="${sy(v)}" stroke="#e7e8ec"/><text x="${p.l-10}" y="${sy(v)+4}" text-anchor="end">${tickFmt(v)}</text>`;
+ let at=0;s.groups.forEach((n,i)=>{if(i)sequence+=`<line class="measurement-group-boundary" x1="${sx(at+.5)}" x2="${sx(at+.5)}" y1="${p.t}" y2="${H-p.b}" stroke="#c9cdd5" stroke-dasharray="4 5"/>`;at+=n;});
+ const sampleTicks=[1,...ticks(1,s.n,W<500?5:8).filter(n=>Number.isInteger(n)&&sx(n)-sx(1)>32&&sx(s.n)-sx(n)>32),...(s.n>1?[s.n]:[])];
+ for(const n of sampleTicks)sequence+=`<text x="${sx(n)}" y="${H-23}" text-anchor="middle">${n}</text>`;
+ sequence+=`<path d="${s.samples.map((v,i)=>(i?'L':'M')+sx(i+1)+','+sy(v)).join('')}" fill="none" stroke="${col}" stroke-width="1.2" opacity=".22"/>`;
+ s.samples.forEach((v,i)=>{sequence+=`<circle class="measurement-sample-dot" cx="${sx(i+1)}" cy="${sy(v)}" r="3.4" fill="${col}" opacity=".8"><title>#${i+1} · ${fmt(v)} ms</title></circle>`;});
+ if(Number.isFinite(info.center))sequence+=`<line x1="${p.l}" x2="${W-p.r}" y1="${sy(info.center)}" y2="${sy(info.center)}" stroke="${col}" stroke-dasharray="6 4" opacity=".55"/>`;
+ sequence+=`<text x="${p.l}" y="13">ms</text><text x="${W/2}" y="${H-2}" text-anchor="middle">采样序号</text></svg>`;
+ const hist=measurementHistogram(s),maximum=Math.max(...hist.counts),ymax=Math.max(1,...ticks(0,maximum*1.12,5),maximum*1.12),hx=v=>p.l+(v-hist.lo)/(hist.step*hist.counts.length)*(W-p.l-p.r),hy=v=>H-p.b-v/ymax*(H-p.t-p.b);let distribution=frame('测量延迟直方图，纵轴为次数');
+ for(const v of ticks(0,ymax,5).filter(Number.isInteger))distribution+=`<line x1="${p.l}" x2="${W-p.r}" y1="${hy(v)}" y2="${hy(v)}" stroke="#e7e8ec"/><text x="${p.l-10}" y="${hy(v)+4}" text-anchor="end">${v}</text>`;
+ const bw=(W-p.l-p.r)/hist.counts.length;
+ hist.counts.forEach((n,i)=>{distribution+=`<rect class="measurement-hist-bin" data-count="${n}" x="${p.l+i*bw+1}" y="${hy(n)}" width="${Math.max(1,bw-2)}" height="${H-p.b-hy(n)}" rx="3" fill="${col}" opacity=".72"><title>${fmt(hist.lo+i*hist.step)}–${fmt(hist.lo+(i+1)*hist.step)} ms · ${n} 次 · ${(100*n/s.n).toFixed(1)}%</title></rect>`;});
+ for(const v of ticks(hist.lo,hist.lo+hist.step*hist.counts.length,W<500?4:6))distribution+=`<text x="${hx(v)}" y="${H-23}" text-anchor="middle">${tickFmt(v)}</text>`;
+ distribution+=`<text x="${p.l}" y="13">次数</text><text x="${W/2}" y="${H-2}" text-anchor="middle">延迟 ms</text></svg>`;
+ return `<section class="measurement-plot"><h3>采样轨迹 <small>${s.groups.length>1?s.groups.map(n=>n).join(' + ')+' 次':s.n+' 次'}</small></h3>${sequence}</section><section class="measurement-plot"><h3>延迟分布 <small>直方图</small></h3>${distribution}</section>`;
+}
+function openMeasurement(info){
+ let dialog=$('#measurement-dialog');
+ if(!dialog){dialog=document.createElement('dialog');dialog.id='measurement-dialog';dialog.className='measurement-dialog';dialog.setAttribute('aria-labelledby','measurement-title');document.body.append(dialog);
+  const close=()=>{if(!dialog.open||dialog.classList.contains('closing'))return;dialog.classList.add('closing');setTimeout(()=>{dialog.close();dialog.classList.remove('closing');document.body.classList.remove('measurement-modal-open');},matchMedia('(prefers-reduced-motion: reduce)').matches?0:160);};
+  dialog.addEventListener('cancel',e=>{e.preventDefault();close();});dialog.addEventListener('click',e=>{if(e.target===dialog)close();});dialog._close=close;
+ }
+ const s=sampleStats(info.timing),centerLabel=info.method==='KL'||info.timing?.statistic==='median_of_group_medians'?'组中位数的中位数':'均值';
+ dialog.innerHTML=`<div class="measurement-sheet"><button class="measurement-close" aria-label="关闭测量详情">×</button><header><p>${esc(info.dataset+' · '+info.method)}</p><h2 id="measurement-title">${esc(info.model)}${info.effort?' <small>'+esc(info.effort)+'</small>':''} <span>${info.formal?'Final':info.apply?'Apply '+info.apply+' · '+(info.round?'r'+info.round:info.inner?'#'+info.inner:'交付'):'r'+info.round}</span></h2><div class="measurement-metrics"><span><b>${fmt(info.center)}</b>ms · ${centerLabel}</span>${s?`<span><b>${s.n}</b>samples</span><span><b>${fmt(s.min)}–${fmt(s.max)}</b>最快–最慢 ms</span><span><b>${fmt(s.p10)}–${fmt(s.p90)}</b>P10–P90 ms</span>`:''}</div></header>${measurementPlots(info)}${s?'<button class="measurement-download">样本 CSV ↓</button>':''}</div>`;
+ dialog.querySelector('.measurement-close').onclick=dialog._close;
+ if(s)dialog.querySelector('.measurement-download').onclick=()=>{let group=1,end=s.groups[0];const rows=s.samples.map((v,i)=>{while(i>=end){end+=s.groups[group++];}return [i+1,group,v].join(',');});download(`${info.dataset}-${info.model}-${info.method}-${info.round||'apply'+info.apply}-samples.csv`,'sample,group,latency_ms\n'+rows.join('\n'),'text/csv');};
+ if(!dialog.open)dialog.showModal();dialog.scrollTop=0;document.body.classList.add('measurement-modal-open');dialog.querySelector('.measurement-close').focus({preventScroll:true});
+}

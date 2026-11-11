@@ -110,12 +110,12 @@ function klChart(target,points,label,maxX,selectable=false,reference=null,axisTi
   return;
  }
  const costReadout=el.parentNode.querySelector('.cost-readout');if(costReadout)costReadout.hidden=true;
- if(!values.length&&!references.length){el.innerHTML='<div class="kl-empty">暂无有效测量<br><small>结果保存后自动更新，缺失值不补成 0。</small></div>';return;}
+ if(!values.length&&!references.length){bindMeasurementChart(el,[],'kl',renderKL);el.innerHTML='<div class="kl-empty">暂无有效测量<br><small>结果保存后自动更新，缺失值不补成 0。</small></div>';return;}
  const w=Math.max(el.clientWidth||600,300),h=klPlotHeight(el,330);
  const longest=Math.max(1,...[...axisTicks.values()].map(t=>t.text.length))*6;
  const rotate=longest>(w-110)/Math.max(1,maxX-1)-6;
  const pad={l:rotate?82:58,r:24,t:24,b:rotate?115:45};
- const ymax=Math.max(...values.map(p=>p.y),...points.map(p=>p.best||0),...references.map(r=>r.latency_ms))*1.12;
+ const ymax=Math.max(...values.flatMap(p=>[p.y,...bandValues(p.timing,'kl')]),...points.map(p=>p.best||0),...references.map(r=>r.latency_ms))*1.12;
  const x=v=>pad.l+(v-1)/Math.max(1,maxX-1)*(w-pad.l-pad.r),y=v=>h-pad.b-v/ymax*(h-pad.t-pad.b);
  let grid='',line='',bestLine='',last=null,lastBest=null;
  for(let i=0;i<=4;i++){const v=ymax*i/4;grid+=`<line data-chart-key="y-grid:${v}" x1="${pad.l}" x2="${w-pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="#edf0f4"/><text data-chart-key="y-tick:${v}" x="${pad.l-8}" y="${y(v)+4}" text-anchor="end">${fmt(v,3)}</text>`;}
@@ -128,12 +128,13 @@ function klChart(target,points,label,maxX,selectable=false,reference=null,axisTi
   if(p.y!=null){line+=(last?' L':'M')+`${x(p.x)},${y(p.y)}`;last=p;}else last=null;
   if(p.best!=null){bestLine+=(lastBest?` H${x(p.x)} V${y(p.best)}`:`M${x(p.x)},${y(p.best)}`);lastBest=p;}
  }
- let markup=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}"><text data-chart-key="y-label" x="12" y="16">ms ↓</text>${grid}<path data-chart-key="kl-best" d="${bestLine}" fill="none" stroke="#009E73" stroke-width="2" stroke-dasharray="5 3"/><path data-chart-key="kl-measurements" d="${line}" fill="none" stroke="#0072B2" stroke-width="2"/>${values.map(p=>`<circle cx="${x(p.x)}" cy="${y(p.y)}" r="${selectable&&p.x===klApply?6:4}" fill="#0072B2" ${selectable?`data-apply-point="${p.x}" role="button" tabindex="0" aria-label="选择 Apply ${p.x}，${fmt(p.y)} 毫秒"`:''}><title>${esc(label)} ${p.x}: ${fmt(p.y)} ms</title></circle>`).join('')}<text data-chart-key="x-label" x="${w/2}" y="${h-1}" text-anchor="middle">${esc(label)}</text>`;
+ let markup=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}"><text data-chart-key="y-label" x="12" y="16">ms ↓</text>${grid}${sampleBandSVG(points,x,y,'#0072B2','kl',el.id,false)}<path data-chart-key="kl-best" d="${bestLine}" fill="none" stroke="#009E73" stroke-width="2" stroke-dasharray="5 3"/><path data-chart-key="kl-measurements" d="${line}" fill="none" stroke="#0072B2" stroke-width="2"/>${values.map(p=>`<circle${measurementMarker(p.measurement)} cx="${x(p.x)}" cy="${y(p.y)}" r="${selectable&&p.x===klApply?6:4}" fill="#0072B2" ${selectable?`data-apply-point="${p.x}" role="button" tabindex="0" aria-label="选择 Apply ${p.x}，${fmt(p.y)} 毫秒"`:''}><title>${esc(label)} ${p.x}: ${fmt(p.y)} ms</title></circle>`).join('')}<text data-chart-key="x-label" x="${w/2}" y="${h-1}" text-anchor="middle">${esc(label)}</text>`;
  if(references.length){
   for(const ref of references)markup+=`<line class="${ref.kind==='full'?'kl-v0-reference':'kl-v0-matched'}" data-reference="${ref.kind}" x1="${pad.l}" x2="${w-pad.r}" y1="${y(ref.latency_ms)}" y2="${y(ref.latency_ms)}" stroke="${ref.color}" stroke-width="2" stroke-dasharray="${ref.dash}"><title>${esc(ref.caption)}${ref.kind==='full'?'':` · 最快记录为 r${ref.round}`}</title></line>`;
   if(!values.length)markup+=`<text x="${w/2}" y="${h/2}" text-anchor="middle">暂无 KL 有效测量</text>`;
  }
  renderChartMarkup(el,markup+'</svg>');
+ bindMeasurementChart(el,values.map(p=>({...p.measurement,color:'#0072B2'})),'kl',renderKL);
  el.querySelectorAll('[data-apply-point]').forEach(p=>{p.onclick=()=>selectApply(p.dataset.applyPoint);p.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectApply(p.dataset.applyPoint);}};});
 }
 function renderKL(){
@@ -152,7 +153,7 @@ function renderKL(){
  $('#kl-run-info').textContent=`开始 ${date(r.started_at)} · 独立完成 ${date(r.finished_at)} · 候选评测 ${r.applies.reduce((n,a)=>n+a.evaluations,0)} 次`;
  $('#kl-apply').innerHTML=r.applies.map(a=>`<option value="${a.apply}" ${a.apply===klApply?'selected':''}>Apply ${a.apply} · ${klStatus(a.status)}</option>`).join('')||'<option value="">暂无 Apply</option>';
  $('#kl-apply').disabled=!r.applies.length;$('#kl-apply').value=klApply==null?'':String(klApply);$('#kl-apply').onchange=e=>selectApply(e.target.value);
- let best=null;const points=r.applies.map(a=>{const v=a.delivered?.accepted?a.delivered.latency_ms:null;if(v!=null)best=best==null?v:Math.min(best,v);return {x:a.apply,y:v,best,axes:a.axes,epoch:r.dataset==='Mega'&&a.apply>=5?2:1};});
+ let best=null;const points=r.applies.map(a=>{const v=a.delivered?.accepted?a.delivered.latency_ms:null;if(v!=null)best=best==null?v:Math.min(best,v);return {x:a.apply,y:v,best,timing:a.delivered?.timing,measurement:measurementInfo({...r,method:'KL'},{apply:a.apply,y:v,timing:a.delivered?.timing}),axes:a.axes,epoch:r.dataset==='Mega'&&a.apply>=5?2:1};});
  const axes=klAxisAnnotations(r),matched=klMatchedReferences(klDatasetCache.get(`${manifest.updated_at}:${datasetId}`),r);
  for(const chart of ['overview','candidates']){
   const toggle=$(`#kl-v0-${chart}`);toggle.disabled=!klReference;toggle.checked=!!klReference&&klReferenceVisible[chart];
@@ -167,7 +168,7 @@ function renderKL(){
  klChart('#kl-overview',points,'Apply',r.budget,true,klReferenceVisible.overview?klReference:null,axes.applies,matched.filter(ref=>klMatchedVisible.overview[ref.kind]));
  for(const which of ['overview','candidates'])chartResetButton($('#kl-'+which),'kl-'+which,()=>{clearCostWindows('kl');klReferenceVisible[which]=true;klMatchedVisible[which]={same:true,reduced:true};if(which==='candidates')klApply=klRun.applies.at(-1)?.apply??null;renderKL();});
  const a=r.applies.find(a=>a.apply===klApply),inner=a?.candidates||[];best=null;
- klChart('#kl-candidates',inner.map(c=>{const v=c.correctness_passed?c.latency_ms:null;if(c.accepted&&v!=null)best=best==null?v:Math.min(best,v);return {x:c.sequence,y:v,best,axes:c.axes,eligible:c.accepted,status:c.status};}),'内部候选序号',Math.max(2,inner.length),false,klReferenceVisible.candidates?klReference:null,axes.candidates.get(klApply),matched.filter(ref=>klMatchedVisible.candidates[ref.kind]));
+ klChart('#kl-candidates',inner.map(c=>{const v=c.correctness_passed?c.latency_ms:null;if(c.accepted&&v!=null)best=best==null?v:Math.min(best,v);return {x:c.sequence,y:v,best,timing:c.timing,measurement:measurementInfo({...r,method:'KL'},{apply:klApply,inner_sequence:c.sequence,round:r.aligned?.points.find(p=>p.apply===klApply&&p.inner_sequence===c.sequence)?.round,y:v,timing:c.timing}),axes:c.axes,eligible:c.accepted,status:c.status};}),'内部候选序号',Math.max(2,inner.length),false,klReferenceVisible.candidates?klReference:null,axes.candidates.get(klApply),matched.filter(ref=>klMatchedVisible.candidates[ref.kind]));
  $('#kl-inner-status').textContent=a?`${klStatus(a.status)} · 已用 ${a.elapsed_seconds==null?'未知':fmt(a.elapsed_seconds/60,1)+' 分钟'} · ${a.evaluations} 次评测 · ${a.infrastructure_errors} 次基础设施异常 · ${a.reused_snapshots} 份结果复用快照`:'尚未启动；候选次数没有预设上限，受 Apply 时限约束。';
  $('#kl-candidate-rows').innerHTML=inner.map(c=>`<tr><td>${c.sequence}</td><td>${klStatus(c.status)}</td><td>${({compile:'编译',correctness:'正确性',performance:'性能门禁'})[c.stage]||'—'}</td><td>${c.accepted?'通过':c.correctness_passed?'正确性通过':'—'}</td><td class="num">${fmt(c.latency_ms)}</td><td class="num">${fmt(c.reference_latency_ms)}</td><td>${c.reused?'复用，不新增评测':'新记录'}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">暂无候选评测记录</td></tr>';
  $('#kl-apply-rows').innerHTML=r.applies.map(a=>`<tr><td><button data-apply-row="${a.apply}">Apply ${a.apply}</button></td><td>${klStatus(a.status)}</td><td>${a.evaluations}</td><td>${a.infrastructure_errors}</td><td class="num">${fmt(a.delivered?.latency_ms)}</td><td class="num">${a.elapsed_seconds==null?'—':fmt(a.elapsed_seconds/60,1)}</td><td>${date(a.ended_at)}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">已登记任务，等待正式启动</td></tr>';
@@ -190,10 +191,10 @@ function alignedPeers(dataset,run){return [...(run?[run]:[]),...(klData?.runs.fi
 function alignedSeries(dataset,run){
  const series=dataset.runs.filter(r=>r.method!=='B0'&&showBVRun(r,dataset.comparison_scope)&&(comparisonHasB(dataset.comparison_scope)||r.method==='V0')).map(r=>({
   id:r.id,model:r.model,effort:r.effort,method:methodLabel(r),baseMethod:r.method,available:r.search.length>0,color:comparisonColor(r,dataset.comparison_scope||'aligned'),dash:seriesDash(r),
-  points:r.search.map(p=>({round:p.round,y:p.status==='passed'?p.timing?.mean_ms??null:null,status:p.status,axes:p.axes,recorded_at:p.recorded_at}))
+  points:r.search.map(p=>({round:p.round,y:p.status==='passed'?p.timing?.mean_ms??null:null,status:p.status,axes:p.axes,recorded_at:p.recorded_at,timing:p.timing,measurement:measurementInfo(r,{...p,y:p.timing?.mean_ms})}))
  }));
  for(const r of alignedPeers(dataset,run))series.push({id:r.id,model:r.model,effort:r.effort,method:'Aligned KL',baseMethod:'KL',available:(r.aligned?.points||[]).some(p=>p.counted),color:comparisonColor({...r,baseMethod:'KL'},dataset.comparison_scope||'aligned'),dash:DASH[r.model]||'',
-  points:(r.aligned?.points||[]).filter(p=>p.counted).map(p=>({...p,y:p.latency_ms,epoch:r.id.startsWith('kl-astra-high-serial-20261102-')&&r.dataset==='Mega'&&p.apply>=5?2:1}))});
+  points:(r.aligned?.points||[]).filter(p=>p.counted).map(p=>({...p,y:p.latency_ms,measurement:measurementInfo({...r,method:'KL'},{...p,y:p.latency_ms}),epoch:r.id.startsWith('kl-astra-high-serial-20261102-')&&r.dataset==='Mega'&&p.apply>=5?2:1}))});
  return series;
 }
 async function loadAligned(id,focusRun=null,scope=isComparison()?category:'aligned',push=false){
@@ -279,8 +280,10 @@ function renderAligned(target,dataset,run,previewIds=[]){
  renderRoundRange(chart,dataset.comparison_scope||'aligned',maxX,redraw);
  const displayed=r=>{let best=null;return r.points.map(p=>{if(p.y!=null)best=best==null?p.y:Math.min(best,p.y);return {...p,viewY:view.mode==='best'?best:p.y,viewX:p.round*(r.baseMethod==='KL'?(view.visualScale??1):1)};});};
  const inRange=p=>p.viewX>=minRound&&p.viewX<=maxRound;
- let values=selected.flatMap(r=>displayed(r).filter(p=>inRange(p)&&p.viewY!=null).flatMap(p=>[p.viewY,p.y]).filter(Number.isFinite)),ymin=0,ymax=Math.max(.001,...values)*1.08;
+ let values=selected.flatMap(r=>displayed(r).filter(p=>inRange(p)&&p.viewY!=null).flatMap(p=>[p.viewY,p.y,...bandValues(p.timing,dataset.comparison_scope||'aligned')]).filter(Number.isFinite)),ymin=0,ymax=Math.max(.001,...values)*1.08;
  if(view.zoom&&values.length){const tails=selected.map(r=>Math.min(...displayed(r).filter(p=>inRange(p)&&p.viewY!=null).map(p=>p.viewY))).filter(Number.isFinite);if(tails.length){const lo=Math.min(...tails),hi=Math.max(...tails),space=Math.max((hi-lo)*.15,hi*.035,.000001);ymin=Math.max(0,lo-space);ymax=hi+space;}}
+ const bandDomain=selected.flatMap(r=>bandPoints(r.points,view.mode==='best').filter(p=>{const v=p.round*(r.baseMethod==='KL'?(view.visualScale??1):1);return v>=minRound&&v<=maxRound;})).flatMap(p=>bandValues(p.bandTiming,dataset.comparison_scope||'aligned'));
+ if(bandDomain.length){ymin=Math.min(ymin,Math.min(...bandDomain)*.98);ymax=Math.max(ymax,Math.max(...bandDomain)*1.04);}
  [ymin,ymax]=latencyWindow(chart,dataset.comparison_scope||'aligned',[ymin,ymax]);
  const x=n=>pad.l+(n-minRound)/Math.max(1,maxRound-minRound)*(w-pad.l-pad.r),y=n=>h-pad.b-(n-ymin)/(ymax-ymin)*(h-pad.t-pad.b),clip='aligned-clip-'+target.replace(/[^a-z]/g,'');
  let svg=`<svg viewBox="0 0 ${w} ${h}" role="img"><title>Aligned KL，横轴为有效评测序号，纵轴为延迟毫秒</title><defs><clipPath id="${clip}"><rect x="${pad.l}" y="${pad.t}" width="${w-pad.l-pad.r}" height="${h-pad.t-pad.b}"/></clipPath></defs>`;
@@ -290,11 +293,12 @@ function renderAligned(target,dataset,run,previewIds=[]){
  function curvePath(r,scale=1){let best=null,path='',last=false;for(const p of r.points){if(p.y!=null)best=best==null?p.y:Math.min(best,p.y);const v=view.mode==='best'?best:p.y;if(v==null){last=false;continue;}path+=last?(view.mode==='best'?` H${x(p.round*scale)} V${y(v)}`:` L${x(p.round*scale)},${y(v)}`):` M${x(p.round*scale)},${y(v)}`;last=true;}return path;}
  const scale=view.visualScale??(view.compressed?2/3:1);
  for(const r of selected){const kl=r.baseMethod==='KL',ratio=kl?scale:1;
-  svg+=`<g data-comparison-series="${esc(r.id)}"><path data-aligned-curve="${esc(r.id)}" d="${curvePath(r,ratio)}" fill="none" stroke="${r.color}" stroke-width="${kl?2.6:1.8}" stroke-dasharray="${r.dash}"/>`;
-  for(const p of r.points){const pos=x(p.round*ratio);if(p.y!=null)svg+=`<circle data-real-round="${p.round}" cx="${pos}" cy="${y(p.y)}" r="3" fill="${r.color}"><title>${esc(r.model+' '+r.method)} r${p.round}${p.apply?' · Apply '+p.apply+' / 内部 '+p.inner_sequence:''}: ${fmt(p.y)} ms</title></circle>`;else if(p.status==='failed')svg+=`<path data-failed-round="${p.round}" d="M${pos-3},${h-pad.b-9}l6 6m0 -6l-6 6" stroke="${r.color}"/>`;}
+  svg+=`<g data-comparison-series="${esc(r.id)}">`+sampleBandSVG(r.points.map(p=>({...p,x:p.round*ratio})),x,y,r.color,dataset.comparison_scope||'aligned',r.id,view.mode==='best')+`<path data-aligned-curve="${esc(r.id)}" d="${curvePath(r,ratio)}" fill="none" stroke="${r.color}" stroke-width="${kl?2.6:1.8}" stroke-dasharray="${r.dash}"/>`;
+  for(const p of r.points){const pos=x(p.round*ratio);if(p.y!=null)svg+=`<circle${measurementMarker(p.measurement)} data-real-round="${p.round}" cx="${pos}" cy="${y(p.y)}" r="3" fill="${r.color}"><title>${esc(r.model+' '+r.method)} r${p.round}${p.apply?' · Apply '+p.apply+' / 内部 '+p.inner_sequence:''}: ${fmt(p.y)} ms</title></circle>`;else if(p.status==='failed')svg+=`<path data-failed-round="${p.round}" d="M${pos-3},${h-pad.b-9}l6 6m0 -6l-6 6" stroke="${r.color}"/>`;}
   svg+='</g>';
  }
  svg+='</g></svg>';renderChartMarkup(chart,svg);
+ bindMeasurementChart(chart,selected.flatMap(r=>r.points.filter(p=>p.y!=null).map(p=>({...p.measurement,color:r.color}))),dataset.comparison_scope||'aligned',redraw);
  configureRoundBrush(chart,{scope:dataset.comparison_scope||'aligned',maximum:maxX,min:minRound,max:maxRound,ymin,ymax,width:w,height:h,left:pad.l,right:w-pad.r,top:pad.t,bottom:h-pad.b,redraw});
  view.paintCompression=ratio=>{
   for(const r of selected.filter(r=>r.baseMethod==='KL')){

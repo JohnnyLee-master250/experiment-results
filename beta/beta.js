@@ -390,8 +390,8 @@ renderCharts=function(){betaOriginalCharts();betaHighlightCurves();};
 function betaControlSnapshot(host){return host?{host,nodes:[...host.childNodes],scrollTop:host.scrollTop,scrollLeft:host.scrollLeft,focus:host.contains(document.activeElement)?document.activeElement:null,animations:(host.getAnimations?.({subtree:true})||[]).filter(a=>['beta-pill-light','beta-pill-orbit'].includes(a.animationName)).map(a=>({target:a.effect.target,pseudo:a.effect.pseudoElement,name:a.animationName,start:a.startTime}))}:null;}
 function betaRestoreControls(snapshot,fresh){
  if(!snapshot||!fresh)return false;
- const old=snapshot.host,oldNodes=snapshot.nodes;
- const oldInputs=oldNodes.flatMap(n=>[...(n.matches?.('input,button')?[n]:[]),...(n.querySelectorAll?.('input,button')||[])]),newInputs=[...fresh.querySelectorAll('input,button')];
+ const old=snapshot.host,measurementTools=fresh.querySelector(':scope > .measurement-tools'),oldNodes=snapshot.nodes.filter(n=>!n.classList?.contains('measurement-tools'));
+ const oldInputs=oldNodes.flatMap(n=>[...(n.matches?.('input,button')?[n]:[]),...(n.querySelectorAll?.('input,button')||[])]),newInputs=[...fresh.querySelectorAll('input,button')].filter(n=>!n.closest('.measurement-tools'));
  const key=e=>e.tagName+':'+e.id+':'+['series','modelCheck','model','alignedRun','alignedModel','matchedKind','alignedMode','alignedZoom','alignedCompress','alignedCsv','curveGroup','curveGroupTitle','groupScope'].map(k=>e.dataset[k]??'-').join(':');
  if(!oldInputs.length||oldInputs.length!==newInputs.length||oldInputs.some((e,i)=>key(e)!==key(newInputs[i])))return false;
  for(let i=0;i<oldInputs.length;i++){
@@ -404,7 +404,7 @@ function betaRestoreControls(snapshot,fresh){
    if(la.classList.contains('model-toggle'))la.querySelector('span').textContent=lb.querySelector('span').textContent;
   }
  }
- old.replaceChildren(...oldNodes);if(fresh!==old)fresh.replaceWith(old);
+ old.replaceChildren(...oldNodes);if(measurementTools)old.append(measurementTools);if(fresh!==old)fresh.replaceWith(old);
  // Preview redraws temporarily detach the sidebar; browsers reset its scroll.
  // Restore before the next paint so a lower model remains under the pointer.
  old.scrollTop=snapshot.scrollTop;old.scrollLeft=snapshot.scrollLeft;
