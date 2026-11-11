@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_captured_at": "2026-11-11T03:53:16.081952+00:00",
+  "source_captured_at": "2026-11-11T03:59:37.759527+00:00",
   "queue_cards": [
     {
       "id": "card1",
@@ -28137,15 +28137,15 @@
       "queue_position": 5,
       "card_id": "card2",
       "environment_name": "DevEnvC_M8IXB",
-      "status": "ended",
-      "phase": "10 Apply 已保存，待独立验收",
+      "status": "complete",
+      "phase": "已完成",
       "budget": 10,
       "apply_timeout_seconds": 3600,
       "max_retries": 3,
       "evaluation_timeout_seconds": 1800,
       "started_at": "2026-11-09T01:43:28.651597+00:00",
-      "finished_at": null,
-      "independently_complete": false,
+      "finished_at": "2026-11-11T03:52:57.292431+00:00",
+      "independently_complete": true,
       "workspace_path": "/home/lbh24/codex-workspace/kl-ds-sol-serial-20261108-001/workspaces/opt/gpt-sol-cuda-l2-m2048-n8192-k2048",
       "applies": [
         {
@@ -28158,12 +28158,12 @@
           "candidates": [
             {
               "accepted": false,
-              "stage": "compile",
+              "stage": "framework",
               "correctness_passed": false,
               "latency_ms": null,
               "reference_latency_ms": null,
               "sequence": 1,
-              "status": "failed",
+              "status": "infrastructure_error",
               "reused": false,
               "recorded_at": "2026-11-10T18:48:57.912733+00:00",
               "axes": {
@@ -28481,8 +28481,8 @@
               }
             }
           ],
-          "evaluations": 18,
-          "infrastructure_errors": 0,
+          "evaluations": 17,
+          "infrastructure_errors": 1,
           "reused_snapshots": 1,
           "delivered": {
             "accepted": true,
@@ -30041,17 +30041,17 @@
       ],
       "aligned": {
         "schema_version": 1,
-        "count": 90,
-        "excluded_count": 0,
+        "count": 89,
+        "excluded_count": 1,
         "timing_statistic": "median",
         "points": [
           {
-            "round": 1,
+            "round": null,
             "apply": 1,
             "inner_sequence": 1,
             "recorded_at": "2026-11-10T18:48:57.912733+00:00",
-            "status": "failed",
-            "counted": true,
+            "status": "infrastructure_error",
+            "counted": false,
             "accepted": false,
             "latency_ms": null,
             "best_ms": null,
@@ -30064,7 +30064,7 @@
             }
           },
           {
-            "round": 2,
+            "round": 1,
             "apply": 1,
             "inner_sequence": 2,
             "recorded_at": "2026-11-10T18:50:17.432120+00:00",
@@ -30082,7 +30082,7 @@
             }
           },
           {
-            "round": 3,
+            "round": 2,
             "apply": 1,
             "inner_sequence": 3,
             "recorded_at": "2026-11-10T18:51:55.479613+00:00",
@@ -30100,7 +30100,7 @@
             }
           },
           {
-            "round": 4,
+            "round": 3,
             "apply": 1,
             "inner_sequence": 4,
             "recorded_at": "2026-11-10T18:53:48.734767+00:00",
@@ -30118,7 +30118,7 @@
             }
           },
           {
-            "round": 5,
+            "round": 4,
             "apply": 1,
             "inner_sequence": 5,
             "recorded_at": "2026-11-10T18:55:25.464854+00:00",
@@ -30136,7 +30136,7 @@
             }
           },
           {
-            "round": 6,
+            "round": 5,
             "apply": 1,
             "inner_sequence": 6,
             "recorded_at": "2026-11-10T18:57:21.285195+00:00",
@@ -30154,7 +30154,7 @@
             }
           },
           {
-            "round": 7,
+            "round": 6,
             "apply": 1,
             "inner_sequence": 7,
             "recorded_at": "2026-11-10T19:01:10.988466+00:00",
@@ -30172,7 +30172,7 @@
             }
           },
           {
-            "round": 8,
+            "round": 7,
             "apply": 1,
             "inner_sequence": 8,
             "recorded_at": "2026-11-10T19:05:30.642138+00:00",
@@ -30190,7 +30190,7 @@
             }
           },
           {
-            "round": 9,
+            "round": 8,
             "apply": 1,
             "inner_sequence": 9,
             "recorded_at": "2026-11-10T19:07:04.509715+00:00",
@@ -30208,7 +30208,7 @@
             }
           },
           {
-            "round": 10,
+            "round": 9,
             "apply": 1,
             "inner_sequence": 10,
             "recorded_at": "2026-11-10T19:10:56.697708+00:00",
@@ -30226,7 +30226,7 @@
             }
           },
           {
-            "round": 11,
+            "round": 10,
             "apply": 1,
             "inner_sequence": 11,
             "recorded_at": "2026-11-10T19:15:09.799134+00:00",
@@ -30244,7 +30244,7 @@
             }
           },
           {
-            "round": 12,
+            "round": 11,
             "apply": 1,
             "inner_sequence": 12,
             "recorded_at": "2026-11-10T19:19:06.765512+00:00",
@@ -30262,7 +30262,7 @@
             }
           },
           {
-            "round": 13,
+            "round": 12,
             "apply": 1,
             "inner_sequence": 13,
             "recorded_at": "2026-11-10T19:21:20.693357+00:00",
@@ -30280,7 +30280,7 @@
             }
           },
           {
-            "round": 14,
+            "round": 13,
             "apply": 1,
             "inner_sequence": 14,
             "recorded_at": "2026-11-10T19:23:02.708566+00:00",
@@ -30298,7 +30298,7 @@
             }
           },
           {
-            "round": 15,
+            "round": 14,
             "apply": 1,
             "inner_sequence": 15,
             "recorded_at": "2026-11-10T19:27:05.950081+00:00",
@@ -30316,7 +30316,7 @@
             }
           },
           {
-            "round": 16,
+            "round": 15,
             "apply": 1,
             "inner_sequence": 16,
             "recorded_at": "2026-11-10T19:31:13.117820+00:00",
@@ -30334,7 +30334,7 @@
             }
           },
           {
-            "round": 17,
+            "round": 16,
             "apply": 1,
             "inner_sequence": 17,
             "recorded_at": "2026-11-10T19:33:03.447017+00:00",
@@ -30352,7 +30352,7 @@
             }
           },
           {
-            "round": 18,
+            "round": 17,
             "apply": 1,
             "inner_sequence": 18,
             "recorded_at": "2026-11-10T19:36:51.230949+00:00",
@@ -30370,7 +30370,7 @@
             }
           },
           {
-            "round": 19,
+            "round": 18,
             "apply": 2,
             "inner_sequence": 1,
             "recorded_at": "2026-11-10T19:40:06.484609+00:00",
@@ -30388,7 +30388,7 @@
             }
           },
           {
-            "round": 20,
+            "round": 19,
             "apply": 2,
             "inner_sequence": 2,
             "recorded_at": "2026-11-10T19:42:17.180862+00:00",
@@ -30406,7 +30406,7 @@
             }
           },
           {
-            "round": 21,
+            "round": 20,
             "apply": 2,
             "inner_sequence": 3,
             "recorded_at": "2026-11-10T19:44:28.466795+00:00",
@@ -30424,7 +30424,7 @@
             }
           },
           {
-            "round": 22,
+            "round": 21,
             "apply": 2,
             "inner_sequence": 4,
             "recorded_at": "2026-11-10T19:51:03.439427+00:00",
@@ -30442,7 +30442,7 @@
             }
           },
           {
-            "round": 23,
+            "round": 22,
             "apply": 2,
             "inner_sequence": 5,
             "recorded_at": "2026-11-10T19:52:53.656277+00:00",
@@ -30460,7 +30460,7 @@
             }
           },
           {
-            "round": 24,
+            "round": 23,
             "apply": 2,
             "inner_sequence": 6,
             "recorded_at": "2026-11-10T19:54:20.660015+00:00",
@@ -30478,7 +30478,7 @@
             }
           },
           {
-            "round": 25,
+            "round": 24,
             "apply": 2,
             "inner_sequence": 7,
             "recorded_at": "2026-11-10T20:01:37.599718+00:00",
@@ -30496,7 +30496,7 @@
             }
           },
           {
-            "round": 26,
+            "round": 25,
             "apply": 2,
             "inner_sequence": 8,
             "recorded_at": "2026-11-10T20:08:48.736579+00:00",
@@ -30514,7 +30514,7 @@
             }
           },
           {
-            "round": 27,
+            "round": 26,
             "apply": 2,
             "inner_sequence": 9,
             "recorded_at": "2026-11-10T20:15:33.219077+00:00",
@@ -30532,7 +30532,7 @@
             }
           },
           {
-            "round": 28,
+            "round": 27,
             "apply": 2,
             "inner_sequence": 10,
             "recorded_at": "2026-11-10T20:22:14.243484+00:00",
@@ -30550,7 +30550,7 @@
             }
           },
           {
-            "round": 29,
+            "round": 28,
             "apply": 2,
             "inner_sequence": 11,
             "recorded_at": "2026-11-10T20:29:24.263351+00:00",
@@ -30568,7 +30568,7 @@
             }
           },
           {
-            "round": 30,
+            "round": 29,
             "apply": 3,
             "inner_sequence": 1,
             "recorded_at": "2026-11-10T20:37:34.567233+00:00",
@@ -30586,7 +30586,7 @@
             }
           },
           {
-            "round": 31,
+            "round": 30,
             "apply": 3,
             "inner_sequence": 2,
             "recorded_at": "2026-11-10T20:44:13.974854+00:00",
@@ -30604,7 +30604,7 @@
             }
           },
           {
-            "round": 32,
+            "round": 31,
             "apply": 3,
             "inner_sequence": 3,
             "recorded_at": "2026-11-10T20:50:49.504459+00:00",
@@ -30622,7 +30622,7 @@
             }
           },
           {
-            "round": 33,
+            "round": 32,
             "apply": 3,
             "inner_sequence": 4,
             "recorded_at": "2026-11-10T20:57:36.937844+00:00",
@@ -30640,7 +30640,7 @@
             }
           },
           {
-            "round": 34,
+            "round": 33,
             "apply": 3,
             "inner_sequence": 5,
             "recorded_at": "2026-11-10T21:04:42.608216+00:00",
@@ -30658,7 +30658,7 @@
             }
           },
           {
-            "round": 35,
+            "round": 34,
             "apply": 3,
             "inner_sequence": 6,
             "recorded_at": "2026-11-10T21:11:35.280147+00:00",
@@ -30676,7 +30676,7 @@
             }
           },
           {
-            "round": 36,
+            "round": 35,
             "apply": 3,
             "inner_sequence": 7,
             "recorded_at": "2026-11-10T21:18:27.792250+00:00",
@@ -30694,7 +30694,7 @@
             }
           },
           {
-            "round": 37,
+            "round": 36,
             "apply": 4,
             "inner_sequence": 1,
             "recorded_at": "2026-11-10T21:26:34.212438+00:00",
@@ -30712,7 +30712,7 @@
             }
           },
           {
-            "round": 38,
+            "round": 37,
             "apply": 4,
             "inner_sequence": 2,
             "recorded_at": "2026-11-10T21:33:33.159295+00:00",
@@ -30730,7 +30730,7 @@
             }
           },
           {
-            "round": 39,
+            "round": 38,
             "apply": 4,
             "inner_sequence": 3,
             "recorded_at": "2026-11-10T21:39:50.415235+00:00",
@@ -30748,7 +30748,7 @@
             }
           },
           {
-            "round": 40,
+            "round": 39,
             "apply": 4,
             "inner_sequence": 4,
             "recorded_at": "2026-11-10T21:46:18.887546+00:00",
@@ -30766,7 +30766,7 @@
             }
           },
           {
-            "round": 41,
+            "round": 40,
             "apply": 4,
             "inner_sequence": 5,
             "recorded_at": "2026-11-10T21:52:38.950568+00:00",
@@ -30784,7 +30784,7 @@
             }
           },
           {
-            "round": 42,
+            "round": 41,
             "apply": 4,
             "inner_sequence": 6,
             "recorded_at": "2026-11-10T21:59:14.365036+00:00",
@@ -30802,7 +30802,7 @@
             }
           },
           {
-            "round": 43,
+            "round": 42,
             "apply": 4,
             "inner_sequence": 7,
             "recorded_at": "2026-11-10T22:05:44.691947+00:00",
@@ -30820,7 +30820,7 @@
             }
           },
           {
-            "round": 44,
+            "round": 43,
             "apply": 5,
             "inner_sequence": 1,
             "recorded_at": "2026-11-10T22:13:17.049460+00:00",
@@ -30838,7 +30838,7 @@
             }
           },
           {
-            "round": 45,
+            "round": 44,
             "apply": 5,
             "inner_sequence": 2,
             "recorded_at": "2026-11-10T22:20:36.142263+00:00",
@@ -30856,7 +30856,7 @@
             }
           },
           {
-            "round": 46,
+            "round": 45,
             "apply": 5,
             "inner_sequence": 3,
             "recorded_at": "2026-11-10T22:22:16.872964+00:00",
@@ -30874,7 +30874,7 @@
             }
           },
           {
-            "round": 47,
+            "round": 46,
             "apply": 5,
             "inner_sequence": 4,
             "recorded_at": "2026-11-10T22:29:27.499070+00:00",
@@ -30892,7 +30892,7 @@
             }
           },
           {
-            "round": 48,
+            "round": 47,
             "apply": 5,
             "inner_sequence": 5,
             "recorded_at": "2026-11-10T22:36:17.249820+00:00",
@@ -30910,7 +30910,7 @@
             }
           },
           {
-            "round": 49,
+            "round": 48,
             "apply": 5,
             "inner_sequence": 6,
             "recorded_at": "2026-11-10T22:42:47.167588+00:00",
@@ -30928,7 +30928,7 @@
             }
           },
           {
-            "round": 50,
+            "round": 49,
             "apply": 5,
             "inner_sequence": 7,
             "recorded_at": "2026-11-10T22:49:28.532642+00:00",
@@ -30946,7 +30946,7 @@
             }
           },
           {
-            "round": 51,
+            "round": 50,
             "apply": 5,
             "inner_sequence": 8,
             "recorded_at": "2026-11-10T22:56:04.562501+00:00",
@@ -30964,7 +30964,7 @@
             }
           },
           {
-            "round": 52,
+            "round": 51,
             "apply": 5,
             "inner_sequence": 9,
             "recorded_at": "2026-11-10T23:02:42.558100+00:00",
@@ -30982,7 +30982,7 @@
             }
           },
           {
-            "round": 53,
+            "round": 52,
             "apply": 6,
             "inner_sequence": 1,
             "recorded_at": "2026-11-10T23:09:05.895158+00:00",
@@ -31000,7 +31000,7 @@
             }
           },
           {
-            "round": 54,
+            "round": 53,
             "apply": 6,
             "inner_sequence": 2,
             "recorded_at": "2026-11-10T23:15:31.711354+00:00",
@@ -31018,7 +31018,7 @@
             }
           },
           {
-            "round": 55,
+            "round": 54,
             "apply": 6,
             "inner_sequence": 3,
             "recorded_at": "2026-11-10T23:22:40.634865+00:00",
@@ -31036,7 +31036,7 @@
             }
           },
           {
-            "round": 56,
+            "round": 55,
             "apply": 6,
             "inner_sequence": 4,
             "recorded_at": "2026-11-10T23:29:28.539702+00:00",
@@ -31054,7 +31054,7 @@
             }
           },
           {
-            "round": 57,
+            "round": 56,
             "apply": 6,
             "inner_sequence": 5,
             "recorded_at": "2026-11-10T23:36:04.282377+00:00",
@@ -31072,7 +31072,7 @@
             }
           },
           {
-            "round": 58,
+            "round": 57,
             "apply": 6,
             "inner_sequence": 6,
             "recorded_at": "2026-11-10T23:38:43.553711+00:00",
@@ -31090,7 +31090,7 @@
             }
           },
           {
-            "round": 59,
+            "round": 58,
             "apply": 6,
             "inner_sequence": 7,
             "recorded_at": "2026-11-10T23:45:07.681938+00:00",
@@ -31108,7 +31108,7 @@
             }
           },
           {
-            "round": 60,
+            "round": 59,
             "apply": 6,
             "inner_sequence": 8,
             "recorded_at": "2026-11-10T23:51:31.504307+00:00",
@@ -31126,7 +31126,7 @@
             }
           },
           {
-            "round": 61,
+            "round": 60,
             "apply": 7,
             "inner_sequence": 1,
             "recorded_at": "2026-11-10T23:59:15.415619+00:00",
@@ -31144,7 +31144,7 @@
             }
           },
           {
-            "round": 62,
+            "round": 61,
             "apply": 7,
             "inner_sequence": 2,
             "recorded_at": "2026-11-11T00:06:07.485805+00:00",
@@ -31162,7 +31162,7 @@
             }
           },
           {
-            "round": 63,
+            "round": 62,
             "apply": 7,
             "inner_sequence": 3,
             "recorded_at": "2026-11-11T00:12:30.785619+00:00",
@@ -31180,7 +31180,7 @@
             }
           },
           {
-            "round": 64,
+            "round": 63,
             "apply": 7,
             "inner_sequence": 4,
             "recorded_at": "2026-11-11T00:19:33.272328+00:00",
@@ -31198,7 +31198,7 @@
             }
           },
           {
-            "round": 65,
+            "round": 64,
             "apply": 7,
             "inner_sequence": 5,
             "recorded_at": "2026-11-11T00:26:12.555349+00:00",
@@ -31216,7 +31216,7 @@
             }
           },
           {
-            "round": 66,
+            "round": 65,
             "apply": 7,
             "inner_sequence": 6,
             "recorded_at": "2026-11-11T00:32:49.244579+00:00",
@@ -31234,7 +31234,7 @@
             }
           },
           {
-            "round": 67,
+            "round": 66,
             "apply": 7,
             "inner_sequence": 7,
             "recorded_at": "2026-11-11T00:39:12.294023+00:00",
@@ -31252,7 +31252,7 @@
             }
           },
           {
-            "round": 68,
+            "round": 67,
             "apply": 7,
             "inner_sequence": 8,
             "recorded_at": "2026-11-11T00:45:45.022442+00:00",
@@ -31270,7 +31270,7 @@
             }
           },
           {
-            "round": 69,
+            "round": 68,
             "apply": 8,
             "inner_sequence": 1,
             "recorded_at": "2026-11-11T00:51:23.896170+00:00",
@@ -31288,7 +31288,7 @@
             }
           },
           {
-            "round": 70,
+            "round": 69,
             "apply": 8,
             "inner_sequence": 2,
             "recorded_at": "2026-11-11T00:57:50.384533+00:00",
@@ -31306,7 +31306,7 @@
             }
           },
           {
-            "round": 71,
+            "round": 70,
             "apply": 8,
             "inner_sequence": 3,
             "recorded_at": "2026-11-11T01:04:15.306671+00:00",
@@ -31324,7 +31324,7 @@
             }
           },
           {
-            "round": 72,
+            "round": 71,
             "apply": 8,
             "inner_sequence": 4,
             "recorded_at": "2026-11-11T01:10:40.174198+00:00",
@@ -31342,7 +31342,7 @@
             }
           },
           {
-            "round": 73,
+            "round": 72,
             "apply": 8,
             "inner_sequence": 5,
             "recorded_at": "2026-11-11T01:17:03.759492+00:00",
@@ -31360,7 +31360,7 @@
             }
           },
           {
-            "round": 74,
+            "round": 73,
             "apply": 8,
             "inner_sequence": 6,
             "recorded_at": "2026-11-11T01:23:21.021426+00:00",
@@ -31378,7 +31378,7 @@
             }
           },
           {
-            "round": 75,
+            "round": 74,
             "apply": 8,
             "inner_sequence": 7,
             "recorded_at": "2026-11-11T01:29:43.169132+00:00",
@@ -31396,7 +31396,7 @@
             }
           },
           {
-            "round": 76,
+            "round": 75,
             "apply": 8,
             "inner_sequence": 8,
             "recorded_at": "2026-11-11T01:36:12.257115+00:00",
@@ -31414,7 +31414,7 @@
             }
           },
           {
-            "round": 77,
+            "round": 76,
             "apply": 8,
             "inner_sequence": 9,
             "recorded_at": "2026-11-11T01:42:38.224121+00:00",
@@ -31432,7 +31432,7 @@
             }
           },
           {
-            "round": 78,
+            "round": 77,
             "apply": 9,
             "inner_sequence": 1,
             "recorded_at": "2026-11-11T01:48:02.254452+00:00",
@@ -31450,7 +31450,7 @@
             }
           },
           {
-            "round": 79,
+            "round": 78,
             "apply": 9,
             "inner_sequence": 2,
             "recorded_at": "2026-11-11T01:54:21.941593+00:00",
@@ -31468,7 +31468,7 @@
             }
           },
           {
-            "round": 80,
+            "round": 79,
             "apply": 9,
             "inner_sequence": 3,
             "recorded_at": "2026-11-11T02:01:28.111737+00:00",
@@ -31486,7 +31486,7 @@
             }
           },
           {
-            "round": 81,
+            "round": 80,
             "apply": 9,
             "inner_sequence": 4,
             "recorded_at": "2026-11-11T02:08:15.943014+00:00",
@@ -31504,7 +31504,7 @@
             }
           },
           {
-            "round": 82,
+            "round": 81,
             "apply": 9,
             "inner_sequence": 5,
             "recorded_at": "2026-11-11T02:14:56.480708+00:00",
@@ -31522,7 +31522,7 @@
             }
           },
           {
-            "round": 83,
+            "round": 82,
             "apply": 9,
             "inner_sequence": 6,
             "recorded_at": "2026-11-11T02:21:36.970514+00:00",
@@ -31540,7 +31540,7 @@
             }
           },
           {
-            "round": 84,
+            "round": 83,
             "apply": 9,
             "inner_sequence": 7,
             "recorded_at": "2026-11-11T02:29:28.910514+00:00",
@@ -31558,7 +31558,7 @@
             }
           },
           {
-            "round": 85,
+            "round": 84,
             "apply": 10,
             "inner_sequence": 1,
             "recorded_at": "2026-11-11T02:37:27.148131+00:00",
@@ -31576,7 +31576,7 @@
             }
           },
           {
-            "round": 86,
+            "round": 85,
             "apply": 10,
             "inner_sequence": 2,
             "recorded_at": "2026-11-11T02:44:31.097097+00:00",
@@ -31594,7 +31594,7 @@
             }
           },
           {
-            "round": 87,
+            "round": 86,
             "apply": 10,
             "inner_sequence": 3,
             "recorded_at": "2026-11-11T02:51:21.533717+00:00",
@@ -31612,7 +31612,7 @@
             }
           },
           {
-            "round": 88,
+            "round": 87,
             "apply": 10,
             "inner_sequence": 4,
             "recorded_at": "2026-11-11T02:58:21.294368+00:00",
@@ -31630,7 +31630,7 @@
             }
           },
           {
-            "round": 89,
+            "round": 88,
             "apply": 10,
             "inner_sequence": 5,
             "recorded_at": "2026-11-11T03:04:57.235071+00:00",
@@ -31648,7 +31648,7 @@
             }
           },
           {
-            "round": 90,
+            "round": 89,
             "apply": 10,
             "inner_sequence": 6,
             "recorded_at": "2026-11-11T03:11:33.009023+00:00",
@@ -45336,7 +45336,7 @@
           "status": "running",
           "started_at": "2026-11-09T01:45:19.867164+00:00",
           "ended_at": null,
-          "elapsed_seconds": 2109.1290459288284,
+          "elapsed_seconds": 2502.2311550704762,
           "candidates": [
             {
               "accepted": false,
@@ -45647,7 +45647,7 @@
           ],
           "evaluations": 17,
           "infrastructure_errors": 0,
-          "reused_snapshots": 1,
+          "reused_snapshots": 2,
           "delivered": null
         }
       ],
@@ -48335,6 +48335,14 @@
   ],
   "task_events": [
     {
+      "id": "kl-gpt-sol-serial-20261108-kl-sol-gemm:completed:2026-11-11T03:52:57.292431+00:00",
+      "run_id": "kl-gpt-sol-serial-20261108-kl-sol-gemm",
+      "dataset": "CUDA-L2",
+      "at": "2026-11-11T03:52:57.292431+00:00",
+      "kind": "completed",
+      "reason": "独立验收完成"
+    },
+    {
       "id": "kl-deepseek-serial-20261108-kl-ds-gemm:resumed:2026-11-11T03:19:22.352269+00:00",
       "run_id": "kl-deepseek-serial-20261108-kl-ds-gemm",
       "dataset": "CUDA-L2",
@@ -48839,5 +48847,5 @@
       "reason": "原任务实际启动"
     }
   ],
-  "updated_at": "2026-11-11T03:53:13.734909+00:00"
+  "updated_at": "2026-11-11T03:59:35.727014+00:00"
 }
