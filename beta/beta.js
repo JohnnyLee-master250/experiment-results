@@ -36,6 +36,7 @@ const betaHeader=$('#beta-header'),betaBackdrop=$('#beta-backdrop');
 const betaLabels={started:'开始运行',paused:'暂停',resumed:'恢复运行',completed:'独立完成'};
 const betaBase=document.querySelector('meta[name="beta-version"]').content;
 let betaPreview=null;
+let betaPreviewRoute=null;
 let betaControlsRendering=0;
 let betaBannerIntroduced=false;
 const betaAlignedSources=new Map(),betaKLChartArgs=new Map();
@@ -80,6 +81,7 @@ function betaCloseMenu(){betaOpenMenu(null);}
 function betaShowView(view,push=false){
  const previous=betaView;
  betaView=['results','logs','queue','workspaces'].includes(view)?view:'results';
+ if(betaView!=='results'&&betaPreview){betaPreview=null;betaHighlightCurves();}
  $('#beta-results-view').hidden=betaView!=='results'||betaFuture;
  $('#beta-future-view').hidden=betaView!=='results'||!betaFuture;
  $('#beta-workspaces-view').hidden=betaView!=='workspaces';
@@ -178,6 +180,28 @@ function betaRenderBanner(){
 }
 
 // Hover previews are presentation-only: the saved visibility sets never change.
+// A task link starts the same emphasis as a curve hover. It is consumed once;
+// subsequent hover/leave events own emphasis and never revive the link target.
+const betaOriginalBeginResultRequest=beginResultRequest;
+beginResultRequest=function(scope,id,focusRun=null,push=false){
+ const target=focusRun||(!betaPreviewRoute?initialRun:null),route=scope+':'+id;
+ if(route!==betaPreviewRoute||target){betaPreview=null;betaHighlightCurves();}
+ betaPreviewRoute=route;
+ const request=betaOriginalBeginResultRequest(scope,id,target,push);
+ request.emphasizeRun=target;
+ return request;
+};
+const betaOriginalFinishResultRequest=finishResultRequest;
+finishResultRequest=function(request,error=null){
+ const current=resultRequest===request;
+ betaOriginalFinishResultRequest(request,error);
+ if(!current||error||!request.emphasizeRun)return;
+ const id=request.emphasizeRun;
+ const exists=request.scope==='kl'?klRun?.id===id:request.scope==='bv'?data?.runs.some(r=>r.id===id&&usable(r)):alignedDataset&&alignedSeries(alignedDataset,alignedRun).some(r=>r.id===id);
+ if(!exists)return;
+ betaPreview={scope:request.scope==='kl'?'kl':request.scope==='bv'?'bv':'#aligned-content',ids:[id]};
+ betaHighlightCurves();
+};
 function betaControlInfo(label){
  const input=label?.querySelector('input[type=checkbox]');if(!input||input.disabled)return null;
  if(input.dataset.series)return {scope:'bv',ids:[input.dataset.series]};
@@ -288,8 +312,9 @@ function betaSyncSliders(){
 }
 function betaHighlightCurves(){
  betaTintCharts();
- const scope=betaPreview?.scope,root=!scope?null:scope==='bv'?$('#bv-panel'):scope.startsWith('ref:')?$(scope.slice(4)):$(scope);
- const paths=root?[...root.querySelectorAll(scope.startsWith('ref:')?'[data-reference]':'path[data-run],path[data-aligned-curve]')].filter(p=>scope.startsWith('ref:')?p.dataset.reference===betaPreview.kind:betaPreview.ids.includes(p.dataset.run||p.dataset.alignedCurve)):[];
+ const scope=betaPreview?.scope,root=!scope?null:scope==='bv'?$('#bv-panel'):scope==='kl'?$('#kl-body'):scope.startsWith('ref:')?$(scope.slice(4)):$(scope);
+ const selector=scope==='kl'?'path[data-chart-key="kl-best"],path[data-chart-key="kl-measurements"],path[data-run]':scope?.startsWith('ref:')?'[data-reference]':'path[data-run],path[data-aligned-curve]';
+ const paths=root?[...root.querySelectorAll(selector)].filter(p=>scope==='kl'?betaPreview.ids.includes(klRun?.id):scope.startsWith('ref:')?p.dataset.reference===betaPreview.kind:betaPreview.ids.includes(p.dataset.run||p.dataset.alignedCurve)):[];
  const emphasized=new Set(paths);
  $$('[data-beta-glint]').forEach(e=>{if(!emphasized.has(e._curveSource)||e.parentNode!==e._curveSource?.parentNode)e.remove();});
  $$('.beta-curve-highlight').forEach(e=>{if(!emphasized.has(e))e.classList.remove('beta-curve-highlight');});
@@ -316,6 +341,7 @@ function betaHighlightCurves(){
 }
 function betaRedrawPreview(scope){
  if(scope==='bv')renderCharts();
+ else if(scope==='kl')renderKL();
  else if(scope.startsWith('ref:')){const args=betaKLChartArgs.get(scope.slice(4));if(args)klChart(...args);}
  else {const s=betaAlignedSources.get(scope);if(s)renderAligned(scope,s.dataset,s.run,true);}
 }
@@ -360,7 +386,7 @@ const betaOriginalSelected=selected;
 selected=function(){const rows=betaOriginalSelected();if(betaPreview?.scope==='bv')for(const r of data.runs)if(betaPreview.ids.includes(r.id)&&usable(r)&&r.method!=='B0'&&!rows.includes(r))rows.push(r);return rows;};
 const betaOriginalCharts=renderCharts;
 renderCharts=function(){betaOriginalCharts();betaHighlightCurves();};
-function betaControlSnapshot(host){return host?{host,nodes:[...host.childNodes],focus:host.contains(document.activeElement)?document.activeElement:null,animations:(host.getAnimations?.({subtree:true})||[]).filter(a=>['beta-pill-light','beta-pill-orbit'].includes(a.animationName)).map(a=>({target:a.effect.target,pseudo:a.effect.pseudoElement,name:a.animationName,start:a.startTime}))}:null;}
+function betaControlSnapshot(host){return host?{host,nodes:[...host.childNodes],scrollTop:host.scrollTop,scrollLeft:host.scrollLeft,focus:host.contains(document.activeElement)?document.activeElement:null,animations:(host.getAnimations?.({subtree:true})||[]).filter(a=>['beta-pill-light','beta-pill-orbit'].includes(a.animationName)).map(a=>({target:a.effect.target,pseudo:a.effect.pseudoElement,name:a.animationName,start:a.startTime}))}:null;}
 function betaRestoreControls(snapshot,fresh){
  if(!snapshot||!fresh)return false;
  const old=snapshot.host,oldNodes=snapshot.nodes;
@@ -378,6 +404,9 @@ function betaRestoreControls(snapshot,fresh){
   }
  }
  old.replaceChildren(...oldNodes);if(fresh!==old)fresh.replaceWith(old);
+ // Preview redraws temporarily detach the sidebar; browsers reset its scroll.
+ // Restore before the next paint so a lower model remains under the pointer.
+ old.scrollTop=snapshot.scrollTop;old.scrollLeft=snapshot.scrollLeft;
  for(const a of old.getAnimations?.({subtree:true})||[]){const prior=snapshot.animations.find(p=>p.target===a.effect?.target&&p.pseudo===a.effect?.pseudoElement&&p.name===a.animationName);if(prior?.start!=null)a.startTime=prior.start;}
  if(snapshot.focus)snapshot.focus.focus({preventScroll:true});return true;
 }

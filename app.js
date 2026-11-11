@@ -549,7 +549,7 @@ function renderChart(el,detail){
    else d+=`L${sx(p.round)},${sy(p.y)}`;
    last=p;
   }
-  svg+=`<g data-comparison-series="${esc(r.id)}"><path class="curve" data-run="${esc(r.id)}" d="${d}" fill="none" stroke="${col}" stroke-width="${r.id===focusedRun?3:1.8}" stroke-dasharray="${seriesDash(r)}" opacity=".88"/>`;
+  svg+=`<g data-comparison-series="${esc(r.id)}"><path class="curve" data-run="${esc(r.id)}" d="${d}" fill="none" stroke="${col}" stroke-width="1.8" stroke-dasharray="${seriesDash(r)}" opacity=".88"/>`;
   for(const p of pts){
    if(p.timing){
     if(state.uncertainty)svg+=`<path d="M${sx(p.round)},${sy(p.timing.p10_ms)}V${sy(p.timing.p90_ms)}M${sx(p.round)-2.5},${sy(p.timing.p10_ms)}h5M${sx(p.round)-2.5},${sy(p.timing.p90_ms)}h5" stroke="${col}" fill="none" opacity=".35"/>`;
