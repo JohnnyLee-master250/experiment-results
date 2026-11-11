@@ -122,7 +122,7 @@ function comparisonColor(run,scope=category){
  return (revised?REVISION_COLORS[methodLabel(run)]:COLORS[run.baseMethod||run.method])||(['KL','Aligned KL'].includes(run.baseMethod||run.method)?'#e69a00':'#526c89');
 }
 function resetBVView(){
- roundWindows.delete('bv:'+datasetId);clearLatencyWindows('bv');costRange=null;Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'focus',ymin:null,ymax:null});syncRange();showNotice('');renderCharts();
+ roundWindows.delete('bv:'+datasetId);clearLatencyWindows('bv');clearCostWindows('bv');costRange=null;Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'focus',ymin:null,ymax:null});syncRange();showNotice('');renderCharts();
 }
 function chartResetButton(chart,key,action){
  const parent=chart.closest('.chart-card')?.querySelector('.chart-title')||chart.parentElement.querySelector('.plot-options');if(!parent)return;
@@ -139,7 +139,9 @@ function datasetHasResults(id){
 
 
 
-const roundWindows=new Map(),latencyWindows=new Map();let rangeDragging=false,rangeRenderFrame=null;
+const roundWindows=new Map(),latencyWindows=new Map(),costWindows=new Map();let rangeDragging=false,rangeRenderFrame=null;
+function costWindowKey(chart,scope,viewKey=''){return [scope,datasetId,axisMode,chart.id||'plot',viewKey].join(':');}
+function clearCostWindows(scope,dataset=datasetId){const prefix=scope+':'+dataset+':';for(const key of costWindows.keys())if(key.startsWith(prefix))costWindows.delete(key);}
 function latencyKey(chart,scope,dataset=datasetId){return scope+':'+dataset+':'+(chart.id||'plot');}
 function clearLatencyWindows(scope,dataset=datasetId){const prefix=scope+':'+dataset+':';for(const key of latencyWindows.keys())if(key.startsWith(prefix))latencyWindows.delete(key);}
 function latencyWindow(chart,scope,automatic){return latencyWindows.get(latencyKey(chart,scope))||automatic;}
@@ -177,7 +179,7 @@ function renderRoundRange(chart,scope,maximum,redraw){
 window.addEventListener('pointerup',()=>{rangeDragging=false;});
 window.addEventListener('pointercancel',()=>{rangeDragging=false;});
 
-// Plot selection and the dual slider share round bounds; latency belongs to this chart.
+// Shared plot selection: integer rounds or continuous cost coordinates, plus latency.
 function configureRoundBrush(chart,config){
  let brush=chart._roundBrush;
  if(!brush){
@@ -198,7 +200,8 @@ function configureRoundBrush(chart,config){
    const left=useX?clamp(Math.min(d.x,p.x),c.left,c.right):c.left,right=useX?clamp(Math.max(d.x,p.x),c.left,c.right):c.right;
    const top=useY?clamp(Math.min(d.y,p.y),c.top,c.bottom):c.top,bottom=useY?clamp(Math.max(d.y,p.y),c.top,c.bottom):c.bottom;
    const round=x=>c.min+(x-c.left)/(c.right-c.left)*(c.max-c.min);
-   const lo=clamp(Math.floor(round(left)),c.min,c.max-1),hi=clamp(Math.ceil(round(right)),lo+1,c.max);
+   const gap=c.continuous?Math.max((c.max-c.min)*1e-9,Number.EPSILON):1;
+   const lo=clamp(c.continuous?round(left):Math.floor(round(left)),c.min,c.max-gap),hi=clamp(c.continuous?round(right):Math.ceil(round(right)),lo+gap,c.max);
    const latency=y=>c.ymax-(y-c.top)/(c.bottom-c.top)*(c.ymax-c.ymin);
    return {useX,useY,left,right,top,bottom,rounds:[lo,hi],latencies:[latency(bottom),latency(top)]};
   };
@@ -218,7 +221,7 @@ function configureRoundBrush(chart,config){
    }
    Object.assign(d.overlay.style,{left:s.left/c.width*100+'%',width:(s.right-s.left)/c.width*100+'%',top:s.top/c.height*100+'%',height:(s.bottom-s.top)/c.height*100+'%'});
    const label=d.overlay.firstChild;
-   label.textContent=[s.useX?'r'+s.rounds.join(' – r'):'',s.useY?s.latencies.map(tickFmt).join(' – ')+' ms':''].filter(Boolean).join(' · ');
+   label.textContent=[s.useX?(c.formatX?c.formatX(s.rounds):'r'+s.rounds.join(' – r')):'',s.useY?s.latencies.map(tickFmt).join(' – ')+' ms':''].filter(Boolean).join(' · ');
    // Keep the concise hint inside the plot even for a narrow selection at its edge.
    const rect=chart.getBoundingClientRect(),px=rect.width/c.width,center=(s.left+s.right)/2;
    const half=label.getBoundingClientRect().width/(2*px),anchor=Math.max(c.left+half+4,Math.min(c.right-half-4,center));
@@ -230,6 +233,7 @@ function configureRoundBrush(chart,config){
    const c=brush.config,s=d.active?selection(e):null;cancel();
    if(!s||(!s.useX&&!s.useY))return;
    brush.suppressClickUntil=performance.now()+400;
+   if(c.applySelection){rangeDragging=false;e.preventDefault();e.stopImmediatePropagation();c.applySelection(s);return;}
    const key=c.scope+':'+c.dataset;
    if(s.useX){
     if(s.rounds[0]===0&&s.rounds[1]===Math.ceil(c.maximum))roundWindows.delete(key);else roundWindows.set(key,s.rounds);
@@ -525,7 +529,7 @@ function renderChart(el,detail){
    points:r.search.map(p=>({name:'r'+p.round,axes:p.axes,y:p.timing?.mean_ms??null,range:state.uncertainty&&p.timing?[p.timing.p10_ms,p.timing.p90_ms]:null,status:p.status}))}));
   for(const [i,r] of runs.entries())if(r.formal && r.formal_axes)
    lines[i].points.push({formal:true,name:'正式结果',axes:r.formal_axes,y:r.formal.mean_ms});
-  const opts={best:mode==='best',zoom:detail&&state.ymode==='focus',range:detail?costRange:null,readout:$('#hover-readout')};
+  const opts={best:mode==='best',zoom:detail&&state.ymode==='focus',range:detail?costRange:null,scope:'bv',redraw:renderCharts,readout:$('#hover-readout')};
   if(detail&&state.ymode==='manual')opts.yRange=[state.ymin,state.ymax];
   const domain=costChart(el,lines,opts);
   if(detail)$('#detail-domain').textContent=domain?tickFmt(domain[0])+'–'+tickFmt(domain[1])+' ms':'—';
@@ -606,7 +610,7 @@ function applyRange(){
  if(axisMode!=='round'){
   const blank=$('#x-max').value===''&&$('#x-min').value==='';
   if(!blank&&(!Number.isFinite(min)||!Number.isFinite(max)||min<0||max<=min)){showNotice('横轴结束值须大于起始值。');return;}
-  costRange=blank?null:[min,max];Object.assign(state,{ymode,ymin,ymax});
+  clearCostWindows('bv');costRange=blank?null:[min,max];Object.assign(state,{ymode,ymin,ymax});
  }else {clearLatencyWindows('bv');Object.assign(state,{xmin:min,xmax:max,ymode,ymin,ymax});roundWindows.set('bv:'+datasetId,[min,max]);}showNotice('');renderCharts();
 }
 function download(name,text,type='text/plain'){const url=URL.createObjectURL(new Blob([text],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);}
@@ -642,6 +646,8 @@ window.addEventListener('popstate',()=>{document.dispatchEvent(new CustomEvent('
 
 // All cost views plot the verified coordinate on each record, including failed searches.
 function costChart(el, lines, options={}) {
+ configureRoundBrush(el,null);
+ const scope=options.scope||category,key=costWindowKey(el,scope,options.viewKey||''),custom=costWindows.get(key);
  const width=Math.max(300,el.clientWidth||700),height=options.height||el.clientHeight||330;
  const pad={l:width<420?51:66,r:20,t:23,b:44};
  const series=lines.map(line=>({...line,points:line.points.filter(p=>Number.isFinite(costX(p.axes)))}));
@@ -653,7 +659,7 @@ function costChart(el, lines, options={}) {
   el.onkeydown=el.onpointermove=null;
   return null;
  }
- const lo=options.range?.[0]??0,hi=options.range?.[1]??Math.max(.001,items.at(-1).x)*1.025;
+ const lo=custom?.x?.[0]??options.range?.[0]??0,hi=custom?.x?.[1]??options.range?.[1]??Math.max(.001,items.at(-1).x)*1.025;
  const within=x=>lo<=x&&x<=hi;
  const visibleItems=items.filter(item=>within(item.x));
  const refs=options.references||[];
@@ -669,6 +675,7 @@ function costChart(el, lines, options={}) {
   if(cluster.length){const a=cluster[0],b=cluster.at(-1),dy=Math.max((b-a)*.16,b*.04,.000001);ymin=Math.max(0,a-dy);ymax=b+dy;}
  }
  if(options.yRange&&Number.isFinite(options.yRange[0])&&options.yRange[1]>options.yRange[0])[ymin,ymax]=options.yRange;
+ if(custom?.y&&custom.y[1]>custom.y[0])[ymin,ymax]=custom.y;
  const x=v=>pad.l+(v-lo)/(hi-lo)*(width-pad.l-pad.r);
  const y=v=>height-pad.b-(v-ymin)/(ymax-ymin)*(height-pad.t-pad.b);
  const base=height-pad.b,clip='cost-clip-'+(el.id||'aligned')+(el.closest('#kl-panel')?'kl':'');
@@ -713,6 +720,14 @@ function costChart(el, lines, options={}) {
   else svg+='<circle'+attr+' cx="'+px+'" cy="'+py+'" r="'+(p.selected?5:3.2)+'" fill="'+line.color+'"><title>'+tip+'</title></circle>';
  }
  renderChartMarkup(el,svg+'</g></svg>');el.tabIndex=0;
+ if(options.redraw)configureRoundBrush(el,{scope,continuous:true,min:lo,max:hi,ymin,ymax,width,height,left:pad.l,right:width-pad.r,top:pad.t,bottom:height-pad.b,
+  formatX:values=>values.map(tickFmt).join(' – ')+(axisMode==='time'?' min':' M token'),
+  applySelection:selection=>{
+   const next={...(costWindows.get(key)||{})};
+   if(selection.useX){next.x=selection.rounds;if(!selection.useY)delete next.y;}
+   if(selection.useY)next.y=selection.latencies;
+   costWindows.set(key,next);options.redraw();
+  }});
  let index=0;
  function inspect(i){index=i;if(note)note.textContent=description(items[i]);}
  const markers=el.querySelectorAll('[data-cost-point]');

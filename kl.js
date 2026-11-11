@@ -96,7 +96,8 @@ function klPlotHeight(el,fallback){
  return Number.isFinite(h)&&h>=200?h:fallback;
 }
 function klChart(target,points,label,maxX,selectable=false,reference=null,axisTicks=new Map(),extraReferences=[]){
- const el=$(target),values=points.filter(p=>Number.isFinite(p.y)&&p.y>0);
+ const el=$(target);configureRoundBrush(el,null);
+ const values=points.filter(p=>Number.isFinite(p.y)&&p.y>0);
  const references=[...(reference?[{...reference,kind:'full',color:'#CC79A7',dash:'8 4',caption:`V0 Astra/high 全程最快搜索均值：${fmt(reference.latency_ms)} ms，第 ${reference.round} 轮`}]:[]),...extraReferences];
  if(axisMode!=='round'){
   let readout=el.parentNode.querySelector('.cost-readout');
@@ -105,7 +106,7 @@ function klChart(target,points,label,maxX,selectable=false,reference=null,axisTi
   const series={id:klRun.id,name:'KL',color:'#0072B2',points:points.map(p=>({...p,
    name:selectable?'Apply '+p.x:'Apply '+klApply+' · 内部 '+(axisTicks.get(p.x)?.text||p.x),
    applyButton:selectable?p.x:null,selected:selectable&&p.x===klApply}))};
-  costChart(el,[series],{references,readout,both:true});
+  costChart(el,[series],{references,readout,both:true,scope:'kl',viewKey:klRun.id+(selectable?'':':apply'+klApply),redraw:renderKL});
   return;
  }
  const costReadout=el.parentNode.querySelector('.cost-readout');if(costReadout)costReadout.hidden=true;
@@ -164,7 +165,7 @@ function renderKL(){
   $(`#kl-matched-${chart}`).querySelectorAll('input').forEach(toggle=>toggle.onchange=()=>{klMatchedVisible[chart][toggle.dataset.matchedKind]=toggle.checked;renderKL();});
  }
  klChart('#kl-overview',points,'Apply',r.budget,true,klReferenceVisible.overview?klReference:null,axes.applies,matched.filter(ref=>klMatchedVisible.overview[ref.kind]));
- for(const which of ['overview','candidates'])chartResetButton($('#kl-'+which),'kl-'+which,()=>{klReferenceVisible[which]=true;klMatchedVisible[which]={same:true,reduced:true};if(which==='candidates')klApply=klRun.applies.at(-1)?.apply??null;renderKL();});
+ for(const which of ['overview','candidates'])chartResetButton($('#kl-'+which),'kl-'+which,()=>{clearCostWindows('kl');klReferenceVisible[which]=true;klMatchedVisible[which]={same:true,reduced:true};if(which==='candidates')klApply=klRun.applies.at(-1)?.apply??null;renderKL();});
  const a=r.applies.find(a=>a.apply===klApply),inner=a?.candidates||[];best=null;
  klChart('#kl-candidates',inner.map(c=>{const v=c.correctness_passed?c.latency_ms:null;if(c.accepted&&v!=null)best=best==null?v:Math.min(best,v);return {x:c.sequence,y:v,best,axes:c.axes,eligible:c.accepted,status:c.status};}),'内部候选序号',Math.max(2,inner.length),false,klReferenceVisible.candidates?klReference:null,axes.candidates.get(klApply),matched.filter(ref=>klMatchedVisible.candidates[ref.kind]));
  $('#kl-inner-status').textContent=a?`${klStatus(a.status)} · 已用 ${a.elapsed_seconds==null?'未知':fmt(a.elapsed_seconds/60,1)+' 分钟'} · ${a.evaluations} 次评测 · ${a.infrastructure_errors} 次基础设施异常 · ${a.reused_snapshots} 份结果复用快照`:'尚未启动；候选次数没有预设上限，受 Apply 时限约束。';
@@ -262,7 +263,7 @@ function renderAligned(target,dataset,run,previewIds=[]){
   }else host.append(child);
  }
  renderComparisonControls(host.querySelector('.aligned-controls'),all,view.visible,dataset.comparison_scope||'aligned',redraw);
- chartResetButton(host.querySelector('.aligned-chart'),'comparison',()=>{roundWindows.delete((dataset.comparison_scope||'aligned')+':'+dataset.id);clearLatencyWindows(dataset.comparison_scope||'aligned',dataset.id);view.zoom=false;view.compressed=false;view.visualScale=1;redraw();});
+ chartResetButton(host.querySelector('.aligned-chart'),'comparison',()=>{roundWindows.delete((dataset.comparison_scope||'aligned')+':'+dataset.id);clearLatencyWindows(dataset.comparison_scope||'aligned',dataset.id);clearCostWindows(dataset.comparison_scope||'aligned',dataset.id);view.zoom=false;view.compressed=false;view.visualScale=1;redraw();});
  host.querySelector('[data-aligned-compress]').onchange=e=>{view.compressed=e.target.checked;view.visualScale=view.compressed?2/3:1;redraw();};
  host.querySelectorAll('[data-aligned-mode]').forEach(el=>el.onclick=()=>{view.mode=el.dataset.alignedMode;redraw();});
  host.querySelector('[data-aligned-zoom]').onchange=e=>{clearLatencyWindows(dataset.comparison_scope||'aligned',dataset.id);view.zoom=e.target.checked;redraw();};
@@ -270,7 +271,7 @@ function renderAligned(target,dataset,run,previewIds=[]){
  if(axisMode!=='round'){
   if(retainedRange)retainedRange.hidden=true;
   const chart=host.querySelector('.aligned-chart');configureRoundBrush(chart,null);chart.setAttribute('aria-label','Aligned KL · '+axisText());
-  costChart(chart,selected.map(r=>({...r,name:r.model+' '+r.method,points:r.points.map(p=>({...p,name:'r'+p.round+(p.apply?' · Apply '+p.apply:'' )}))})),{best:view.mode==='best',zoom:view.zoom,readout:host.querySelector('.aligned-readout')});
+  costChart(chart,selected.map(r=>({...r,name:r.model+' '+r.method,points:r.points.map(p=>({...p,name:'r'+p.round+(p.apply?' · Apply '+p.apply:'' )}))})),{best:view.mode==='best',zoom:view.zoom,scope:dataset.comparison_scope||'aligned',redraw,readout:host.querySelector('.aligned-readout')});
   return;
  }
  const chart=host.querySelector('.aligned-chart'),w=Math.max(320,chart.clientWidth||800),h=klPlotHeight(chart,340),pad={l:66,r:20,t:26,b:45},maxX=Math.max(30,...selected.flatMap(r=>r.points.map(p=>p.round*(r.baseMethod==='KL'?(view.visualScale??1):1))));
