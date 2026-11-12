@@ -1,7 +1,7 @@
 'use strict';
 const betaConfig=JSON.parse(document.querySelector('#beta-navigation').textContent);
 function betaRequestedView(url=new URL(location)){
- const explicit=url.searchParams.get('view');if(['results','logs','queue','workspaces'].includes(explicit))return explicit;
+ const explicit=url.searchParams.get('view');if(['results','comparison','logs','queue','workspaces'].includes(explicit))return explicit;
  return url.hash||['category','dataset','run','edition','apply','axis'].some(key=>url.searchParams.has(key))?'results':'queue';
 }
 function betaRetainDefaultView(url,view){
@@ -50,7 +50,7 @@ function betaTintCharts(){
 function betaUpdateTitle(){
  const title=manifest?.datasets.find(d=>d.id===datasetId)?.title||datasetId;
  const section=betaConfig.result_sections.find(s=>s.id===category)?.label;
- $('#beta-title').textContent=betaView==='workspaces'?'工作树路径':betaView==='logs'?'完成日志':betaView==='queue'?'队列情况':betaFuture?'V0-r3':title+(section?' · '+section:'');
+ $('#beta-title').textContent=betaView==='comparison'?'结果对比':betaView==='workspaces'?'工作树路径':betaView==='logs'?'完成日志':betaView==='queue'?'队列情况':betaFuture?'V0-r3':title+(section?' · '+section:'');
  const metadata=$('#beta-run-meta');if(!metadata)return;
  const r=category==='kl'&&betaView==='results'&&!betaFuture&&klRun?.dataset===datasetId?klRun:null;
  metadata.hidden=!r;
@@ -80,11 +80,13 @@ function betaScheduleMenu(id,delay=320){
 function betaCloseMenu(){betaOpenMenu(null);}
 function betaShowView(view,push=false){
  const previous=betaView;
- betaView=['results','logs','queue','workspaces'].includes(view)?view:'results';
+ betaView=['results','comparison','logs','queue','workspaces'].includes(view)?view:'results';
  if(betaView!=='results'&&betaPreview){betaPreview=null;betaHighlightCurves();}
  $('#beta-results-view').hidden=betaView!=='results'||betaFuture;
  $('#beta-future-view').hidden=betaView!=='results'||!betaFuture;
  $('#beta-workspaces-view').hidden=betaView!=='workspaces';
+ const compare=$('#beta-comparison-view');if(compare)compare.hidden=betaView!=='comparison';
+ if(betaView==='comparison')window.resultComparison?.ensure();
  $('#beta-logs-view').hidden=betaView!=='logs';$('#beta-queue-view').hidden=betaView!=='queue';
  $$('[data-beta-nav]').forEach(el=>el.setAttribute('aria-current',el.dataset.betaNav===betaView?'page':'false'));
  betaUpdateTitle();betaSyncGrouping();
@@ -625,4 +627,133 @@ window.workspaceDirectory=(()=>{
  function openCompleted(){sync();for(const id of ['method','model','dataset'])$('#ws-'+id).value='all';$('#ws-status').value='已完成';for(const id of ['search','from','to'])$('#ws-'+id).value='';setMethod('all');}
  $('#beta-completed-link').onclick=openCompleted;
  return {sync,contextSync,openCompleted};
+})();
+
+/* Result comparison: published numeric records only, no experiment operations. */
+const ComparisonModel=(()=>{
+ const version=r=>r.method==='KL'?'KL':r.method_version||(/^B[0-3]$/.test(r.method)?r.method+'-r1':r.method==='V0'?'V0-r2':r.method);
+ const key=r=>[r.model,r.effort||'',version(r)].join('|');
+ const supported=r=>['Astra','Sol 6.1','DeepSeek Flash'].includes(r.model)&&['B2','B3','V0','KL'].includes(r.method);
+ const points=r=>r.method==='KL'?(r.aligned?.points||[]).filter(p=>p.counted).map(p=>({round:p.round,latency:p.accepted&&p.status==='passed'?p.latency_ms:null})): (r.search||[]).map(p=>({round:p.round,latency:p.status==='passed'?p.timing?.mean_ms:null}));
+ const display=r=>{const v=version(r);return r.model!=='Astra'&&/^B\d-r\d+$/.test(v)?v.split('-r')[0]:v;};
+ function measure(r,n){
+  if(!r)return {value:null,state:'不适用',coverage:0};
+  const ps=points(r),coverage=Math.min(n,Math.max(0,...ps.map(p=>p.round))),active=r.status==='running';
+  const budget=r.method==='KL'?Infinity:Number(r.budget||30);
+  if(n>budget)return {value:null,state:'不适用',reason:'超出原轮次预算',coverage};
+  const eligible=ps.filter(p=>Number.isFinite(p.round)&&p.round<=n&&p.round>0&&Number.isFinite(p.latency)&&p.latency>0);
+  if(eligible.length){const best=eligible.reduce((a,p)=>p.latency<a.latency?p:a);return {value:best.latency,round:best.round,coverage,state:active?'正在运行':r.status==='complete'?'已完成':r.status==='paused'||r.status==='blocked'?'已暂停':r.status==='waiting'?'等待接续':'已保存'};}
+  const state=active?'正在运行':(!r.started_at&&['not_run','waiting','queued','no_data'].includes(r.status))?'待运行':'不适用';
+  return {value:null,state,coverage,reason:state==='不适用'?'所选范围没有有效数据':''};
+ }
+ function compare(r,baseline,n){const result=measure(r,n),base=measure(baseline,n);return {...result,delta:result.value!==null&&base.value>0?(result.value/base.value-1)*100:null,baseline:base};}
+ function catalog(datasets,kl){
+  const map=new Map();for(const d of datasets)for(const r of d.runs.filter(supported))if(!map.has(key(r)))map.set(key(r),{...r,key:key(r),version:version(r),label:r.model+' · '+display(r)});
+  for(const r of kl.runs){const v={...r,method:'KL'};if(supported(v)&&!map.has(key(v)))map.set(key(v),{...v,key:key(v),version:'KL',label:v.model+' · KL'});}
+  const models=['Astra','Sol 6.1','DeepSeek Flash'],methods=['B2-r1','B2-r2','B3-r1','B3-r2','V0-r2','V0-r3','KL'];
+  return [...map.values()].sort((a,b)=>models.indexOf(a.model)-models.indexOf(b.model)||methods.indexOf(a.version)-methods.indexOf(b.version));
+ }
+ function scale(values){
+  const a=[...new Set(values.filter(v=>Number.isFinite(v)&&v>0))].sort((x,y)=>x-y),max=(a.at(-1)||1)*1.06;
+  let gap=null;for(let i=1;i<a.length;i++){const low=a[i-1]*1.12,high=a[i]*.88;if(a[i]/a[i-1]>=4&&high-low>max*.5&&(!gap||high-low>gap.high-gap.low))gap={low,high};}
+  const map=v=>gap?(v<=gap.low?v/gap.low*.70:v>=gap.high?.76+(v-gap.high)/(max-gap.high)*.24:.70+(v-gap.low)/(gap.high-gap.low)*.06):v/max;
+  return {max,gap,map};
+ }
+ return {key,version,points,supported,display,measure,compare,catalog,scale};
+})();
+if(typeof module!=='undefined')module.exports=ComparisonModel;
+if(typeof document!=='undefined')(()=>{
+ const host=document.querySelector('#beta-comparison-view');if(!host)return;
+ const state={round:30,selected:null,baseline:null,group:'model',layout:'kernel',datasets:[],kl:null,catalog:[],version:null,pending:null,load:0};
+ const palette=['#f56300','#e34435','#df3488','#8050d7','#009b68','#0071e3','#ba8500','#ef8d35','#c04e1d','#b4459a','#8252c9','#009ca8','#357abe'];
+ const color=s=>palette[state.catalog.findIndex(r=>r.key===s.key)%palette.length]||'#526c89';
+ const delta=v=>v===null?'—':(Math.abs(v)<.05?'0':(v>0?'+':'−')+Math.abs(v).toFixed(1))+'%';
+ const num=v=>v>=1000?v.toLocaleString('en',{maximumFractionDigits:1}):Number(v.toPrecision(5)).toString();
+ const shortModel=s=>s.model==='DeepSeek Flash'?'DS Flash':s.model;
+ const label=s=>shortModel(s)+' · '+ComparisonModel.display(s);
+ host.innerHTML=`<section class="comparison-settings" aria-label="对比设置"><div class="comparison-setting"><label for="comparison-round">截止轮次</label><div class="comparison-cutoff"><input id="comparison-round" type="range" min="5" max="50" step="1" value="30" aria-label="截止轮次"><output id="comparison-round-value">r30</output></div></div><div class="comparison-setting comparison-reference"><label for="comparison-baseline">参照基线</label><select id="comparison-baseline" aria-label="参照基线"></select></div><button class="chart-reset" id="comparison-reset" aria-label="重置结果对比" title="重置">↻</button></section><section class="comparison-selection"><div class="comparison-selection-head"><button id="comparison-disclosure" class="comparison-disclosure" aria-expanded="false" aria-controls="comparison-series-body"><span class="comparison-chevron" aria-hidden="true">›</span><strong>对比任务</strong><span id="comparison-selected-count"></span></button><div class="comparison-selection-actions"><div class="segments" aria-label="对比任务分组"><button data-bar-group="model" class="selected" aria-pressed="true">按模型</button><button data-bar-group="task" aria-pressed="false">按任务</button></div><button id="comparison-all" class="comparison-group-toggle" aria-pressed="true">全部</button></div></div><div id="comparison-series-body" class="comparison-series-body" inert><div><div id="comparison-series" class="comparison-series"></div></div></div></section><div class="comparison-caption"><div class="segments comparison-layout" aria-label="对比图组织"><button data-bar-layout="kernel" class="selected" aria-pressed="true">按 Kernel</button><button data-bar-layout="task" aria-pressed="false">按任务</button></div><span id="comparison-measure-label">最快延迟 · ms ↓</span><span title="(本组延迟 / 基线延迟 − 1) × 100。B/V均值，KL中位数；环境与计时口径有差异。">− 更快 / + 更慢 <span aria-hidden="true">ⓘ</span></span></div><div id="comparison-loading" role="status"></div><div id="comparison-grid" class="comparison-grid"></div>`;
+ const slider=host.querySelector('#comparison-round'),baseline=host.querySelector('#comparison-baseline'),status=host.querySelector('#comparison-loading');
+ function defaultBaseline(){return state.catalog.find(r=>r.model==='Astra'&&r.version==='KL')?.key||state.catalog[0]?.key;}
+ function toggleState(button,rows){const n=rows.filter(r=>state.selected.has(r.key)).length;button.textContent=n===rows.length?'全部':n?'部分':'关闭';button.setAttribute('aria-pressed',n===rows.length?'true':n?'mixed':'false');}
+ function syncControls(){
+  host.querySelectorAll('[data-comparison-series]').forEach(b=>b.setAttribute('aria-pressed',String(state.selected.has(b.dataset.comparisonSeries))));
+  host.querySelectorAll('[data-bar-toggle]').forEach(b=>toggleState(b,b._rows));toggleState(host.querySelector('#comparison-all'),state.catalog);
+  host.querySelector('#comparison-selected-count').textContent=state.selected.size+' / '+state.catalog.length;
+ }
+ function controls(){
+  baseline.replaceChildren(...state.catalog.map(r=>new Option(r.label,r.key)));baseline.value=state.baseline;
+  const groups=host.querySelector('#comparison-series');groups.replaceChildren();
+  const names=[...new Set(state.catalog.map(r=>state.group==='model'?r.model:r.version))];
+  for(const name of names){
+   const rows=state.catalog.filter(r=>(state.group==='model'?r.model:r.version)===name);
+   const group=document.createElement('section');group.className='comparison-model';group.innerHTML=`<header><h3>${esc(name)}</h3><button class="comparison-group-toggle" data-bar-toggle></button></header><div class="comparison-pills"></div>`;
+   const toggle=group.querySelector('[data-bar-toggle]');toggle._rows=rows;toggle.setAttribute('aria-label',name+' 全部曲线');toggle.onclick=()=>{const on=rows.some(r=>!state.selected.has(r.key));rows.forEach(r=>on?state.selected.add(r.key):state.selected.delete(r.key));syncControls();paint();};
+   for(const r of rows){const b=document.createElement('button');b.type='button';b.className='comparison-toggle';b.dataset.comparisonSeries=r.key;b.textContent=state.group==='model'?ComparisonModel.display(r):shortModel(r);b.title=r.label+' / '+r.effort;b.style.setProperty('--color',color(r));b.onclick=()=>{if(state.selected.has(r.key)){state.selected.delete(r.key);b.classList.add('hover-muted');}else state.selected.add(r.key);syncControls();paint();};b.onpointerleave=()=>b.classList.remove('hover-muted');group.lastElementChild.append(b);}
+   groups.append(group);
+  }syncControls();betaScheduleSliders();
+ }
+ function rowsFor(d){const runs=[...d.runs,...state.kl.runs.filter(r=>r.dataset===d.id).map(r=>({...r,method:'KL'}))],byKey=new Map(runs.map(r=>[ComparisonModel.key(r),r]));const ref=byKey.get(state.baseline);
+  return state.catalog.filter(s=>state.selected.has(s.key)).map(s=>({...ComparisonModel.compare(byKey.get(s.key),ref,state.round),key:s.key,label:label(s),fullLabel:s.label,color:color(s),run:byKey.get(s.key),isBaseline:s.key===state.baseline}));
+ }
+ function panels(){
+  if(state.layout==='kernel')return state.datasets.map(d=>({id:d.id,title:d.id,rows:rowsFor(d),percent:false}));
+  const byDataset=state.datasets.map(d=>({id:d.id,rows:rowsFor(d)}));
+  return state.catalog.filter(s=>state.selected.has(s.key)&&s.key!==state.baseline).map(s=>({id:s.key,title:label(s),percent:true,rows:byDataset.map(d=>{const r=d.rows.find(r=>r.key===s.key);return {...r,key:d.id,label:d.id,fullLabel:d.id+' · '+s.label,value:r.delta,state:r.value!==null&&r.delta===null?'基线不可用':r.state,isBaseline:false};})}));
+ }
+ function paint(){
+  if(!state.version)return;const grid=host.querySelector('#comparison-grid');
+  host.querySelector('#comparison-round-value').textContent='r'+state.round;slider.value=state.round;slider.style.setProperty('--cutoff-fill',(state.round-5)/45*100+'%');
+  host.querySelector('#comparison-measure-label').textContent=state.layout==='task'?'相对基线 · %':'最快延迟 · ms ↓';
+  const data=panels(),keepCards=new Set(data.map(p=>p.id));[...grid.children].forEach(c=>{if(!keepCards.has(c.dataset.comparisonDataset))c.remove();});
+  for(const d of data){
+   let card=[...grid.children].find(c=>c.dataset.comparisonDataset===d.id);if(!card){card=document.createElement('article');card.className='comparison-card';card.dataset.comparisonDataset=d.id;card.innerHTML=`<header><h2>${esc(d.title)}</h2><span class="comparison-scale-label"></span></header><div class="comparison-plot" role="img"><div class="comparison-baseline-line" aria-hidden="true"><span>基线</span></div><div class="comparison-bars"></div></div><div class="comparison-axis"></div><div class="comparison-empty-note"></div>`;grid.append(card);}
+   card.classList.toggle('comparison-task-card',d.percent);
+   const rows=d.rows,ref=d.percent?{value:0,state:''}:rows[0]?.baseline||{},values=rows.filter(r=>r.value!==null).map(r=>r.value),scale=ComparisonModel.scale([...values.map(Math.abs),...(!d.percent&&ref.value>0?[ref.value]:[])]),negative=d.percent&&values.some(v=>v<0),positive=values.some(v=>v>0),origin=negative?(positive?.5:1):0;
+   const project=v=>d.percent?origin+(v<0?-origin:1-origin)*scale.map(Math.abs(v)):scale.map(v);
+   const plot=card.querySelector('.comparison-plot'),bars=card.querySelector('.comparison-bars');
+   card._comparisonRows=rows;card._comparisonScale={max:scale.max,gap:scale.gap,baseline:ref.value,origin};
+   const line=card.querySelector('.comparison-baseline-line');line.hidden=!(d.percent?values.length:ref.value>0)||!rows.length;line.style.left=(project(ref.value||0)*100)+'%';line.title=d.percent?'基线 0%':ref.value>0?'基线 '+num(ref.value)+' ms':'';line.firstElementChild.textContent=d.percent?'0%':'基线';
+   card.querySelector('.comparison-scale-label').textContent=scale.gap?'断轴 //':d.percent?'%':'ms ↓';
+   card.querySelector('.comparison-scale-label').title=scale.gap?'省略 '+num(scale.gap.low)+'–'+num(scale.gap.high)+(d.percent?'%':' ms')+'；两侧分别线性，全部条形与基线共用尺度':'';
+   plot.setAttribute('aria-label',d.title+' 截至 r'+state.round+'；'+rows.map(r=>r.fullLabel+' '+(r.value===null?r.state:d.percent?delta(r.value):num(r.value)+' ms '+delta(r.delta))).join('；'));
+   const keep=new Set(rows.map(r=>r.key));[...bars.children].forEach(el=>{if(!keep.has(el.dataset.barKey))el.remove();});
+   for(const r of rows){let row=[...bars.children].find(el=>el.dataset.barKey===r.key);if(!row){row=document.createElement('div');row.className='comparison-bar-row';row.dataset.barKey=r.key;row.innerHTML='<div class="comparison-row-label"><span class="comparison-label"></span><span class="comparison-values"><b></b><em></em></span></div><div class="comparison-track"><span class="comparison-bar-a"></span><span class="comparison-bar-b"></span><span class="comparison-bar-break" aria-hidden="true">//</span></div>';bars.append(row);}
+    row.style.order=rows.indexOf(r);row.style.setProperty('--bar-color',r.color);row.classList.toggle('is-empty',r.value===null);row.classList.toggle('is-reference',r.isBaseline);
+    row.querySelector('.comparison-label').textContent=r.label;row.querySelector('.comparison-values b').textContent=r.value===null?r.state:d.percent?delta(r.value):num(r.value);row.querySelector('.comparison-values em').textContent=r.value===null||d.percent?'':r.isBaseline?'基线':delta(r.delta);
+    row.title=r.fullLabel+' · '+(r.value===null?(r.reason||r.state):d.percent?delta(r.value)+' · 已保存 r'+r.coverage+'/'+state.round:num(r.value)+' ms · '+delta(r.delta)+' · 最快 r'+r.round+' · 已保存 r'+r.coverage+'/'+state.round+' · '+r.state);
+    const a=row.querySelector('.comparison-bar-a'),b=row.querySelector('.comparison-bar-b'),br=row.querySelector('.comparison-bar-break'),v=r.value||0,sign=v<0?-1:1,cross=scale.gap&&Math.abs(v)>=scale.gap.high;
+    const segment=(el,start,end)=>{el.style.left=Math.min(start,end)*100+'%';el.style.width=Math.abs(end-start)*100+'%';};
+    segment(a,origin,cross?project(sign*scale.gap.low):project(v));segment(b,cross?project(sign*scale.gap.high):origin,cross?project(v):origin);
+    br.hidden=!cross;if(cross){br.style.left=Math.min(project(sign*scale.gap.low),project(sign*scale.gap.high))*100+'%';br.style.width=Math.abs(project(sign*scale.gap.high)-project(sign*scale.gap.low))*100+'%';}
+    row.querySelector('.comparison-track').style.visibility=r.value===null?'hidden':'visible';
+   }
+   let ticks;
+   if(d.percent){ticks=[[origin,'0']];if(negative)ticks.push([0,'−'+num(scale.max)]);if(positive)ticks.push([1,'+'+num(scale.max)]);}
+   else ticks=scale.gap?[[0,'0'],[.7,num(scale.gap.low)],[1,num(scale.max)]]:[[0,'0'],[.5,num(scale.max/2)],[1,num(scale.max)]];
+   const tick=(x,v)=>`<span style="left:${x*100}%;${x===0?'transform:none':x===1?'transform:translateX(-100%)':scale.gap&&x===.7?'transform:translateX(-100%)':''}">${v}</span>`;
+   const axis=card.querySelector('.comparison-axis');axis.innerHTML=ticks.map(([x,v])=>tick(x,v)).join('');if(scale.gap){for(const sign of d.percent?[(negative?-1:null),(positive?1:null)].filter(x=>x!==null):[1])axis.innerHTML+=`<i style="left:${project(sign*(scale.gap.low+scale.gap.high)/2)*100}%" title="${esc(card.querySelector('.comparison-scale-label').title)}">//</i>`;}
+   axis.hidden=!values.length;
+   card.querySelector('.comparison-empty-note').textContent=!rows.length?'选择对比任务':!d.percent&&!(ref.value>0)?'基线 · '+(ref.state||'不适用'):'';
+  }
+  if(!data.length){const note=document.createElement('p');note.className='comparison-empty-note';note.textContent='选择对比任务';grid.append(note);}
+ }
+ async function ensure(){
+  if(!manifest||betaView!=='comparison')return;const version=manifest.updated_at;if(state.version===version){paint();return;}if(state.pending===version)return;state.pending=version;const seq=++state.load;
+  status.innerHTML='<span class="result-spinner" aria-hidden="true"></span> 加载中…';host.setAttribute('aria-busy','true');
+  try{const [datasets,kl]=await Promise.all([Promise.all(manifest.datasets.map(d=>datasetJSON(d,version))),publishedKL(version)]);
+   if(seq!==state.load||manifest.updated_at!==version)return;if(kl.updated_at!==version||datasets.some(d=>d.updated_at!==version))throw Error('数据版本尚在同步');
+   state.datasets=datasets;state.kl=kl;state.catalog=ComparisonModel.catalog(datasets,kl);state.version=version;
+   if(!state.selected)state.selected=new Set(state.catalog.map(r=>r.key));if(!state.catalog.some(r=>r.key===state.baseline))state.baseline=defaultBaseline();controls();paint();status.textContent='';
+  }catch(error){if(seq===state.load){status.innerHTML='暂未加载 <button type="button">重试</button>';status.querySelector('button').onclick=ensure;status.title=error.message;}}
+  finally{if(seq===state.load){state.pending=null;host.removeAttribute('aria-busy');}}
+ }
+ let frame;slider.oninput=()=>{state.round=Number(slider.value);host.querySelector('#comparison-round-value').textContent='r'+state.round;cancelAnimationFrame(frame);frame=requestAnimationFrame(paint);};
+ baseline.onchange=()=>{state.baseline=baseline.value;paint();};
+ host.querySelector('#comparison-reset').onclick=()=>{cancelAnimationFrame(frame);state.round=30;state.baseline=defaultBaseline();state.selected=new Set(state.catalog.map(r=>r.key));controls();paint();};
+ host.querySelector('#comparison-disclosure').onclick=e=>{const b=e.currentTarget,open=b.getAttribute('aria-expanded')!=='true';b.setAttribute('aria-expanded',String(open));host.querySelector('#comparison-series-body').classList.toggle('open',open);host.querySelector('#comparison-series-body').inert=!open;};
+ host.querySelectorAll('[data-bar-group]').forEach(b=>b.onclick=()=>{state.group=b.dataset.barGroup;host.querySelectorAll('[data-bar-group]').forEach(x=>{x.classList.toggle('selected',x===b);x.setAttribute('aria-pressed',String(x===b));});controls();});
+ host.querySelector('#comparison-all').onclick=()=>{state.selected=state.selected.size===state.catalog.length?new Set():new Set(state.catalog.map(r=>r.key));syncControls();paint();};
+ document.querySelectorAll('[data-comparison-preset]').forEach(button=>button.onclick=()=>{state.round=Number(button.dataset.comparisonPreset);betaShowView('comparison',true);betaCloseMenu();paint();});
+ host.querySelectorAll('[data-bar-layout]').forEach(b=>b.onclick=()=>{if(state.layout===b.dataset.barLayout)return;state.layout=b.dataset.barLayout;host.querySelectorAll('[data-bar-layout]').forEach(x=>{x.classList.toggle('selected',x===b);x.setAttribute('aria-pressed',String(x===b));});paint();betaScheduleSliders();});
+ window.resultComparison={ensure,state,rowsFor,panels,paint};if(betaView==='comparison')ensure();
 })();

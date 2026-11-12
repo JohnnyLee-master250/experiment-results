@@ -134,6 +134,7 @@ function klChart(target,points,label,maxX,selectable=false,reference=null,axisTi
   if(!values.length)markup+=`<text x="${w/2}" y="${h/2}" text-anchor="middle">暂无 KL 有效测量</text>`;
  }
  renderChartMarkup(el,markup+'</svg>');
+ el._inspectionScale={min:1,max:maxX,ymin:0,ymax,width:w,height:h,left:pad.l,right:w-pad.r,top:pad.t,bottom:h-pad.b};
  bindMeasurementChart(el,values.map(p=>({...p.measurement,color:'#0072B2'})),'kl',renderKL);
  el.querySelectorAll('[data-apply-point]').forEach(p=>{p.onclick=()=>selectApply(p.dataset.applyPoint);p.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectApply(p.dataset.applyPoint);}};});
 }
@@ -153,7 +154,7 @@ function renderKL(){
  $('#kl-run-info').textContent=`开始 ${date(r.started_at)} · 独立完成 ${date(r.finished_at)} · 候选评测 ${r.applies.reduce((n,a)=>n+a.evaluations,0)} 次`;
  $('#kl-apply').innerHTML=r.applies.map(a=>`<option value="${a.apply}" ${a.apply===klApply?'selected':''}>Apply ${a.apply} · ${klStatus(a.status)}</option>`).join('')||'<option value="">暂无 Apply</option>';
  $('#kl-apply').disabled=!r.applies.length;$('#kl-apply').value=klApply==null?'':String(klApply);$('#kl-apply').onchange=e=>selectApply(e.target.value);
- let best=null;const points=r.applies.map(a=>{const v=a.delivered?.accepted?a.delivered.latency_ms:null;if(v!=null)best=best==null?v:Math.min(best,v);return {x:a.apply,y:v,best,timing:a.delivered?.timing,measurement:measurementInfo({...r,method:'KL'},{apply:a.apply,y:v,timing:a.delivered?.timing}),axes:a.axes,epoch:r.dataset==='Mega'&&a.apply>=5?2:1};});
+ let best=null;const points=r.applies.map(a=>{const v=a.delivered?.accepted?a.delivered.latency_ms:null;if(v!=null)best=best==null?v:Math.min(best,v);return {x:a.apply,y:v,best,timing:a.delivered?.timing,measurement:measurementInfo({...r,method:'KL'},{apply:a.apply,round:Math.max(0,...(r.aligned?.points||[]).filter(p=>p.counted&&p.apply<=a.apply).map(p=>p.round)),y:v,timing:a.delivered?.timing}),axes:a.axes,epoch:r.dataset==='Mega'&&a.apply>=5?2:1};});
  const axes=klAxisAnnotations(r),matched=klMatchedReferences(klDatasetCache.get(`${manifest.updated_at}:${datasetId}`),r);
  for(const chart of ['overview','candidates']){
   const toggle=$(`#kl-v0-${chart}`);toggle.disabled=!klReference;toggle.checked=!!klReference&&klReferenceVisible[chart];

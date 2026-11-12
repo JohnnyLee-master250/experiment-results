@@ -69,7 +69,7 @@ function changeAxis(next) {
  else if(isComparison())renderAligned('#aligned-content',alignedDataset,alignedRun);
  else if(data){syncRange();renderAll();}
 }
-const state={xmin:1,xmax:30,ymin:null,ymax:null,ymode:'focus',uncertainty:false};
+const state={xmin:1,xmax:30,ymin:null,ymax:null,ymode:'all',uncertainty:false};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=(v,n=6)=>v==null?'—':Number(v).toLocaleString('en-US',{maximumFractionDigits:n,minimumFractionDigits:Math.min(3,n)});
 function date(v,short=false){if(!v)return '—';return new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Singapore',year:'numeric',month:'2-digit',day:'2-digit',...(short?{}:{hour:'2-digit',minute:'2-digit',hour12:false})}).format(new Date(v));}
@@ -122,7 +122,7 @@ function comparisonColor(run,scope=category){
  return (revised?REVISION_COLORS[methodLabel(run)]:COLORS[run.baseMethod||run.method])||(['KL','Aligned KL'].includes(run.baseMethod||run.method)?'#e69a00':'#526c89');
 }
 function resetBVView(){
- roundWindows.delete('bv:'+datasetId);clearLatencyWindows('bv');clearCostWindows('bv');costRange=null;Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'focus',ymin:null,ymax:null});syncRange();showNotice('');renderCharts();
+ roundWindows.delete('bv:'+datasetId);clearLatencyWindows('bv');clearCostWindows('bv');costRange=null;Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'all',ymin:null,ymax:null});syncRange();showNotice('');renderCharts();
 }
 function chartResetButton(chart,key,action){
  const parent=chart.closest('.chart-card')?.querySelector('.chart-title')||chart.parentElement.querySelector('.plot-options');if(!parent)return;
@@ -251,6 +251,7 @@ function configureRoundBrush(chart,config){
  }
  brush.cancel();brush.config=config?{...config,dataset:datasetId}:null;
  chart.classList.toggle('round-brush-enabled',!!config);
+ if(config){chart._inspectionScale={...config};paintMeasurementInspection(chart);}
 }
 
 // Reconcile chart nodes instead of replacing the axes with each curve toggle.
@@ -309,7 +310,7 @@ function renderChartMarkup(el,markup){
  const previous=chartTransitions.get(old);if(previous)cancelAnimationFrame(previous);
  const changes=[],entered=[];
  function sync(parent,next){
-  const previousNodes=[...parent.childNodes].filter(n=>!n.hasAttribute?.('data-beta-glint')&&!n.hasAttribute?.('data-chart-pulse'));
+  const previousNodes=[...parent.childNodes].filter(n=>!n.hasAttribute?.('data-beta-glint')&&!n.hasAttribute?.('data-chart-pulse')&&!n.hasAttribute?.('data-inspection-overlay'));
   const byKey=new Map(previousNodes.map((n,i)=>[chartNodeKey(n,i),n]));const used=new Set();let cursor=parent.firstChild;
   [...next.childNodes].forEach((n,i)=>{
    const key=chartNodeKey(n,i);let current=byKey.get(key);if(used.has(current))current=null;
@@ -344,6 +345,7 @@ function renderChartMarkup(el,markup){
   const t=reduced?1:Math.min(1,(now-start)/duration),ease=1-Math.pow(1-t,3);
   for(const c of changes)if(c.node.isConnected)c.node.setAttribute(c.name,t===1?c.end:c.tween(ease));
   old.querySelectorAll('[data-beta-glint],[data-chart-pulse]').forEach(light=>{if(light._curveSource)for(const name of ['d','x1','x2','y1','y2']){const value=light._curveSource.getAttribute(name);if(value!==null)light.setAttribute(name,value);}});
+  paintMeasurementInspection(el);
   if(t<1)chartTransitions.set(old,requestAnimationFrame(frame));else chartTransitions.delete(old);
  }
  if(changes.length)frame(start);
@@ -418,11 +420,11 @@ async function loadDataset(id,reset,focusRun=null,push=false){
   if(d.updated_at!==manifest.updated_at)throw Error('发布版本尚在同步');
   cache.set(meta.id,d);data={...d,edition:bvEdition,runs:d.runs.filter(r=>showBVRun(r,'bv'))};needsReload=false;
   $('#updated').textContent=date(d.updated_at);$('#updated').dateTime=d.updated_at;
-  if(reset){visible=defaultRuns(data,axisMode);costRange=null;Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'focus',ymin:null,ymax:null});$('#round-run').value='all';}
+  if(reset){visible=defaultRuns(data,axisMode);costRange=null;Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'all',ymin:null,ymax:null});$('#round-run').value='all';}
   else for(const r of data.runs)if(!r.search.length&&!r.formal)visible.delete(r.id);
   if(reset)focusedRun=null;
   const target=focusRun&&data.runs.find(r=>r.id===focusRun);
-  if(target){focusedRun=target.id;if(usable(target))visible.add(target.id);Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'focus',ymin:null,ymax:null});}
+  if(target){focusedRun=target.id;if(usable(target))visible.add(target.id);Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'all',ymin:null,ymax:null});}
   const url=new URL(location);url.searchParams.delete('edition');url.searchParams.set('dataset',meta.id);url.searchParams.set('category','bv');url.searchParams.delete('apply');
   if(focusedRun)url.searchParams.set('run',focusedRun);else url.searchParams.delete('run');
   if(target)url.hash='';
@@ -579,7 +581,7 @@ function renderChart(el,detail){
   if(state.ymode!=='manual'){$('#y-min').placeholder=tickFmt(ymin);$('#y-max').placeholder=tickFmt(ymax);}
  }
  let cursor=xmin;
- function inspect(n){cursor=n;const line=el.querySelector('.crosshair');if(line){line.setAttribute('x1',sx(n===roundBudget()+2?finalAt:n));line.setAttribute('x2',sx(n===roundBudget()+2?finalAt:n));line.setAttribute('visibility','visible');}renderReadout(n);}
+ function inspect(n){cursor=n;renderReadout(n);}
  el.onpointermove=e=>{const x=e.clientX-el.getBoundingClientRect().left;if(x<left||x>W-right)return;let n=Math.round(xmin+(x-left)/w*(xend-xmin));if(withFinal&&n>roundBudget())n=roundBudget()+2;inspect(Math.max(xmin,Math.min(withFinal?roundBudget()+2:xmax,n)));};
  el.onkeydown=e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();let n=cursor+(e.key==='ArrowRight'?1:-1);if(n===roundBudget()+1)n+=e.key==='ArrowRight'?1:-1;inspect(Math.max(xmin,Math.min(withFinal?roundBudget()+2:xmax,n)));}};
  el.onpointerleave=()=>{el.querySelector('.crosshair')?.setAttribute('visibility','hidden');};
@@ -591,7 +593,7 @@ function renderReadout(n){
   return `<span style="--color:${comparisonColor(r,'bv')}"><i class="swatch"></i>${r.model} ${methodDisplayLabel(r)} <strong>${fmt(m?.mean_ms)}</strong>${m?' ms':''}</span>`;
  }).join('');
 }
-function renderCharts(){if(!data)return;renderChart($('#overview'),false);renderChart($('#detail'),true);renderReadout(roundBudget()+2);renderB0Cost();}
+function renderCharts(){if(!data)return;renderChart($('#detail'),true);renderReadout(roundBudget()+2);renderB0Cost();}
 function syncRange(){
  $('#range-axis-label').textContent=axisMode==='round'?'轮次':axisMode==='time'?'分钟':'百万 token';
  for(const [id,index] of [['x-min',0],['x-max',1]]) {
@@ -637,7 +639,7 @@ $('#uncertainty').onchange=e=>{state.uncertainty=e.target.checked;renderCharts()
 $('#apply-range').onclick=applyRange;
 $('#y-mode').onchange=()=>{if($('#y-mode').value!=='manual')applyRange();};
 $('#reset').onclick=resetBVView;
-for(const id of ['overview','detail'])chartResetButton($('#'+id),id,resetBVView);
+for(const id of ['detail'])chartResetButton($('#'+id),id,resetBVView);
 let measuredMainWidth=null;
 new ResizeObserver(entries=>{const width=entries[0].contentRect.width;if(width===measuredMainWidth)return;measuredMainWidth=width;if(category==='kl')renderKL();else if(isComparison())renderAligned('#aligned-content',alignedDataset,alignedRun);else if(data)renderCharts();}).observe($('main'));
 $$('[data-category]').forEach(b=>b.onclick=()=>chooseCategory(b.dataset.category));
@@ -833,6 +835,7 @@ function bindMeasurementChart(el,entries,scope,redraw){
   capsule.title=info?measurementLabel(info)+' · '+(info.effort||''):'点击图中测量点';
   el.querySelectorAll('[data-measure-key]').forEach(n=>n.classList.toggle('measurement-selected',n.dataset.measureKey===selected));
   capsule.onclick=()=>{if(info)openMeasurement(info);};
+  paintMeasurementInspection(el);
  };
  el._selectMeasurement=key=>{if(!el._measurements.has(key))return;measurementSelections.set(el._measurementContext,key);paint();};
  if(!el._measurementBound){
@@ -849,7 +852,7 @@ function bindMeasurementChart(el,entries,scope,redraw){
 }
 function measurementHistogram(stats){
  const spread=stats.max-stats.min;if(!spread)return {lo:stats.min-Math.max(stats.min*.005,1e-6),step:Math.max(stats.min*.01,2e-6),counts:[stats.n]};
- const width=2*(stats.q75-stats.q25)/Math.cbrt(stats.n),n=Math.max(5,Math.min(36,Math.ceil(width>0?spread/width:Math.sqrt(stats.n)))),step=spread/n,counts=Array(n).fill(0);
+ const width=(stats.q75-stats.q25)/Math.cbrt(stats.n),n=Math.min(stats.n,80,Math.max(12,Math.ceil(Math.sqrt(stats.n)*2),Math.ceil(width>0?spread/width:Math.sqrt(stats.n)*2))),step=spread/n,counts=Array(n).fill(0);
  stats.samples.forEach(v=>counts[Math.min(n-1,Math.floor((v-stats.min)/step))]++);
  return {lo:stats.min,step,counts};
 }
@@ -886,4 +889,31 @@ function openMeasurement(info){
  dialog.querySelector('.measurement-close').onclick=dialog._close;
  if(s)dialog.querySelector('.measurement-download').onclick=()=>{let group=1,end=s.groups[0];const rows=s.samples.map((v,i)=>{while(i>=end){end+=s.groups[group++];}return [i+1,group,v].join(',');});download(`${info.dataset}-${info.model}-${info.method}-${info.round||'apply'+info.apply}-samples.csv`,'sample,group,latency_ms\n'+rows.join('\n'),'text/csv');};
  if(!dialog.open)dialog.showModal();dialog.scrollTop=0;document.body.classList.add('measurement-modal-open');dialog.querySelector('.measurement-close').focus({preventScroll:true});
+}
+
+// One inspection layer for every speed viewport. It never rebuilds axes or samples.
+function paintMeasurementInspection(el){
+ const svg=el?.querySelector(':scope>svg'),c=el?._inspectionScale;if(!svg||!c)return;
+ let layer=svg.querySelector('[data-inspection-overlay]');
+ if(!layer){layer=document.createElementNS('http://www.w3.org/2000/svg','g');layer.setAttribute('data-inspection-overlay','');layer.classList.add('inspection-overlay');layer.innerHTML='<g class="inspection-selected"></g><g class="inspection-cursor" visibility="hidden"><line/><rect rx="8" fill="#f0f2f6"/><text text-anchor="middle"/></g>';svg.append(layer);}
+ const selected=measurementSelections.get(el._measurementContext),info=el._measurements?.get(selected),stats=sampleStats(info?.timing),marker=[...svg.querySelectorAll('[data-measure-key]')].find(n=>n.dataset.measureKey===selected),selection=layer.querySelector('.inspection-selected');
+ const y=v=>{const nodes=[...svg.querySelectorAll('[data-chart-key^="y-tick:"]')].map(n=>({v:Number(n.getAttribute('data-chart-key').slice(7)),y:Number(n.getAttribute('y'))-4})).filter(p=>Number.isFinite(p.v));if(nodes.length>1&&nodes.at(-1).v!==nodes[0].v){const a=nodes[0],b=nodes.at(-1);return a.y+(v-a.v)/(b.v-a.v)*(b.y-a.y);}return c.bottom-(v-c.ymin)/(c.ymax-c.ymin)*(c.bottom-c.top);};
+ if(stats&&marker){const box=marker.getBBox(),x=box.x+box.width/2,col=info.color||marker.getAttribute('fill')||'#0071e3';
+  if(x>=c.left&&x<=c.right){let markup='';for(const [name,lo,hi,width] of [['extent',stats.min,stats.max,20],['percentile',stats.p10,stats.p90,12]]){const high=Math.max(c.top,Math.min(c.bottom,y(hi))),low=Math.max(c.top,Math.min(c.bottom,y(lo)));markup+=`<rect class="inspection-selected-${name}" x="${x-width/2}" y="${Math.min(high,low)}" width="${width}" height="${Math.max(1,Math.abs(low-high))}" rx="3" fill="${col}" stroke="${col}"><title>${name==='extent'?'最快–最慢':'P10–P90'} · ${fmt(lo)}–${fmt(hi)} ms</title></rect>`;}selection.innerHTML=markup;}else selection.replaceChildren();
+ }else selection.replaceChildren();
+ if(!el._inspectionBound){el._inspectionBound=true;
+  el.addEventListener('pointermove',event=>{if(event.pointerType==='touch')return;el._inspectionPointer={x:event.clientX,y:event.clientY};paintMeasurementCursor(el);});
+  el.addEventListener('pointerleave',()=>{el._inspectionPointer=null;el.querySelector('.inspection-cursor')?.setAttribute('visibility','hidden');});
+ }
+ if(el._inspectionPointer)paintMeasurementCursor(el);
+}
+function paintMeasurementCursor(el){
+ const svg=el.querySelector(':scope>svg'),c=el._inspectionScale,p=el._inspectionPointer,layer=svg?.querySelector('.inspection-cursor');if(!layer||!p||!c)return;
+ const rect=svg.getBoundingClientRect(),view=svg.viewBox.baseVal,x=(p.x-rect.left)*view.width/rect.width,y=(p.y-rect.top)*view.height/rect.height;
+ if(x<c.left||x>c.right||y<c.top||y>c.bottom||el._roundBrush?.drag?.active){layer.setAttribute('visibility','hidden');return;}
+ let label;
+ if(axisMode==='round'&&category!=='kl'){label='r'+Math.max(0,Math.round(c.min+(x-c.left)/(c.right-c.left)*(c.max-c.min)));}
+ else {let best=null;for(const n of svg.querySelectorAll('[data-measure-key]')){const info=el._measurements?.get(n.dataset.measureKey);if(!info||!Number.isFinite(info.round)||info.formal)continue;const b=n.getBBox(),distance=Math.abs(x-b.x-b.width/2);if(!best||distance<best.distance)best={distance,round:info.round};}label=best?'r'+best.round:'r—';}
+ const line=layer.querySelector('line');line.setAttribute('x1',x);line.setAttribute('x2',x);line.setAttribute('y1',c.top);line.setAttribute('y2',c.bottom);
+ const width=Math.max(36,label.length*7+14),cx=Math.max(c.left+width/2,Math.min(c.right-width/2,x)),back=layer.querySelector('rect'),text=layer.querySelector('text');back.setAttribute('x',cx-width/2);back.setAttribute('y',Math.max(0,c.top-24));back.setAttribute('width',width);back.setAttribute('height',20);text.setAttribute('x',cx);text.setAttribute('y',Math.max(0,c.top-24)+14);text.textContent=label;layer.setAttribute('visibility','visible');
 }

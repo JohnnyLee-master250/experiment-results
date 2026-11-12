@@ -394,3 +394,63 @@ body.measurement-modal-open{overflow:hidden}
 @media(prefers-reduced-motion:reduce){#measurement-dialog,#measurement-dialog::backdrop,#measurement-dialog.closing{animation:none}.measurement-band,.measurement-tools button{transition:none!important}}
 
 #measurement-title>small{font-size:.45em;font-weight:550;color:#6e6e73;margin-left:8px}
+/* Result comparison: settings, optional selection, then eight equal chart cards. */
+.beta #beta-comparison-view{padding-bottom:28px}
+.beta .comparison-settings{display:flex;align-items:center;gap:32px;padding:4px 4px 26px;margin-bottom:24px;border-bottom:1px solid #e8e8ed}
+.beta .comparison-setting{display:flex;flex-direction:column;gap:12px;min-width:0}
+.beta .comparison-setting>label{font-size:12px;font-weight:600;color:#6e6e73;letter-spacing:.025em}
+.beta .comparison-cutoff{display:flex;align-items:center;gap:18px;height:42px}
+.beta .comparison-cutoff input{appearance:none;-webkit-appearance:none;width:clamp(180px,22vw,320px);height:8px;border-radius:999px;background:linear-gradient(to right,#9ba9b8 var(--cutoff-fill,55.55%),#dedfe5 var(--cutoff-fill,55.55%));cursor:pointer;margin:0}
+.beta .comparison-cutoff input::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;border:2px solid white;width:22px;height:22px;border-radius:50%;background:#526e8c;box-shadow:0 1px 5px #526e8c33;transition:transform .16s}
+.beta .comparison-cutoff input::-moz-range-thumb{border:2px solid white;width:18px;height:18px;border-radius:50%;background:#526e8c}
+.beta .comparison-cutoff input:hover::-webkit-slider-thumb{transform:scale(1.13)}
+.beta .comparison-cutoff output{min-width:40px;font-size:16px;font-weight:650;color:#1d1d1f;font-variant-numeric:tabular-nums}
+.beta .comparison-reference{margin-left:auto;width:300px}
+.beta .comparison-reference select{width:100%;height:42px;border:1px solid #d8d9df;border-radius:999px;background:#fff;color:#1d1d1f;padding:9px 32px 9px 18px;font:550 14px -apple-system,BlinkMacSystemFont,sans-serif}
+.beta #comparison-reset{align-self:flex-end;margin-bottom:2px}
+.beta .comparison-selection{margin-bottom:24px}
+.beta .comparison-selection-head{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 4px}
+.beta .comparison-disclosure{display:flex;align-items:center;gap:12px;background:none;border:0;padding:8px 0;min-width:0;color:#1d1d1f}
+.beta .comparison-disclosure strong{font-size:18px;font-weight:650}.beta #comparison-selected-count{font-size:12px;color:#86868b;font-variant-numeric:tabular-nums;white-space:nowrap}
+.beta .comparison-chevron{font-size:27px;color:#86868b;line-height:1;transition:transform .25s}.beta .comparison-disclosure[aria-expanded=true] .comparison-chevron{transform:rotate(90deg)}
+.beta .comparison-selection-actions{display:flex;align-items:center;gap:16px}.beta .comparison-selection-actions .segments button{font-size:12px;padding:9px 18px}
+.beta .comparison-group-toggle{border-radius:999px;border:1px solid #526e8c66;background:#f4f6f9;color:#526e8c;font-size:12px;font-weight:650;min-width:58px;padding:8px 12px;transition:background .18s,color .18s}
+.beta .comparison-group-toggle[aria-pressed=true],.beta .comparison-group-toggle[aria-pressed=mixed]{background:#526e8c;color:#fff;border-color:#526e8c}
+.beta .comparison-group-toggle:hover{filter:brightness(1.08)}
+.beta .comparison-series-body{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .3s,opacity .2s}.beta .comparison-series-body.open{grid-template-rows:1fr;opacity:1}.beta .comparison-series-body>div{overflow:hidden;min-height:0}
+.beta .comparison-series{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:20px 2px 2px}
+.beta .comparison-model{min-width:0;background:#f5f5f7;border-radius:20px;padding:18px}
+.beta .comparison-model header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.beta .comparison-model h3{font-size:15px;margin:0;font-weight:650}
+.beta .comparison-pills{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px}
+.beta .comparison-toggle{height:34px;padding:6px;border:1px solid var(--color);border-radius:999px;background:color-mix(in srgb,var(--color) 6%,white);color:var(--color);font-size:12px;font-weight:650;transition:background .16s,filter .16s,transform .16s;white-space:nowrap}
+.beta .comparison-toggle[aria-pressed=true],.beta .comparison-toggle:hover:not(.hover-muted){background:var(--color);color:#fff}.beta .comparison-toggle[aria-pressed=true]:hover{filter:brightness(1.12)}
+.beta .comparison-caption{display:flex;justify-content:space-between;gap:10px;color:#72747c;font-size:11px;margin:8px 4px 14px}
+.beta .comparison-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;align-items:stretch}
+.beta .comparison-card{min-width:0;border:1px solid #eeeef1;border-radius:24px;background:#fff;box-shadow:0 6px 24px #11182707;padding:22px 18px 16px;transition:transform .22s,box-shadow .22s}
+.beta .comparison-card>header{display:flex;align-items:center;justify-content:space-between;padding:0 0 22px;gap:8px}.beta .comparison-card h2{font-size:23px;margin:0;font-weight:650;letter-spacing:.01em}.beta .comparison-scale-label{font-size:10px;color:#86868b;white-space:nowrap}
+.beta .comparison-plot{position:relative;min-width:0}.beta .comparison-bars{display:flex;flex-direction:column;gap:16px}
+.beta .comparison-bar-row{min-width:0;position:relative}.beta .comparison-row-label{position:relative;z-index:2;display:flex;justify-content:space-between;gap:8px;font-size:11px;line-height:15px;margin-bottom:7px;font-variant-numeric:tabular-nums}
+.beta .comparison-label{background:#fff;color:#535359;white-space:nowrap;padding-right:2px;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.beta .comparison-values{background:#fff;display:flex;align-items:baseline;gap:7px;white-space:nowrap;padding-left:2px}.beta .comparison-values b{font-weight:600;color:#1d1d1f}.beta .comparison-values em{font-style:normal;font-size:10px;color:#86868b;min-width:35px;text-align:right}
+.beta .comparison-track{height:9px;position:relative;border-radius:999px;background:#f4f4f6;overflow:visible}
+.beta .comparison-track>span:not(.comparison-bar-break){position:absolute;top:0;height:9px;background:var(--bar-color);border-radius:999px;transition:width .32s cubic-bezier(.2,.75,.25,1),left .32s;min-width:0}.beta .comparison-bar-a{left:0}
+.beta .comparison-bar-break{position:absolute;top:-3px;width:6%;height:14px;background:#fff;color:#a0a0a6;z-index:2;font-size:12px;text-align:center;line-height:14px}
+.beta .comparison-baseline-line{position:absolute;top:-11px;bottom:0;width:0;border-left:1.5px dashed #526e8c99;z-index:1;pointer-events:none;transition:left .32s cubic-bezier(.2,.75,.25,1)}
+.beta .comparison-baseline-line>span{position:absolute;top:-14px;right:3px;white-space:nowrap;font-size:9px;color:#526e8c;background:#fff}
+.beta .comparison-axis{position:relative;height:18px;margin-top:13px;border-top:1px solid #e5e5ea;font-variant-numeric:tabular-nums;color:#86868b;font-size:9px}
+.beta .comparison-axis>span{position:absolute;top:5px;transform:translateX(-50%);white-space:nowrap}.beta .comparison-axis>i{position:absolute;top:2px;font-style:normal;transform:translateX(-50%);background:#fff;padding:0 2px}
+.beta .comparison-empty-note{font-size:11px;color:#86868b;line-height:18px}.beta .comparison-empty-note:empty{display:none}.beta .comparison-bar-row.is-empty .comparison-values b{font-weight:400;color:#a0a0a6}.beta .comparison-bar-row.is-empty .comparison-label{color:#a0a0a6}
+.beta #comparison-loading:empty{display:none}.beta #comparison-loading{padding:16px;color:#6e6e73;font-size:13px}
+@media(hover:hover) and (pointer:fine){.beta .comparison-card:hover{transform:translateY(-2px) scale(1.005);box-shadow:0 10px 30px #1118270d}}
+@media(max-width:1200px){.beta .comparison-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.beta .comparison-series{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.beta .comparison-grid{grid-template-columns:1fr;gap:16px}.beta .comparison-settings{gap:18px;flex-wrap:wrap}.beta .comparison-setting{flex:1 1 100%}.beta .comparison-reference{margin:0;flex:1 1 200px}.beta .comparison-cutoff input{flex:1;width:auto}.beta .comparison-selection-head{align-items:flex-start;flex-direction:column;gap:12px}.beta .comparison-selection-actions{width:100%;justify-content:space-between}.beta .comparison-series{grid-template-columns:1fr}.beta .comparison-card{padding:20px 18px}.beta .beta-nav-inner{flex-wrap:wrap}.beta .beta-main-nav{overflow-x:auto;max-width:100%;scrollbar-width:none}}
+@media(prefers-reduced-motion:reduce){.beta .comparison-card,.beta .comparison-toggle,.beta .comparison-track>span,.beta .comparison-baseline-line,.beta .comparison-series-body,.beta .comparison-chevron{transition:none!important}}
+/* A single B/V viewport retains all zoom and sampling interactions. */
+.beta .charts{display:block!important}.beta .chart-card.detail{width:100%}.beta .charts .chart-card.overview{display:none!important}
+.inspection-overlay{pointer-events:none}.inspection-overlay text{font:600 11px -apple-system,BlinkMacSystemFont,sans-serif;fill:#526c89}
+.inspection-cursor{pointer-events:none}.inspection-cursor line{stroke:#7b8796;stroke-width:1;stroke-dasharray:4 4}
+.inspection-selected-extent{fill-opacity:.13;stroke-opacity:.35;stroke-width:1}.inspection-selected-percentile{fill-opacity:.34;stroke-opacity:.65;stroke-width:1}
+
+.beta .comparison-caption{align-items:center;margin-bottom:20px;flex-wrap:wrap}.beta .comparison-caption>span:last-child{margin-left:auto}.beta .comparison-layout button{font-size:12px;padding:9px 18px}.beta .comparison-task-card h2{font-size:18px}.beta .comparison-values em:empty{display:none}.beta .comparison-task-card .comparison-bar-row{min-height:40px}.beta .comparison-bar-a{transition:left .32s,width .32s!important}
+
+@keyframes comparison-reveal{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}.beta .comparison-card{animation:comparison-reveal .24s ease-out both}@media(prefers-reduced-motion:reduce){.beta .comparison-card{animation:none}}
