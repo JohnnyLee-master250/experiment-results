@@ -243,22 +243,23 @@ function renderAligned(target,dataset,run,previewIds=[]){
  const points=peers.flatMap(r=>(r.aligned?.points||[]).map(p=>({...p,run_id:r.id,model:r.model,effort:r.effort})));
  const records=dataset.runs.filter(r=>showBVRun(r,dataset.comparison_scope)&&(comparisonHasB(dataset.comparison_scope)||r.method==='V0'));
  const redraw=()=>renderAligned(target,dataset,run);
- const retainedChart=host.querySelector('.aligned-chart'),retainedRange=host.querySelector('.comparison-range');
+ const retainedControls=host.querySelector(':scope > .aligned-controls'),retainedCard=host.querySelector(':scope > .aligned-card'),retainedChart=host.querySelector('.aligned-chart'),retainedRange=host.querySelector('.comparison-range');
  const recordKey=(dataset.comparison_scope||'aligned')+':'+dataset.id;
  const retainedRecords=new Map(host.dataset.recordsKey===recordKey?[...host.querySelectorAll(':scope > details[data-record-panel]')].map(d=>[d.dataset.recordPanel,d]):[]);host.dataset.recordsKey=recordKey;
  const scaffold=`<p class="kl-caption aligned-note">${comparisonHasB(dataset.comparison_scope)?'B/V':'V'} 均值 · KL 中位数</p>
  <div class="aligned-controls"></div>
- <div class="plot-options"><div class="segments"><button data-aligned-mode="best" aria-pressed="${view.mode==='best'}" class="${view.mode==='best'?'selected':''}">搜索最优</button><button data-aligned-mode="raw" aria-pressed="${view.mode==='raw'}" class="${view.mode==='raw'?'selected':''}">逐次测量</button></div><label class="chip aligned-compression" style="--color:#8a56d6" title="仅轮次轴：KL 轮次 ÷ 1.5，真实轮次不变"><input type="checkbox" data-aligned-compress ${view.compressed?'checked':''} ${axisMode!=='round'?'disabled':''}>KL ×⅔</label><label><input data-aligned-zoom type="checkbox" ${view.zoom?'checked':''}> 收敛放大</label><span>● 测量 · — 最优阶梯 · × 失败</span><button data-aligned-csv>展开记录 CSV ↓</button></div>
- <div class="chart aligned-chart" tabindex="0" role="img" aria-label="${comparisonHasB(dataset.comparison_scope)?'全部结果':'V 与 Aligned KL'} 按有效评测次数对比"></div><div class="readout aligned-readout" aria-live="polite"></div>
+ <section class="chart-card aligned-card"><div class="chart-title"><h3>速度曲线</h3></div><div class="plot-options"><div class="segments" aria-label="曲线指标"><button data-aligned-mode="best" aria-pressed="${view.mode==='best'}" class="${view.mode==='best'?'selected':''}">搜索最优</button><button data-aligned-mode="raw" aria-pressed="${view.mode==='raw'}" class="${view.mode==='raw'?'selected':''}">逐次测量</button></div><label class="chip aligned-compression" style="--color:#8a56d6" title="仅轮次轴：KL 轮次 ÷ 1.5，真实轮次不变"><input type="checkbox" data-aligned-compress ${view.compressed?'checked':''} ${axisMode!=='round'?'disabled':''}>KL ×⅔</label><label><input data-aligned-zoom type="checkbox" ${view.zoom?'checked':''}> 收敛放大</label><span class="mark-key">● 测量 · — 最优阶梯 · × 失败</span><button data-aligned-csv>CSV ↓</button></div>
+ <div class="chart aligned-chart" tabindex="0" role="img" aria-label="${comparisonHasB(dataset.comparison_scope)?'全部结果':'V 与 Aligned KL'} 按有效评测次数对比"></div><div class="readout aligned-readout" aria-live="polite"></div></section>
  <details class="data-section" data-record-panel="kl"><summary>KL 展开记录 · ${points.length} 条</summary><div class="table-wrap rounds-wrap"><table><thead><tr><th>模型 / effort</th><th>累计轮次</th><th>Apply</th><th>内部序号</th><th>结果</th><th>延迟 ms</th><th>记录时间 SGT</th></tr></thead><tbody>${points.map(p=>`<tr><td>${esc(p.model)} / ${esc(p.effort)}</td><td>${p.counted?'r'+p.round:'不计轮次'}</td><td>${p.apply}</td><td>${p.inner_sequence}</td><td>${klStatus(p.status)}</td><td>${fmt(p.latency_ms)}</td><td>${date(p.recorded_at)}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">暂无 KL 内部评测；保存后自动更新</td></tr>'}</tbody></table></div></details>
  <details class="data-section" data-record-panel="bv"><summary>${comparisonHasB(dataset.comparison_scope)?'B/V':'V'} 实验记录</summary><div class="table-wrap"><table><thead><tr><th>模型 / effort</th><th>方法</th><th>状态</th><th>轮次</th><th>搜索最优 ms</th><th>正式结果 ms</th><th>完成 SGT</th></tr></thead><tbody>${records.map(r=>`<tr><td>${esc(r.model)} / ${esc(r.effort)}</td><td>${esc(methodDisplayLabel(r))}</td><td>${badge(r.status)}</td><td>${r.reported_attempts}/${r.budget}</td><td>${r.method==='B0'?'正确性 · '+(r.accepted===true?'通过':r.accepted===false?'未接受':'待定'):fmt(r.search_best_ms)}</td><td>${fmt(r.formal?.mean_ms)}</td><td>${date(r.finished_at)}</td></tr>`).join('')}</tbody></table></div></details>`;
  // Preserve the actual slider node while dragging; detaching a native range ends its gesture.
  const template=document.createElement('template');template.innerHTML=scaffold;
- for(const child of [...host.children])if(child!==retainedChart&&child!==retainedRange)child.remove();
+ for(const child of [...host.children])if(child!==retainedCard&&child!==retainedControls)child.remove();
  let afterChart=false;
  for(const child of [...template.content.children]){
-  if(child.classList.contains('aligned-chart')){if(!retainedChart)host.append(child);afterChart=true;}
-  else if(!afterChart&&retainedChart)host.insertBefore(child,retainedChart);
+  if(child.classList.contains('aligned-controls')&&retainedControls)continue;
+  if(child.classList.contains('aligned-card')){if(!retainedCard)host.append(child);afterChart=true;}
+  else if(!afterChart&&retainedCard)host.insertBefore(child,retainedControls||retainedCard);
   else if(child.matches('details[data-record-panel]')&&retainedRecords.has(child.dataset.recordPanel)){
    const saved=retainedRecords.get(child.dataset.recordPanel);
    if(saved.innerHTML!==child.innerHTML){const scroll=saved.querySelector('.table-wrap')?.scrollTop||0;saved.innerHTML=child.innerHTML;if(saved.querySelector('.table-wrap'))saved.querySelector('.table-wrap').scrollTop=scroll;}
@@ -267,6 +268,10 @@ function renderAligned(target,dataset,run,previewIds=[]){
  }
  renderComparisonControls(host.querySelector('.aligned-controls'),all,view.visible,dataset.comparison_scope||'aligned',redraw);
  chartResetButton(host.querySelector('.aligned-chart'),'comparison',()=>{roundWindows.delete((dataset.comparison_scope||'aligned')+':'+dataset.id);clearLatencyWindows(dataset.comparison_scope||'aligned',dataset.id);clearCostWindows(dataset.comparison_scope||'aligned',dataset.id);view.zoom=false;view.compressed=false;view.visualScale=1;redraw();});
+ host.querySelector('[data-aligned-compress]').checked=view.compressed;
+ host.querySelector('[data-aligned-compress]').disabled=axisMode!=='round';
+ host.querySelector('[data-aligned-zoom]').checked=view.zoom;
+ host.querySelectorAll('[data-aligned-mode]').forEach(button=>{const active=button.dataset.alignedMode===view.mode;button.classList.toggle('selected',active);button.setAttribute('aria-pressed',String(active));});
  host.querySelector('[data-aligned-compress]').onchange=e=>{view.compressed=e.target.checked;view.visualScale=view.compressed?2/3:1;redraw();};
  host.querySelectorAll('[data-aligned-mode]').forEach(el=>el.onclick=()=>{view.mode=el.dataset.alignedMode;redraw();});
  host.querySelector('[data-aligned-zoom]').onchange=e=>{clearLatencyWindows(dataset.comparison_scope||'aligned',dataset.id);view.zoom=e.target.checked;redraw();};

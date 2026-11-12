@@ -467,3 +467,65 @@ body.measurement-modal-open{overflow:hidden}
 @media(max-width:650px){.beta .bv-range-controls{padding:14px 18px 20px;gap:14px}.beta .bv-range-controls>.beta-select-field{width:auto}.beta .bv-range-controls .round-range-slot{flex:1 1 220px}.beta .measurement-range-modes button{padding:8px 10px;font-size:11px}}
 
 .beta .bv-range-controls .range-track input{padding:0;border:0;background:transparent}
+
+/* One chart, one control surface. Display first, range and inspection second. */
+.beta .speed-chart-card{min-width:0;overflow:hidden}
+.beta .speed-chart-card>.chart-title{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 24px 0;margin:0;min-height:24px}
+.beta .speed-chart-card>.chart-title>h3{font-size:16px;line-height:1.4;margin:0}
+.beta .speed-chart-card>.chart-title>span{font-size:11px;color:#86868b}
+.beta .speed-toolbar.measurement-tools{display:flex;flex-direction:column;align-items:stretch;gap:12px;margin:0;padding:18px 24px 16px;min-width:0;width:100%;box-sizing:border-box;flex:none}
+.beta .speed-toolbar .plot-options{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;margin:0;padding:0;min-width:0}
+.beta .speed-display-mode:empty,.beta .speed-export-actions:empty,.beta .speed-range-options:empty{display:none}
+.beta .speed-display-mode,.beta .speed-display-settings,.beta .speed-export-actions,.beta .speed-detail-actions{display:flex;align-items:center;gap:10px;min-width:0}
+.beta .speed-display-settings{flex:1 1 auto}
+.beta .speed-export-actions{margin-left:auto}
+.beta .speed-toolbar .segments{padding:4px;min-height:40px;height:40px;box-sizing:border-box;flex:none}
+.beta .speed-toolbar .segments button{font-size:12px;line-height:18px;min-height:32px;padding:7px 16px;white-space:nowrap;font-weight:600}
+.beta .speed-toolbar .measurement-band-switches{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.beta .speed-toolbar .measurement-band-switches>button,.beta .speed-toolbar .speed-export-actions button,.beta .speed-toolbar .beta-pill{min-height:36px;height:36px;padding:7px 14px;box-sizing:border-box;line-height:20px;font-size:12px;border-radius:999px;margin:0;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
+.beta .speed-toolbar .speed-export-actions .exports{display:flex;gap:8px;flex-wrap:wrap;margin:0}
+.beta .speed-toolbar .speed-export-actions button{background:#fff;border:1px solid #d2d2d7;color:#0071e3;font-weight:600;transition:background .18s,transform .18s}
+.beta .speed-toolbar .speed-export-actions button:hover{background:#f2f6fc;transform:scale(1.025)}
+.beta .speed-toolbar .speed-range-row{padding-top:12px;border-top:1px solid #ececf0;gap:12px 16px}
+.beta .speed-range-options{display:flex;align-items:center;flex:1 1 auto;flex-wrap:wrap;gap:10px 14px;min-width:0}
+.beta .speed-toolbar .bv-range-controls{display:flex;align-items:center;flex:1 1 auto;gap:14px;flex-wrap:wrap;padding:0;margin:0;justify-content:flex-start}
+.beta .speed-toolbar .beta-select-field{width:auto;flex-direction:row;align-items:center;gap:0;margin:0}
+.beta .speed-toolbar .beta-select-label:empty{display:none}
+.beta .speed-toolbar .round-range-slot{flex:0 1 250px;min-width:190px;width:250px;max-width:100%;margin:0}
+.beta .speed-toolbar .round-range-slot:has(.comparison-range[hidden]),.beta .speed-toolbar .round-range-slot:empty{display:none}
+.beta .speed-toolbar .comparison-range{min-width:0;width:100%;padding:4px 0;margin:0;gap:8px}
+.beta .speed-toolbar .range-track input{padding:0;border:0;background:transparent}
+.beta .speed-detail-actions{margin-left:auto;flex:0 1 auto;max-width:100%;justify-content:flex-end}
+.beta .speed-toolbar .measurement-capsule{height:36px;min-height:36px;max-width:320px;margin:0;padding:4px 4px 4px 13px;font-size:12px;gap:10px;flex:0 1 auto}
+.beta .speed-toolbar .measurement-plus{width:28px;height:28px;flex-basis:28px;font-size:24px}
+.beta .speed-toolbar .chart-reset{height:36px;min-height:36px;width:36px;flex:0 0 36px;margin:0;font-size:25px}
+.beta .speed-chart-card>.chart{margin:4px 18px 0;width:calc(100% - 36px);box-sizing:border-box}
+.beta .speed-chart-card>.speed-legend{padding:8px 24px 0;margin:0;font-size:11px;color:#86868b;display:flex;flex-wrap:wrap;gap:12px;line-height:1.6}
+.beta .speed-chart-card>.readout{padding:10px 24px 18px;margin:0;min-height:24px;box-sizing:content-box;font-size:11px}
+.beta .speed-reference-controls{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:14px 24px 22px;border-top:1px solid #ececf0;margin:0 18px}
+.beta .speed-reference-controls>[id^="kl-matched-"]{display:flex;flex-direction:column;gap:8px;width:100%;max-width:420px;margin:0;padding:0}
+.beta .speed-reference-controls .kl-reference-toggle.beta-pill{width:100%;max-width:420px;margin:0!important;padding:8px 14px;min-height:36px;box-sizing:border-box;line-height:1.4}
+@media(min-width:1051px){
+ .beta #aligned-content>.aligned-card{grid-column:2;grid-row:2;min-width:0}
+ .beta #aligned-content>.aligned-controls{grid-column:1;grid-row:2;max-height:740px;margin:0;padding-top:0}
+ .beta #aligned-content>details{grid-column:1/-1;grid-row:3}
+ .beta #aligned-content>details+details{grid-row:4}
+}
+@media(max-width:1050px){.beta #aligned-content>.aligned-card{margin-top:16px}}
+@media(max-width:650px){
+ .beta .speed-chart-card>.chart-title{padding:18px 16px 0}
+ .beta .speed-toolbar.measurement-tools{padding:14px 16px;gap:12px}
+ .beta .speed-toolbar .plot-options{gap:10px}
+ .beta .speed-display-settings{flex-basis:100%}
+ .beta .speed-export-actions{margin-left:0}
+ .beta .speed-toolbar .segments button{padding:7px 12px;font-size:11px}
+ .beta .speed-toolbar .measurement-band-switches>button{font-size:11px;padding:7px 12px}
+ .beta .speed-toolbar .bv-range-controls{gap:12px}
+ .beta .speed-toolbar .round-range-slot{flex:1 1 220px;max-width:100%;width:100%}
+ .beta .speed-detail-actions{width:100%;margin-left:0;justify-content:space-between}
+ .beta .speed-toolbar .measurement-capsule{max-width:calc(100% - 46px);font-size:11px}
+ .beta .speed-chart-card>.chart{margin:2px 8px 0;width:calc(100% - 16px)}
+ .beta .speed-chart-card>.speed-legend{padding:8px 16px 0;gap:8px}
+ .beta .speed-chart-card>.readout{padding:10px 16px 16px}
+ .beta .speed-reference-controls{padding:14px 8px 18px;margin:0 8px}
+}

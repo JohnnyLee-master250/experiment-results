@@ -124,8 +124,37 @@ function comparisonColor(run,scope=category){
 function resetBVView(){
  roundWindows.delete('bv:'+datasetId);clearLatencyWindows('bv');clearCostWindows('bv');costRange=null;Object.assign(state,{xmin:1,xmax:roundBudget(),ymode:'all',ymin:null,ymax:null});syncRange();showNotice('');renderCharts();
 }
+// Keep every chart action inside one persistent card; never detach a dragged slider.
+function speedControlShell(chart){
+ const card=chart.closest('.chart-card');if(!card)return null;
+ card.classList.add('speed-chart-card');
+ let shell=card.querySelector(':scope > .speed-toolbar');
+ if(!shell){
+  const options=card.querySelector(':scope > .plot-options');
+  shell=document.createElement('div');shell.className='speed-toolbar measurement-tools';shell.setAttribute('aria-label','图表控制');
+  shell.innerHTML='<div class="speed-display-row plot-options"><div class="speed-display-mode"></div><div class="speed-display-settings"></div><div class="speed-export-actions"></div></div><div class="speed-range-row plot-options"><div class="speed-range-options"></div><div class="speed-detail-actions"></div></div>';
+  chart.before(shell);
+  const move=(node,slot)=>{if(node)shell.querySelector(slot).append(node);};
+  if(options){
+   for(const child of [...options.children]){
+    if(child.matches('.segments'))move(child,'.speed-display-mode');
+    else if(child.matches('label:not([hidden])'))move(child,'.speed-range-options');
+    else if(child.matches('button:not(#reset)'))move(child,'.speed-export-actions');
+    else if(child.matches('.mark-key')){child.classList.add('speed-legend');chart.after(child);}
+    else if(child.matches('[hidden],#reset'))shell.append(child);
+   }
+   options.remove();
+  }
+  const range=card.querySelector(':scope > .bv-range-controls');
+  if(range)move(range,'.speed-range-options');
+  else{const slot=document.createElement('div');slot.className='round-range-slot';shell.querySelector('.speed-range-options').append(slot);}
+  const exports=chart.id==='detail'?document.querySelector('#bv-panel > .dataset-head .exports'):chart.id==='kl-overview'?document.querySelector('#kl-panel > .dataset-head .exports'):null;
+  if(exports)move(exports,'.speed-export-actions');
+ }
+ return shell;
+}
 function chartResetButton(chart,key,action){
- const parent=chart.closest('.chart-card')?.querySelector('.chart-title')||chart.parentElement.querySelector('.plot-options');if(!parent)return;
+ const parent=speedControlShell(chart)?.querySelector('.speed-detail-actions');if(!parent)return;
  let button=parent.querySelector('[data-chart-reset="'+key+'"]');
  if(!button){button=document.createElement('button');button.type='button';button.dataset.chartReset=key;button.className='chart-reset';button.textContent='↻';button.title='重置视图';button.setAttribute('aria-label','重置视图');parent.append(button);}
  button.onclick=()=>{action();button.animate?.([{transform:'rotate(0)'},{transform:'rotate(360deg)'}],{duration:320,easing:'ease-out'});};
@@ -178,7 +207,7 @@ function comparisonWindow(scope,maximum){
 }
 function renderRoundRange(chart,scope,maximum,redraw){
  let box=chart._rangeBox;
- if(!box?.isConnected){box=document.createElement('div');box.className='comparison-range';chart._rangeBox=box;const parent=chart.closest('.chart-card')?.querySelector('.round-range-slot')||chart.closest('.chart-card')?.querySelector('.chart-title');if(parent)parent.append(box);else chart.before(box);}
+ if(!box?.isConnected){box=document.createElement('div');box.className='comparison-range';chart._rangeBox=box;const parent=speedControlShell(chart)?.querySelector('.round-range-slot');if(parent)parent.append(box);else chart.before(box);}
  box.hidden=axisMode!=='round';if(box.hidden)return;
  const key=scope+':'+datasetId,max=Math.max(1,Math.ceil(maximum)),range=comparisonWindow(scope,max);
  if(!box.querySelector('input'))box.innerHTML='<output data-range-value="0" aria-label="起始轮次"></output><div class="range-track"><span class="range-selected"></span><input type="range" data-range-bound="0" aria-label="起始轮次" min="0" step="1"><input type="range" data-range-bound="1" aria-label="截止轮次" min="0" step="1"></div><output data-range-value="1" aria-label="截止轮次"></output>';
@@ -475,6 +504,11 @@ function renderComparisonControls(host,series,chosen,scope,onChange){
  const groups=keys.map(key=>({key,rows:entries.filter(r=>(byTask?r.method:r.model)===key)}));
  const inputAttr=scope==='bv'?'data-series':'data-aligned-run';
  host.dataset.grouping=byTask?'task':'model';
+ const signature=JSON.stringify([datasetId,scope,byTask,groups.map(g=>[g.key,g.rows.map(r=>[r.id,r.model,r.method,r.effort,r.color,r.available])])]);
+ // Preserve the native input from pointerdown/focus through click. Hover preview
+ // changes the plotted series, never the identity of the visibility control.
+ if(host._controlSignature!==signature||!host.children.length){
+ host._controlSignature=signature;
  host.innerHTML=groups.map(({key,rows})=>{
   const available=rows.filter(r=>r.available!==false),n=available.filter(r=>chosen.has(r.id)).length,all=available.length>0&&n===available.length,mixed=n>0&&!all;
   const effort=!byTask&&new Set(rows.map(r=>r.effort)).size===1?rows[0].effort:'';
@@ -483,6 +517,16 @@ function renderComparisonControls(host,series,chosen,scope,onChange){
    return `<label class="chip ${on?'active':''} ${ok?'':'disabled'}" style="--color:${r.color}" title="${esc(r.baseMethod==='B0'?'正确性实验，不绘制速度曲线':r.model+' / '+r.effort+' · '+r.method+(ok?'':' · 尚无评测结果'))}"><input type="checkbox" ${inputAttr}="${esc(r.id)}" aria-label="${esc(r.model+' '+r.method+' 曲线')}" ${on?'checked':''} ${ok?'':'disabled'}>${esc(label)}${byTask?`<small>${esc(r.effort)}</small>`:''}</label>`;
   }).join('')}</div></div>`;
  }).join('');
+ }
+ for(const [i,g] of groups.entries()){
+  const node=host.children[i],available=g.rows.filter(r=>r.available!==false),n=available.filter(r=>chosen.has(r.id)).length,all=available.length>0&&n===available.length,mixed=n>0&&!all;
+  const toggle=node.querySelector('[data-curve-group]'),label=toggle.closest('label');
+  toggle.checked=all;toggle.indeterminate=mixed;toggle.disabled=!available.length;toggle.setAttribute('aria-checked',mixed?'mixed':String(all));
+  label.classList.toggle('mixed',mixed);label.title=`${n}/${available.length} 条曲线已显示`;
+  const text=available.length?(all?'全部':mixed?'部分':'关闭'):'无曲线';if(label.querySelector('span').textContent!==text)label.querySelector('span').textContent=text;
+  node.querySelector('[data-curve-group-title]').disabled=!available.length;
+  for(const input of node.querySelectorAll('['+inputAttr+']')){const row=g.rows.find(r=>r.id===input.getAttribute(inputAttr)),on=row.available!==false&&chosen.has(row.id);input.checked=on;input.disabled=row.available===false;input.closest('label').classList.toggle('active',on);}
+ }
  host.querySelectorAll('['+inputAttr+']').forEach(el=>el.onchange=()=>{const id=el.getAttribute(inputAttr);el.checked?chosen.add(id):chosen.delete(id);onChange();});
  host.querySelectorAll('[data-curve-group-title]').forEach(el=>el.onclick=()=>{const rows=groups.find(g=>g.key===el.dataset.curveGroupTitle).rows.filter(r=>r.available!==false),on=!rows.every(r=>chosen.has(r.id));for(const r of rows)on?chosen.add(r.id):chosen.delete(r.id);onChange();});
  host.querySelectorAll('[data-curve-group]').forEach(el=>{const rows=groups.find(g=>g.key===el.dataset.curveGroup).rows.filter(r=>r.available!==false);el.indeterminate=el.getAttribute('aria-checked')==='mixed';el.onchange=()=>{for(const r of rows)el.checked?chosen.add(r.id):chosen.delete(r.id);onChange();};});
@@ -834,12 +878,14 @@ function bindMeasurementChart(el,entries,scope,redraw){
  el._measurements=new Map(entries.map(info=>[measurementKey(info),info]));el._measurementContext=[category,datasetId,el.id||'aligned',category==='kl'?klRun?.id:'',el.id==='kl-candidates'?klApply:''].join(':');
  let bar=el._measurementTools;
  if(!bar?.isConnected){
-  bar=document.createElement('div');bar.className='measurement-tools';el._measurementTools=bar;
-  const parent=el.closest('.chart-card')?.querySelector('.chart-title')||el.parentElement.querySelector(':scope>.plot-options');
-  (parent||el.parentElement).append(bar);
+  bar=speedControlShell(el);if(!bar)return;el._measurementTools=bar;
  }
  const b=bandState(scope),bandMode=b.percentile?'percentile':b.extent?'extent':'off';
- if(!bar.querySelector('[data-band-mode]'))bar.innerHTML=`<div class="measurement-band-switches"><button data-log-y title="对数纵轴；仅显示正延迟，原始数据不变">对数纵轴</button><div class="segments measurement-range-modes" role="radiogroup" aria-label="测量波动范围"><button data-band-mode="off" role="radio">关闭</button><button data-band-mode="extent" role="radio" title="完整样本的最快至最慢">最快–最慢</button><button data-band-mode="percentile" role="radio" title="完整样本第10至第90百分位；不是均值置信区间">P10–P90</button></div></div><button class="measurement-capsule" aria-haspopup="dialog"><span class="measurement-selection-label"></span><span class="measurement-plus" aria-hidden="true">＋</span></button>`;
+ if(!bar.querySelector('[data-band-mode]')){
+  bar.querySelector('.speed-display-settings').innerHTML=`<div class="measurement-band-switches"><div class="segments measurement-range-modes" role="radiogroup" aria-label="测量波动范围"><button data-band-mode="off" role="radio">关闭</button><button data-band-mode="extent" role="radio" title="完整样本的最快至最慢">最快–最慢</button><button data-band-mode="percentile" role="radio" title="完整样本第10至第90百分位；不是均值置信区间">P10–P90</button></div><button data-log-y title="对数纵轴；仅显示正延迟，原始数据不变">对数纵轴</button></div>`;
+  const capsule=document.createElement('button');capsule.className='measurement-capsule';capsule.setAttribute('aria-haspopup','dialog');capsule.innerHTML='<span class="measurement-selection-label"></span><span class="measurement-plus" aria-hidden="true">＋</span>';
+  bar.querySelector('.speed-detail-actions').prepend(capsule);
+ }
  const logButton=bar.querySelector('[data-log-y]');logButton.setAttribute('aria-pressed',String(logLatencyEnabled(el,scope)));
  logButton.onclick=()=>{latencyModes.set(scope+':'+(el.id||'plot'),!logLatencyEnabled(el,scope));redraw();};
  bar.querySelectorAll('[data-band-mode]').forEach(button=>{

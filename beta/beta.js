@@ -351,7 +351,11 @@ function betaRedrawPreview(scope){
 function betaSetPreview(next){
  if(JSON.stringify(next)===JSON.stringify(betaPreview))return;
  const previous=betaPreview;betaPreview=next;
- for(const scope of new Set([previous?.scope,next?.scope].filter(Boolean)))betaRedrawPreview(scope);
+ for(const scope of new Set([previous?.scope,next?.scope].filter(Boolean))){
+  const source=betaAlignedSources.get(scope),saved=scope==='bv'?visible:source?alignedView(source.dataset,alignedSeries(source.dataset,source.run)).visible:null;
+  const additions=preview=>preview?.scope===scope?preview.ids.filter(id=>!saved?.has(id)).sort().join('|'):'';
+  if(!saved||additions(previous)!==additions(next))betaRedrawPreview(scope);
+ }
  betaHighlightCurves();
 }
 function betaPreviewEvent(e,on){
@@ -392,6 +396,7 @@ renderCharts=function(){betaOriginalCharts();betaHighlightCurves();};
 function betaControlSnapshot(host){return host?{host,nodes:[...host.childNodes],scrollTop:host.scrollTop,scrollLeft:host.scrollLeft,focus:host.contains(document.activeElement)?document.activeElement:null,animations:(host.getAnimations?.({subtree:true})||[]).filter(a=>['beta-pill-light','beta-pill-orbit'].includes(a.animationName)).map(a=>({target:a.effect.target,pseudo:a.effect.pseudoElement,name:a.animationName,start:a.startTime}))}:null;}
 function betaRestoreControls(snapshot,fresh){
  if(!snapshot||!fresh)return false;
+ if(snapshot.host===fresh&&snapshot.nodes.length===fresh.childNodes.length&&snapshot.nodes.every((node,i)=>node===fresh.childNodes[i]))return true;
  const old=snapshot.host,measurementTools=fresh.querySelector(':scope > .measurement-tools'),oldNodes=snapshot.nodes.filter(n=>!n.classList?.contains('measurement-tools'));
  const oldInputs=oldNodes.flatMap(n=>[...(n.matches?.('input,button')?[n]:[]),...(n.querySelectorAll?.('input,button')||[])]),newInputs=[...fresh.querySelectorAll('input,button')].filter(n=>!n.closest('.measurement-tools'));
  const key=e=>e.tagName+':'+e.id+':'+['series','modelCheck','model','alignedRun','alignedModel','matchedKind','alignedMode','alignedZoom','alignedCompress','alignedCsv','curveGroup','curveGroupTitle','groupScope'].map(k=>e.dataset[k]??'-').join(':');
@@ -476,7 +481,11 @@ const betaTitleRow=document.createElement('div');betaTitleRow.className='beta-ti
 $('.kl-budget').hidden=true;
 const betaSummarySection=$('#summary').closest('section'),betaSummaryDetails=document.createElement('details'),betaSummaryHead=document.createElement('summary');
 betaSummaryDetails.className=betaSummarySection.className;betaSummaryDetails.open=false;betaSummaryHead.innerHTML='<span>实验组</span><span>延迟 ms ↓ · 完成日期 SGT</span>';betaSummaryDetails.append(betaSummaryHead,betaSummarySection.querySelector('.table-wrap'));betaSummarySection.replaceWith(betaSummaryDetails);
-for(const id of ['kl-overview','kl-candidates']){const chart=$('#'+id);chart.parentNode.querySelector('.chart-title').after(chart);}
+for(const id of ['kl-overview','kl-candidates']){
+ const chart=$('#'+id),card=chart.parentNode;card.querySelector('.chart-title').after(chart);
+ const refs=document.createElement('div');refs.className='speed-reference-controls';refs.setAttribute('aria-label','参考线');chart.after(refs);
+ for(const node of [...card.children])if(node.matches('.kl-reference-toggle,[id^="kl-matched-"]'))refs.append(node);
+}
 const queueView=$('#beta-queue-view');queueView.append($('.running-bar'),$('#paused-bar'),$('#waiting-bar'),$('#campaign-status'));
 const queueSection=$('#kl-queue').closest('section');queueSection.querySelector('h3').textContent='完整队列';queueSection.querySelector('.section-head>span').textContent='原队列顺序';queueView.append(queueSection);
 const legacyLog=$('#task-log');legacyLog.hidden=true;$('#beta-legacy-log').append(legacyLog);
@@ -490,10 +499,8 @@ const originalRenderAligned=renderAligned;renderAligned=function(target,dataset,
  if(!dataset)return;betaAlignedSources.set(target,{dataset,run});
  betaControlsRendering++;try{
  const controls=betaControlSnapshot($(target).querySelector('.aligned-controls'));
- const options=betaControlSnapshot($(target).querySelector('.plot-options'));
  originalRenderAligned(target,dataset,run,betaPreview?.scope===target?betaPreview.ids:[]);
  betaRestoreControls(controls,$(target).querySelector('.aligned-controls'));
- betaRestoreControls(options,$(target).querySelector('.plot-options'));
  betaV0Labels();betaDecorateControls();betaHighlightCurves();
  if(isComparison())betaResultMotion();
  }finally{betaControlsRendering--;}
