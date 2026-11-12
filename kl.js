@@ -115,26 +115,27 @@ function klChart(target,points,label,maxX,selectable=false,reference=null,axisTi
  const longest=Math.max(1,...[...axisTicks.values()].map(t=>t.text.length))*6;
  const rotate=longest>(w-110)/Math.max(1,maxX-1)-6;
  const pad={l:rotate?82:58,r:24,t:24,b:rotate?115:45};
- const ymax=Math.max(...values.flatMap(p=>[p.y,...bandValues(p.timing,'kl')]),...points.map(p=>p.best||0),...references.map(r=>r.latency_ms))*1.12;
- const x=v=>pad.l+(v-1)/Math.max(1,maxX-1)*(w-pad.l-pad.r),y=v=>h-pad.b-v/ymax*(h-pad.t-pad.b);
+ const domainValues=[...values.flatMap(p=>[p.y,...bandValues(p.timing,'kl')]),...points.map(p=>p.best),...references.map(r=>r.latency_ms)].filter(Number.isFinite);
+ const scale=latencyScale(el,'kl',[0,Math.max(...domainValues)*1.12],domainValues,pad.t,h-pad.b),{min:ymin,max:ymax}=scale;
+ const x=v=>pad.l+(v-1)/Math.max(1,maxX-1)*(w-pad.l-pad.r),y=scale.project;
  let grid='',line='',bestLine='',last=null,lastBest=null;
- for(let i=0;i<=4;i++){const v=ymax*i/4;grid+=`<line data-chart-key="y-grid:${v}" x1="${pad.l}" x2="${w-pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="#edf0f4"/><text data-chart-key="y-tick:${v}" x="${pad.l-8}" y="${y(v)+4}" text-anchor="end">${fmt(v,3)}</text>`;}
+ for(const v of scale.ticks){grid+=`<line data-chart-key="y-grid:${v}" x1="${pad.l}" x2="${w-pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="#edf0f4"/><text data-chart-key="y-tick:${v}" x="${pad.l-8}" y="${y(v)+4}" text-anchor="end">${latencyTick(v)}</text>`;}
  for(let i=1;i<=maxX;i++){
   if(maxX>25&&i!==1&&i!==maxX&&i%5)continue;
   const tick=axisTicks.get(i),yy=h-pad.b+20;
   grid+=`<text data-chart-key="x-tick:${i}" class="kl-axis-tick" data-x="${i}" x="${x(i)}" y="${yy}" text-anchor="${rotate?'end':i===1?'start':i===maxX?'end':'middle'}" ${rotate?`transform="rotate(-60 ${x(i)} ${yy})"`:''}>${esc(tick?.text||String(i))}<title>${esc(tick?.detail||`${label} ${i}`)}</title></text>`;
  }
  for(const p of points){
-  if(p.y!=null){line+=(last?' L':'M')+`${x(p.x)},${y(p.y)}`;last=p;}else last=null;
-  if(p.best!=null){bestLine+=(lastBest?` H${x(p.x)} V${y(p.best)}`:`M${x(p.x)},${y(p.best)}`);lastBest=p;}
+  if(scale.valid(p.y)){line+=(last?' L':'M')+`${x(p.x)},${y(p.y)}`;last=p;}else last=null;
+  if(scale.valid(p.best)){bestLine+=(lastBest?` H${x(p.x)} V${y(p.best)}`:`M${x(p.x)},${y(p.best)}`);lastBest=p;}
  }
- let markup=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}"><text data-chart-key="y-label" x="12" y="16">ms ↓</text>${grid}${sampleBandSVG(points,x,y,'#0072B2','kl',el.id,false)}<path data-chart-key="kl-best" d="${bestLine}" fill="none" stroke="#009E73" stroke-width="2" stroke-dasharray="5 3"/><path data-chart-key="kl-measurements" d="${line}" fill="none" stroke="#0072B2" stroke-width="2"/>${values.map(p=>`<circle${measurementMarker(p.measurement)} cx="${x(p.x)}" cy="${y(p.y)}" r="${selectable&&p.x===klApply?6:4}" fill="#0072B2" ${selectable?`data-apply-point="${p.x}" role="button" tabindex="0" aria-label="选择 Apply ${p.x}，${fmt(p.y)} 毫秒"`:''}><title>${esc(label)} ${p.x}: ${fmt(p.y)} ms</title></circle>`).join('')}<text data-chart-key="x-label" x="${w/2}" y="${h-1}" text-anchor="middle">${esc(label)}</text>`;
+ let markup=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}"><text data-chart-key="y-label" x="12" y="16">ms ↓${scale.log?' · log':''}</text>${grid}${sampleBandSVG(points,x,y,'#0072B2','kl',el.id,false)}<path data-chart-key="kl-best" d="${bestLine}" fill="none" stroke="#009E73" stroke-width="2" stroke-dasharray="5 3"/><path data-chart-key="kl-measurements" d="${line}" fill="none" stroke="#0072B2" stroke-width="2"/>${values.map(p=>`<circle${measurementMarker(p.measurement)} cx="${x(p.x)}" cy="${y(p.y)}" r="${selectable&&p.x===klApply?6:4}" fill="#0072B2" ${selectable?`data-apply-point="${p.x}" role="button" tabindex="0" aria-label="选择 Apply ${p.x}，${fmt(p.y)} 毫秒"`:''}><title>${esc(label)} ${p.x}: ${fmt(p.y)} ms</title></circle>`).join('')}<text data-chart-key="x-label" x="${w/2}" y="${h-1}" text-anchor="middle">${esc(label)}</text>`;
  if(references.length){
   for(const ref of references)markup+=`<line class="${ref.kind==='full'?'kl-v0-reference':'kl-v0-matched'}" data-reference="${ref.kind}" x1="${pad.l}" x2="${w-pad.r}" y1="${y(ref.latency_ms)}" y2="${y(ref.latency_ms)}" stroke="${ref.color}" stroke-width="2" stroke-dasharray="${ref.dash}"><title>${esc(ref.caption)}${ref.kind==='full'?'':` · 最快记录为 r${ref.round}`}</title></line>`;
   if(!values.length)markup+=`<text x="${w/2}" y="${h/2}" text-anchor="middle">暂无 KL 有效测量</text>`;
  }
  renderChartMarkup(el,markup+'</svg>');
- el._inspectionScale={min:1,max:maxX,ymin:0,ymax,width:w,height:h,left:pad.l,right:w-pad.r,top:pad.t,bottom:h-pad.b};
+ el._inspectionScale={min:1,max:maxX,ymin,ymax,logY:scale.log,invertY:scale.invert,width:w,height:h,left:pad.l,right:w-pad.r,top:pad.t,bottom:h-pad.b};
  bindMeasurementChart(el,values.map(p=>({...p.measurement,color:'#0072B2'})),'kl',renderKL);
  el.querySelectorAll('[data-apply-point]').forEach(p=>{p.onclick=()=>selectApply(p.dataset.applyPoint);p.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectApply(p.dataset.applyPoint);}};});
 }
@@ -279,28 +280,29 @@ function renderAligned(target,dataset,run,previewIds=[]){
  const chart=host.querySelector('.aligned-chart'),w=Math.max(320,chart.clientWidth||800),h=klPlotHeight(chart,340),pad={l:66,r:20,t:26,b:45},maxX=Math.max(30,...selected.flatMap(r=>r.points.map(p=>p.round*(r.baseMethod==='KL'?(view.visualScale??1):1))));
  const [minRound,maxRound]=comparisonWindow(dataset.comparison_scope||'aligned',maxX);
  renderRoundRange(chart,dataset.comparison_scope||'aligned',maxX,redraw);
- const displayed=r=>{let best=null;return r.points.map(p=>{if(p.y!=null)best=best==null?p.y:Math.min(best,p.y);return {...p,viewY:view.mode==='best'?best:p.y,viewX:p.round*(r.baseMethod==='KL'?(view.visualScale??1):1)};});};
+ const displayed=r=>{let best=null;return r.points.map(p=>{if(Number.isFinite(p.y)&&p.y>0)best=best==null?p.y:Math.min(best,p.y);return {...p,viewY:view.mode==='best'?best:p.y,viewX:p.round*(r.baseMethod==='KL'?(view.visualScale??1):1)};});};
  const inRange=p=>p.viewX>=minRound&&p.viewX<=maxRound;
  let values=selected.flatMap(r=>displayed(r).filter(p=>inRange(p)&&p.viewY!=null).flatMap(p=>[p.viewY,p.y,...bandValues(p.timing,dataset.comparison_scope||'aligned')]).filter(Number.isFinite)),ymin=0,ymax=Math.max(.001,...values)*1.08;
  if(view.zoom&&values.length){const tails=selected.map(r=>Math.min(...displayed(r).filter(p=>inRange(p)&&p.viewY!=null).map(p=>p.viewY))).filter(Number.isFinite);if(tails.length){const lo=Math.min(...tails),hi=Math.max(...tails),space=Math.max((hi-lo)*.15,hi*.035,.000001);ymin=Math.max(0,lo-space);ymax=hi+space;}}
  const bandDomain=selected.flatMap(r=>bandPoints(r.points,view.mode==='best').filter(p=>{const v=p.round*(r.baseMethod==='KL'?(view.visualScale??1):1);return v>=minRound&&v<=maxRound;})).flatMap(p=>bandValues(p.bandTiming,dataset.comparison_scope||'aligned'));
  if(bandDomain.length){ymin=Math.min(ymin,Math.min(...bandDomain)*.98);ymax=Math.max(ymax,Math.max(...bandDomain)*1.04);}
- [ymin,ymax]=latencyWindow(chart,dataset.comparison_scope||'aligned',[ymin,ymax]);
- const x=n=>pad.l+(n-minRound)/Math.max(1,maxRound-minRound)*(w-pad.l-pad.r),y=n=>h-pad.b-(n-ymin)/(ymax-ymin)*(h-pad.t-pad.b),clip='aligned-clip-'+target.replace(/[^a-z]/g,'');
+ const scale=latencyScale(chart,dataset.comparison_scope||'aligned',latencyWindow(chart,dataset.comparison_scope||'aligned',[ymin,ymax]),[...values,...bandDomain],pad.t,h-pad.b);
+ [ymin,ymax]=[scale.min,scale.max];
+ const x=n=>pad.l+(n-minRound)/Math.max(1,maxRound-minRound)*(w-pad.l-pad.r),y=scale.project,clip='aligned-clip-'+target.replace(/[^a-z]/g,'');
  let svg=`<svg viewBox="0 0 ${w} ${h}" role="img"><title>Aligned KL，横轴为有效评测序号，纵轴为延迟毫秒</title><defs><clipPath id="${clip}"><rect x="${pad.l}" y="${pad.t}" width="${w-pad.l-pad.r}" height="${h-pad.t-pad.b}"/></clipPath></defs>`;
- for(const v of ticks(ymin,ymax,5))svg+=`<line data-chart-key="y-grid:${v}" x1="${pad.l}" x2="${w-pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="#edf0f4"/><text data-chart-key="y-tick:${v}" x="${pad.l-8}" y="${y(v)+4}" text-anchor="end">${tickFmt(v)}</text>`;
+ for(const v of scale.ticks)svg+=`<line data-chart-key="y-grid:${v}" x1="${pad.l}" x2="${w-pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="#edf0f4"/><text data-chart-key="y-tick:${v}" x="${pad.l-8}" y="${y(v)+4}" text-anchor="end">${latencyTick(v)}</text>`;
  for(const v of [...new Set([minRound,...ticks(minRound,maxRound,w<500?4:8).filter(Number.isInteger),maxRound])])svg+=`<text data-chart-key="x-tick:${v}" x="${x(v)}" y="${h-22}" text-anchor="middle">${v}</text>`;
- svg+=`<text data-chart-key="y-label" x="12" y="16">ms ↓</text><text data-chart-key="x-label" x="${w/2}" y="${h-3}" text-anchor="middle">轮次${view.compressed?' · KL r ÷ 1.5':''}</text><g clip-path="url(#${clip})">`;
- function curvePath(r,scale=1){let best=null,path='',last=false;for(const p of r.points){if(p.y!=null)best=best==null?p.y:Math.min(best,p.y);const v=view.mode==='best'?best:p.y;if(v==null){last=false;continue;}path+=last?(view.mode==='best'?` H${x(p.round*scale)} V${y(v)}`:` L${x(p.round*scale)},${y(v)}`):` M${x(p.round*scale)},${y(v)}`;last=true;}return path;}
- const scale=view.visualScale??(view.compressed?2/3:1);
- for(const r of selected){const kl=r.baseMethod==='KL',ratio=kl?scale:1;
+ svg+=`<text data-chart-key="y-label" x="12" y="16">ms ↓${scale.log?' · log':''}</text><text data-chart-key="x-label" x="${w/2}" y="${h-3}" text-anchor="middle">轮次${view.compressed?' · KL r ÷ 1.5':''}</text><g clip-path="url(#${clip})">`;
+ function curvePath(r,ratio=1){let best=null,path='',last=false;for(const p of r.points){if(Number.isFinite(p.y)&&p.y>0)best=best==null?p.y:Math.min(best,p.y);const v=view.mode==='best'?best:p.y;if(!scale.valid(v)){last=false;continue;}path+=last?(view.mode==='best'?` H${x(p.round*ratio)} V${y(v)}`:` L${x(p.round*ratio)},${y(v)}`):` M${x(p.round*ratio)},${y(v)}`;last=true;}return path;}
+ const compression=view.visualScale??(view.compressed?2/3:1);
+ for(const r of selected){const kl=r.baseMethod==='KL',ratio=kl?compression:1;
   svg+=`<g data-comparison-series="${esc(r.id)}">`+sampleBandSVG(r.points.map(p=>({...p,x:p.round*ratio})),x,y,r.color,dataset.comparison_scope||'aligned',r.id,view.mode==='best')+`<path data-aligned-curve="${esc(r.id)}" d="${curvePath(r,ratio)}" fill="none" stroke="${r.color}" stroke-width="${kl?2.6:1.8}" stroke-dasharray="${r.dash}"/>`;
-  for(const p of r.points){const pos=x(p.round*ratio);if(p.y!=null)svg+=`<circle${measurementMarker(p.measurement)} data-real-round="${p.round}" cx="${pos}" cy="${y(p.y)}" r="3" fill="${r.color}"><title>${esc(r.model+' '+r.method)} r${p.round}${p.apply?' · Apply '+p.apply+' / 内部 '+p.inner_sequence:''}: ${fmt(p.y)} ms</title></circle>`;else if(p.status==='failed')svg+=`<path data-failed-round="${p.round}" d="M${pos-3},${h-pad.b-9}l6 6m0 -6l-6 6" stroke="${r.color}"/>`;}
+  for(const p of r.points){const pos=x(p.round*ratio);if(scale.valid(p.y))svg+=`<circle${measurementMarker(p.measurement)} data-real-round="${p.round}" cx="${pos}" cy="${y(p.y)}" r="3" fill="${r.color}"><title>${esc(r.model+' '+r.method)} r${p.round}${p.apply?' · Apply '+p.apply+' / 内部 '+p.inner_sequence:''}: ${fmt(p.y)} ms</title></circle>`;else if(p.status==='failed')svg+=`<path data-failed-round="${p.round}" d="M${pos-3},${h-pad.b-9}l6 6m0 -6l-6 6" stroke="${r.color}"/>`;}
   svg+='</g>';
  }
  svg+='</g></svg>';renderChartMarkup(chart,svg);
  bindMeasurementChart(chart,selected.flatMap(r=>r.points.filter(p=>p.y!=null).map(p=>({...p.measurement,color:r.color}))),dataset.comparison_scope||'aligned',redraw);
- configureRoundBrush(chart,{scope:dataset.comparison_scope||'aligned',maximum:maxX,min:minRound,max:maxRound,ymin,ymax,width:w,height:h,left:pad.l,right:w-pad.r,top:pad.t,bottom:h-pad.b,redraw});
+ configureRoundBrush(chart,{scope:dataset.comparison_scope||'aligned',maximum:maxX,min:minRound,max:maxRound,ymin,ymax,logY:scale.log,invertY:scale.invert,width:w,height:h,left:pad.l,right:w-pad.r,top:pad.t,bottom:h-pad.b,redraw});
  view.paintCompression=ratio=>{
   for(const r of selected.filter(r=>r.baseMethod==='KL')){
    const group=[...chart.querySelectorAll('[data-comparison-series]')].find(el=>el.dataset.comparisonSeries===r.id);if(!group)continue;

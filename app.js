@@ -80,7 +80,7 @@ function value(p){return p.timing?.mean_ms??null;}
 function candidates(r){return r.search.filter(p=>p.timing&&p.role==='candidate');}
 function series(r){
  let best=null;
- return r.search.map(p=>{if(p.timing)best=best==null?value(p):Math.min(best,value(p));return {...p,y:mode==='best'?best:value(p)};});
+ return r.search.map(p=>{if(p.timing&&value(p)>0)best=best==null?value(p):Math.min(best,value(p));return {...p,y:mode==='best'?best:value(p)};});
 }
 function showNotice(s){$('#notice').hidden=!s;$('#notice').textContent=s;}
 function getJSON(url){const base=document.body.dataset.apiBase;const target=base?new URL(url,new URL(base,location.href)).href:url;if(pendingJSON.has(target))return pendingJSON.get(target);const request=fetch(target,{cache:'no-cache'}).then(response=>{if(!response.ok)throw Error(`HTTP ${response.status}`);return response.json();}).finally(()=>pendingJSON.delete(target));pendingJSON.set(target,request);return request;}
@@ -139,6 +139,32 @@ function datasetHasResults(id){
 
 
 
+// One positive-latency scale shared by curves, sample bands and the 2D brush.
+const latencyModes=new Map();
+function logLatencyEnabled(chart,scope){return latencyModes.get(scope+':'+(chart.id||'plot'))===true;}
+function latencyScale(chart,scope,domain,values,top,bottom,binary=false){
+ const log=!binary&&logLatencyEnabled(chart,scope),positive=values.filter(v=>Number.isFinite(v)&&v>0);
+ let [min,max]=domain;
+ if(log){
+  if(!(min>0))min=positive.length?Math.min(...positive)/1.08:1;
+  if(!(max>min))max=positive.length?Math.max(...positive)*1.08:min*10;
+  if(max/min<1.001){min/=1.04;max*=1.04;}
+ }
+ const transform=v=>log?Math.log10(v):v,lo=transform(min),hi=transform(max);
+ const valid=v=>Number.isFinite(v)&&(!log||v>0);
+ const project=v=>valid(v)?bottom-(transform(v)-lo)/(hi-lo)*(bottom-top):NaN;
+ project.valid=valid;
+ let marks;
+ if(log){
+  marks=[];
+  for(let power=Math.floor(lo);power<=Math.ceil(hi);power++)for(const step of [1,2,5]){const v=step*10**power;if(v>=min&&v<=max)marks.push(v);}
+  if(marks.length<2)marks=Array.from({length:5},(_,i)=>10**(lo+(hi-lo)*i/4));
+  if(marks.length>8){const all=marks;marks=[...new Set(Array.from({length:7},(_,i)=>all[Math.round(i*(all.length-1)/6)]))];}
+ }else marks=ticks(min,max,5);
+ return {min,max,log,project,valid,ticks:marks,invert:px=>log?10**(hi-(px-top)/(bottom-top)*(hi-lo)):max-(px-top)/(bottom-top)*(max-min)};
+}
+function latencyTick(v){return v!==0&&Math.abs(v)<.00001?v.toExponential(1):tickFmt(v);}
+
 const roundWindows=new Map(),latencyWindows=new Map(),costWindows=new Map();let rangeDragging=false,rangeRenderFrame=null;
 function costWindowKey(chart,scope,viewKey=''){return [scope,datasetId,axisMode,chart.id||'plot',viewKey].join(':');}
 function clearCostWindows(scope,dataset=datasetId){const prefix=scope+':'+dataset+':';for(const key of costWindows.keys())if(key.startsWith(prefix))costWindows.delete(key);}
@@ -152,7 +178,7 @@ function comparisonWindow(scope,maximum){
 }
 function renderRoundRange(chart,scope,maximum,redraw){
  let box=chart._rangeBox;
- if(!box?.isConnected){box=document.createElement('div');box.className='comparison-range';chart._rangeBox=box;const title=chart.closest('.chart-card')?.querySelector('.chart-title');if(title)title.append(box);else chart.before(box);}
+ if(!box?.isConnected){box=document.createElement('div');box.className='comparison-range';chart._rangeBox=box;const parent=chart.closest('.chart-card')?.querySelector('.round-range-slot')||chart.closest('.chart-card')?.querySelector('.chart-title');if(parent)parent.append(box);else chart.before(box);}
  box.hidden=axisMode!=='round';if(box.hidden)return;
  const key=scope+':'+datasetId,max=Math.max(1,Math.ceil(maximum)),range=comparisonWindow(scope,max);
  if(!box.querySelector('input'))box.innerHTML='<output data-range-value="0" aria-label="起始轮次"></output><div class="range-track"><span class="range-selected"></span><input type="range" data-range-bound="0" aria-label="起始轮次" min="0" step="1"><input type="range" data-range-bound="1" aria-label="截止轮次" min="0" step="1"></div><output data-range-value="1" aria-label="截止轮次"></output>';
@@ -202,7 +228,7 @@ function configureRoundBrush(chart,config){
    const round=x=>c.min+(x-c.left)/(c.right-c.left)*(c.max-c.min);
    const gap=c.continuous?Math.max((c.max-c.min)*1e-9,Number.EPSILON):1;
    const lo=clamp(c.continuous?round(left):Math.floor(round(left)),c.min,c.max-gap),hi=clamp(c.continuous?round(right):Math.ceil(round(right)),lo+gap,c.max);
-   const latency=y=>c.ymax-(y-c.top)/(c.bottom-c.top)*(c.ymax-c.ymin);
+   const latency=y=>c.invertY?c.invertY(y):c.ymax-(y-c.top)/(c.bottom-c.top)*(c.ymax-c.ymin);
    return {useX,useY,left,right,top,bottom,rounds:[lo,hi],latencies:[latency(bottom),latency(top)]};
   };
   chart.addEventListener('pointerdown',e=>{
@@ -542,18 +568,18 @@ function renderChart(el,detail){
  const [xmin,xmax]=comparisonWindow('bv',roundBudget()),withFinal=xmax===roundBudget()&&runs.some(r=>r.formal),finalAt=roundBudget()+(W<500?5:2),xend=withFinal?finalAt+.9:xmax+.25;
  const bandBounds=runs.flatMap(r=>bandPoints(r.search.map(p=>({...p,y:value(p)})),mode==='best').filter(p=>p.round>=xmin&&p.round<=xmax).flatMap(p=>bandValues(p.bandTiming,'bv'))),baseBounds=bounds(runs,detail,[xmin,xmax]);
  if(bandBounds.length&&state.ymode!=='manual'){baseBounds[0]=Math.min(baseBounds[0],Math.min(...bandBounds)*.98);baseBounds[1]=Math.max(baseBounds[1],Math.max(...bandBounds)*1.04);}
- const [ymin,ymax]=latencyWindow(el,'bv',baseBounds),sx=x=>left+(x-xmin)/(xend-xmin)*w,sy=y=>top+h-(y-ymin)/(ymax-ymin)*h;
- const id=detail?'detail':'overview',clip=`clip-${id}`,yticks=ticks(ymin,ymax,H>300?5:3),xticks=ticks(xmin,xmax,W<500?4:7).filter(Number.isInteger);
+ const scale=latencyScale(el,'bv',latencyWindow(el,'bv',baseBounds),[...runs.flatMap(r=>series(r).filter(p=>p.round>=xmin&&p.round<=xmax).flatMap(p=>[p.y,value(p)])),...bandBounds,...(withFinal?runs.map(r=>r.formal?.mean_ms):[])],top,top+h),{min:ymin,max:ymax}=scale,sx=x=>left+(x-xmin)/(xend-xmin)*w,sy=scale.project;
+ const id=detail?'detail':'overview',clip=`clip-${id}`,yticks=scale.ticks,xticks=ticks(xmin,xmax,W<500?4:7).filter(Number.isInteger);
  let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" aria-hidden="true"><defs><clipPath id="${clip}"><rect x="${left}" y="${top}" width="${w}" height="${h}"/></clipPath></defs>`;
- svg+=yticks.map(v=>`<line data-chart-key="y-grid:${v}" x1="${left}" x2="${W-right}" y1="${sy(v)}" y2="${sy(v)}" stroke="#edf0f4"/><text data-chart-key="y-tick:${v}" x="${left-10}" y="${sy(v)+4}" text-anchor="end">${tickFmt(v)}</text>`).join('');
+ svg+=yticks.map(v=>`<line data-chart-key="y-grid:${v}" x1="${left}" x2="${W-right}" y1="${sy(v)}" y2="${sy(v)}" stroke="#edf0f4"/><text data-chart-key="y-tick:${v}" x="${left-10}" y="${sy(v)+4}" text-anchor="end">${latencyTick(v)}</text>`).join('');
  svg+=xticks.map(v=>`<text data-chart-key="x-tick:${v}" x="${sx(v)}" y="${H-22}" text-anchor="middle">${v}</text>`).join('');
- svg+=`<line data-chart-key="x-baseline" x1="${left}" x2="${W-right}" y1="${top+h}" y2="${top+h}" stroke="#dce2e8"/><text data-chart-key="y-label" x="${left}" y="13" class="axis-label">延迟 (ms) ↓</text><text data-chart-key="x-label" x="${left+w/2}" y="${H-4}" text-anchor="middle" class="axis-label">轮次</text>`;
+ svg+=`<line data-chart-key="x-baseline" x1="${left}" x2="${W-right}" y1="${top+h}" y2="${top+h}" stroke="#dce2e8"/><text data-chart-key="y-label" x="${left}" y="13" class="axis-label">延迟 (ms) ↓${scale.log?' · log':''}</text><text data-chart-key="x-label" x="${left+w/2}" y="${H-4}" text-anchor="middle" class="axis-label">轮次</text>`;
  if(withFinal)svg+=`<line data-chart-key="final-separator" x1="${sx(finalAt-1)}" x2="${sx(finalAt-1)}" y1="${top}" y2="${top+h}" stroke="#dce2e8" stroke-dasharray="3 4"/><text data-chart-key="final-label" x="${sx(finalAt)}" y="${H-22}" text-anchor="middle">Final</text>`;
  svg+=`<g clip-path="url(#${clip})">`;
  for(const r of runs){
   const col=comparisonColor(r,'bv'),pts=series(r);let d='',last=null;
   for(const p of pts){
-   if(p.y==null){if(mode==='raw'){d+=' ';last=null;}continue;}
+   if(!scale.valid(p.y)){last=null;continue;}
    if(!last)d+=`M${sx(p.round)},${sy(p.y)}`;
    else if(mode==='best')d+=`H${sx(p.round)}V${sy(p.y)}`;
    else d+=`L${sx(p.round)},${sy(p.y)}`;
@@ -561,24 +587,24 @@ function renderChart(el,detail){
   }
   svg+=`<g data-comparison-series="${esc(r.id)}">`+sampleBandSVG(r.search.map(p=>({...p,x:p.round,y:value(p)})),sx,sy,col,'bv',r.id,mode==='best')+`<path class="curve" data-run="${esc(r.id)}" d="${d}" fill="none" stroke="${col}" stroke-width="1.8" stroke-dasharray="${seriesDash(r)}" opacity=".88"/>`;
   for(const p of pts){
-   if(p.timing){
+   if(p.timing&&scale.valid(value(p))){
     svg+=`<circle${measurementMarker(measurementInfo(r,{...p,y:value(p)}))} cx="${sx(p.round)}" cy="${sy(value(p))}" r="${detail?2.5:1.9}" fill="${col}" opacity="${mode==='raw'?'.72':'.34'}"/>`;
    }else if(p.status==='failed'){
     const yy=top+h-5;svg+=`<path d="M${sx(p.round)-2},${yy-2}l4 4m0 -4l-4 4" fill="none" stroke="${col}" opacity=".6"/>`;
    }
   }
-  if(r.formal)svg+=`<path${measurementMarker(measurementInfo(r,{formal:true,y:r.formal.mean_ms,timing:r.formal}))} class="formal-star" d="${star(sx(finalAt),sy(r.formal.mean_ms),detail?6:5)}" fill="${col}" stroke="white" stroke-width=".7"/>`;
+  if(r.formal&&scale.valid(r.formal.mean_ms))svg+=`<path${measurementMarker(measurementInfo(r,{formal:true,y:r.formal.mean_ms,timing:r.formal}))} class="formal-star" d="${star(sx(finalAt),sy(r.formal.mean_ms),detail?6:5)}" fill="${col}" stroke="white" stroke-width=".7"/>`;
   svg+='</g>';
  }
  svg+=`</g><line data-chart-key="crosshair" class="crosshair" x1="0" x2="0" y1="${top}" y2="${top+h}" stroke="#8d9aaa" stroke-dasharray="3 3" visibility="hidden"/></svg>`;
  if(!runs.length)svg+=`<div style="position:absolute;inset:45% 0;text-align:center;color:#76818f;font-size:12px">选择曲线</div>`;
  renderChartMarkup(el,svg);
  bindMeasurementChart(el,runs.flatMap(r=>[...r.search.filter(p=>p.timing).map(p=>measurementInfo(r,{...p,y:value(p)},{color:comparisonColor(r,'bv')})),...(r.formal?[measurementInfo(r,{formal:true,y:r.formal.mean_ms,timing:r.formal},{color:comparisonColor(r,'bv')})]:[])]),'bv',renderCharts);
- configureRoundBrush(el,{scope:'bv',maximum:roundBudget(),min:xmin,max:xmax,ymin,ymax,width:W,height:H,left,right:sx(xmax),top,bottom:top+h,redraw:renderCharts});
+ configureRoundBrush(el,{scope:'bv',maximum:roundBudget(),min:xmin,max:xmax,ymin,ymax,logY:scale.log,invertY:scale.invert,width:W,height:H,left,right:sx(xmax),top,bottom:top+h,redraw:renderCharts});
  if(detail){
   const clipped=runs.filter(r=>{const p=series(r).filter(p=>p.y!=null&&p.round>=xmin&&p.round<=xmax);return p.length&&!p.some(p=>p.y>=ymin&&p.y<=ymax);}).length;
   $('#detail-domain').textContent=`${tickFmt(ymin)}–${tickFmt(ymax)} ms${clipped?' · '+clipped+' 条在范围外':''}`;
-  if(state.ymode!=='manual'){$('#y-min').placeholder=tickFmt(ymin);$('#y-max').placeholder=tickFmt(ymax);}
+
  }
  let cursor=xmin;
  function inspect(n){cursor=n;renderReadout(n);}
@@ -594,31 +620,14 @@ function renderReadout(n){
  }).join('');
 }
 function renderCharts(){if(!data)return;renderChart($('#detail'),true);renderReadout(roundBudget()+2);renderB0Cost();}
-function syncRange(){
- $('#range-axis-label').textContent=axisMode==='round'?'轮次':axisMode==='time'?'分钟':'百万 token';
- for(const [id,index] of [['x-min',0],['x-max',1]]) {
-  const el=$('#'+id);el.min=axisMode==='round'?'1':'0';el.step=axisMode==='round'?'1':'any';
-  if(axisMode==='round')el.max=String(roundBudget());else el.removeAttribute('max');
-  el.setAttribute('aria-label',(index?'结束':'起始')+$('#range-axis-label').textContent);
- }
- if(axisMode!=='round'){
-  $('#x-min').value=costRange?.[0]??'';$('#x-max').value=costRange?.[1]??'';
-  $('#x-min').placeholder='0';$('#x-max').placeholder='自动';
-  $('#y-mode').value=state.ymode;$('#y-min').value=state.ymin??'';$('#y-max').value=state.ymax??'';return;
- }
- for(const [id,key]of[['x-min','xmin'],['x-max','xmax'],['y-mode','ymode']])$('#'+id).value=state[key];$('#y-min').value=state.ymin??'';$('#y-max').value=state.ymax??'';}
+function syncRange(){ $('#y-mode').value=state.ymode; }
 function applyRange(){
- const min=Number($('#x-min').value),max=Number($('#x-max').value),ymode=$('#y-mode').value;
- const ymin=$('#y-min').value===''?null:Number($('#y-min').value),ymax=$('#y-max').value===''?null:Number($('#y-max').value);
- if(axisMode==='round'&&(!Number.isInteger(min)||!Number.isInteger(max)||min<1||max>roundBudget()||min>=max)){showNotice(`轮次范围：1–${roundBudget()}，起始值须小于结束值。`);return;}
- if(ymode==='manual'&&(!(ymin>=0)||!Number.isFinite(ymax)||ymax<=ymin||ymin===null)){showNotice('请输入有效的纵轴范围：0 ≤ 最小值 < 最大值。');return;}
- if(axisMode!=='round'){
-  const blank=$('#x-max').value===''&&$('#x-min').value==='';
-  if(!blank&&(!Number.isFinite(min)||!Number.isFinite(max)||min<0||max<=min)){showNotice('横轴结束值须大于起始值。');return;}
-  clearCostWindows('bv');costRange=blank?null:[min,max];Object.assign(state,{ymode,ymin,ymax});
- }else {clearLatencyWindows('bv');Object.assign(state,{xmin:min,xmax:max,ymode,ymin,ymax});roundWindows.set('bv:'+datasetId,[min,max]);}showNotice('');renderCharts();
+ state.ymode=$('#y-mode').value==='focus'?'focus':'all';
+ clearLatencyWindows('bv');
+ // Keep the current horizontal selection; only restore automatic vertical fitting.
+ for(const [key,window] of costWindows)if(key.startsWith('bv:'+datasetId+':'))delete window.y;
+ showNotice('');renderCharts();
 }
-function download(name,text,type='text/plain'){const url=URL.createObjectURL(new Blob([text],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);}
 function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"';}
 $('#csv').onclick=()=>{
  const head=['dataset','model','effort','method','round','role','status','review','mean_ms','p10_ms','p90_ms','samples','pytorch_ms','pytorch_speedup','finished_at','elapsed_seconds','reported_tokens'];
@@ -636,8 +645,7 @@ $('#round-run').onchange=renderRounds;$('#round-status').onchange=renderRounds;
 $('#best-mode').onclick=()=>setMode('best');$('#raw-mode').onclick=()=>setMode('raw');
 function setMode(m){mode=m;$('#best-mode').classList.toggle('selected',m==='best');$('#raw-mode').classList.toggle('selected',m==='raw');$('#best-mode').setAttribute('aria-pressed',m==='best');$('#raw-mode').setAttribute('aria-pressed',m==='raw');renderCharts();}
 $('#uncertainty').onchange=e=>{state.uncertainty=e.target.checked;renderCharts();};
-$('#apply-range').onclick=applyRange;
-$('#y-mode').onchange=()=>{if($('#y-mode').value!=='manual')applyRange();};
+$('#y-mode').onchange=applyRange;
 $('#reset').onclick=resetBVView;
 for(const id of ['detail'])chartResetButton($('#'+id),id,resetBVView);
 let measuredMainWidth=null;
@@ -685,22 +693,23 @@ function costChart(el, lines, options={}) {
  if(options.yRange&&Number.isFinite(options.yRange[0])&&options.yRange[1]>options.yRange[0])[ymin,ymax]=options.yRange;
  if(custom?.y&&custom.y[1]>custom.y[0])[ymin,ymax]=custom.y;
  const x=v=>pad.l+(v-lo)/(hi-lo)*(width-pad.l-pad.r);
- const y=v=>height-pad.b-(v-ymin)/(ymax-ymin)*(height-pad.t-pad.b);
+ const scale=latencyScale(el,scope,[ymin,ymax],[...vals,...bandDomain,...refs.map(r=>r.latency_ms)],pad.t,height-pad.b,options.binary);
+ [ymin,ymax]=[scale.min,scale.max];const y=scale.project;
  const base=height-pad.b,clip='cost-clip-'+(el.id||'aligned')+(el.closest('#kl-panel')?'kl':'');
- const label=axisText(),yLabel=options.yLabel||'延迟 (ms) ↓';
+ const label=axisText(),yLabel=(options.yLabel||'延迟 (ms) ↓')+(scale.log?' · log':'');
  let svg='<svg viewBox="0 0 '+width+' '+height+'" role="img"><title>'+esc(label+' / '+yLabel)+'</title><defs><clipPath id="'+clip+'"><rect x="'+(pad.l-4)+'" y="'+(pad.t-6)+'" width="'+(width-pad.l-pad.r+8)+'" height="'+(height-pad.t-pad.b+12)+'"/></clipPath></defs>';
  for(const v of ticks(lo,hi,width<480?4:7))svg+='<text data-chart-key="x-tick:'+v+'" x="'+x(v)+'" y="'+(height-22)+'" text-anchor="middle">'+tickFmt(v)+'</text>';
- for(const v of (options.binary?[0,1]:ticks(ymin,ymax,5)))svg+='<line data-chart-key="y-grid:'+v+'" x1="'+pad.l+'" x2="'+(width-pad.r)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#edf0f4"/><text data-chart-key="y-tick:'+v+'" x="'+(pad.l-8)+'" y="'+(y(v)+4)+'" text-anchor="end">'+(options.binary?(v?'通过':'未通过'):tickFmt(v))+'</text>';
+ for(const v of (options.binary?[0,1]:scale.ticks))svg+='<line data-chart-key="y-grid:'+v+'" x1="'+pad.l+'" x2="'+(width-pad.r)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#edf0f4"/><text data-chart-key="y-tick:'+v+'" x="'+(pad.l-8)+'" y="'+(y(v)+4)+'" text-anchor="end">'+(options.binary?(v?'通过':'未通过'):latencyTick(v))+'</text>';
  svg+='<text data-chart-key="y-label" x="9" y="15">'+esc(yLabel)+'</text><text data-chart-key="x-label" x="'+(width/2)+'" y="'+(height-3)+'" text-anchor="middle">'+esc(label)+'</text><g clip-path="url(#'+clip+')">';
  for(const r of series){
   let best=null,path='',bestPath='',last=false,lastBest=false,epoch;
   for(const p of r.points){
    if(p.formal)continue;
    if(p.epoch!==epoch){epoch=p.epoch;best=null;last=false;lastBest=false;}
-   if(Number.isFinite(p.y)&&p.eligible!==false)best=best===null?p.y:Math.min(best,p.y);
+   if(scale.valid(p.y)&&p.eligible!==false)best=best===null?p.y:Math.min(best,p.y);
    if(options.both&&best!==null){const px=x(costX(p.axes)),py=y(best);bestPath+=lastBest?' H'+px+' V'+py:' M'+px+','+py;lastBest=true;}
    const v=options.best?best:p.y;
-   if(!Number.isFinite(v)){last=false;continue;}
+   if(!scale.valid(v)){last=false;continue;}
    const px=x(costX(p.axes)),py=y(v);
    path+=!last?' M'+px+','+py:options.best?' H'+px+' V'+py:' L'+px+','+py;
    last=true;
@@ -710,6 +719,7 @@ function costChart(el, lines, options={}) {
   svg+='<path class="curve" data-run="'+esc(r.id)+'" data-aligned-curve="'+esc(r.id)+'" d="'+path+'" fill="none" stroke="'+r.color+'" stroke-width="2" stroke-dasharray="'+(r.dash||'')+'"/>';
  }
  for(const ref of refs){
+  if(!scale.valid(ref.latency_ms))continue;
   svg+='<line data-reference="'+esc(ref.kind)+'" x1="'+pad.l+'" x2="'+(width-pad.r)+'" y1="'+y(ref.latency_ms)+'" y2="'+y(ref.latency_ms)+'" stroke="'+ref.color+'" stroke-dasharray="'+ref.dash+'"><title>'+esc(ref.caption)+'</title></line>';
  }
  function description(item){
@@ -718,7 +728,7 @@ function costChart(el, lines, options={}) {
  }
  for(let i=0;i<items.length;i++){
   const item=items[i],{line,p}=item,px=x(item.x);
-  if(!within(item.x))continue;
+  if(!within(item.x)||(Number.isFinite(p.y)&&!scale.valid(p.y)))continue;
   const py=Number.isFinite(p.y)?y(p.y):base-5;
   const tip=esc(description(item)),partialToken=partial(p.axes);
   const attr=(p.measurement?measurementMarker(p.measurement):'')+' class="cost-marker" data-cost-point="'+i+'" tabindex="0" aria-label="'+tip+'"'+(p.applyButton?' data-apply-point="'+p.applyButton+'" role="button"':'')+(partialToken?' data-token-incomplete="true"':'');
@@ -729,7 +739,7 @@ function costChart(el, lines, options={}) {
  }
  renderChartMarkup(el,svg+'</g></svg>');el.tabIndex=0;
  if(!options.binary)bindMeasurementChart(el,items.filter(({p})=>p.measurement&&Number.isFinite(p.y)).map(({line,p})=>({...p.measurement,color:line.color})),scope,options.redraw||renderCharts);
- if(options.redraw)configureRoundBrush(el,{scope,continuous:true,min:lo,max:hi,ymin,ymax,width,height,left:pad.l,right:width-pad.r,top:pad.t,bottom:height-pad.b,
+ if(options.redraw)configureRoundBrush(el,{scope,continuous:true,min:lo,max:hi,ymin,ymax,logY:scale.log,invertY:scale.invert,width,height,left:pad.l,right:width-pad.r,top:pad.t,bottom:height-pad.b,
   formatX:values=>values.map(tickFmt).join(' – ')+(axisMode==='time'?' min':' M token'),
   applySelection:selection=>{
    const next={...(costWindows.get(key)||{})};
@@ -800,7 +810,9 @@ function sampleBandSVG(points,x,y,color,scope,key,best=false){
   const flush=()=>{if(segment.length)segments.push(segment);segment=[];};
   for(const p of rows){const s=sampleStats(p.bandTiming);if(p.epoch!==lastEpoch)flush();lastEpoch=p.epoch;
    if(!s||(!Number.isFinite(p.y)&&!best)||!Number.isFinite(p.x)){flush();continue;}
-   segment.push({x:x(p.x),lo:y(kind==='extent'?s.min:s.p10),hi:y(kind==='extent'?s.max:s.p90)});
+   const low=kind==='extent'?s.min:s.p10,high=kind==='extent'?s.max:s.p90;
+   if(y.valid&&(!y.valid(low)||!y.valid(high))){flush();continue;}
+   segment.push({x:x(p.x),lo:y(low),hi:y(high)});
   }flush();
   for(const [i,seg] of segments.entries()){
    let d=`M${seg[0].x},${seg[0].hi}`;
@@ -826,8 +838,14 @@ function bindMeasurementChart(el,entries,scope,redraw){
   const parent=el.closest('.chart-card')?.querySelector('.chart-title')||el.parentElement.querySelector(':scope>.plot-options');
   (parent||el.parentElement).append(bar);
  }
- const b=bandState(scope);bar.innerHTML=`<div class="measurement-band-switches" aria-label="测量波动"><button data-band="extent" aria-pressed="${b.extent}" title="完整样本的最快至最慢；搜索最优模式跟随被选中的最优候选">最快–最慢</button><button data-band="percentile" aria-pressed="${b.percentile}" title="完整样本的第10至第90百分位；不是均值的置信区间">P10–P90</button></div><button class="measurement-capsule" aria-haspopup="dialog"><span class="measurement-selection-label"></span><span class="measurement-plus" aria-hidden="true">＋</span></button>`;
- bar.querySelectorAll('[data-band]').forEach(button=>button.onclick=()=>{b[button.dataset.band]=!b[button.dataset.band];redraw();});
+ const b=bandState(scope),bandMode=b.percentile?'percentile':b.extent?'extent':'off';
+ if(!bar.querySelector('[data-band-mode]'))bar.innerHTML=`<div class="measurement-band-switches"><button data-log-y title="对数纵轴；仅显示正延迟，原始数据不变">对数纵轴</button><div class="segments measurement-range-modes" role="radiogroup" aria-label="测量波动范围"><button data-band-mode="off" role="radio">关闭</button><button data-band-mode="extent" role="radio" title="完整样本的最快至最慢">最快–最慢</button><button data-band-mode="percentile" role="radio" title="完整样本第10至第90百分位；不是均值置信区间">P10–P90</button></div></div><button class="measurement-capsule" aria-haspopup="dialog"><span class="measurement-selection-label"></span><span class="measurement-plus" aria-hidden="true">＋</span></button>`;
+ const logButton=bar.querySelector('[data-log-y]');logButton.setAttribute('aria-pressed',String(logLatencyEnabled(el,scope)));
+ logButton.onclick=()=>{latencyModes.set(scope+':'+(el.id||'plot'),!logLatencyEnabled(el,scope));redraw();};
+ bar.querySelectorAll('[data-band-mode]').forEach(button=>{
+  const active=button.dataset.bandMode===bandMode;button.classList.toggle('selected',active);button.setAttribute('aria-pressed',String(active));button.setAttribute('aria-checked',String(active));
+  button.onclick=()=>{b.extent=button.dataset.bandMode==='extent';b.percentile=button.dataset.bandMode==='percentile';redraw();};
+ });
  const capsule=bar.querySelector('.measurement-capsule');
  const paint=()=>{
   const selected=measurementSelections.get(el._measurementContext),info=el._measurements.get(selected);
@@ -897,9 +915,9 @@ function paintMeasurementInspection(el){
  let layer=svg.querySelector('[data-inspection-overlay]');
  if(!layer){layer=document.createElementNS('http://www.w3.org/2000/svg','g');layer.setAttribute('data-inspection-overlay','');layer.classList.add('inspection-overlay');layer.innerHTML='<g class="inspection-selected"></g><g class="inspection-cursor" visibility="hidden"><line/><rect rx="8" fill="#f0f2f6"/><text text-anchor="middle"/></g>';svg.append(layer);}
  const selected=measurementSelections.get(el._measurementContext),info=el._measurements?.get(selected),stats=sampleStats(info?.timing),marker=[...svg.querySelectorAll('[data-measure-key]')].find(n=>n.dataset.measureKey===selected),selection=layer.querySelector('.inspection-selected');
- const y=v=>{const nodes=[...svg.querySelectorAll('[data-chart-key^="y-tick:"]')].map(n=>({v:Number(n.getAttribute('data-chart-key').slice(7)),y:Number(n.getAttribute('y'))-4})).filter(p=>Number.isFinite(p.v));if(nodes.length>1&&nodes.at(-1).v!==nodes[0].v){const a=nodes[0],b=nodes.at(-1);return a.y+(v-a.v)/(b.v-a.v)*(b.y-a.y);}return c.bottom-(v-c.ymin)/(c.ymax-c.ymin)*(c.bottom-c.top);};
+ const y=v=>{const nodes=[...svg.querySelectorAll('[data-chart-key^="y-tick:"]')].map(n=>({v:Number(n.getAttribute('data-chart-key').slice(7)),y:Number(n.getAttribute('y'))-4})).filter(p=>Number.isFinite(p.v));const usable=nodes.filter(p=>!c.logY||p.v>0),f=n=>c.logY?Math.log10(n):n;if(usable.length>1&&usable.at(-1).v!==usable[0].v){const a=usable[0],b=usable.at(-1);return a.y+(f(v)-f(a.v))/(f(b.v)-f(a.v))*(b.y-a.y);}return c.bottom-(f(v)-f(c.ymin))/(f(c.ymax)-f(c.ymin))*(c.bottom-c.top);};
  if(stats&&marker){const box=marker.getBBox(),x=box.x+box.width/2,col=info.color||marker.getAttribute('fill')||'#0071e3';
-  if(x>=c.left&&x<=c.right){let markup='';for(const [name,lo,hi,width] of [['extent',stats.min,stats.max,20],['percentile',stats.p10,stats.p90,12]]){const high=Math.max(c.top,Math.min(c.bottom,y(hi))),low=Math.max(c.top,Math.min(c.bottom,y(lo)));markup+=`<rect class="inspection-selected-${name}" x="${x-width/2}" y="${Math.min(high,low)}" width="${width}" height="${Math.max(1,Math.abs(low-high))}" rx="3" fill="${col}" stroke="${col}"><title>${name==='extent'?'最快–最慢':'P10–P90'} · ${fmt(lo)}–${fmt(hi)} ms</title></rect>`;}selection.innerHTML=markup;}else selection.replaceChildren();
+  if(x>=c.left&&x<=c.right){let markup='';for(const [name,lo,hi,width] of [['extent',stats.min,stats.max,20],['percentile',stats.p10,stats.p90,12]]){if(c.logY&&(!(lo>0)||!(hi>0)))continue;const high=Math.max(c.top,Math.min(c.bottom,y(hi))),low=Math.max(c.top,Math.min(c.bottom,y(lo)));markup+=`<rect class="inspection-selected-${name}" x="${x-width/2}" y="${Math.min(high,low)}" width="${width}" height="${Math.max(1,Math.abs(low-high))}" rx="3" fill="${col}" stroke="${col}"><title>${name==='extent'?'最快–最慢':'P10–P90'} · ${fmt(lo)}–${fmt(hi)} ms</title></rect>`;}selection.innerHTML=markup;}else selection.replaceChildren();
  }else selection.replaceChildren();
  if(!el._inspectionBound){el._inspectionBound=true;
   el.addEventListener('pointermove',event=>{if(event.pointerType==='touch')return;el._inspectionPointer={x:event.clientX,y:event.clientY};paintMeasurementCursor(el);});

@@ -361,9 +361,9 @@ body.beta{--accent:#0071e3;--soft:#f5f5f7;--grid:#ededf0}
 /* Sample evidence is a quiet second layer; central performance curves stay intact. */
 .beta .measurement-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:1 0 100%;min-width:0;margin:10px 0 3px;font-size:12px}
 .beta .measurement-band-switches{display:flex;gap:7px;flex-wrap:wrap}
-.beta .measurement-band-switches button{padding:7px 13px;border-radius:999px;border:1px solid #cbd3dd;background:#f6f8fa;color:#526e8c;font-size:12px;font-weight:600;line-height:1.3;transition:background .18s,color .18s,transform .18s}
-.beta .measurement-band-switches button[aria-pressed=true]{background:#526e8c;color:white;border-color:#526e8c}
-.beta .measurement-band-switches button:hover{transform:scale(1.025);filter:brightness(1.08)}
+.beta .measurement-band-switches > button{padding:7px 13px;border-radius:999px;border:1px solid #cbd3dd;background:#f6f8fa;color:#526e8c;font-size:12px;font-weight:600;line-height:1.3;transition:background .18s,color .18s,transform .18s}
+.beta .measurement-band-switches > button[aria-pressed=true]{background:#526e8c;color:white;border-color:#526e8c}
+.beta .measurement-band-switches > button:hover{transform:scale(1.025);filter:brightness(1.08)}
 .beta .measurement-capsule{display:inline-flex;align-items:center;gap:12px;max-width:100%;margin-left:auto;border:0;border-radius:999px;background:#f2f2f5;color:#1d1d1f;padding:6px 6px 6px 15px;font-size:12px;line-height:1.3;font-weight:600;transition:background .2s,transform .2s;min-height:36px}
 .beta .measurement-selection-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .beta .measurement-plus{display:flex;align-items:center;justify-content:center;width:27px;height:27px;flex:0 0 27px;border-radius:50%;background:#007aff;color:white;font-size:24px;font-weight:500}
@@ -455,3 +455,15 @@ body.measurement-modal-open{overflow:hidden}
 .beta .comparison-caption{align-items:center;margin-bottom:20px;flex-wrap:wrap}.beta .comparison-caption>span:last-child{margin-left:auto}.beta .comparison-layout button{font-size:12px;padding:9px 18px}.beta .comparison-task-card h2{font-size:18px}.beta .comparison-values em:empty{display:none}.beta .comparison-task-card .comparison-bar-row{height:40px}.beta .comparison-bar-a{transition:left .32s,width .32s!important}
 
 @keyframes comparison-reveal{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}.beta .comparison-card{animation:comparison-reveal .24s ease-out backwards}@media(prefers-reduced-motion:reduce){.beta .comparison-card{animation:none}}
+
+/* Shared mutually exclusive uncertainty selector; range controls stay together below B/V. */
+.beta .measurement-band-switches{align-items:center}
+.beta .measurement-range-modes{display:inline-flex;flex-wrap:nowrap;margin:0;gap:0;padding:4px}
+.beta .measurement-range-modes button{font-size:12px;padding:8px 13px;white-space:nowrap}
+.beta .bv-range-controls{padding:16px 24px 22px;display:flex;align-items:center;gap:24px;justify-content:space-between;flex-wrap:wrap}
+.beta .bv-range-controls .beta-select-field{margin:0;max-width:100%}
+.beta .bv-range-controls .round-range-slot{width:280px;max-width:100%;margin-left:auto}
+.beta .bv-range-controls .comparison-range{width:100%;margin:0;padding:4px 0}
+@media(max-width:650px){.beta .bv-range-controls{padding:14px 18px 20px;gap:14px}.beta .bv-range-controls>.beta-select-field{width:auto}.beta .bv-range-controls .round-range-slot{flex:1 1 220px}.beta .measurement-range-modes button{padding:8px 10px;font-size:11px}}
+
+.beta .bv-range-controls .range-track input{padding:0;border:0;background:transparent}
