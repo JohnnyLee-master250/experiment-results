@@ -5,7 +5,7 @@ Base: `https://johnnylee-master250.github.io/experiment-results/api/v1/`
 - `index.json`: schema version, source update timestamp, publication timestamp, refresh interval, dataset endpoints and source metadata.
 - `index.json.running_runs`: current running groups only, with `dataset`, `id`, `model`, `effort`, `method`, `reported_attempts`, `budget`, `phase`, and `source_captured_at`. Counts are saved workflow counters, including records still awaiting review, not independent completion counts. Paused, blocked and completed groups are excluded.
 - Links of the form `?dataset=MQA&run=sol6-mqa-b2#curves` open the dataset and enable/highlight that curve. Ordinary clicks in the running bar preserve other selected curves in the current dataset.
-- `{dataset}.json`: `sonny`, `gqa`, `fa3`, `gdn`, `based`, `mega`, `mqa`, `topk`.
+- `{dataset}.json`: `sonny`, `gqa`, `fa3`, `gdn`, `based`, `mega`, `mqa`.
 - All times are ISO 8601 with timezone. The page displays Asia/Singapore.
 - `index.json.task_events`: newest-first lifecycle records (`id`, `at`, `kind`, `runs`, `reason`, `time_basis`). Types are `started`, `paused`, `resumed`, `completed`; each run has `id`, `dataset`, `model`, `effort`, and `method`. Only currently published experiments are included. Older campaigns are not backfilled. Stable event IDs prevent duplicates on refresh.
 - Event timestamps come from retained launch, pause, release and independent-completion records. `time_basis: recorded` is an event/evidence timestamp; `observed` explicitly labels the time completion was first observed if no precise closure timestamp was retained. Recorded completion requires both a complete workflow and independent acceptance; a saved 30th round alone is insufficient. Reasons are sanitized summaries, not raw logs.
@@ -85,3 +85,13 @@ B/V `timing.samples_ms` retains the original ordered per-run measurements (curre
 Min/max include every sample, including outliers. P10/P90 use linear interpolation at index `(n-1)*p` on all ordered sample values pooled across groups. These are empirical sample ranges, not confidence intervals for a mean or median. Sequence plots use sample index, not invented per-sample wall timestamps. Histograms use equal-width bins and raw counts; no unimodal or normal fit is imposed. CSV includes each sample's group.
 
 `timing_status` is `available`, `missing`, `invalid`, `ambiguous`, `inconsistent`, or `not_measured`. Missing/unverified samples yield `timing: null`; a valid saved center can still be shown. Only candidate timing evidence bound to the same original Job's version metadata is used. Diagnostic texts and private identifiers are never published. Normal refresh automatically carries these fields; no new run or benchmark is performed.
+
+## CannBot / CAKE
+
+`index.json.cannbot` points to `cannbot.json`; both share `updated_at`. The dashboard is at `?view=cannbot`, with optional `cake_dataset` and `cake_model`. It is read-only.
+
+The preparation snapshot contains ten datasets and thirty model/task combinations. `prepared` is not running, queued, or independently complete. No timing point is synthesized before a real retained evaluation. Each run exposes identity, explicit lifecycle state, workspace_path, round budget, candidates per round, rounds_completed, evaluations, valid_evaluations, net_seconds and total_tokens. Unknown numeric values are null.
+
+Evaluation IDs are stable. `evaluation_index` counts only original passed/failed evaluation records; infrastructure errors, cancellations and unfinished requests have null indices. `round` and `candidate` retain the recorded candidate directory identifiers and are separate from this index. `latency_ms` is the validated device-event P50, not B/V arithmetic mean or KL median-of-group-medians. Complete lifecycle state requires independent acceptance; passing one evaluation does not complete the task.
+
+Time/token values are projected only from saved run-statistics with complete coverage. Missing coverage stays explicit. Raw dashboard HTML, source code, analysis, private logs and credentials are not published. Routine updates use the same fixed publisher; the API cannot start or alter an experiment.
