@@ -435,10 +435,20 @@ function renderNav(){
  $$('[data-dataset]').forEach(b=>{b.setAttribute('aria-current',String(b.dataset.dataset===datasetId));const empty=datasetHasResults(b.dataset.dataset)===false;b.classList.toggle('no-results',empty);b.title=empty?'尚无评测结果 · 可查看等待状态':'';});
  $$('[data-dataset]').forEach(b=>b.onclick=()=>category==="kl"?loadKL(b.dataset.dataset):isComparison()?loadAligned(b.dataset.dataset,null,category):loadDataset(b.dataset.dataset,true));
 }
+function allRunningRuns(){
+ return [...(manifest?.running_runs||[]),...(manifest?.kl?.running_runs||[]),...(manifest?.cannbot?.running_runs||[])];
+}
+function cakeRunningLink(run,card=false){
+ const href='?'+new URLSearchParams({view:'cannbot',cake_dataset:run.dataset,cake_model:run.model});
+ const label=esc(run.dataset)+' · '+esc(run.model)+' '+esc(run.effort)+' · CannBot';
+ const progress=run.rounds_completed==null?'':` · ${esc(run.rounds_completed)}/${esc(run.round_budget)} 轮`;
+ return `<a href="${esc(href)}"${card?' class="running-link"':''}>${card?'<span class="swatch"></span>':''}<strong>${label}</strong>${progress} <span aria-hidden="true">↗</span></a>`;
+}
 function renderRunning(){
- const runs=[...(manifest.running_runs||[]),...(manifest.kl?.running_runs||[])];
+ const runs=allRunningRuns();
  $('#running-count').textContent=`${runs.length} 组`;
  $('#running-links').innerHTML=runs.map(r=>{
+  if(r.method==='CAKE')return cakeRunningLink(r,true);
   const href=`?${new URLSearchParams({dataset:r.dataset,run:r.id,category:runCategory(r)})}`;
  const phase={reviewing:'审查中',evaluating:'评测中',profiling:'测量中',ready:'运行中',initializing:'准备中',finished:'收尾中',queued:'排队中'}[r.phase]||'运行中';
   return `<a class="running-link ${focusedRun===r.id?'current':''}" href="${esc(href)}" data-category-target="${runCategory(r)}" data-running="${esc(r.id)}" data-target="${esc(r.dataset)}" style="--color:${COLORS[r.method]||'#526c89'}" title="${esc(r.model+' / '+r.effort)} · 已记录 ${r.reported_attempts}/${r.budget} 轮；待审查记录不代表独立完成"><span class="swatch"></span><strong>${esc(r.dataset)} · ${esc(r.model)} ${esc(methodDisplayLabel(r))}</strong><span class="running-round">${r.category==='kl'?(r.current_apply??r.reported_attempts):r.reported_attempts}<span> / ${r.budget} ${r.category==='kl'?'Apply · r'+(r.internal_round??0):'轮'}</span></span><span class="running-phase">${/^card[123]$/.test(r.card_id||'')?'卡 '+r.card_id.slice(4)+' · ':''}${phase}</span><span aria-hidden="true">↗</span></a>`;

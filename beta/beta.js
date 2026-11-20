@@ -214,7 +214,7 @@ function betaSync(){
  if(!manifest)return;
  betaMenus();betaQueueTable();betaV0Labels();betaShowView(betaView);
  $('#beta-completed-total').textContent=(manifest.workspaces?.rows||[]).filter(r=>r.status==='complete').length;
- const betaRunningCount=(manifest.running_runs?.length||0)+(manifest.kl?.running_runs?.length||0);
+ const betaRunningCount=allRunningRuns().length;
  $('#beta-running-total').textContent=betaRunningCount;
  // The pulse dot means live work; it stays out of the way when nothing is running.
  $$('.beta-hero-status .live-dot,#beta-queue-view .running-heading .live-dot').forEach(dot=>dot.hidden=!betaRunningCount);
@@ -230,8 +230,8 @@ function betaSync(){
 }
 
 function betaRenderBanner(){
- const banner=$('#beta-live-banner'),runs=[...(manifest.running_runs||[]),...(manifest.kl?.running_runs||[])];
- const html=runs.length?'正在运行： '+runs.map(r=>`<a href="?view=results&category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-banner-run="${esc(r.id)}" data-target="${esc(r.dataset)}" data-category="${runCategory(r)}">${esc(r.dataset)} · ${esc(r.model)} ${esc(methodDisplayLabel(r))}${r.method==='KL'?` · Apply ${r.current_apply??r.reported_attempts} · r${r.internal_round??0}`:` · ${r.reported_attempts}/${r.budget} 轮`} <span aria-hidden="true">↗</span></a>`).join('<span class="beta-banner-divider" aria-hidden="true">·</span>'):'当前暂无运行任务 <a href="?view=queue" data-beta-banner-queue>查看队列 ↗</a>';
+ const banner=$('#beta-live-banner'),runs=allRunningRuns();
+ const html=runs.length?'正在运行： '+runs.map(r=>r.method==='CAKE'?cakeRunningLink(r):`<a href="?view=results&category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-banner-run="${esc(r.id)}" data-target="${esc(r.dataset)}" data-category="${runCategory(r)}">${esc(r.dataset)} · ${esc(r.model)} ${esc(methodDisplayLabel(r))}${r.method==='KL'?` · Apply ${r.current_apply??r.reported_attempts} · r${r.internal_round??0}`:` · ${r.reported_attempts}/${r.budget} 轮`} <span aria-hidden="true">↗</span></a>`).join('<span class="beta-banner-divider" aria-hidden="true">·</span>'):'当前暂无运行任务 <a href="?view=queue" data-beta-banner-queue>查看队列 ↗</a>';
  if(banner.innerHTML!==html){banner.innerHTML=html;
   banner.querySelectorAll('[data-beta-banner-run]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaSetPreview(null);betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.category==='kl')await loadKL(a.dataset.target,a.dataset.betaBannerRun);else await openRun(a.dataset.target,a.dataset.betaBannerRun,true);betaSync();});
   banner.querySelector('[data-beta-banner-queue]')?.addEventListener('click',e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaShowView('queue',true);});
@@ -278,7 +278,7 @@ function betaControlInfo(label){
  return null;
 }
 function betaDecorateControls(){
- const running=new Set([...(manifest?.running_runs||[]),...(manifest?.kl?.running_runs||[])].map(r=>r.id));
+ const running=new Set(allRunningRuns().map(r=>r.id));
  $$('#series-controls label,.aligned-controls label,.plot-options label,.kl-reference-toggle').forEach(label=>{
   const input=label.querySelector('input[type=checkbox]');if(!input)return;
   label.classList.add('beta-pill');label.classList.toggle('beta-pill-disabled',input.disabled);
