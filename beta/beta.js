@@ -839,7 +839,7 @@ window.cannbotDashboard=(()=>{
  const q=id=>root().querySelector(id);
  const colors={'Astra':'#007aff','Sol 6.1':'#e83291','DeepSeek Flash':'#00a477'};
  const labels={prepared:'待运行',not_run:'待运行',queued:'等待中',waiting:'等待中',paused:'暂停',running:'运行中',complete:'已完成',blocked:'暂停'};
- const outcomes={passed:'通过',failed:'候选失败',infrastructure_error:'基础设施异常',cancelled:'已取消',unfinished:'评测中'};
+ const outcomes={passed:'通过',failed:'候选失败'};
  const rounds=run=>run.rounds_completed??(run.started_at?'—':0);
  const fmt=value=>value==null?'—':Number(value).toLocaleString('en-US',{maximumFractionDigits:4});
  function choice(container,values,selected,onSelect){
@@ -863,7 +863,7 @@ window.cannbotDashboard=(()=>{
   const ticks=Array.from({length:5},(_,i)=>maxY*i/4);
   let best=Infinity;const steps=[];
   for(const p of points){if(steps.length)steps.push(`${x(p.evaluation_index)},${y(best)}`);best=Math.min(best,p.latency_ms);steps.push(`${x(p.evaluation_index)},${y(best)}`);}
-  return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="CannBot 候选测量 P50，按有效评测序号排列" style="--cake-color:${colors[run.model]}">${ticks.map(v=>`<line x1="${left}" x2="${width-right}" y1="${y(v)}" y2="${y(v)}" class="cake-grid"/><text x="${left-10}" y="${y(v)+4}" text-anchor="end">${fmt(v)}</text>`).join('')}<polyline points="${steps.join(' ')}" fill="none" stroke="var(--cake-color)" stroke-width="2.5"/>${points.map(p=>`<circle cx="${x(p.evaluation_index)}" cy="${y(p.latency_ms)}" r="4" fill="var(--cake-color)"><title>r${p.evaluation_index} · ${fmt(p.latency_ms)} ms</title></circle>`).join('')}<text x="${left}" y="${height-15}">0</text><text x="${width-right}" y="${height-15}" text-anchor="end">${maxX}</text><text x="${width/2}" y="${height-10}" text-anchor="middle">有效评测</text></svg>`;
+  return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="CannBot 候选测量 P50，按有效评测序号排列" style="--cake-color:${colors[run.model]}">${ticks.map(v=>`<line x1="${left}" x2="${width-right}" y1="${y(v)}" y2="${y(v)}" class="cake-grid"/><text x="${left-10}" y="${y(v)+4}" text-anchor="end">${fmt(v)}</text>`).join('')}<polyline points="${steps.join(' ')}" fill="none" stroke="var(--cake-color)" stroke-width="2.5"/>${points.map(p=>`<circle cx="${x(p.evaluation_index)}" cy="${y(p.latency_ms)}" r="4" fill="var(--cake-color)"><title>第 ${p.round} 轮 · 候选 ${p.candidate} · ${fmt(p.latency_ms)} ms</title></circle>`).join('')}<text x="${left}" y="${height-15}">0</text><text x="${width-right}" y="${height-15}" text-anchor="end">${maxX}</text><text x="${width/2}" y="${height-10}" text-anchor="middle">有效评测</text></svg>`;
  }
  function render(){
   if(!snapshot)return;
@@ -874,12 +874,12 @@ window.cannbotDashboard=(()=>{
   const run=snapshot.runs.find(r=>r.dataset===dataset&&r.model===model);
   q('#cake-phase').textContent=snapshot.paused?(run.started_at?'已暂停':'准备已暂停 · 等待框架更新'):labels[run.status]||run.status;
   q('#cake-json').href=(document.body.dataset.apiBase||'./')+'api/v1/cannbot.json';
-  const metrics=[['轮次',`${rounds(run)} / ${run.round_budget}`],['有效评测',fmt(run.valid_evaluations)],['累计时间',run.net_seconds==null?'—':fmt(run.net_seconds/60)+' min'],['累计 token',fmt(run.total_tokens)]];
+  const metrics=[['已结算有效轮',`${rounds(run)} / ${run.round_budget}`],['有效评测',fmt(run.valid_evaluations)],['累计时间',run.net_seconds==null?'—':fmt(run.net_seconds/60)+' min'],['累计 token',fmt(run.total_tokens)]];
   q('#cake-metrics').innerHTML=metrics.map(([label,value])=>`<div class="card cake-metric"><span>${label}</span><strong>${value}</strong></div>`).join('');
   q('#cake-chart').innerHTML=chart(run);q('#cake-evaluation-count').textContent=run.evaluations.length+' 次';
-  q('#cake-evaluations').innerHTML=run.evaluations.length?`<table><thead><tr><th>评测</th><th>轮次 / 候选</th><th>状态</th><th>P50 ms</th></tr></thead><tbody>${run.evaluations.map(p=>`<tr><td>${p.evaluation_index==null?'—':'r'+p.evaluation_index}</td><td>${p.round??'—'} / ${p.candidate??'—'}</td><td>${outcomes[p.outcome]}</td><td>${fmt(p.latency_ms)}</td></tr>`).join('')}</tbody></table>`:'<div class="cake-empty"><span class="cake-empty-mark">—</span><strong>尚无评测记录</strong></div>';
+  q('#cake-evaluations').innerHTML=run.evaluations.length?`<table><thead><tr><th>评测</th><th>轮次 / 候选</th><th>状态</th><th>P50 ms</th></tr></thead><tbody>${run.evaluations.map(p=>`<tr><td>${p.evaluation_index==null?'—':p.evaluation_index}</td><td>${p.round??'—'} / ${p.candidate??'—'}</td><td>${outcomes[p.outcome]}</td><td>${fmt(p.latency_ms)}</td></tr>`).join('')}</tbody></table>`:'<div class="cake-empty"><span class="cake-empty-mark">—</span><strong>尚无已结算的有效轮</strong></div>';
   const rows=snapshot.runs.filter(r=>scope==='all'||r.dataset===dataset);
-  q('#cake-tasks').innerHTML=`<table><thead><tr><th>Kernel</th><th>模型 / effort</th><th>状态</th><th>轮次</th><th>有效评测</th><th>开始 SGT</th><th>完成 SGT</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.dataset)}</td><td><span class="cake-model-dot" style="background:${colors[r.model]}"></span>${esc(r.model)} <small>${esc(r.effort)}</small></td><td><span class="status ${r.status==='complete'?'complete':'not_run'}">${labels[r.status]||esc(r.status)}</span></td><td>${rounds(r)} / ${r.round_budget}</td><td>${r.valid_evaluations}</td><td>${date(r.started_at)}</td><td>${date(r.finished_at)}</td></tr>`).join('')}</tbody></table>`;
+  q('#cake-tasks').innerHTML=`<table><thead><tr><th>Kernel</th><th>模型 / effort</th><th>状态</th><th>有效轮</th><th>有效评测</th><th>开始 SGT</th><th>完成 SGT</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.dataset)}</td><td><span class="cake-model-dot" style="background:${colors[r.model]}"></span>${esc(r.model)} <small>${esc(r.effort)}</small></td><td><span class="status ${r.status==='complete'?'complete':'not_run'}">${labels[r.status]||esc(r.status)}</span></td><td>${rounds(r)} / ${r.round_budget}</td><td>${r.valid_evaluations}</td><td>${date(r.started_at)}</td><td>${date(r.finished_at)}</td></tr>`).join('')}</tbody></table>`;
   q('#cake-workspaces').innerHTML=rows.map(r=>`<div class="cake-workspace-row"><strong>${esc(r.dataset)} · ${esc(r.model)}</strong><code>${esc(r.workspace_path)}</code><button type="button" data-cake-copy="${esc(r.id)}">复制</button></div>`).join('');
   root().querySelectorAll('[data-cake-copy]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(snapshot.runs.find(r=>r.id===b.dataset.cakeCopy).workspace_path);b.textContent='已复制';}catch{b.textContent='复制失败';}});
   root().querySelectorAll('[data-cake-scope]').forEach(b=>{const on=b.dataset.cakeScope===scope;b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));b.onclick=()=>{scope=b.dataset.cakeScope;render();};});
