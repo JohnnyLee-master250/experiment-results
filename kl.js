@@ -57,7 +57,7 @@ function klAxisAnnotations(run){
  }
  return {applies,candidates};
 }
-const KL_LABELS={not_run:'未开始',running:'运行中',complete:'已完成',ended:'待验收',waiting:'等待中',blocked:'已暂停',paused:'已暂停',completed:'已交付',failed:'失败',interrupted:'中断',awaiting_audit:'待验收',unknown:'待核对',passed:'通过',infrastructure_error:'基础设施异常'};
+const KL_LABELS={not_run:'未开始',running:'运行中',complete:'已完成',ended:'已结束 · 未独立验收',waiting:'等待中',blocked:'已暂停',paused:'已暂停',completed:'已交付',failed:'失败',interrupted:'中断',awaiting_audit:'待验收',unknown:'待核对',passed:'通过',infrastructure_error:'基础设施异常'};
 function klStatus(s){return KL_LABELS[s]||'待核对';}
 function setCategory(id){
  category=['kl','aligned','all','all-with-b01'].includes(id)?id:'bv';axisControls();
@@ -150,12 +150,13 @@ function renderKL(){
  if(!klData){$('#kl-body').hidden=true;$('#kl-state').textContent='正在读取 KL 数据…';return;}
  if(!klRun){$('#kl-body').hidden=true;$('#kl-state').textContent='此测试集尚未登记 KL 实验';return;}
  $('#kl-body').hidden=false;const r=klRun,done=r.applies.filter(a=>a.status==='completed').length;
- $('#kl-state').textContent=`${r.model} / ${r.effort} · ${klStatus(r.status)} · ${r.phase||''}`;
+ let provenance=$('#kl-source-details');if(!provenance){provenance=document.createElement('details');provenance.id='kl-source-details';provenance.className='data-section';$('#kl-body').append(provenance);}provenance.hidden=!r.external_source;if(r.external_source){provenance.innerHTML=`<summary>来源与计时</summary><div class="table-wrap"><p>${esc(r.model_id)} · ${esc(r.method_version)} · ${esc(r.timing_label)}</p><p>${r.apply_execution_count} 次执行 · ${r.applies_delivered} 次交付 · ${r.aligned.count} 次有效评测</p><p>累计时间含中断间隔 · ${r.data_quality.missing_token_calls} 次调用缺 token 总量</p><p>${r.independently_complete?'独立验收已记录':'独立验收未记录'} · 卡号映射未核验 · 工作区路径未公开</p><p>${esc(r.comparison_note)}</p></div>`;}
+ $('#kl-state').textContent=`${r.model} / ${r.effort} · ${klStatus(r.status)} · ${r.timing_label||'分组中位数'}`;
  $('#kl-budget').textContent=`已交付 ${done} / ${r.budget} Apply · 每 Apply ${r.apply_timeout_seconds/60} 分钟 · 额外重试 ${r.max_retries} · 单次评测/诊断 ${r.evaluation_timeout_seconds/60} 分钟`;
- $('#kl-run-info').textContent=`开始 ${date(r.started_at)} · 独立完成 ${date(r.finished_at)} · 候选评测 ${r.applies.reduce((n,a)=>n+a.evaluations,0)} 次`;
- $('#kl-apply').innerHTML=r.applies.map(a=>`<option value="${a.apply}" ${a.apply===klApply?'selected':''}>Apply ${a.apply} · ${klStatus(a.status)}</option>`).join('')||'<option value="">暂无 Apply</option>';
+ $('#kl-run-info').textContent=`开始 ${date(r.started_at)} · ${r.independently_complete?'独立完成':'结束'} ${date(r.finished_at)} · 候选评测 ${r.applies.reduce((n,a)=>n+a.evaluations,0)} 次`;
+ $('#kl-apply').innerHTML=r.applies.map(a=>`<option value="${a.apply}" ${a.apply===klApply?'selected':''}>Apply ${a.apply} · ${klStatus(a.status)}${a.delivery_number?' · 第 '+a.delivery_number+' 次交付':''}</option>`).join('')||'<option value="">暂无 Apply</option>';
  $('#kl-apply').disabled=!r.applies.length;$('#kl-apply').value=klApply==null?'':String(klApply);$('#kl-apply').onchange=e=>selectApply(e.target.value);
- let best=null;const points=r.applies.map(a=>{const v=a.delivered?.accepted?a.delivered.latency_ms:null;if(v!=null)best=best==null?v:Math.min(best,v);return {x:a.apply,y:v,best,timing:a.delivered?.timing,measurement:measurementInfo({...r,method:'KL'},{apply:a.apply,round:Math.max(0,...(r.aligned?.points||[]).filter(p=>p.counted&&p.apply<=a.apply).map(p=>p.round)),y:v,timing:a.delivered?.timing}),axes:a.axes,epoch:r.dataset==='Mega'&&a.apply>=5?2:1};});
+ let best=null;const points=r.applies.map(a=>{const v=a.delivered?.accepted?a.delivered.latency_ms:null;if(v!=null)best=best==null?v:Math.min(best,v);return {x:a.apply,y:v,best,timing:a.delivered?.timing,measurement:measurementInfo({...r,method:'KL'},{apply:a.apply,round:Math.max(0,...(r.aligned?.points||[]).filter(p=>p.counted&&p.apply<=a.apply).map(p=>p.round)),y:v,timing:a.delivered?.timing}),axes:a.axes,epoch:r.id.startsWith('kl-astra-high-serial-20261102-')&&r.dataset==='Mega'&&a.apply>=5?2:1};});
  const axes=klAxisAnnotations(r),matched=klMatchedReferences(klDatasetCache.get(`${manifest.updated_at}:${datasetId}`),r);
  for(const chart of ['overview','candidates']){
   const toggle=$(`#kl-v0-${chart}`);toggle.disabled=!klReference;toggle.checked=!!klReference&&klReferenceVisible[chart];
@@ -167,7 +168,7 @@ function renderKL(){
   }).join('');
   $(`#kl-matched-${chart}`).querySelectorAll('input').forEach(toggle=>toggle.onchange=()=>{klMatchedVisible[chart][toggle.dataset.matchedKind]=toggle.checked;renderKL();});
  }
- klChart('#kl-overview',points,'Apply',r.budget,true,klReferenceVisible.overview?klReference:null,axes.applies,matched.filter(ref=>klMatchedVisible.overview[ref.kind]));
+ klChart('#kl-overview',points,r.external_source?'Apply 执行序号':'Apply',Math.max(r.budget||0,...r.applies.map(a=>a.apply)),true,klReferenceVisible.overview?klReference:null,axes.applies,matched.filter(ref=>klMatchedVisible.overview[ref.kind]));
  for(const which of ['overview','candidates'])chartResetButton($('#kl-'+which),'kl-'+which,()=>{clearCostWindows('kl');klReferenceVisible[which]=true;klMatchedVisible[which]={same:true,reduced:true};if(which==='candidates')klApply=klRun.applies.at(-1)?.apply??null;renderKL();});
  const a=r.applies.find(a=>a.apply===klApply),inner=a?.candidates||[];best=null;
  klChart('#kl-candidates',inner.map(c=>{const v=c.correctness_passed?c.latency_ms:null;if(c.accepted&&v!=null)best=best==null?v:Math.min(best,v);return {x:c.sequence,y:v,best,timing:c.timing,measurement:measurementInfo({...r,method:'KL'},{apply:klApply,inner_sequence:c.sequence,round:r.aligned?.points.find(p=>p.apply===klApply&&p.inner_sequence===c.sequence)?.round,y:v,timing:c.timing}),axes:c.axes,eligible:c.accepted,status:c.status};}),'内部候选序号',Math.max(2,inner.length),false,klReferenceVisible.candidates?klReference:null,axes.candidates.get(klApply),matched.filter(ref=>klMatchedVisible.candidates[ref.kind]));
@@ -175,7 +176,7 @@ function renderKL(){
  $('#kl-candidate-rows').innerHTML=inner.map(c=>`<tr><td>${c.sequence}</td><td>${klStatus(c.status)}</td><td>${({compile:'编译',correctness:'正确性',performance:'性能门禁'})[c.stage]||'—'}</td><td>${c.accepted?'通过':c.correctness_passed?'正确性通过':'—'}</td><td class="num">${fmt(c.latency_ms)}</td><td class="num">${fmt(c.reference_latency_ms)}</td><td>${c.reused?'复用，不新增评测':'新记录'}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">暂无候选评测记录</td></tr>';
  $('#kl-apply-rows').innerHTML=r.applies.map(a=>`<tr><td><button data-apply-row="${a.apply}">Apply ${a.apply}</button></td><td>${klStatus(a.status)}</td><td>${a.evaluations}</td><td>${a.infrastructure_errors}</td><td class="num">${fmt(a.delivered?.latency_ms)}</td><td class="num">${a.elapsed_seconds==null?'—':fmt(a.elapsed_seconds/60,1)}</td><td>${date(a.ended_at)}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">已登记任务，等待正式启动</td></tr>';
  $$('[data-apply-row]').forEach(b=>b.onclick=()=>selectApply(b.dataset.applyRow));
- $('#kl-events').innerHTML=(klData.task_events||[]).filter(e=>e.run_id===r.id).map(e=>`<li class="task-event kl-task-event"><time datetime="${esc(e.at)}">${date(e.at)}</time><span class="event-tag ${esc(e.kind)}">${({started:'开始',paused:'暂停',resumed:'恢复',completed:'独立完成'})[e.kind]||'待核对'}</span><p>${esc(e.reason)}</p></li>`).join('')||'<li class="empty">尚未开始，启动后自动记录。</li>';
+ $('#kl-events').innerHTML=(klData.task_events||[]).filter(e=>e.run_id===r.id).map(e=>`<li class="task-event kl-task-event"><time datetime="${esc(e.at)}">${date(e.at)}</time><span class="event-tag ${esc(e.kind)}">${({started:'开始',paused:'暂停',resumed:'恢复',completed:'独立完成',ended:'已结束'})[e.kind]||'待核对'}</span><p>${esc(e.reason)}</p></li>`).join('')||'<li class="empty">尚未开始，启动后自动记录。</li>';
  $('#kl-json').onclick=()=>download(`kl-${datasetId}.json`,JSON.stringify(r,null,2),'application/json');
  $('#kl-csv').onclick=()=>{const lines=['apply,candidate,status,latency_ms,reference_latency_ms,accepted,reused,elapsed_seconds,reported_tokens,missing_responses,disputed,tokens_complete'];for(const a of r.applies)for(const c of a.candidates)lines.push([a.apply,c.sequence,c.status,c.latency_ms??'',c.reference_latency_ms??'',c.accepted,c.reused,c.axes?.elapsed_s,c.axes?.tokens,c.axes?.missing_responses,c.axes?.disputed,c.axes?.tokens_complete].join(','));download(`kl-${datasetId}-candidates.csv`,lines.join('\n'),'text/csv');};
 }
@@ -186,7 +187,7 @@ const alignedViews=new Map(),klDatasetCache=new Map();
 function alignedViewKey(dataset){return (dataset.comparison_scope||'aligned')+':'+dataset.id+':'+axisMode;}
 function alignedView(dataset,series){
  const key=alignedViewKey(dataset);
- if(!alignedViews.has(key))alignedViews.set(key,{visible:new Set(series.filter(r=>axisMode!=='round'||r.model==='Astra').map(r=>r.id)),mode:'best',zoom:false,compressed:false,visualScale:1});
+ if(!alignedViews.has(key))alignedViews.set(key,{visible:new Set(series.filter(r=>axisMode!=='round'||r.model.startsWith('Astra')).map(r=>r.id)),mode:'best',zoom:false,compressed:false,visualScale:1});
  return alignedViews.get(key);
 }
 function alignedPeers(dataset,run){return [...(run?[run]:[]),...(klData?.runs.filter(r=>r.dataset===dataset.id&&r.id!==run?.id)||[])];}
@@ -246,7 +247,7 @@ function renderAligned(target,dataset,run,previewIds=[]){
  const retainedControls=host.querySelector(':scope > .aligned-controls'),retainedCard=host.querySelector(':scope > .aligned-card'),retainedChart=host.querySelector('.aligned-chart'),retainedRange=host.querySelector('.comparison-range');
  const recordKey=(dataset.comparison_scope||'aligned')+':'+dataset.id;
  const retainedRecords=new Map(host.dataset.recordsKey===recordKey?[...host.querySelectorAll(':scope > details[data-record-panel]')].map(d=>[d.dataset.recordPanel,d]):[]);host.dataset.recordsKey=recordKey;
- const scaffold=`<p class="kl-caption aligned-note">${comparisonHasB(dataset.comparison_scope)?'B/V':'V'} 均值 · KL 中位数</p>
+ const scaffold=`<p class="kl-caption aligned-note">${comparisonHasB(dataset.comparison_scope)?'B/V':'V'} 均值 · KL 分组中位数${peers.some(r=>r.external_source)?' · 协作 KL：device-event P50':''}</p>
  <div class="aligned-controls"></div>
  <section class="chart-card aligned-card"><div class="chart-title"><h3>速度曲线</h3></div><div class="plot-options"><div class="segments" aria-label="曲线指标"><button data-aligned-mode="best" aria-pressed="${view.mode==='best'}" class="${view.mode==='best'?'selected':''}">搜索最优</button><button data-aligned-mode="raw" aria-pressed="${view.mode==='raw'}" class="${view.mode==='raw'?'selected':''}">逐次测量</button></div><label class="chip aligned-compression" style="--color:#8a56d6" title="仅轮次轴：KL 轮次 ÷ 1.5，真实轮次不变"><input type="checkbox" data-aligned-compress ${view.compressed?'checked':''} ${axisMode!=='round'?'disabled':''}>KL ×⅔</label><label><input data-aligned-zoom type="checkbox" ${view.zoom?'checked':''}> 收敛放大</label><span class="mark-key">● 测量 · — 最优阶梯 · × 失败</span><button data-aligned-csv>CSV ↓</button></div>
  <div class="chart aligned-chart" tabindex="0" role="img" aria-label="${comparisonHasB(dataset.comparison_scope)?'全部结果':'V 与 Aligned KL'} 按有效评测次数对比"></div><div class="readout aligned-readout" aria-live="polite"></div></section>

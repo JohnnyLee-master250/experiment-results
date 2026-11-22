@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-20T12:00:29.155655+00:00",
+  "updated_at": "2026-11-22T13:31:17.465933+00:00",
   "published_at": "2026-11-20T12:00:43.885889+00:00",
   "refresh_seconds": 60,
   "counts": {
@@ -5017,7 +5017,7 @@
   ],
   "kl": {
     "url": "kl.json",
-    "run_count": 21,
+    "run_count": 22,
     "source_captured_at": "2026-11-20T12:00:31.359386+00:00",
     "running_runs": [],
     "waiting_cards": [
@@ -7872,10 +7872,10 @@
       "handling_status": "保留原结果与断点"
     }
   ],
-  "frontend_version": "3d352320e98f9d486c3d",
+  "frontend_version": "68276b2353342301623f",
   "workspaces": {
     "schema_version": 1,
-    "updated_at": "2026-11-20T12:00:29.155655+00:00",
+    "updated_at": "2026-11-22T13:31:17.465933+00:00",
     "rows": [
       {
         "id": "astra-based-b1",
@@ -9498,6 +9498,21 @@
         "source_id": "kl-ds-sol-serial-20261108"
       },
       {
+        "id": "collab-hel19-c0dc6f6b48c4:run-d9a4af61a7585238aa087f5bbcb3c0ad",
+        "dataset": "Mega",
+        "method": "KL",
+        "method_version": "KL-c8f015035108",
+        "model": "Astra 6.2 · 协作",
+        "effort": "high",
+        "status": "ended",
+        "started_at": "2026-11-21T03:55:20.261843+00:00",
+        "finished_at": "2026-11-22T12:50:39.329983+00:00",
+        "verified_at": null,
+        "independently_complete": false,
+        "workspace_path": null,
+        "source_id": "collab-hel19-c0dc6f6b48c4"
+      },
+      {
         "id": "astra-mega-v0",
         "dataset": "Mega",
         "method": "V0",
@@ -9784,7 +9799,7 @@
       }
     ]
   },
-  "beta_frontend_version": "05d5217a2721f36842b0",
+  "beta_frontend_version": "ea75555aa2456c62d314",
   "cannbot": {
     "schema_version": 1,
     "url": "cannbot.json",
@@ -9809,5 +9824,59 @@
     "running_runs": [],
     "paused": false,
     "captured_at": "2026-11-20T12:00:43.418627+00:00"
-  }
+  },
+  "collaborators": {
+    "schema_version": 1,
+    "sources": [
+      {
+        "source_id": "collab-hel19-c0dc6f6b48c4",
+        "label": "协作",
+        "snapshot_id": "0000000001-5bc8d55a132b",
+        "snapshot_sequence": 1,
+        "manifest_sha256": "fba20f74bbcb7e62c28670851fbd7c96099127f60c88c202b17b8dce79c5e8ea",
+        "source_captured_at": "2026-11-22T13:00:30.314933Z",
+        "exported_at": "2026-11-22T13:00:32.541862Z",
+        "exporter_active": false,
+        "next_export_estimated_at": null,
+        "status": "partial",
+        "counts": {
+          "applies": 11,
+          "datasets": 1,
+          "evaluations": 167,
+          "events": 3,
+          "measurements": 226,
+          "queues": 0,
+          "resources": 1,
+          "runs": 1,
+          "runs_by_status": {
+            "ended": 1
+          },
+          "samples": 22600,
+          "usage": 1615,
+          "valid_evaluations": 155,
+          "workspaces": 1
+        }
+      }
+    ],
+    "resources": [
+      {
+        "id": "collab-hel19-npu-a",
+        "source_id": "collab-hel19-c0dc6f6b48c4",
+        "label": "协作 · NPU A",
+        "global_card_number": null,
+        "physical_mapping": "unverified",
+        "observed_at": "2026-11-22T05:57:53Z",
+        "status": "unknown",
+        "max_main_sessions": null,
+        "active_run_ids": [],
+        "utilization": null
+      }
+    ],
+    "receiver": {
+      "interval_seconds": 300,
+      "checked_at": "2026-11-22T13:31:17.465933+00:00",
+      "read_only": true
+    }
+  },
+  "upstream_source_updated_at": "2026-11-20T12:00:29.155655+00:00"
 }

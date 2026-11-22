@@ -33,7 +33,7 @@ function betaResultMotion(){
  else betaAnimateContent($(category==='kl'?'#kl-body':isComparison()?'#aligned-content':'#bv-panel'));
 }
 const betaHeader=$('#beta-header'),betaBackdrop=$('#beta-backdrop');
-const betaLabels={started:'开始运行',paused:'暂停',resumed:'恢复运行',completed:'独立完成'};
+const betaLabels={started:'开始运行',paused:'暂停',resumed:'恢复运行',completed:'独立完成',ended:'已结束'};
 const betaBase=document.querySelector('meta[name="beta-version"]').content;
 let betaPreview=null;
 let betaPreviewRoute=null;
@@ -632,7 +632,7 @@ betaScheduleSliders();
 
 // Directory metadata is part of index.json; no extra collection or model work.
 window.workspaceDirectory=(()=>{
- const labels={prepared:'待运行',running:'运行中',waiting:'等待中',complete:'已完成',paused:'暂停',blocked:'受阻',awaiting_audit:'待验收',ended:'待验收',not_run:'未开始',no_data:'无记录'};
+ const labels={prepared:'待运行',running:'运行中',waiting:'等待中',complete:'已完成',paused:'暂停',blocked:'受阻',awaiting_audit:'待验收',ended:'已结束',not_run:'未开始',no_data:'无记录'};
  const methods=['all',...betaConfig.method_revisions.map(r=>r.label).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})),'KL','CAKE'];
  const selected=new Set();let rows=[],filtered=[],stamp=null,limit=40,sort='started_at',descending=true;
  const value=id=>$('#ws-'+id).value;
@@ -640,7 +640,7 @@ window.workspaceDirectory=(()=>{
  function optionList(id,values){const el=$('#ws-'+id),before=el.value,html=values.map(([v,label])=>`<option value="${esc(v)}">${esc(label)}</option>`).join('');if(el.innerHTML!==html)el.innerHTML=html;el.value=values.some(([v])=>v===before)?before:'all';}
  function setMethod(method,push=true){$('#ws-method').value=methods.includes(method)?method:'all';limit=40;selected.clear();const url=new URL(location);url.searchParams.set('view','workspaces');url.searchParams.set('ws',value('method'));history[push?'pushState':'replaceState'](null,'',url);betaFuture=false;betaShowView('workspaces');betaCloseMenu();render();window.scrollTo({top:0,left:0,behavior:'instant'});}
  function matches(row){
-  if(value('method')!=='all'&&row.method_version!==value('method'))return false;
+  if(value('method')!=='all'&&row.method_version!==value('method')&&row.method!==value('method'))return false;
   if(value('model')!=='all'&&row.model+' / '+row.effort!==value('model'))return false;
   if(value('status')!=='all'&&(labels[row.status]||row.status)!==value('status'))return false;
   if(value('dataset')!=='all'&&row.dataset!==value('dataset'))return false;
@@ -704,8 +704,8 @@ window.workspaceDirectory=(()=>{
 /* Result comparison: published numeric records only, no experiment operations. */
 const ComparisonModel=(()=>{
  const version=r=>r.method==='KL'?'KL':r.method_version||(/^B[0-3]$/.test(r.method)?r.method+'-r1':r.method==='V0'?'V0-r2':r.method);
- const key=r=>[r.model,r.effort||'',version(r)].join('|');
- const supported=r=>['Astra','Sol 6.1','DeepSeek Flash'].includes(r.model)&&['B2','B3','V0','KL'].includes(r.method);
+ const key=r=>[r.model,r.effort||'',version(r),r.external_source?r.source_id:''].join('|');
+ const supported=r=>['Astra','Sol 6.1','DeepSeek Flash','Astra 6.2 · 协作'].includes(r.model)&&['B2','B3','V0','KL'].includes(r.method);
  const points=r=>r.method==='KL'?(r.aligned?.points||[]).filter(p=>p.counted).map(p=>({round:p.round,latency:p.accepted&&p.status==='passed'?p.latency_ms:null})): (r.search||[]).map(p=>({round:p.round,latency:p.status==='passed'?p.timing?.mean_ms:null}));
  const display=r=>{const v=version(r);return r.model!=='Astra'&&/^B\d-r\d+$/.test(v)?v.split('-r')[0]:v;};
  function measure(r,n){
@@ -722,7 +722,7 @@ const ComparisonModel=(()=>{
  function catalog(datasets,kl){
   const map=new Map();for(const d of datasets)for(const r of d.runs.filter(supported))if(!map.has(key(r)))map.set(key(r),{...r,key:key(r),version:version(r),label:r.model+' · '+display(r)});
   for(const r of kl.runs){const v={...r,method:'KL'};if(supported(v)&&!map.has(key(v)))map.set(key(v),{...v,key:key(v),version:'KL',label:v.model+' · KL'});}
-  const models=['Astra','Sol 6.1','DeepSeek Flash'],methods=['B2-r1','B2-r2','B3-r1','B3-r2','V0-r2','V0-r3','KL'];
+  const models=['Astra','Sol 6.1','DeepSeek Flash','Astra 6.2 · 协作'],methods=['B2-r1','B2-r2','B3-r1','B3-r2','V0-r2','V0-r3','KL'];
   return [...map.values()].sort((a,b)=>models.indexOf(a.model)-models.indexOf(b.model)||methods.indexOf(a.version)-methods.indexOf(b.version));
  }
  function scale(values){
@@ -740,13 +740,13 @@ if(typeof document!=='undefined')(()=>{
  // Same palette and rule as the curve pages: grouped by model, colour names the
  // task version; grouped by task, colour names the model.
  const versionColors={'B2-r1':betaSeries.orange,'B2-r2':betaSeries.red,'B3-r1':betaSeries.rose,'B3-r2':betaSeries.violet,'V0-r2':betaSeries.green,'V0-r3':betaSeries.teal,'KL':betaSeries.blue};
- const modelColors={'Astra':betaSeries.blue,'Sol 6.1':betaSeries.green,'DeepSeek Flash':betaSeries.orange};
+ const modelColors={'Astra':betaSeries.blue,'Sol 6.1':betaSeries.green,'DeepSeek Flash':betaSeries.orange,'Astra 6.2 · 协作':betaSeries.violet};
  const color=s=>(state.group==='task'?modelColors[s.model]:versionColors[s.version])||betaSeries.neutral;
  const delta=v=>v===null?'—':(Math.abs(v)<.05?'0':(v>0?'+':'−')+Math.abs(v).toFixed(1))+'%';
  const num=v=>v>=1000?v.toLocaleString('en',{maximumFractionDigits:1}):Number(v.toPrecision(5)).toString();
  const shortModel=s=>s.model==='DeepSeek Flash'?'DS Flash':s.model;
  const label=s=>shortModel(s)+' · '+ComparisonModel.display(s);
- host.innerHTML=`<section class="comparison-settings" aria-label="对比设置"><div class="comparison-setting"><label for="comparison-round">截止轮次</label><div class="comparison-cutoff"><input id="comparison-round" type="range" min="5" max="50" step="1" value="30" aria-label="截止轮次"><output id="comparison-round-value">r30</output></div></div><div class="comparison-setting comparison-reference"><label for="comparison-baseline">参照基线</label><select id="comparison-baseline" aria-label="参照基线"></select></div><button class="chart-reset" id="comparison-reset" aria-label="重置结果对比" title="重置">↻</button></section><section class="comparison-selection"><div class="comparison-selection-head"><div class="comparison-selection-title"><strong>对比任务</strong><span id="comparison-selected-count"></span></div><div class="comparison-selection-actions"><div class="segments" aria-label="对比任务分组"><button data-bar-group="model" class="selected" aria-pressed="true">按模型</button><button data-bar-group="task" aria-pressed="false">按任务</button></div><button id="comparison-all" class="comparison-group-toggle" aria-pressed="true">全部</button></div></div><div id="comparison-series-body" class="comparison-series-body open"><div><div id="comparison-series" class="comparison-series"></div></div></div></section><div class="comparison-caption"><div class="segments comparison-layout" aria-label="对比图组织"><button data-bar-layout="kernel" class="selected" aria-pressed="true">按 Kernel</button><button data-bar-layout="task" aria-pressed="false">按任务</button></div><span id="comparison-measure-label">最快延迟 · ms ↓</span><span title="(本组延迟 / 基线延迟 − 1) × 100。B/V均值，KL中位数；环境与计时口径有差异。">− 更快 / + 更慢 <span aria-hidden="true">ⓘ</span></span></div><div id="comparison-loading" role="status"></div><div id="comparison-grid" class="comparison-grid"></div>`;
+ host.innerHTML=`<section class="comparison-settings" aria-label="对比设置"><div class="comparison-setting"><label for="comparison-round">截止轮次</label><div class="comparison-cutoff"><input id="comparison-round" type="range" min="5" max="50" step="1" value="30" aria-label="截止轮次"><output id="comparison-round-value">r30</output></div></div><div class="comparison-setting comparison-reference"><label for="comparison-baseline">参照基线</label><select id="comparison-baseline" aria-label="参照基线"></select></div><button class="chart-reset" id="comparison-reset" aria-label="重置结果对比" title="重置">↻</button></section><section class="comparison-selection"><div class="comparison-selection-head"><div class="comparison-selection-title"><strong>对比任务</strong><span id="comparison-selected-count"></span></div><div class="comparison-selection-actions"><div class="segments" aria-label="对比任务分组"><button data-bar-group="model" class="selected" aria-pressed="true">按模型</button><button data-bar-group="task" aria-pressed="false">按任务</button></div><button id="comparison-all" class="comparison-group-toggle" aria-pressed="true">全部</button></div></div><div id="comparison-series-body" class="comparison-series-body open"><div><div id="comparison-series" class="comparison-series"></div></div></div></section><div class="comparison-caption"><div class="segments comparison-layout" aria-label="对比图组织"><button data-bar-layout="kernel" class="selected" aria-pressed="true">按 Kernel</button><button data-bar-layout="task" aria-pressed="false">按任务</button></div><span id="comparison-measure-label">最快延迟 · ms ↓</span><span title="(本组延迟 / 基线延迟 − 1) × 100。B/V均值，历史KL分组中位数，协作KL为device-event P50；百分比仅表示所示数值比，环境与计时口径有差异。">− 更快 / + 更慢 <span aria-hidden="true">ⓘ</span></span></div><div id="comparison-loading" role="status"></div><div id="comparison-grid" class="comparison-grid"></div>`;
  const slider=host.querySelector('#comparison-round'),baseline=host.querySelector('#comparison-baseline'),status=host.querySelector('#comparison-loading');
  function defaultBaseline(){return state.catalog.find(r=>r.model==='Astra'&&r.version==='KL')?.key||state.catalog[0]?.key;}
  function toggleState(button,rows){const n=rows.filter(r=>state.selected.has(r.key)).length;button.textContent=n===rows.length?'全部':n?'部分':'关闭';button.setAttribute('aria-pressed',n===rows.length?'true':n?'mixed':'false');}

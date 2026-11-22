@@ -95,3 +95,13 @@ The preparation snapshot contains ten datasets and thirty model/task combination
 Evaluation IDs are stable. `evaluation_index` counts only original passed/failed evaluation records; infrastructure errors, cancellations and unfinished requests have null indices. `round` and `candidate` retain the recorded candidate directory identifiers and are separate from this index. `latency_ms` is the validated device-event P50, not B/V arithmetic mean or KL median-of-group-medians. Complete lifecycle state requires independent acceptance; passing one evaluation does not complete the task.
 
 Time/token values are projected only from saved run-statistics with complete coverage. Missing coverage stays explicit. Raw dashboard HTML, source code, analysis, private logs and credentials are not published. Routine updates use the same fixed publisher; the API cannot start or alter an experiment.
+
+## 协作者只读接入（2026-11-22）
+
+`python3 update_web.py --publish --collaborators-only` 是协作者增量维护入口：读取已登记快照，校验 SHA-256、稳定 ID、评测边界、交付来源和原始样本，合并到最新线上数据，发布并核验。普通 `update_web.py --publish` 也包含相同接入步骤。均不启动实验、不分发任务、不修改来源文件。
+
+当前登记 Mega / KL-c8f015035108 / gpt-6.2-astra high，显示为 `Astra 6.2 · 协作`，与原 Astra 分开。测量中心值为 device-event P50；旧 KL 的三组中位数聚合保持原口径，不把数值差解释成受控实验结论。11 次 Apply 执行含 1 次中断，10 次实际交付；连续执行序号与原生 Apply 编号分别保留。交付点采用真实选择结果，不用搜索最低值替代。未独立验收保持 ended，不计入已完成。
+
+所有 226 份测量保存在 `kl.json.collaborator_measurements`，包含原始顺序和真实组边界。图表范围带、点选详情、采样轨迹、直方图、CSV复用原界面。缺 token 的累计值保留 incomplete 标记，不推算补齐。`index.json.collaborators` 提供来源、快照、接收时间和资源映射；未核验物理卡号保持 null，未授权路径不公开，缺队列/忙率不补造。
+
+我方接收器每 300 秒检查一次：无变化不重复发布；错误快照保留上一版；发布有本地互斥锁、远端基线检查及部署核验。接收周期不等于协作者导出周期，源端 exporter_active=false 时不会声称对方有下一次自动导出。新增实验/模型/资源需先在 collaborator-sources.json 明确登记。
