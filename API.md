@@ -100,7 +100,7 @@ Time/token values are projected only from saved run-statistics with complete cov
 
 `python3 update_web.py --publish --collaborators-only` 是协作者增量维护入口：读取已登记快照，校验 SHA-256、稳定 ID、评测边界、交付来源和原始样本，合并到最新线上数据，发布并核验。普通 `update_web.py --publish` 也包含相同接入步骤。均不启动实验、不分发任务、不修改来源文件。
 
-当前登记 Mega / KL-c8f015035108 / gpt-6.2-astra high，显示为 `Astra 6.2 · 协作`，与原 Astra 分开。测量中心值为 device-event P50；旧 KL 的三组中位数聚合保持原口径，不把数值差解释成受控实验结论。11 次 Apply 执行含 1 次中断，10 次实际交付；连续执行序号与原生 Apply 编号分别保留。交付点采用真实选择结果，不用搜索最低值替代。未独立验收保持 ended，不计入已完成。
+当前登记 Mega / KL-c8f015035108 / gpt-6.2-astra high，显示为 `Astra 6.2`，与原 Astra 分开。测量中心值为 device-event P50；旧 KL 的三组中位数聚合保持原口径，不把数值差解释成受控实验结论。11 次 Apply 执行含 1 次中断，10 次实际交付；连续执行序号与原生 Apply 编号分别保留。交付点采用真实选择结果，不用搜索最低值替代。未独立验收保持 ended，不计入已完成。
 
 所有 226 份测量保存在 `kl.json.collaborator_measurements`，包含原始顺序和真实组边界。图表范围带、点选详情、采样轨迹、直方图、CSV复用原界面。缺 token 的累计值保留 incomplete 标记，不推算补齐。`index.json.collaborators` 提供来源、快照、接收时间和资源映射；未核验物理卡号保持 null，未授权路径不公开，缺队列/忙率不补造。
 

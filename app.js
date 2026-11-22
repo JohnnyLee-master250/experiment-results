@@ -3,7 +3,7 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const FRONTEND_VERSION=$('meta[name="frontend-version"]')?.content;
 const COLORS={B1:'#0072B2',B2:'#D55E00',B3:'#CC79A7',V0:'#009E73'};
 const LABELS={running:'正在跑',complete:'已完成',paused:'已暂停',not_run:'未跑',no_data:'无数据',ended:'已结束',blocked:'待处理',waiting:'等待中',awaiting_audit:'待验收'};
-const MODELS=['Astra','Sol 6.1','DeepSeek Flash','Astra 6.2 · 协作'];
+const MODELS=['Astra','Sol 6.1','DeepSeek Flash','Astra 6.2'];
 const METHODS=['B1','B2','B3','V0'];
 const DASH={Astra:'7 4','Sol 6.1':'','DeepSeek Flash':'2 4'};
 let manifest,data,cache=new Map(),visible=new Set(),datasetId=new URL(location).searchParams.get('dataset')||'GQA',mode='best',activeSamples=null,loadSeq=0,needsReload=false;
@@ -113,9 +113,9 @@ function datasetJSON(meta,version=manifest.updated_at){
  return getJSON(`./api/v1/${meta.url}?v=${encodeURIComponent(version)}`).then(d=>{if(d.updated_at!==version)throw Error('发布版本尚在同步');if(manifest.updated_at===version)cache.set(meta.id,d);return d;});
 }
 function publishedKL(version=manifest.updated_at){return klData?.updated_at===version?Promise.resolve(klData):getJSON(`./api/v1/${manifest.kl.url}?v=${encodeURIComponent(version)}`);}
-const MODEL_COLORS={'Astra':'#0071e3','Sol 6.1':'#009b68','DeepSeek Flash':'#b87a00','Astra 6.2 · 协作':'#8758c8'};
+const MODEL_COLORS={'Astra':'#0071e3','Sol 6.1':'#009b68','DeepSeek Flash':'#b87a00','Astra 6.2':'#8758c8'};
 const REVISION_COLORS={'B1-r2':'#0086b3','B2-r2':'#e63d37','B3-r2':'#784be7','V0-r3':'#0071e3'};
-const REVISION_MODEL_COLORS={'Astra':'#784be7','Sol 6.1':'#009ca8','DeepSeek Flash':'#8d9500','Astra 6.2 · 协作':'#b45783'};
+const REVISION_MODEL_COLORS={'Astra':'#784be7','Sol 6.1':'#009ca8','DeepSeek Flash':'#8d9500','Astra 6.2':'#b45783'};
 function comparisonColor(run,scope=category){
  const revised=['bv','aligned'].includes(scope)&&Object.hasOwn(REVISION_COLORS,methodLabel(run));
  if(comparisonGroupMode(scope)==='task')return (revised?REVISION_MODEL_COLORS[run.model]:MODEL_COLORS[run.model])||'#526c89';
