@@ -105,3 +105,28 @@ Time/token values are projected only from saved run-statistics with complete cov
 所有 226 份测量保存在 `kl.json.collaborator_measurements`，包含原始顺序和真实组边界。图表范围带、点选详情、采样轨迹、直方图、CSV复用原界面。缺 token 的累计值保留 incomplete 标记，不推算补齐。`index.json.collaborators` 提供来源、快照、接收时间和资源映射；未核验物理卡号保持 null，未授权路径不公开，缺队列/忙率不补造。
 
 我方接收器每 300 秒检查一次：无变化不重复发布；错误快照保留上一版；发布有本地互斥锁、远端基线检查及部署核验。接收周期不等于协作者导出周期，源端 exporter_active=false 时不会声称对方有下一次自动导出。新增实验/模型/资源需先在 collaborator-sources.json 明确登记。
+
+
+### Registered KL 6.2 (2026-11-23)
+
+`kl.json.runs` includes two registered sources (`kl62-8MZlZ-20261123`,
+`kl62-LxrgZ-20261123`), seven datasets each. `valid_rounds` is the number of
+audited logical Applies that count toward `budget` (passed **or** candidate failure).
+`reported_attempts` uses this same count. `current_apply` in the running summary
+is the native execution ordinal, not completed progress.
+
+Each Apply carries `logical_apply`, `round_outcome`, `counts_toward_budget`.
+Infrastructure interruptions and pending attribution do not spend the budget.
+No audit ledger means zero valid Applies and no unaudited published timings.
+`aligned.count` and its curve continue to count audited, non-reused evaluations;
+it is separate from the valid Apply budget and may be larger.
+
+`measurement: p50_of_100_samples` uses the original 100 positive finite samples,
+`timing.statistic: p50`, preserving sample order. Historical measurement protocols
+are unchanged. `flashmla.json` contains an empty B/V `runs` list: only KL is
+registered there. No B/V records are synthesized.
+
+`index.json.kl.registered_sources` records each source's last captured time.
+The receiver polls every 300 seconds while its Mac is awake and online; unchanged
+evidence does not create a new release. The public `updated_at` is the last data
+release, not a promise that a running Apply has settled.
