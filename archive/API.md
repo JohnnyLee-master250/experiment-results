@@ -1,0 +1,132 @@
+# Experiment results API · v1
+
+Base: `https://johnnylee-master250.github.io/experiment-results/api/v1/`
+
+- `index.json`: schema version, source update timestamp, publication timestamp, refresh interval, dataset endpoints and source metadata.
+- `index.json.running_runs`: current running groups only, with `dataset`, `id`, `model`, `effort`, `method`, `reported_attempts`, `budget`, `phase`, and `source_captured_at`. Counts are saved workflow counters, including records still awaiting review, not independent completion counts. Paused, blocked and completed groups are excluded.
+- Links of the form `?dataset=MQA&run=sol6-mqa-b2#curves` open the dataset and enable/highlight that curve. Ordinary clicks in the running bar preserve other selected curves in the current dataset.
+- `{dataset}.json`: `sonny`, `gqa`, `fa3`, `gdn`, `based`, `mega`, `mqa`.
+- All times are ISO 8601 with timezone. The page displays Asia/Singapore.
+- `index.json.task_events`: newest-first lifecycle records (`id`, `at`, `kind`, `runs`, `reason`, `time_basis`). Types are `started`, `paused`, `resumed`, `completed`; each run has `id`, `dataset`, `model`, `effort`, and `method`. Only currently published experiments are included. Older campaigns are not backfilled. Stable event IDs prevent duplicates on refresh.
+- Event timestamps come from retained launch, pause, release and independent-completion records. `time_basis: recorded` is an event/evidence timestamp; `observed` explicitly labels the time completion was first observed if no precise closure timestamp was retained. Recorded completion requires both a complete workflow and independent acceptance; a saved 30th round alone is insufficient. Reasons are sanitized summaries, not raw logs.
+- Each model block has a three-state group visibility checkbox: all, mixed, or off. It affects available performance curves for that model in the current dataset; individual controls and curve links stay synchronized. Empty groups are disabled.
+- Latency units are milliseconds. Numeric values retain original sample precision.
+
+## Run
+
+Stable fields: `id`, `model`, `model_id`, `effort`, `method`, `status`, `reported_attempts`, `budget`, `started_at`, `finished_at`, `verified_at`, `source_id`, `source_captured_at`, `independently_complete`, `search`, `formal`, `formal_pytorch`, `formal_b0`.
+
+Statuses: `not_run`, `no_data`, `running`, `paused`, `blocked`, `complete`, `ended`.
+`no_data` means the historical inventory has no retained record; it does not assert that an experiment never ran. `finished_at` is recorded experiment closure, not the date the webpage was generated. Unfinished groups retain null.
+
+`workspace_path` is the experiment workspace directory from retained evidence, published at the user's explicit request. It is a server filesystem path, not a browser download URL or a claim of current access to historical folders. Missing paths are null. Only this exact field permits approved workspace directory names; logs, credentials, kernel implementations and operator evidence remain excluded.
+
+DeepSeek high and max are separate series. Historical and current execution environments are identified separately. Effort and environment differences preclude attributing cross-run differences solely to model choice.
+
+## Search point
+
+`round` preserves the saved attempt number. `status` is passed, failed, or excluded. `role: b0` on B1 round 1 marks intake. `review` distinguishes saved analysis, pending, not required, and historical records; saved analysis alone is not independent campaign completion.
+
+`timing`, `pytorch`, and `b0` contain `mean_ms`, `p10_ms`, `p90_ms`, `sample_count`, `samples_ms` when valid. Missing timing is null, never zero. Infrastructure-interrupted records remain visible with excluded status and no plotted timing. `reported_attempts` is the saved workflow counter; it is not the count of successful timing measurements. `excluded_records` exposes non-timing infrastructure records.
+
+`search_best_ms` excludes B1 intake. The best-so-far plot can include the intake starting point, clearly identified in the detail table. `formal` is a separate final measurement and is never synthesized from the search best. B0 is correctness-only and has no performance curve.
+
+## Updates
+
+The browser checks `index.json` every 60 seconds and refreshes the selected dataset only when `updated_at` changes. Data advances when a new validated source snapshot is published, not on each browser poll. Each release atomically commits all dataset files and the manifest, followed by the existing GitHub Pages deployment.
+
+`update_cadence_minutes` comes from the active monitoring schedule. `next_update_estimated_at` is the source snapshot timestamp plus that interval, an estimate rather than a guaranteed measurement or deployment time. The page shows “等待更新” after the estimate passes without a new snapshot. Both fields are null when that schedule is inactive or unavailable.
+
+Consumers should load the manifest, then the chosen endpoint with `?v=<updated_at>`, keep last-known-good data on errors, and show its timestamp. This is a read-only public API. No credentials or experiment source code are included. The publishing adapter is operated outside the experimental MAIN workspaces.
+
+## KL Apply API
+
+`index.json.categories` selects `bv` (B0–B3 / V0) or `kl`. `index.json.kl.url` points to `api/v1/kl.json` relative to this API directory. KL has its own grain: run → Apply (1–10) → candidate evaluation, rather than B/V valid rounds. `?category=kl&dataset=GQA&apply=2` selects the dataset and internal Apply detail.
+
+Each run includes model/effort, budget, per-Apply timeout, evaluation timeout, actual workspace_path (null until created), start time, independent completion time, status and applies. Each Apply records timing, status, candidate evaluations, infrastructure error count, reuse snapshot count and last delivered validation. Candidate sequence is the saved evaluation-event order; it is not a B/V round. Reuse is not a new device evaluation. Missing values stay null, never zero. Delivery requires completed native Apply and its last version; it does not choose an earlier fastest version. Acceptance requires every native validation gate, a bound original Job without job-level error, and a valid positive latency. Independent completion requires separate operation-bound audit evidence.
+
+KL latency uses the median of three group medians (10 warmups, 50 samples per group), distinct from the existing B/V measurement contract. These values are not merged into B/V curves. `kl.json.task_events` records actual task start, executed pause/recovery and independent completion; preparation creates no fictitious start. `index.json.kl.running_runs` lists only currently running KL tasks. Source capture time and publication time remain separate.
+
+## Aligned KL（2026-11-02）
+分类顺序为 B0–B3 / V0、Aligned KL、KL；KL 页内复用相同 Aligned 对比组件。固定 update_web.py --publish 自动生成 kl.json 每组的 aligned 字段（schema_version/count/excluded_count/points），无需手工展开或改前端。按原 Apply 顺序、内部记录时间排列；没有时间时保留原记录序号，不使用文件 mtime 伪造。每个非复用 passed/failed 评测占一个累计 rN，基础设施异常/未知归因保留在展开表但不计轮次；同 Job 复用不增加。失败不填0，最优曲线只使用通过完整评测的计时。Apply 交付和正式独立验收不混作新候选。
+index.json.kl.running_runs 新增 current_apply、internal_round；运行栏显示当前 Apply/10 · rN，rN 与展开曲线一致。KL 中位数与 B/V 均值、环境/effort/预算差异在视图中标明；B0不画性能曲线。这是评测序号对齐，不宣称等时间或等预算。
+定点验证：node qa/check_aligned_kl.mjs；原 check_kl_reference.mjs、check_kl_accounting.py 和 validate_data.py 保持。常规不运行前端回归。
+
+
+## KL 横轴与按轮次匹配参考线（2026-11-03）
+
+KL Apply 图的完成刻度显示 `2(r16 133min)`：r 来自同一 `aligned.points` 有效评测计数，分钟为截至该 Apply 的 `elapsed_seconds` 总和四舍五入，沿用已对账扣除暂停的累计用时，绝不以结束减开始的墙钟时间代替、也不重复累加恢复 segments。未完成 Apply 不显示完成总时间，缺失时间标未知。内部候选刻度显示 `序号(rN)`，不显示时间；复用及基础设施/未知归因不增加 r。
+
+KL 两张速度图各新增两个可独立开关的 V0 Astra/high 参考线：以整个 KL 实验最新 `aligned.count=N` 计算，取 V0 搜索记录 `round <= min(N,30)` 与 `round <= min(floor(2*N/3),30)` 的有效通过均值最小值，不看截止轮之后的结果，不混正式结果。例如 N=24 对应 r24/r16，N=70 对应 r30/r30；无该范围内有效记录则不画线。选择旧 Apply 不改变最新轮次基准。原全程最快参考开关保留。KL 中位数与 V0 均值、环境与预算差异仍明确说明。
+
+B/V、Aligned KL 及 KL 内的对比图默认仅开启 Astra；Sol 与 DeepSeek 默认关闭，用户可手动切换。运行栏/任务记录的指定曲线链接仍会主动开启目标曲线。数据刷新保留当前选择；固定更新仍只用 `update_web.py --publish`，标签与参考线自动从数值接口计算，不新增采集、实验任务或人工维护步骤。
+
+## Cost coordinates
+
+The chart query parameter `axis` accepts `round`, `time`, or `tokens`. Time and token coordinates cover the 15 completed Sol B/V runs and nine KL runs. Each eligible record carries an `axes` object. B/V formal measurements carry `formal_axes`. Unsupported series have no cost coordinates.
+
+`elapsed_s` is wall time from the workspace clock origin to the original evaluation finish or Apply delivery. It includes pauses and queue waits. KL's per-Apply active budget remains separately available in `elapsed_seconds`. All cumulative values use the whole task's origin even inside a selected Apply.
+
+`tokens` counts reported input plus output up to that finish time. Sol includes the original MAIN and its FULL reviewers, using timestamped cumulative counters from each distinct thread once. KL counts finished responses in the original request journals once, including resumed generations. Cached input and reasoning are subsets. KL `missing_responses` is the cumulative number of finished requests without totals. `disputed` remains true from the start of an Apply whose journal and final native counters disagree. Either condition makes `tokens_complete` false. In token mode these points use hollow triangles; the tooltip provides the gap count and reconciliation status. Formal results are marked separately and B0 uses correctness.
+
+
+## Versioned B/V cohorts
+
+The 2026-11-08 cohort is separate from historical B/V records. Each new run carries `edition` (`v0-r3` or `bn-r2`), `method_version` (`V0-r3`, `B0-r2` … `B3-r2`), an independent ID and source ID. The base `method` remains V0/B0/B1/B2/B3 for measurement semantics. `budget` is 50; B0 is correctness-only. Root links use `?category=bv&edition=v0-r3&dataset=FA3` or `edition=bn-r2`; omitted edition selects historical records. Aligned KL and matched Astra V0 references retain historical B/V.
+
+`index.json.bv_revisions.queue` is the authoritative task order. It contains nine V0-r3 Astra/high tasks, 27 B0-r2 tasks and 81 B1–B3-r2 tasks. `queue_position` is the original task position, not a renumbered visible rank. Card1 allows at most four active model sessions; awaiting admission is `waiting`, unresolved faults are `blocked`, and pending independent acceptance is `awaiting_audit`. `index.json.running_runs` includes only running B/V tasks; KL remains in `index.json.kl.running_runs`. `index.json.waiting_cards` / `waiting_runs` combine both campaigns in per-card order; the older KL-scoped fields retain only KL tasks.
+
+New B/V `axes` values come only from resource_usage evaluation checkpoints. `elapsed_s` uses the recorded workspace wall-clock origin; `time_basis` is `resource_usage_recorded_wall` and `pause_queue_adjusted` is false. No queue/pause subtraction is inferred. `tokens` is reported input plus output; unknown or inconsistent totals are null, not zero. `tokens_complete`, `time_complete`, `recording_issue` and `recorded_at` expose quality. Unknown coordinates are not plotted at zero. A pending or missing completion record does not produce formal results or a completion timestamp.
+
+
+## Measurement distributions
+B/V `timing.samples_ms` retains the original ordered per-run measurements (current records: 100). Its plotted center remains the saved arithmetic mean. KL candidates, delivered results and aligned points expose optional `timing` with `samples_ms`, `group_sizes`, `sample_count`, `min_ms`, `max_ms`, `p10_ms`, `p90_ms`, `center_ms`, `statistic: median_of_group_medians`, and `sample_order: recorded_group_then_sample`. Current KL receipts contain three groups of 50; group boundaries and original ordering are preserved. The center is verified against the saved latency; it is not replaced by the pooled median.
+
+Min/max include every sample, including outliers. P10/P90 use linear interpolation at index `(n-1)*p` on all ordered sample values pooled across groups. These are empirical sample ranges, not confidence intervals for a mean or median. Sequence plots use sample index, not invented per-sample wall timestamps. Histograms use equal-width bins and raw counts; no unimodal or normal fit is imposed. CSV includes each sample's group.
+
+`timing_status` is `available`, `missing`, `invalid`, `ambiguous`, `inconsistent`, or `not_measured`. Missing/unverified samples yield `timing: null`; a valid saved center can still be shown. Only candidate timing evidence bound to the same original Job's version metadata is used. Diagnostic texts and private identifiers are never published. Normal refresh automatically carries these fields; no new run or benchmark is performed.
+
+## CannBot / CAKE
+
+`index.json.cannbot` points to `cannbot.json`; both share `updated_at`. The dashboard is at `?view=cannbot`, with optional `cake_dataset` and `cake_model`. It is read-only.
+
+The preparation snapshot contains ten datasets and thirty model/task combinations. `prepared` is not running, queued, or independently complete. No timing point is synthesized before a real retained evaluation. Each run exposes identity, explicit lifecycle state, workspace_path, round budget, candidates per round, rounds_completed, evaluations, valid_evaluations, net_seconds and total_tokens. Unknown numeric values are null.
+
+Evaluation IDs are stable. `evaluation_index` counts only original passed/failed evaluation records; infrastructure errors, cancellations and unfinished requests have null indices. `round` and `candidate` retain the recorded candidate directory identifiers and are separate from this index. `latency_ms` is the validated device-event P50, not B/V arithmetic mean or KL median-of-group-medians. Complete lifecycle state requires independent acceptance; passing one evaluation does not complete the task.
+
+Time/token values are projected only from saved run-statistics with complete coverage. Missing coverage stays explicit. Raw dashboard HTML, source code, analysis, private logs and credentials are not published. Routine updates use the same fixed publisher; the API cannot start or alter an experiment.
+
+## 协作者只读接入（2026-11-22）
+
+`python3 update_web.py --publish --collaborators-only` 是协作者增量维护入口：读取已登记快照，校验 SHA-256、稳定 ID、评测边界、交付来源和原始样本，合并到最新线上数据，发布并核验。普通 `update_web.py --publish` 也包含相同接入步骤。均不启动实验、不分发任务、不修改来源文件。
+
+当前登记 Mega / KL-c8f015035108 / gpt-6.2-astra high，显示为 `Astra 6.2`，与原 Astra 分开。测量中心值为 device-event P50；旧 KL 的三组中位数聚合保持原口径，不把数值差解释成受控实验结论。11 次 Apply 执行含 1 次中断，10 次实际交付；连续执行序号与原生 Apply 编号分别保留。交付点采用真实选择结果，不用搜索最低值替代。未独立验收保持 ended，不计入已完成。
+
+所有 226 份测量保存在 `kl.json.collaborator_measurements`，包含原始顺序和真实组边界。图表范围带、点选详情、采样轨迹、直方图、CSV复用原界面。缺 token 的累计值保留 incomplete 标记，不推算补齐。`index.json.collaborators` 提供来源、快照、接收时间和资源映射；未核验物理卡号保持 null，未授权路径不公开，缺队列/忙率不补造。
+
+我方接收器每 300 秒检查一次：无变化不重复发布；错误快照保留上一版；发布有本地互斥锁、远端基线检查及部署核验。接收周期不等于协作者导出周期，源端 exporter_active=false 时不会声称对方有下一次自动导出。新增实验/模型/资源需先在 collaborator-sources.json 明确登记。
+
+
+### Registered KL 6.2 (2026-11-23)
+
+`kl.json.runs` includes two registered sources (`kl62-8MZlZ-20261123`,
+`kl62-LxrgZ-20261123`), seven datasets each. `valid_rounds` is the number of
+audited logical Applies that count toward `budget` (passed **or** candidate failure).
+`reported_attempts` uses this same count. `current_apply` in the running summary
+is the native execution ordinal, not completed progress.
+
+Each Apply carries `logical_apply`, `round_outcome`, `counts_toward_budget`.
+Infrastructure interruptions and pending attribution do not spend the budget.
+No audit ledger means zero valid Applies and no unaudited published timings.
+`aligned.count` and its curve continue to count audited, non-reused evaluations;
+it is separate from the valid Apply budget and may be larger.
+
+`measurement: p50_of_100_samples` uses the original 100 positive finite samples,
+`timing.statistic: p50`, preserving sample order. Historical measurement protocols
+are unchanged. `flashmla.json` contains an empty B/V `runs` list: only KL is
+registered there. No B/V records are synthesized.
+
+`index.json.kl.registered_sources` records each source's last captured time.
+The receiver polls every 300 seconds while its Mac is awake and online; unchanged
+evidence does not create a new release. The public `updated_at` is the last data
+release, not a promise that a running Apply has settled.
