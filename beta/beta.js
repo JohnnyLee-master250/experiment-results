@@ -633,7 +633,7 @@ betaScheduleSliders();
 // Directory metadata is part of index.json; no extra collection or model work.
 window.workspaceDirectory=(()=>{
  const labels={prepared:'待运行',running:'运行中',waiting:'等待中',complete:'已完成',paused:'暂停',blocked:'受阻',awaiting_audit:'待验收',ended:'已结束',not_run:'未开始',no_data:'无记录'};
- const methods=['all',...betaConfig.method_revisions.map(r=>r.label).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})),'KL','CAKE',...['V1','V1-no-arch','B2','B3','B1'].map(m=>m+' · 11/26')];
+ const methods=['all',...betaConfig.method_revisions.map(r=>r.label).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})),'KL','CAKE'];
  const selected=new Set();let rows=[],filtered=[],stamp=null,limit=40,sort='started_at',descending=true;
  const value=id=>$('#ws-'+id).value;
  const sgtDay=at=>at&&Number.isFinite(Date.parse(at))?new Date(Date.parse(at)+8*3600000).toISOString().slice(0,10):'';
