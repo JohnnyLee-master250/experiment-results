@@ -1,0 +1,923 @@
+'use strict';
+const betaConfig=JSON.parse(document.querySelector('#beta-navigation').textContent);
+function betaRequestedView(url=new URL(location)){
+ const explicit=url.searchParams.get('view');if(['results','comparison','logs','queue','workspaces','cannbot'].includes(explicit))return explicit;
+ return url.hash||['category','dataset','run','edition','apply','axis'].some(key=>url.searchParams.has(key))?'results':'queue';
+}
+function betaRetainDefaultView(url,view){
+ // Keep a default queue entry a queue entry when the data loader fills dataset parameters.
+ if(view==='queue'&&!url.searchParams.has('view')){url.searchParams.set('view','queue');history.replaceState(null,'',url);}
+}
+let betaView=betaRequestedView();betaRetainDefaultView(new URL(location),betaView);
+let betaFuture=false;
+let betaLogLimit=20,betaMenuId=null,betaCloseTimer=null,betaKLPending=null;
+let betaMenuIntentTimer=null,betaMenuIntentId=null,betaPointerY=null;
+let betaMenuCloseTimer=null,betaResultStamp=null,betaNavPress=null;
+const betaMotions=new WeakMap(),betaDisclosureMotions=new WeakMap();
+const betaSliderPositions=new WeakMap();
+let betaSliderFrame=null;
+function betaReducedMotion(){return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;}
+function betaAnimateContent(el){
+ if(!el||el.hidden||!el.animate||betaReducedMotion())return;
+ betaMotions.get(el)?.cancel();
+ const animation=el.animate([{opacity:.55,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:240,easing:'cubic-bezier(.2,.7,.2,1)'});
+ betaMotions.set(el,animation);animation.onfinish=()=>betaMotions.delete(el);
+}
+function betaResultMotion(){
+ if(betaView!=='results'||betaFuture)return;
+ const stamp=[category,datasetId,axisMode,category==='kl'?klRun?.id:'',category==='kl'?klApply:''];
+ if(JSON.stringify(stamp)===JSON.stringify(betaResultStamp))return;
+ const onlyApply=betaResultStamp&&stamp.slice(0,4).every((v,i)=>v===betaResultStamp[i]);
+ betaResultStamp=stamp;
+ if(onlyApply){betaAnimateContent($('#kl-candidates'));betaAnimateContent($('#kl-candidate-rows'));}
+ else betaAnimateContent($(category==='kl'?'#kl-body':isComparison()?'#aligned-content':'#bv-panel'));
+}
+const betaHeader=$('#beta-header'),betaBackdrop=$('#beta-backdrop');
+const betaLabels={started:'开始运行',paused:'暂停',resumed:'恢复运行',completed:'独立完成',ended:'已结束'};
+const betaBase=document.querySelector('meta[name="beta-version"]').content;
+let betaPreview=null;
+let betaPreviewRoute=null;
+let betaControlsRendering=0;
+let betaBannerIntroduced=false;
+const betaAlignedSources=new Map(),betaKLChartArgs=new Map();
+// One series palette for the whole site. A method keeps its hue family in every
+// view and its later revision takes the neighbouring hue: B2 orange -> red,
+// B3 rose -> violet, V0 green -> teal, KL blue; retired B1 uses earth tones.
+// Tuned in OKLCH for even weight; every pair is >= 15 dE (OKLab) apart.
+const betaSeries={orange:'#f4780c',red:'#ce2e40',rose:'#eb6aad',violet:'#9a5bda',green:'#349f3a',teal:'#18abbe',blue:'#0171c2',gold:'#cdb500',umber:'#85591e',neutral:'#526c89'};
+// Colours still written as literals by the shared chart engine are remapped here.
+const betaPalette={'#0072b2':betaSeries.blue,'#e69a00':betaSeries.blue,'#d55e00':betaSeries.orange,'#cc79a7':betaSeries.rose,'#009e73':betaSeries.green,'#e69f00':betaSeries.gold,'#6f61a6':betaSeries.violet,'#8a56d6':betaSeries.neutral};
+Object.assign(COLORS,{B1:betaSeries.gold,B2:betaSeries.orange,B3:betaSeries.rose,V0:betaSeries.green});
+Object.assign(REVISION_COLORS,{'B1-r2':betaSeries.umber,'B2-r2':betaSeries.red,'B3-r2':betaSeries.violet,'V0-r3':betaSeries.teal});
+// Grouped by task, colour names the model; its revised batch takes the neighbouring hue.
+Object.assign(MODEL_COLORS,{'Astra 6.2':betaSeries.blue,'Sol 6.2':betaSeries.green,'DeepSeek':betaSeries.orange});
+Object.assign(REVISION_MODEL_COLORS,{'Astra 6.2':betaSeries.violet,'Sol 6.2':betaSeries.teal,'DeepSeek':betaSeries.red});
+// Revisions keep their own colour in every result view, including All, so two
+// revisions of one method never share a colour on the same chart.
+comparisonColor=function(run,scope=category){
+ const label=methodLabel(run),revised=Object.hasOwn(REVISION_COLORS,label),method=run.baseMethod||run.method;
+ if(comparisonGroupMode(scope)==='task')return (revised?REVISION_MODEL_COLORS[run.model]:MODEL_COLORS[run.model])||betaSeries.neutral;
+ return (revised?REVISION_COLORS[label]:COLORS[method])||(['KL','Aligned KL'].includes(method)?betaSeries.blue:betaSeries.neutral);
+};
+// White labels everywhere except on the one light fill (gold), which takes ink.
+function betaThemeText(color){
+ const m=/^#([0-9a-f]{6})$/i.exec(color||'');if(!m)return '#fff';
+ const [r,g,b]=[0,2,4].map(i=>{const v=parseInt(m[1].slice(i,i+2),16)/255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;});
+ return .2126*r+.7152*g+.0722*b>.42?'#1d1d1f':'#fff';
+}
+function betaTintCharts(){
+ $$('#beta-results-view svg [stroke],#beta-results-view svg [fill]').forEach(el=>{for(const attr of ['stroke','fill']){const c=el.getAttribute(attr)?.toLowerCase();if(betaPalette[c])el.setAttribute(attr,betaPalette[c]);}});
+}
+
+function betaUpdateTitle(){
+ const title=manifest?.datasets.find(d=>d.id===datasetId)?.title||datasetId;
+ const section=betaConfig.result_sections.find(s=>s.id===category)?.label;
+ $('#beta-title').textContent=betaView==='cannbot'?'CannBot · CAKE':betaView==='comparison'?'结果对比':betaView==='workspaces'?'工作树路径':betaView==='logs'?'完成日志':betaView==='queue'?'队列情况':betaFuture?'V0-r3':title+(section?' · '+section:'');
+ const metadata=$('#beta-run-meta');if(!metadata)return;
+ const r=category==='kl'&&betaView==='results'&&!betaFuture&&klRun?.dataset===datasetId?klRun:null;
+ betaMarkMenus();
+ metadata.hidden=!r;
+ if(r){const apply=r.current_apply??r.applies.at(-1)?.apply??0;metadata.innerHTML=`<span class="beta-run-progress" title="${esc(r.timing_label||'')}">${r.valid_rounds!=null?'有效 '+r.valid_rounds+'/'+r.budget+' <span>·</span> ':''}Apply ${apply} <span>·</span> r${r.aligned?.count??0}</span><div class="beta-run-times"><span>开始 ${date(r.started_at)}</span><span>结束 ${date(r.finished_at)}</span></div>`;}
+}
+
+function betaURL(push=false){
+ const url=new URL(location);url.searchParams.set('view',betaView);
+ url.searchParams.delete('edition');
+ history[push?'pushState':'replaceState'](null,'',url);
+}
+function betaOpenMenu(id){
+ betaCancelMenuIntent();
+ clearTimeout(betaCloseTimer);if(betaMenuId===id)return;const previous=betaMenuId;betaMenuId=id;
+ clearTimeout(betaMenuCloseTimer);$$('.beta-menu.closing').forEach(el=>el.classList.remove('closing'));
+ if(!id&&previous&&!betaReducedMotion()){$('#beta-menu-'+previous).classList.add('closing');betaMenuCloseTimer=setTimeout(()=>$$('.beta-menu.closing').forEach(el=>el.classList.remove('closing')),340);}
+ $$('.beta-menu').forEach(el=>{const on=el.id==='beta-menu-'+id;el.classList.toggle('open',on);el.inert=!on;el.setAttribute('aria-hidden',String(!on));});
+ $$('[data-beta-nav]').forEach(el=>el.setAttribute('aria-expanded',String(el.dataset.betaNav===id)));
+ betaSizeMenu();
+ $('#beta-menu-surface').classList.toggle('open',!!id);
+ betaBackdrop.hidden=!id;
+}
+// The shared surface is only as tall as the menu it is showing; switching
+// menus animates the height instead of leaving the tallest menu's blank area.
+function betaSizeMenu(){
+ if(!betaMenuId)return;
+ const inner=$('#beta-menu-'+betaMenuId)?.firstElementChild;
+ if(inner?.offsetHeight)$('#beta-menu-surface').style.setProperty('--beta-menu-height',inner.offsetHeight+'px');
+}
+// Mark where the reader currently is inside each menu.
+function betaMarkMenus(){
+ const mark=(selector,test)=>$$(selector).forEach(b=>b.setAttribute('aria-current',String(!!test(b.dataset))));
+ mark('[data-beta-category]',d=>betaView==='results'&&!betaFuture&&d.betaCategory===category);
+ mark('[data-beta-dataset]',d=>betaView==='results'&&!betaFuture&&d.betaDataset===datasetId);
+ mark('[data-beta-log]',d=>betaView==='logs'&&d.betaLog===$('#beta-log-kind').value);
+ mark('[data-workspace-method]',d=>betaView==='workspaces'&&d.workspaceMethod===$('#ws-method').value);
+}
+function betaQueueJump(id){
+ betaShowView('queue',true);betaCloseMenu();
+ const el=id==='schedule'?$('#kl-queue').closest('section'):id==='waiting'?$('#waiting-bar'):id==='paused'?$('#paused-bar'):id==='running'?$('#beta-queue-view .running-bar'):id==='all'?null:$$('#waiting-links .waiting-list').find(list=>list.dataset.card===id)?.closest('.waiting-card');
+ const behavior=betaReducedMotion()?'auto':'smooth';
+ if(el&&!el.hidden)el.scrollIntoView({behavior,block:'start'});else window.scrollTo({top:0,left:0,behavior});
+}
+function betaCancelMenuIntent(){clearTimeout(betaMenuIntentTimer);betaMenuIntentId=null;}
+function betaScheduleMenu(id,delay=320){
+ betaCancelMenuIntent();betaMenuIntentId=id;
+ betaMenuIntentTimer=setTimeout(()=>{if(betaMenuIntentId===id)betaOpenMenu(id);},delay);
+}
+function betaCloseMenu(){betaOpenMenu(null);}
+function betaShowView(view,push=false){
+ const previous=betaView;
+ betaView=['results','comparison','logs','queue','workspaces','cannbot'].includes(view)?view:'results';
+ if(betaView!=='results'&&betaPreview){betaPreview=null;betaHighlightCurves();}
+ $('#beta-results-view').hidden=betaView!=='results'||betaFuture;
+ $('#beta-future-view').hidden=betaView!=='results'||!betaFuture;
+ $('#beta-workspaces-view').hidden=betaView!=='workspaces';
+ $('#beta-cannbot-view').hidden=betaView!=='cannbot';
+ if(betaView==='cannbot')window.cannbotDashboard?.ensure();
+ const compare=$('#beta-comparison-view');if(compare)compare.hidden=betaView!=='comparison';
+ if(betaView==='comparison')window.resultComparison?.ensure();
+ $('#beta-logs-view').hidden=betaView!=='logs';$('#beta-queue-view').hidden=betaView!=='queue';
+ $$('[data-beta-nav]').forEach(el=>el.setAttribute('aria-current',(el.dataset.betaNav===betaView||(betaView==='cannbot'&&el.dataset.betaNav==='results'))?'page':'false'));
+ document.body.dataset.betaView=betaView;
+ betaUpdateTitle();betaSyncGrouping();
+ $('#beta-kicker').hidden=true;$('#beta-kicker').textContent='';
+ if(push)betaURL(true);
+ if(betaView==='logs')betaRenderLogs();
+ if(betaView==='workspaces')window.workspaceDirectory?.sync();
+ if(previous!==betaView)betaAnimateContent($('#beta-'+(betaFuture&&betaView==='results'?'future':betaView)+'-view'));
+}
+async function betaChoose(categoryId,dataset=datasetId,model=null){
+ betaSetPreview(null);
+ betaFuture=false;if(categoryId==='v0-r3')categoryId='aligned';if(categoryId==='bn-r2')categoryId='bv';bvEdition='all';betaCloseMenu();betaShowView('results');betaURL(true);
+ if(betaFuture)return;
+ initialRun=null;
+ if(categoryId==='kl'){
+  await loadKL(dataset,null,model);
+ }else if(isComparison(categoryId))await loadAligned(dataset,null,categoryId);
+ else await loadDataset(dataset,true);
+ betaSync();
+}
+function betaMenus(){
+ // Only replace a menu whose entries changed, so a periodic refresh never
+ // restarts the reveal animation under the pointer.
+ const fill=(selector,html)=>{const el=$(selector);if(el.dataset.menuHtml!==html){el.dataset.menuHtml=html;el.innerHTML=html;}};
+ fill('#beta-result-menu',betaConfig.result_sections.map(s=>`<button data-beta-category="${esc(s.id)}">${esc(s.label)}${s.status==='planned'?'<small>待接入</small>':''}</button>`).join(''));
+ fill('#beta-dataset-menu',(manifest?.datasets||[]).map(d=>`<button data-beta-dataset="${esc(d.id)}">${esc(d.id)}</button>`).join(''));
+ // Queue cards come from the rendered waiting lists, so each entry has a real target.
+ fill('#beta-queue-card-menu',$$('#waiting-links .waiting-list[data-card]').map(list=>`<button data-beta-queue="${esc(list.dataset.card)}">${esc(list.closest('.waiting-card')?.querySelector('.waiting-card-heading strong')?.textContent||list.dataset.card)}</button>`).join(''));
+ $$('[data-beta-category]').forEach(b=>b.onclick=()=>betaChoose(b.dataset.betaCategory));
+ $$('[data-beta-dataset]').forEach(b=>b.onclick=()=>betaChoose(category,b.dataset.betaDataset));
+ $$('[data-beta-queue]').forEach(b=>b.onclick=()=>betaQueueJump(b.dataset.betaQueue));
+ $$('.beta-menu-column').forEach(col=>[...col.querySelectorAll('button,a')].forEach((b,i)=>b.style.setProperty('--reveal-delay',`${45+i*24}ms`)));
+ betaMarkMenus();betaSizeMenu();
+}
+async function betaEnsureKL(){
+ if(!manifest?.kl)return;
+ if(klData?.updated_at===manifest.updated_at)return;
+ const version=manifest.updated_at;
+ if(betaKLPending?.version===version)return betaKLPending.promise;
+ const promise=getJSON(`./api/v1/${manifest.kl.url}?v=${encodeURIComponent(version)}`).then(d=>{if(d.updated_at===manifest.updated_at)klData=d;}).catch(()=>{});
+ betaKLPending={version,promise};return promise;
+}
+function betaEvents(){
+ const rows=(manifest?.task_events||[]).map(e=>({...e,category:'bv'}));
+ for(const e of klData?.task_events||[]){
+  const r=klData.runs.find(r=>r.id===e.run_id);if(!r)continue;
+  rows.push({...e,category:'kl',runs:[{id:r.id,dataset:r.dataset,model:r.model,method:'KL'}]});
+ }
+ return [...new Map(rows.map(e=>[e.category+':'+e.id,e])).values()].sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)||a.id.localeCompare(b.id));
+}
+function betaRenderLogs(){
+ const previous=$('#beta-timeline').innerHTML;
+ const ds=$('#beta-log-dataset').value,kind=$('#beta-log-kind').value,cat=$('#beta-log-category').value;
+ const events=betaEvents().filter(e=>(ds==='all'||e.runs.some(r=>r.dataset===ds))&&(kind==='all'||kind===e.kind)&&(cat==='all'||cat===e.category));
+ $('#beta-log-count').textContent=`${events.length} 条`;
+ $('#beta-timeline').innerHTML=events.slice(0,betaLogLimit).map(e=>`<li class="${esc(e.kind)}"><time datetime="${esc(e.at)}">${date(e.at)} SGT${e.time_basis==='observed'?' · 记录时间':''}</time><div class="beta-event-body"><span class="beta-event-kind">${betaLabels[e.kind]||esc(e.kind)}</span><div class="beta-event-links">${e.runs.map(r=>`<a href="?view=results&category=${e.category}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-event="${esc(r.id)}" data-event-category="${e.category}" data-event-dataset="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(r.model)} ${esc(methodDisplayLabel(r))} ↗</a>`).join('')}</div><p>${esc(e.reason)}</p></div></li>`).join('')||'<li class="empty">暂无记录</li>';
+ $('#beta-log-more').hidden=events.length<=betaLogLimit;
+ $$('[data-beta-event]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.eventCategory==='kl')await loadKL(a.dataset.eventDataset,a.dataset.betaEvent);else await openRun(a.dataset.eventDataset,a.dataset.betaEvent,true);betaSync();});
+ betaSyncSelectChoices();betaMarkMenus();
+ if(betaView==='logs'&&previous!==$('#beta-timeline').innerHTML)betaAnimateContent($('#beta-timeline'));
+}
+function betaQueueTable(){
+ const rows=[...(manifest?.bv_revisions?.queue||[]).map(r=>({...r,position:r.queue_position,category:'bv'})),...(manifest?.kl?.queue||[]).map(r=>({...r,category:'kl',method:'KL'}))];
+ $('#kl-queue').innerHTML=`<table><thead><tr><th>顺序</th><th>测试集</th><th>模型</th><th>环境</th><th>状态</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.position}</td><td><a href="?view=results&category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-category-target="${r.category}" data-beta-queued="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(methodDisplayLabel(r))} ↗</a></td><td>${esc(r.model)} <small>${esc(r.effort)}</small></td><td>${esc(r.environment_name)}</td><td><span class="badge ${esc(r.status)}">${klStatus(r.status)}</span></td></tr>`).join('')}</tbody></table>`;
+ $$('[data-beta-queued]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.betaCategoryTarget==='bv')await openRun(a.dataset.target,a.dataset.betaQueued,true);else await loadKL(a.dataset.target,a.dataset.betaQueued);betaSync();});
+}
+function betaV0Labels(node=$('#beta-results-view')){
+ for(const child of [...node.childNodes]){
+  if(child.nodeType===3&&child.nodeValue.includes('V0'))child.nodeValue=child.nodeValue.replace(/\bV0\b(?!-r[23])/g,'V0-r2');
+  else if(child.nodeType===1&&!['SCRIPT','STYLE'].includes(child.tagName))betaV0Labels(child);
+ }
+}
+function betaBindQueueLinks(){
+ $$('[data-running],[data-campaign-run]').forEach(a=>{const existing=a.onclick;a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;betaFuture=false;betaShowView('results');betaURL(true);await existing(e);betaSync();};});
+}
+function betaSync(){
+ if(!manifest)return;
+ betaMenus();betaQueueTable();betaV0Labels();betaShowView(betaView);
+ $('#beta-completed-total').textContent=(manifest.workspaces?.rows||[]).filter(r=>r.status==='complete').length;
+ const betaRunningCount=allRunningRuns().length;
+ $('#beta-running-total').textContent=betaRunningCount;
+ // The pulse dot means live work; it stays out of the way when nothing is running.
+ $$('.beta-hero-status .live-dot,#beta-queue-view .running-heading .live-dot').forEach(dot=>dot.hidden=!betaRunningCount);
+ $('#beta-waiting-total').textContent=new Set([...(manifest.waiting_runs||[]),...(manifest.kl?.waiting_runs||[])].map(r=>r.id)).size;
+ betaRenderBanner();
+ const current=$('#beta-log-dataset').value;
+ $('#beta-log-dataset').innerHTML='<option value="all">全部测试集</option>'+manifest.datasets.map(d=>`<option value="${esc(d.id)}">${esc(d.id)}</option>`).join('');$('#beta-log-dataset').value=current||'all';
+ betaEnsureKL().then(()=>{if(betaView==='logs')betaRenderLogs();});
+ betaDecorateControls();
+ if(manifest.beta_frontend_version&&manifest.beta_frontend_version!==betaBase){
+  const url=new URL(location);if(url.searchParams.get('beta_version')!==manifest.beta_frontend_version){url.searchParams.set('beta_version',manifest.beta_frontend_version);location.replace(url.href);}
+ }
+}
+
+function betaRenderBanner(){
+ const banner=$('#beta-live-banner'),runs=allRunningRuns();
+ const html=runs.length?'正在运行： '+runs.map(r=>r.method==='CAKE'?cakeRunningLink(r):`<a href="?view=results&category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-banner-run="${esc(r.id)}" data-target="${esc(r.dataset)}" data-category="${runCategory(r)}">${esc(r.dataset)} · ${esc(r.model)} ${esc(methodDisplayLabel(r))}${r.method==='KL'?` · ${r.valid_rounds!=null?'有效 '+r.valid_rounds+'/'+r.budget+' · ':''}Apply ${r.current_apply??r.reported_attempts} · r${r.internal_round??0}`:` · ${r.reported_attempts}/${r.budget} 轮`} <span aria-hidden="true">↗</span></a>`).join('<span class="beta-banner-divider" aria-hidden="true">·</span>'):'当前暂无运行任务 <a href="?view=queue" data-beta-banner-queue>查看队列 ↗</a>';
+ if(banner.innerHTML!==html){banner.innerHTML=html;
+  banner.querySelectorAll('[data-beta-banner-run]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaSetPreview(null);betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.category==='kl')await loadKL(a.dataset.target,a.dataset.betaBannerRun);else await openRun(a.dataset.target,a.dataset.betaBannerRun,true);betaSync();});
+  banner.querySelector('[data-beta-banner-queue]')?.addEventListener('click',e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaShowView('queue',true);});
+ }
+ banner.hidden=false;
+ if(!betaBannerIntroduced){betaBannerIntroduced=true;if(runs.length)banner.classList.add('beta-banner-intro');}
+}
+
+// Hover previews are presentation-only: the saved visibility sets never change.
+// A task link starts the same emphasis as a curve hover. It is consumed once;
+// subsequent hover/leave events own emphasis and never revive the link target.
+const betaOriginalBeginResultRequest=beginResultRequest;
+beginResultRequest=function(scope,id,focusRun=null,push=false){
+ const target=focusRun||(!betaPreviewRoute?initialRun:null),route=scope+':'+id;
+ if(route!==betaPreviewRoute||target){betaPreview=null;betaHighlightCurves();}
+ betaPreviewRoute=route;
+ const request=betaOriginalBeginResultRequest(scope,id,target,push);
+ request.emphasizeRun=target;
+ return request;
+};
+const betaOriginalFinishResultRequest=finishResultRequest;
+finishResultRequest=function(request,error=null){
+ const current=resultRequest===request;
+ betaOriginalFinishResultRequest(request,error);
+ if(!current||error||!request.emphasizeRun)return;
+ const id=request.emphasizeRun;
+ const exists=request.scope==='kl'?klRun?.id===id:request.scope==='bv'?data?.runs.some(r=>r.id===id&&usable(r)):alignedDataset&&alignedSeries(alignedDataset,alignedRun).some(r=>r.id===id);
+ if(!exists)return;
+ betaPreview={scope:request.scope==='kl'?'kl':request.scope==='bv'?'bv':'#aligned-content',ids:[id]};
+ betaHighlightCurves();
+};
+function betaControlInfo(label){
+ const input=label?.querySelector('input[type=checkbox]');if(!input||input.disabled)return null;
+ if(input.dataset.series)return {scope:'bv',ids:[input.dataset.series]};
+ if(input.dataset.curveGroup){const group=label.closest('.model-group'),ids=[...group.querySelectorAll('.chips input:not(:disabled)')].map(el=>el.dataset.series||el.dataset.alignedRun);return {scope:input.dataset.groupScope==='bv'?'bv':'#aligned-content',ids};}
+ if(input.dataset.modelCheck)return {scope:'bv',ids:data.runs.filter(r=>r.model===input.dataset.modelCheck&&usable(r)&&r.method!=='B0').map(r=>r.id)};
+ const host=label.closest('.aligned-controls')?.parentElement;
+ if(host){const scope='#'+host.id,source=betaAlignedSources.get(scope);if(!source)return null;
+  const ids=input.dataset.alignedRun?[input.dataset.alignedRun]:alignedSeries(source.dataset,source.run).filter(r=>r.model===input.dataset.alignedModel).map(r=>r.id);return {scope,ids};}
+ if(label.classList.contains('kl-reference-toggle')){
+  const suffix=input.id?.replace('kl-v0-','')||input.closest('[id^=kl-matched-]')?.id.replace('kl-matched-','');
+  return {scope:'ref:#kl-'+suffix,ids:[],kind:input.dataset.matchedKind||'full'};
+ }
+ return null;
+}
+function betaDecorateControls(){
+ const running=new Set(allRunningRuns().map(r=>r.id));
+ $$('#series-controls label,.aligned-controls label,.plot-options label,.kl-reference-toggle').forEach(label=>{
+  const input=label.querySelector('input[type=checkbox]');if(!input)return;
+  label.classList.add('beta-pill');label.classList.toggle('beta-pill-disabled',input.disabled);
+  if(label.classList.contains('chip')&&input.dataset.alignedRun)for(const node of label.childNodes)if(node.nodeType===Node.TEXT_NODE&&node.nodeValue.includes('Aligned KL'))node.nodeValue=node.nodeValue.replace('Aligned KL','KL');
+  const info=betaControlInfo(label);label.classList.toggle('beta-running',!!info?.ids.some(id=>running.has(id)));
+  if(!label.style.getPropertyValue('--color'))label.style.setProperty('--color',label.classList.contains('kl-reference-toggle')?(input.dataset.matchedKind==='same'?'#D55E00':input.dataset.matchedKind==='reduced'?'#6F61A6':'#CC79A7'):'#526c89');
+  const raw=label.style.getPropertyValue('--color').trim().toLowerCase(),color=betaPalette[raw]||raw;label.style.setProperty('--color',color);label.style.setProperty('--pill-text',betaThemeText(color));label.style.removeProperty('color');
+ });
+ betaSyncSelectChoices();
+}
+function betaSyncSelectChoices(){
+ $$('#beta-results-view select,#beta-logs-view select,#beta-workspaces-view select:not([data-native])').forEach(select=>{
+  if(select.closest('#beta-legacy-log'))return;
+  if(select.id==='kl-apply'){
+   select.hidden=false;select.classList.add('beta-apply-select');select.closest('label').classList.add('beta-apply-field');return;
+  }
+  let field=select.closest('.beta-select-field');
+  if(!field){
+   const label=select.closest('label');field=document.createElement('div');field.className='beta-select-field';
+   const caption=document.createElement('span');caption.className='beta-select-label';caption.textContent=label?[...label.childNodes].filter(n=>n!==select).map(n=>n.textContent).join('').trim():select.getAttribute('aria-label')||'';
+   if(label)label.replaceWith(field);else select.before(field);field.append(caption,select);
+   select.hidden=true;const group=document.createElement('div');group.className='segments beta-select-segments';group.setAttribute('role','radiogroup');group.setAttribute('aria-label',select.getAttribute('aria-label')||caption.textContent);field.append(group);
+  }
+  const group=field.querySelector('.beta-select-segments'),options=[...select.querySelectorAll('option')],signature=options.map(o=>o.value+'\0'+o.textContent).join('\n');
+  if(group.dataset.options!==signature){group.dataset.options=signature;delete group.dataset.visibleSelection;group.replaceChildren(...options.map(option=>{
+   const button=document.createElement('button');button.type='button';button.dataset.value=option.value;button.textContent=option.textContent;button.setAttribute('role','radio');
+   button.onclick=()=>{select.value=option.value;select.dispatchEvent(new window.Event('change',{bubbles:true}));betaSyncSelectChoices();};
+   button.onkeydown=e=>{const all=[...group.querySelectorAll('button:not(:disabled)')],i=all.indexOf(button);let next;if(e.key==='ArrowRight'||e.key==='ArrowDown')next=all[(i+1)%all.length];else if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=all[(i-1+all.length)%all.length];else if(e.key==='Home')next=all[0];else if(e.key==='End')next=all.at(-1);if(next){e.preventDefault();next.click();next.focus();}};
+   return button;
+  }));}
+  [...group.children].forEach((button,i)=>{const on=button.dataset.value===select.value;button.disabled=select.disabled||options[i].disabled;button.classList.toggle('no-results',options[i].dataset.noResults==='true');button.title=options[i].dataset.noResults==='true'?'尚无评测结果 · 可查看等待状态':'';button.classList.toggle('selected',on);button.setAttribute('aria-checked',String(on));button.setAttribute('aria-pressed',String(on));button.tabIndex=on?0:-1;});
+  // Reveal a changed selection within its own track without moving the page.
+  // Ordinary redraws preserve the user's manual horizontal scroll position.
+  if(group.dataset.visibleSelection!==select.value)requestAnimationFrame(()=>{
+   if(!group.isConnected||!group.clientWidth)return;
+   const active=group.querySelector('[aria-checked="true"]');if(!active)return;
+   const track=group.getBoundingClientRect(),item=active.getBoundingClientRect();
+   if(item.left<track.left+6)group.scrollLeft+=item.left-track.left-6;
+   else if(item.right>track.right-6)group.scrollLeft+=item.right-track.right+6;
+   group.dataset.visibleSelection=select.value;
+  });
+ });
+ betaScheduleSliders();
+}
+// Keep a single capsule in each track. Its position changes; it is never
+// recreated with the selected button, including during data-driven redraws.
+function betaScheduleSliders(){
+ if(betaSliderFrame!==null)return;
+ betaSliderFrame=requestAnimationFrame(()=>{betaSliderFrame=null;betaSyncSliders();});
+}
+// Size only colored curve choices from the longest label in the current view.
+// Balance rows (4, or 2+2) without stretching buttons to fill a model card.
+const betaPillMeasure=document.createElement('canvas').getContext('2d');
+function betaLayoutCurvePills(){
+ for(const scope of $$('#bv-panel,#aligned-content,#kl-aligned')){
+  if(!scope.offsetWidth)continue;
+  const groups=[...scope.querySelectorAll('.chips')].filter(group=>group.clientWidth),pills=groups.flatMap(group=>[...group.querySelectorAll(':scope>.chip.beta-pill')]);
+  if(!pills.length)continue;
+  const natural=pills.map(pill=>{
+   const css=getComputedStyle(pill),parts=[...pill.childNodes].filter(node=>node.nodeType===Node.TEXT_NODE?node.nodeValue.trim():node.nodeType===Node.ELEMENT_NODE&&node.tagName!=='INPUT'&&node.textContent.trim());
+   const textWidth=parts.reduce((width,node)=>{betaPillMeasure.font=node.nodeType===Node.TEXT_NODE?css.font:getComputedStyle(node).font;return width+betaPillMeasure.measureText(node.textContent.trim()).width;},0);
+   return textWidth+parseFloat(css.paddingLeft)+parseFloat(css.paddingRight)+parseFloat(css.borderLeftWidth)+parseFloat(css.borderRightWidth)+(parts.length-1)*(parseFloat(css.columnGap)||0)+2;
+  });
+  const width=Math.min(Math.ceil(Math.max(56,...natural)/4)*4,...groups.map(group=>group.clientWidth));
+  const value=width+'px';if(scope.style.getPropertyValue('--curve-pill-width')!==value)scope.style.setProperty('--curve-pill-width',value);
+  for(const group of groups){
+   const count=group.querySelectorAll(':scope>.chip.beta-pill').length;if(!count)continue;
+   const gap=parseFloat(getComputedStyle(group).columnGap)||6,maxColumns=Math.max(1,Math.floor((group.clientWidth+gap)/(width+gap)));
+   const rows=Math.ceil(count/Math.min(count,maxColumns)),columns=String(Math.ceil(count/rows));
+   if(group.style.getPropertyValue('--curve-pill-columns')!==columns)group.style.setProperty('--curve-pill-columns',columns);
+  }
+ }
+}
+function betaSyncSliders(){
+ betaLayoutCurvePills();
+ $$('.segments,.dataset-tabs').forEach(group=>{
+  const active=[...group.children].find(el=>el.tagName==='BUTTON'&&(el.classList.contains('selected')||el.getAttribute('aria-pressed')==='true'||el.getAttribute('aria-current')==='true'));
+  if(!active||!group.clientWidth||!active.offsetWidth)return;
+  group.classList.add('beta-sliding-selection');
+  const position=[active.offsetLeft,active.offsetTop,active.offsetWidth,active.offsetHeight];
+  if(position.every((v,i)=>v===betaSliderPositions.get(group)?.[i]))return;
+  // Restored chart controls may have just re-entered the DOM; commit their old capsule position first.
+  if(betaSliderPositions.has(group))getComputedStyle(group,'::before').transform;
+  for(const [i,key] of ['x','y','width','height'].entries())group.style.setProperty('--selection-'+key,position[i]+'px');
+  if(!betaSliderPositions.has(group)){
+   // Establish the initial position without a fly-in from the corner.
+   getComputedStyle(group,'::before').transform;
+   group.classList.add('beta-slider-ready');
+  }
+  betaSliderPositions.set(group,position);
+ });
+}
+function betaHighlightCurves(){
+ betaTintCharts();
+ const scope=betaPreview?.scope,root=!scope?null:scope==='bv'?$('#bv-panel'):scope==='kl'?$('#kl-body'):scope.startsWith('ref:')?$(scope.slice(4)):$(scope);
+ const selector=scope==='kl'?'path[data-chart-key="kl-best"],path[data-chart-key="kl-measurements"],path[data-run]':scope?.startsWith('ref:')?'[data-reference]':'path[data-run],path[data-aligned-curve]';
+ const paths=root?[...root.querySelectorAll(selector)].filter(p=>scope==='kl'?betaPreview.ids.includes(klRun?.id):scope.startsWith('ref:')?p.dataset.reference===betaPreview.kind:betaPreview.ids.includes(p.dataset.run||p.dataset.alignedCurve)):[];
+ const emphasized=new Set(paths);
+ $$('[data-beta-glint]').forEach(e=>{if(!emphasized.has(e._curveSource)||e.parentNode!==e._curveSource?.parentNode)e.remove();});
+ $$('.beta-curve-highlight').forEach(e=>{if(!emphasized.has(e))e.classList.remove('beta-curve-highlight');});
+ for(const p of paths){
+  p.classList.add('beta-curve-highlight');p.style.setProperty('--curve-color',p.getAttribute('stroke'));
+  if(betaReducedMotion()||!p.getTotalLength?.())continue;
+  // A selection commit or axis redraw must not restart an existing hover pulse.
+  const retained=[...p.parentNode.querySelectorAll('[data-beta-glint]')].filter(e=>e._curveSource===p);
+  if(retained.length){for(const light of retained)for(const attr of ['d','x1','x2','y1','y2']){const value=p.getAttribute(attr);if(value!==null)light.setAttribute(attr,value);}continue;}
+  // Each layer ends at the same moving head; overlapping lengths make a tapered,
+  // translucent tail. Normalized path length keeps one pulse per curve every 2s.
+  const layers=[[150,7,.06,0],[124,6,.09,0],[98,5.3,.13,0],[72,4.7,.18,12],[48,4.1,.28,25],[27,3.5,.44,45],[12,2.7,.68,65],[3,1.8,.95,90]];
+  for(const [length,width,opacity,white] of layers){
+   const light=p.cloneNode(false);
+   for(const attr of [...light.attributes])if(attr.name==='id'||attr.name==='class'||attr.name==='style'||attr.name.startsWith('data-'))light.removeAttribute(attr.name);
+   light._curveSource=p;light.setAttribute('data-beta-glint','');light.setAttribute('aria-hidden','true');light.setAttribute('pathLength','1000');light.setAttribute('fill','none');
+   light.classList.add('beta-curve-glint');light.style.setProperty('--curve-color',p.getAttribute('stroke'));
+   light.style.setProperty('--meteor-color',`color-mix(in srgb, ${p.getAttribute('stroke')} ${100-white}%, white)`);
+   light.style.setProperty('--meteor-width',width);light.style.setProperty('--meteor-opacity',opacity);
+   light.style.setProperty('--meteor-dash',`${length} 2200`);light.style.setProperty('--meteor-start',length+90);light.style.setProperty('--meteor-end',length-1100);
+   p.parentNode.append(light);
+  }
+ }
+}
+function betaRedrawPreview(scope){
+ if(scope==='bv')renderCharts();
+ else if(scope==='kl')renderKL();
+ else if(scope.startsWith('ref:')){const args=betaKLChartArgs.get(scope.slice(4));if(args)klChart(...args);}
+ else {const s=betaAlignedSources.get(scope);if(s)renderAligned(scope,s.dataset,s.run,true);}
+}
+function betaSetPreview(next){
+ if(JSON.stringify(next)===JSON.stringify(betaPreview))return;
+ const previous=betaPreview;betaPreview=next;
+ for(const scope of new Set([previous?.scope,next?.scope].filter(Boolean))){
+  const source=betaAlignedSources.get(scope),saved=scope==='bv'?visible:source?alignedView(source.dataset,alignedSeries(source.dataset,source.run)).visible:null;
+  const additions=preview=>preview?.scope===scope?preview.ids.filter(id=>!saved?.has(id)).sort().join('|'):'';
+  if(!saved||additions(previous)!==additions(next))betaRedrawPreview(scope);
+ }
+ betaHighlightCurves();
+}
+function betaPreviewEvent(e,on){
+ if(betaControlsRendering)return;
+ const label=e.target.closest?.('.beta-pill');if(!label||label.contains(e.relatedTarget))return;
+ if(e.pointerType==='touch')return;
+ if(!on&&e.type==='focusout'&&label.matches(':hover'))return;
+ if(on){if(!label.classList.contains('beta-hover-suppressed'))betaSetPreview(betaControlInfo(label));}
+ else {if(e.type==='pointerout')label.classList.remove('beta-hover-suppressed');betaSetPreview(null);}
+}
+function betaCommitHover(e){
+ const input=e.target;if(!input.matches?.('input[type=checkbox]')||input.disabled)return;
+ const label=input.closest('.beta-pill');if(!label)return;
+ const hovered=label.matches(':hover'),on=input.checked||input.indeterminate;
+ label.classList.toggle('beta-hover-suppressed',hovered&&!on);
+ // Capture the checkbox's new value before its handler replaces the controls.
+ // Label clicks also dispatch an input click; only that activation owns state.
+ betaPreview=hovered&&on?betaControlInfo(label):null;
+}
+document.addEventListener('click',betaCommitHover,true);
+document.addEventListener('change',betaCommitHover,true);
+document.addEventListener('pointerover',e=>betaPreviewEvent(e,true));
+document.addEventListener('pointerout',e=>betaPreviewEvent(e,false));
+document.addEventListener('focusin',e=>betaPreviewEvent(e,true));
+document.addEventListener('focusout',e=>betaPreviewEvent(e,false));
+document.addEventListener('change',e=>{
+ const label=e.target.closest?.('.beta-pill');
+ if(label&&(e.target.checked||e.target.indeterminate)){
+  label.classList.remove('beta-hover-suppressed');
+  if(label.matches(':hover'))betaSetPreview(betaControlInfo(label));
+ }
+ betaDecorateControls();betaHighlightCurves();
+});
+const betaOriginalSelected=selected;
+selected=function(){const rows=betaOriginalSelected();if(betaPreview?.scope==='bv')for(const r of data.runs)if(betaPreview.ids.includes(r.id)&&usable(r)&&r.method!=='B0'&&!rows.includes(r))rows.push(r);return rows;};
+const betaOriginalCharts=renderCharts;
+renderCharts=function(){betaOriginalCharts();betaHighlightCurves();};
+function betaControlSnapshot(host){return host?{host,nodes:[...host.childNodes],scrollTop:host.scrollTop,scrollLeft:host.scrollLeft,focus:host.contains(document.activeElement)?document.activeElement:null,animations:(host.getAnimations?.({subtree:true})||[]).filter(a=>['beta-pill-light','beta-pill-orbit'].includes(a.animationName)).map(a=>({target:a.effect.target,pseudo:a.effect.pseudoElement,name:a.animationName,start:a.startTime}))}:null;}
+function betaRestoreControls(snapshot,fresh){
+ if(!snapshot||!fresh)return false;
+ if(snapshot.host===fresh&&snapshot.nodes.length===fresh.childNodes.length&&snapshot.nodes.every((node,i)=>node===fresh.childNodes[i]))return true;
+ const old=snapshot.host,measurementTools=fresh.querySelector(':scope > .measurement-tools'),oldNodes=snapshot.nodes.filter(n=>!n.classList?.contains('measurement-tools'));
+ const oldInputs=oldNodes.flatMap(n=>[...(n.matches?.('input,button')?[n]:[]),...(n.querySelectorAll?.('input,button')||[])]),newInputs=[...fresh.querySelectorAll('input,button')].filter(n=>!n.closest('.measurement-tools'));
+ const key=e=>e.tagName+':'+e.id+':'+['series','modelCheck','model','alignedRun','alignedModel','matchedKind','alignedMode','alignedZoom','alignedCompress','alignedCsv','curveGroup','curveGroupTitle','groupScope'].map(k=>e.dataset[k]??'-').join(':');
+ if(!oldInputs.length||oldInputs.length!==newInputs.length||oldInputs.some((e,i)=>key(e)!==key(newInputs[i])))return false;
+ for(let i=0;i<oldInputs.length;i++){
+  const a=oldInputs[i],b=newInputs[i];a.checked=b.checked;a.indeterminate=b.indeterminate;a.disabled=b.disabled;
+  a.onchange=e=>{b.checked=a.checked;b.indeterminate=a.indeterminate;return b.onchange?.call(b,e);};
+  a.onclick=e=>{b.checked=a.checked;return b.onclick?.call(b,e);};
+  for(const attr of ['aria-checked','aria-pressed','aria-label','title'])if(b.hasAttribute(attr))a.setAttribute(attr,b.getAttribute(attr));
+  if(a.tagName==='BUTTON')a.classList.toggle('selected',b.classList.contains('selected'));
+  const la=a.closest('label'),lb=b.closest('label');if(la&&lb){for(const cls of ['active','disabled','mixed'])la.classList.toggle(cls,lb.classList.contains(cls));if(lb.hasAttribute('title'))la.title=lb.title;
+   if(la.classList.contains('model-toggle'))la.querySelector('span').textContent=lb.querySelector('span').textContent;
+  }
+ }
+ old.replaceChildren(...oldNodes);if(measurementTools)old.append(measurementTools);if(fresh!==old)fresh.replaceWith(old);
+ // Preview redraws temporarily detach the sidebar; browsers reset its scroll.
+ // Restore before the next paint so a lower model remains under the pointer.
+ old.scrollTop=snapshot.scrollTop;old.scrollLeft=snapshot.scrollLeft;
+ for(const a of old.getAnimations?.({subtree:true})||[]){const prior=snapshot.animations.find(p=>p.target===a.effect?.target&&p.pseudo===a.effect?.pseudoElement&&p.name===a.animationName);if(prior?.start!=null)a.startTime=prior.start;}
+ if(snapshot.focus)snapshot.focus.focus({preventScroll:true});return true;
+}
+const betaOriginalControls=renderControls;
+renderControls=function(){betaControlsRendering++;try{const snapshot=betaControlSnapshot($('#series-controls'));betaOriginalControls();betaRestoreControls(snapshot,$('#series-controls'));}finally{betaControlsRendering--;}};
+const betaOriginalKLChart=klChart;
+klChart=function(...args){
+ betaKLChartArgs.set(args[0],args);
+ const renderArgs=[...args];
+ if(betaPreview?.scope==='ref:'+args[0]){
+  if(betaPreview.kind==='full')renderArgs[5]=klReference;
+  else {const ref=klMatchedReferences(klDatasetCache.get(`${manifest.updated_at}:${datasetId}`),klRun).find(r=>r.kind===betaPreview.kind);if(ref)renderArgs[7]=[...(args[7]||[]).filter(r=>r.kind!==ref.kind),ref];}
+ }
+ betaOriginalKLChart(...renderArgs);betaHighlightCurves();
+};
+
+// One persistent black slider per comparison view; only reorganize the controls.
+const betaGrouping=document.createElement('div');betaGrouping.className='beta-grouping-control';
+betaGrouping.innerHTML='<span>分组</span><div class="segments" aria-label="曲线开关分组"><button data-comparison-group="model" class="selected" aria-pressed="true">按模型</button><button data-comparison-group="task" aria-pressed="false">按任务</button></div>';
+$('#bv-panel').before(betaGrouping);
+function betaSyncGrouping(){
+ betaGrouping.hidden=category==='kl';
+ betaGrouping.querySelectorAll('button').forEach(b=>{const on=b.dataset.comparisonGroup===comparisonGroupMode();b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));});
+ betaScheduleSliders();
+}
+betaGrouping.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+ const next=b.dataset.comparisonGroup;if(next===comparisonGroupMode())return;
+ betaSetPreview(null);comparisonGrouping.set(category,next);
+ let controls;
+ if(category==='bv'){renderAll();controls=$('#series-controls');}
+ else if(isComparison()&&alignedDataset){renderAligned('#aligned-content',alignedDataset,alignedRun);controls=$('#aligned-content .aligned-controls');}
+ betaSyncGrouping();betaDecorateControls();betaAnimateContent(controls);
+});
+
+// Reuse the analysis DOM and rendering functions; only the navigation owns placement.
+const oldHeader=$('.page-head'),betaHomeStatus=$('#beta-home-status'),betaNavStatus=$('#beta-nav-status');
+betaHomeStatus.href=document.body.dataset.apiBase||'./';
+betaHomeStatus.prepend($('#connection'));betaHomeStatus.append($('#updated'));
+const betaStatusZone=document.createElement('span');betaStatusZone.className='beta-status-zone';betaStatusZone.textContent='SGT';betaHomeStatus.append(betaStatusZone);
+const betaJSONLink=oldHeader.querySelector('.api-link');betaJSONLink.textContent='JSON ↓';betaJSONLink.download='experiment-results.json';betaJSONLink.setAttribute('aria-label','下载实验结果 JSON');
+const betaRefreshButton=$('#refresh');betaRefreshButton.textContent='↻';betaRefreshButton.title='Refresh';betaRefreshButton.setAttribute('aria-label','刷新实验结果');
+betaNavStatus.append($('#next-update'),betaJSONLink,betaRefreshButton);oldHeader.remove();$('#beta-snapshot').remove();
+// One full turn acknowledges a manual refresh even when the data returns instantly.
+betaRefreshButton.addEventListener('click',()=>{if(betaReducedMotion())return;betaRefreshButton.classList.remove('beta-refreshing');void betaRefreshButton.offsetWidth;betaRefreshButton.classList.add('beta-refreshing');});
+betaRefreshButton.addEventListener('animationend',()=>betaRefreshButton.classList.remove('beta-refreshing'));
+function betaCompactDate(value,clockOnly=false){
+ const parsed=new Date(value);if(!value||Number.isNaN(parsed.getTime()))return '—';
+ const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Singapore',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(parsed).map(p=>[p.type,p.value]));
+ return `${clockOnly?'':parts.month+'-'+parts.day+' '}${parts.hour}:${parts.minute}`;
+}
+function betaUpdateHeader(){
+ const el=$('#updated'),at=manifest?.updated_at||el.dateTime,text=betaCompactDate(at);
+ if(el.textContent!==text)el.textContent=text;
+ if(at&&el.dateTime!==at)el.dateTime=at;
+ betaHomeStatus.title=at?`Updated ${date(at)} SGT · 首页`:'队列首页';
+ const next=manifest?.next_update_estimated_at,nextEl=$('#next-update');
+ const sameDay=next&&at&&date(next,true)===date(at,true);
+ nextEl.textContent=next?(Date.now()>Date.parse(next)?'Next pending':`Next ${betaCompactDate(next,sameDay)}`):'Next —';
+ nextEl.title=next?`Estimated ${date(next)} SGT · ${manifest.update_cadence_minutes} min cadence`:'';
+}
+renderNextUpdate=betaUpdateHeader;
+const betaTimeObserver=new window.MutationObserver(betaUpdateHeader);
+betaTimeObserver.observe($('#updated'),{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['datetime']});
+betaUpdateHeader();
+const betaRunMeta=document.createElement('div');betaRunMeta.id='beta-run-meta';betaRunMeta.className='beta-run-meta';betaRunMeta.hidden=true;$('#beta-title').after(betaRunMeta);
+const betaTitleRow=document.createElement('div');betaTitleRow.className='beta-title-row';$('#beta-title').before(betaTitleRow);betaTitleRow.append($('#beta-title'),betaRunMeta);
+$('.kl-budget').hidden=true;
+const betaSummarySection=$('#summary').closest('section'),betaSummaryDetails=document.createElement('details'),betaSummaryHead=document.createElement('summary');
+betaSummaryDetails.className=betaSummarySection.className;betaSummaryDetails.open=false;betaSummaryHead.innerHTML='<span>实验组</span><span>延迟 ms ↓ · 完成日期 SGT</span>';betaSummaryDetails.append(betaSummaryHead,betaSummarySection.querySelector('.table-wrap'));betaSummarySection.replaceWith(betaSummaryDetails);
+for(const id of ['kl-overview','kl-candidates']){
+ const chart=$('#'+id),card=chart.parentNode;card.querySelector('.chart-title').after(chart);
+ const refs=document.createElement('div');refs.className='speed-reference-controls';refs.setAttribute('aria-label','参考线');chart.after(refs);
+ for(const node of [...card.children])if(node.matches('.kl-reference-toggle,[id^="kl-matched-"]'))refs.append(node);
+}
+const queueView=$('#beta-queue-view');queueView.append($('.running-bar'),$('#paused-bar'),$('#waiting-bar'),$('#campaign-status'));
+const queueSection=$('#kl-queue').closest('section');queueSection.querySelector('h3').textContent='完整队列';queueSection.querySelector('.section-head>span').textContent='原队列顺序';queueView.append(queueSection);
+const legacyLog=$('#task-log');legacyLog.hidden=true;$('#beta-legacy-log').append(legacyLog);
+$$('a[href^="./api/"]').forEach(a=>a.setAttribute('href',(document.body.dataset.apiBase||'./')+a.getAttribute('href').slice(2)));
+const originalRenderRunning=renderRunning;renderRunning=function(){originalRenderRunning();betaBindQueueLinks();betaSync();};
+const betaOriginalSetMode=setMode;setMode=function(value){betaOriginalSetMode(value);betaScheduleSliders();};
+const originalRenderAll=renderAll;renderAll=function(){originalRenderAll();betaV0Labels();betaUpdateTitle();betaDecorateControls();betaHighlightCurves();betaResultMotion();};
+const originalRenderKL=renderKL;renderKL=function(){betaControlsRendering++;try{const saved=['overview','candidates'].map(id=>betaControlSnapshot($('#kl-matched-'+id)));originalRenderKL();saved.forEach(s=>{if(s)betaRestoreControls(s,s.host);});betaV0Labels();betaQueueTable();betaShowView(betaView);betaDecorateControls();betaHighlightCurves();betaResultMotion();}finally{betaControlsRendering--;}};
+const originalRenderNav=renderNav;renderNav=function(){originalRenderNav();betaShowView(betaView);};
+const originalRenderAligned=renderAligned;renderAligned=function(target,dataset,run,preserveControls=false){
+ if(!dataset)return;betaAlignedSources.set(target,{dataset,run});
+ betaControlsRendering++;try{
+ const controls=betaControlSnapshot($(target).querySelector('.aligned-controls'));
+ originalRenderAligned(target,dataset,run,betaPreview?.scope===target?betaPreview.ids:[]);
+ betaRestoreControls(controls,$(target).querySelector('.aligned-controls'));
+ betaV0Labels();betaDecorateControls();betaHighlightCurves();
+ if(isComparison())betaResultMotion();
+ }finally{betaControlsRendering--;}
+};
+
+$$('[data-beta-nav]').forEach(b=>{
+ b.onpointerenter=e=>{if(e.pointerType==='touch')return;betaPointerY=e.clientY;if(betaMenuId&&betaMenuId!==b.dataset.betaNav)betaScheduleMenu(b.dataset.betaNav);else betaOpenMenu(b.dataset.betaNav);};
+ b.onpointermove=e=>{if(betaMenuIntentId===b.dataset.betaNav&&e.clientY>betaPointerY+2)betaScheduleMenu(b.dataset.betaNav,450);betaPointerY=e.clientY;};
+ b.onpointerleave=betaCancelMenuIntent;
+ b.onfocus=()=>betaOpenMenu(b.dataset.betaNav);
+ b.dataset.label=b.textContent;
+ b.onpointerdown=e=>{betaNavPress={type:e.pointerType,open:betaMenuId===b.dataset.betaNav};};
+ // A mouse has already previewed the menu on hover, so its click commits the
+ // view and clears the page. Touch has no hover: the first tap opens the menu
+ // and a second tap on the same item closes it. Keyboard activation opens it.
+ b.onclick=e=>{const id=b.dataset.betaNav,press=e.detail>0?betaNavPress:null;betaNavPress=null;betaShowView(id,true);if(press&&(press.type==='mouse'||press.open))betaCloseMenu();else betaOpenMenu(id);};
+ b.onkeydown=e=>{if(e.key==='ArrowDown'){e.preventDefault();betaOpenMenu(b.dataset.betaNav);$('#beta-menu-'+b.dataset.betaNav).querySelector('button,a')?.focus();}};
+});
+$('#beta-menu-surface').onpointerenter=betaCancelMenuIntent;
+betaHeader.onpointerenter=()=>clearTimeout(betaCloseTimer);
+betaHeader.onpointerleave=e=>{if(e.pointerType!=='touch')betaCloseTimer=setTimeout(betaCloseMenu,160);};
+betaHeader.onfocusout=()=>setTimeout(()=>{if(!betaHeader.contains(document.activeElement))betaCloseMenu();},0);
+betaBackdrop.onclick=betaCloseMenu;
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const id=betaMenuId;betaCloseMenu();if(id){const b=$(`[data-beta-nav="${id}"]`);b.onfocus=null;b.focus();b.onfocus=()=>betaOpenMenu(id);}}});
+$$('[data-beta-model]').forEach(b=>b.onclick=()=>betaChoose('kl',datasetId,b.dataset.betaModel));
+$$('[data-beta-log]').forEach(b=>b.onclick=()=>{$('#beta-log-kind').value=b.dataset.betaLog;betaLogLimit=20;betaShowView('logs',true);betaCloseMenu();betaEnsureKL().then(betaRenderLogs);});
+$$('[data-beta-view]').forEach(b=>b.onclick=()=>{betaShowView(b.dataset.betaView,true);betaCloseMenu();});
+$$('.beta-log-filters select').forEach(el=>el.onchange=()=>{betaLogLimit=20;betaRenderLogs();});
+$('#beta-log-more').onclick=()=>{betaLogLimit+=20;betaRenderLogs();};
+document.addEventListener('experiment:routechange',e=>{const url=new URL(e.detail);betaFuture=false;bvEdition=requestedBVEdition();const view=betaRequestedView(url);betaRetainDefaultView(url,view);betaShowView(view);betaCloseMenu();});
+betaMenus();betaShowView(betaView);if(manifest)betaSync();
+
+// Animate user-triggered changes only in the affected content, never sibling controls.
+function betaControlMotion(e){
+ const el=e.target;if(!el.closest||el.matches('[data-aligned-compress]'))return;
+ const aligned=el.closest('#aligned-content,#kl-aligned');
+ if(aligned&&el.closest('.aligned-controls,.plot-options'))return;
+ if(el.closest('.kl-reference-toggle'))return;
+ if(el.matches('#round-run,#round-status')){betaAnimateContent($('#rounds'));return;}
+ if(el.matches('#y-mode,#apply-range,#reset')){betaAnimateContent($('#detail'));return;}
+ if(el.closest('#series-controls')||el.matches('[data-row],#uncertainty,#best-mode,#raw-mode'))return;
+}
+document.addEventListener('change',betaControlMotion);
+document.addEventListener('click',e=>{if(e.target.closest?.('button'))betaControlMotion(e);});
+document.addEventListener('click',e=>{
+ const summary=e.target.closest?.('summary');if(!summary||e.target.closest('button,a,input'))return;
+ const details=summary.parentElement;if(details.tagName!=='DETAILS')return;
+ e.preventDefault();
+ const previous=betaDisclosureMotions.get(details),opening=!(previous?.opening??details.open),start=details.offsetHeight;
+ previous?.animation.cancel();
+ if(betaReducedMotion()||!details.animate){details.open=opening;details.style.height='';details.style.overflow='';delete details.dataset.betaCollapsing;betaDisclosureMotions.delete(details);return;}
+ details.open=true;details.style.height='';
+ const css=getComputedStyle(details),closed=summary.offsetHeight+parseFloat(css.borderTopWidth)+parseFloat(css.borderBottomWidth)+parseFloat(css.paddingTop)+parseFloat(css.paddingBottom);
+ const end=opening?details.offsetHeight:closed;
+ details.style.overflow='hidden';details.style.height=start+'px';details.dataset.betaCollapsing=String(!opening);
+ const animation=details.animate([{height:start+'px'},{height:end+'px'}],{duration:280,easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards'});
+ betaDisclosureMotions.set(details,{animation,opening});
+ animation.onfinish=()=>{details.open=opening;details.style.height='';details.style.overflow='';delete details.dataset.betaCollapsing;betaDisclosureMotions.delete(details);animation.cancel();};
+},true);
+function betaCloseSamples(){const dialog=$('#samples');if(betaReducedMotion()||!dialog.animate){dialog.close();return;}const animation=dialog.animate([{opacity:1,transform:'translateY(0) scale(1)'},{opacity:0,transform:'translateY(5px) scale(.99)'}],{duration:150,easing:'ease-in'});animation.onfinish=()=>dialog.close();}
+$('#close-samples').onclick=betaCloseSamples;
+$('#samples').addEventListener('cancel',e=>{e.preventDefault();betaCloseSamples();});
+const betaSliderObserver=new window.MutationObserver(betaScheduleSliders);
+betaSliderObserver.observe(document.querySelector('main'),{subtree:true,childList:true,attributes:true,attributeFilter:['class','aria-pressed','aria-current','aria-checked','hidden']});
+window.addEventListener('resize',()=>{betaScheduleSliders();betaSizeMenu();});
+document.fonts?.ready.then(betaScheduleSliders);
+betaScheduleSliders();
+
+// Directory metadata is part of index.json; no extra collection or model work.
+window.workspaceDirectory=(()=>{
+ const labels={prepared:'待运行',running:'运行中',waiting:'等待中',complete:'已完成',paused:'暂停',blocked:'受阻',awaiting_audit:'待验收',ended:'已结束',not_run:'未开始',no_data:'无记录'};
+ const methods=['all',...betaConfig.method_revisions.map(r=>r.label).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})),'KL','CAKE'];
+ const selected=new Set();let rows=[],filtered=[],stamp=null,limit=40,sort='started_at',descending=true;
+ const value=id=>$('#ws-'+id).value;
+ const sgtDay=at=>at&&Number.isFinite(Date.parse(at))?new Date(Date.parse(at)+8*3600000).toISOString().slice(0,10):'';
+ function optionList(id,values){const el=$('#ws-'+id),before=el.value,html=values.map(([v,label])=>`<option value="${esc(v)}">${esc(label)}</option>`).join('');if(el.innerHTML!==html)el.innerHTML=html;el.value=values.some(([v])=>v===before)?before:'all';}
+ function setMethod(method,push=true){$('#ws-method').value=methods.includes(method)?method:'all';limit=40;selected.clear();const url=new URL(location);url.searchParams.set('view','workspaces');url.searchParams.set('ws',value('method'));history[push?'pushState':'replaceState'](null,'',url);betaFuture=false;betaShowView('workspaces');betaCloseMenu();render();window.scrollTo({top:0,left:0,behavior:'instant'});}
+ function matches(row){
+  if(value('method')!=='all'&&row.method_version!==value('method')&&row.method!==value('method'))return false;
+  if(value('model')!=='all'&&row.model+' / '+row.effort!==value('model'))return false;
+  if(value('status')!=='all'&&(labels[row.status]||row.status)!==value('status'))return false;
+  if(value('dataset')!=='all'&&row.dataset!==value('dataset'))return false;
+  const from=value('from'),to=value('to'),day=sgtDay(row[value('date-field')]);
+  if((from||to)&&(!day||from&&day<from||to&&day>to))return false;
+  const queries=value('search').trim().toLowerCase().split(/[\n;；]+/).filter(Boolean);
+  const text=[row.dataset,row.method_version,row.model,row.effort,row.workspace_path,labels[row.status]].join(' ').toLowerCase();
+  return !queries.length||queries.some(query=>query.trim().split(/\s+/).every(word=>text.includes(word)));
+ }
+ function batch(){const chosen=filtered.filter(r=>selected.has(r.id));return chosen.length?chosen:filtered;}
+ function updateActions(){const chosen=filtered.filter(r=>selected.has(r.id));$('#ws-count').textContent=`${filtered.length} / ${rows.length}${chosen.length?' · '+chosen.length+' ✓':''}`;$('#ws-check-all').checked=!!filtered.length&&chosen.length===filtered.length;$('#ws-check-all').indeterminate=chosen.length>0&&chosen.length<filtered.length;$('#ws-copy').disabled=!batch().some(r=>r.workspace_path);$('#ws-csv').disabled=!batch().length;}
+ async function copy(text,button){try{await navigator.clipboard.writeText(text);$('#ws-feedback').textContent='已复制';if(button){button.textContent='✓';setTimeout(()=>{if(button.isConnected)button.innerHTML=copyIcon;},1400);}}catch{$('#ws-feedback').textContent='请选中路径复制';}}
+ const copyIcon='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="3"/><path d="M16 5V4a1 1 0 0 0-1-1H5a2 2 0 0 0-2 2v10a1 1 0 0 0 1 1h1"/></svg>';
+ function render(animate=false){
+  const valid=!(value('from')&&value('to')&&value('from')>value('to'));$('#ws-date-error').textContent=valid?'':'日期范围有误';
+  filtered=valid?rows.filter(matches):[];filtered.sort((a,b)=>{const av=Date.parse(a[sort]),bv=Date.parse(b[sort]);if(!Number.isFinite(av))return Number.isFinite(bv)?1:a.id.localeCompare(b.id);if(!Number.isFinite(bv))return -1;return (descending?bv-av:av-bv)||a.id.localeCompare(b.id);});
+  const ids=new Set(filtered.map(r=>r.id));for(const id of selected)if(!ids.has(id))selected.delete(id);
+  $('#ws-rows').innerHTML=filtered.slice(0,limit).map(r=>`<tr><td><input type="checkbox" data-ws-check="${esc(r.id)}" aria-label="选择 ${esc(r.dataset+' '+r.model+' '+r.method_version)}" ${selected.has(r.id)?'checked':''}></td><td class="ws-dataset">${esc(r.dataset)}</td><td><span class="ws-method-tag">${esc(methodDisplayLabel(r))}</span></td><td>${esc(r.model)} <small>${esc(r.effort||'')}</small></td><td>${r.status==='prepared'?'<span class="badge not_run">待运行</span>':badge(r.status)}</td><td><time datetime="${esc(r.started_at||'')}">${date(r.started_at)}</time></td><td><time datetime="${esc(r.finished_at||'')}">${date(r.finished_at)}</time></td><td class="ws-path-cell">${r.workspace_path?`<code>${esc(r.workspace_path)}</code><button class="ws-icon" data-ws-copy="${esc(r.id)}" aria-label="复制 ${esc(r.dataset+' '+r.model+' '+r.method_version)} 路径" title="复制路径">${copyIcon}</button>`:'<span class="ws-missing">—</span>'}</td></tr>`).join('')||'<tr><td colspan="8" class="empty">无匹配记录</td></tr>';
+  $$('[data-ws-check]').forEach(el=>el.onchange=()=>{if(el.checked)selected.add(el.dataset.wsCheck);else selected.delete(el.dataset.wsCheck);updateActions();});
+  $$('[data-ws-copy]').forEach(el=>el.onclick=()=>copy(rows.find(r=>r.id===el.dataset.wsCopy).workspace_path,el));
+  $('#ws-more').hidden=filtered.length<=limit;updateActions();betaSyncSelectChoices();if(animate)betaAnimateContent($('#workspace-directory-table'));
+ }
+ function sync(){
+  const payload=manifest?.workspaces;if(!payload)return;
+  if(stamp!==payload.updated_at){stamp=payload.updated_at;rows=payload.rows;
+   optionList('method',methods.map(v=>[v,v==='all'?'All':v]));
+   optionList('model',[['all','All'],...[...new Set(rows.map(r=>r.model+' / '+r.effort))].sort().map(v=>[v,v])]);
+   optionList('status',[['all','All'],...[...new Set(rows.map(r=>labels[r.status]||r.status))].map(v=>[v,v])]);
+   optionList('dataset',[['all','All'],...[...new Set(rows.map(r=>r.dataset))].map(d=>[d,d])]);
+  }
+  const method=new URL(location).searchParams.get('ws')||'all';if(methods.includes(method))$('#ws-method').value=method;
+  render();
+ }
+ $('#workspace-method-menu').innerHTML=['B0','B1','B2','B3','V0','KL','CAKE'].map(f=>`<div>${methods.filter(v=>v===f||v.startsWith(f+'-')).map(v=>`<button data-workspace-method="${v}">${v}</button>`).join('')}</div>`).join('');
+ $$('[data-workspace-method]').forEach(b=>b.onclick=()=>setMethod(b.dataset.workspaceMethod));
+ $$('select[id^="ws-"],input[type=date][id^="ws-"]').forEach(el=>el.onchange=()=>{limit=40;selected.clear();if(el.id==='ws-method'){setMethod(el.value);return;}render(true);});
+ $('#ws-search').oninput=()=>{limit=40;selected.clear();render();};
+ $('#ws-reset').onclick=()=>{for(const id of ['method','model','status','dataset'])$('#ws-'+id).value='all';for(const id of ['search','from','to'])$('#ws-'+id).value='';$('#ws-date-field').value='started_at';setMethod('all');};
+ $('#ws-check-all').onchange=e=>{selected.clear();if(e.target.checked)filtered.forEach(r=>selected.add(r.id));render();};
+ $('#ws-more').onclick=()=>{limit+=40;render();};
+ $('#ws-copy').onclick=()=>copy([...new Set(batch().map(r=>r.workspace_path).filter(Boolean))].join('\n'));
+ $('#ws-csv').onclick=()=>{const keys=['dataset','method_version','model','effort','status','started_at','finished_at','workspace_path'];const cell=v=>'"'+String(v??'').replaceAll('"','""')+'"';const csv=[keys.join(','),...batch().map(r=>keys.map(k=>cell(r[k])).join(','))].join('\r\n');const url=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='workspaces.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+ $$('[data-ws-sort]').forEach(b=>b.onclick=()=>{if(sort===b.dataset.wsSort)descending=!descending;else{sort=b.dataset.wsSort;descending=true;}$$('[data-ws-sort]').forEach(el=>el.textContent=(el.dataset.wsSort==='started_at'?'开始 SGT':'完成 SGT')+(el.dataset.wsSort===sort?(descending?' ↓':' ↑'):''));render(true);});
+ // One contextual directory, shared across all five result views.
+ const context=document.createElement('details');context.className='data-section workspace-section';context.id='result-workspaces';context.innerHTML='<summary><span>实验工作区</span><span>服务器路径</span></summary><div class="workspace-context-rows"></div>';$('#beta-results-view').append(context);let contextKey=null;
+ function contextSync(){
+  if(!manifest?.workspaces)return;
+  const key=datasetId+':'+category+':'+(category==='kl'?klRun?.id:'');if(contextKey!==key){context.open=false;contextKey=key;}
+  const records=manifest.workspaces.rows.filter(r=>r.method!=='CAKE'&&r.dataset===datasetId&&r.workspace_path&&(category==='kl'?r.id===klRun?.id:category==='aligned'?['V0','KL'].includes(r.method):category==='bv'?r.method!=='KL'&&!['B0','B1'].includes(r.method):category==='all'?!['B0','B1'].includes(r.method):true));
+  const body=context.querySelector('.workspace-context-rows');const html=records.map(r=>`<div class="workspace-row"><div class="workspace-label"><strong>${esc(methodDisplayLabel(r))} / ${esc(r.model)}</strong><span>${esc(r.effort||'')}</span></div><code>${esc(r.workspace_path)}</code><button data-context-copy="${esc(r.id)}">复制</button></div>`).join('')||'<p class="empty">暂无工作区</p>';
+  if(body.innerHTML!==html){body.innerHTML=html;body.querySelectorAll('[data-context-copy]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(records.find(r=>r.id===b.dataset.contextCopy).workspace_path);b.textContent='已复制';}catch{b.textContent='请选中复制';}});}
+ }
+ const oldTitle=betaUpdateTitle;betaUpdateTitle=function(){oldTitle();contextSync();};
+ document.addEventListener('experiment:routechange',()=>{if(betaView==='workspaces')sync();});
+ contextSync();if(betaView==='workspaces')sync();
+ function openCompleted(){sync();for(const id of ['method','model','dataset'])$('#ws-'+id).value='all';$('#ws-status').value='已完成';for(const id of ['search','from','to'])$('#ws-'+id).value='';setMethod('all');}
+ $('#beta-completed-link').onclick=openCompleted;
+ return {sync,contextSync,openCompleted};
+})();
+
+/* Result comparison: published numeric records only, no experiment operations. */
+const ComparisonModel=(()=>{
+ const version=r=>r.method==='KL'?'KL':r.method_version||(/^B[0-3]$/.test(r.method)?r.method+'-r1':r.method==='V0'?'V0-r2':r.method);
+ const key=r=>[r.model,r.effort||'',version(r)].join('|');
+ const supported=r=>['Astra 6.2','Sol 6.2','DeepSeek'].includes(r.model)&&['B2','B3','V0','KL'].includes(r.method);
+ const points=r=>r.method==='KL'?(r.aligned?.points||[]).filter(p=>p.counted).map(p=>({round:p.round,latency:p.accepted&&p.status==='passed'?p.latency_ms:null})): (r.search||[]).map(p=>({round:p.round,latency:p.status==='passed'?p.timing?.mean_ms:null}));
+ const display=r=>{const v=version(r);return r.model!=='Astra 6.2'&&/^B\d-r\d+$/.test(v)?v.split('-r')[0]:v;};
+ function measure(r,n){
+  if(!r)return {value:null,state:'不适用',coverage:0};
+  const ps=points(r),coverage=Math.min(n,Math.max(0,...ps.map(p=>p.round))),active=r.status==='running';
+  const budget=r.method==='KL'?Infinity:Number(r.budget||30);
+  if(n>budget)return {value:null,state:'不适用',reason:'超出原轮次预算',coverage};
+  const eligible=ps.filter(p=>Number.isFinite(p.round)&&p.round<=n&&p.round>0&&Number.isFinite(p.latency)&&p.latency>0);
+  if(eligible.length){const best=eligible.reduce((a,p)=>p.latency<a.latency?p:a);return {value:best.latency,round:best.round,coverage,state:active?'正在运行':r.status==='complete'?'已完成':r.status==='paused'||r.status==='blocked'?'已暂停':r.status==='waiting'?'等待接续':'已保存'};}
+  const state=active?'正在运行':(!r.started_at&&['not_run','waiting','queued','no_data'].includes(r.status))?'待运行':'不适用';
+  return {value:null,state,coverage,reason:state==='不适用'?'所选范围没有有效数据':''};
+ }
+ function compare(r,baseline,n){const result=measure(r,n),base=measure(baseline,n);return {...result,delta:result.value!==null&&base.value>0?(result.value/base.value-1)*100:null,baseline:base};}
+ function catalog(datasets,kl){
+  const map=new Map();for(const d of datasets)for(const r of d.runs.filter(supported))if(!map.has(key(r)))map.set(key(r),{...r,key:key(r),version:version(r),label:r.model+' · '+display(r)});
+  for(const r of kl.runs){const v={...r,method:'KL'};if(supported(v)&&!map.has(key(v)))map.set(key(v),{...v,key:key(v),version:'KL',label:v.model+' · KL'});}
+  const models=['Astra 6.2','Sol 6.2','DeepSeek'],methods=['B2-r1','B2-r2','B3-r1','B3-r2','V0-r2','V0-r3','KL'];
+  return [...map.values()].sort((a,b)=>models.indexOf(a.model)-models.indexOf(b.model)||methods.indexOf(a.version)-methods.indexOf(b.version));
+ }
+ function scale(values){
+  const a=[...new Set(values.filter(v=>Number.isFinite(v)&&v>0))].sort((x,y)=>x-y),max=(a.at(-1)||1)*1.06;
+  let gap=null;for(let i=1;i<a.length;i++){const low=a[i-1]*1.12,high=a[i]*.88;if(a[i]/a[i-1]>=4&&high-low>max*.5&&(!gap||high-low>gap.high-gap.low))gap={low,high};}
+  const map=v=>gap?(v<=gap.low?v/gap.low*.70:v>=gap.high?.76+(v-gap.high)/(max-gap.high)*.24:.70+(v-gap.low)/(gap.high-gap.low)*.06):v/max;
+  return {max,gap,map};
+ }
+ return {key,version,points,supported,display,measure,compare,catalog,scale};
+})();
+if(typeof module!=='undefined')module.exports=ComparisonModel;
+if(typeof document!=='undefined')(()=>{
+ const host=document.querySelector('#beta-comparison-view');if(!host)return;
+ const state={round:30,selected:null,baseline:null,group:'model',layout:'kernel',datasets:[],kl:null,catalog:[],version:null,pending:null,load:0};
+ // Same palette and rule as the curve pages: grouped by model, colour names the
+ // task version; grouped by task, colour names the model.
+ const versionColors={'B2-r1':betaSeries.orange,'B2-r2':betaSeries.red,'B3-r1':betaSeries.rose,'B3-r2':betaSeries.violet,'V0-r2':betaSeries.green,'V0-r3':betaSeries.teal,'KL':betaSeries.blue};
+ const modelColors={'Astra 6.2':betaSeries.blue,'Sol 6.2':betaSeries.green,'DeepSeek':betaSeries.orange};
+ const color=s=>(state.group==='task'?modelColors[s.model]:versionColors[s.version])||betaSeries.neutral;
+ const delta=v=>v===null?'—':(Math.abs(v)<.05?'0':(v>0?'+':'−')+Math.abs(v).toFixed(1))+'%';
+ const num=v=>v>=1000?v.toLocaleString('en',{maximumFractionDigits:1}):Number(v.toPrecision(5)).toString();
+ const shortModel=s=>s.model==='DeepSeek'?'DeepSeek':s.model;
+ const label=s=>shortModel(s)+' · '+ComparisonModel.display(s);
+ host.innerHTML=`<section class="comparison-settings" aria-label="对比设置"><div class="comparison-setting"><label for="comparison-round">截止轮次</label><div class="comparison-cutoff"><input id="comparison-round" type="range" min="5" max="50" step="1" value="30" aria-label="截止轮次"><output id="comparison-round-value">r30</output></div></div><div class="comparison-setting comparison-reference"><label for="comparison-baseline">参照基线</label><select id="comparison-baseline" aria-label="参照基线"></select></div><button class="chart-reset" id="comparison-reset" aria-label="重置结果对比" title="重置">↻</button></section><section class="comparison-selection"><div class="comparison-selection-head"><div class="comparison-selection-title"><strong>对比任务</strong><span id="comparison-selected-count"></span></div><div class="comparison-selection-actions"><div class="segments" aria-label="对比任务分组"><button data-bar-group="model" class="selected" aria-pressed="true">按模型</button><button data-bar-group="task" aria-pressed="false">按任务</button></div><button id="comparison-all" class="comparison-group-toggle" aria-pressed="true">全部</button></div></div><div id="comparison-series-body" class="comparison-series-body open"><div><div id="comparison-series" class="comparison-series"></div></div></div></section><div class="comparison-caption"><div class="segments comparison-layout" aria-label="对比图组织"><button data-bar-layout="kernel" class="selected" aria-pressed="true">按 Kernel</button><button data-bar-layout="task" aria-pressed="false">按任务</button></div><span id="comparison-measure-label">最快延迟 · ms ↓</span><span title="(本组延迟 / 基线延迟 − 1) × 100。B/V均值，历史KL分组中位数，6.2 KL为P50，详见各组计时协议；百分比仅表示所示数值比，环境与计时口径有差异。">− 更快 / + 更慢 <span aria-hidden="true">ⓘ</span></span></div><div id="comparison-loading" role="status"></div><div id="comparison-grid" class="comparison-grid"></div>`;
+ const slider=host.querySelector('#comparison-round'),baseline=host.querySelector('#comparison-baseline'),status=host.querySelector('#comparison-loading');
+ function defaultBaseline(){return state.catalog.find(r=>r.model==='Astra 6.2'&&r.version==='KL')?.key||state.catalog[0]?.key;}
+ function toggleState(button,rows){const n=rows.filter(r=>state.selected.has(r.key)).length;button.textContent=n===rows.length?'全部':n?'部分':'关闭';button.setAttribute('aria-pressed',n===rows.length?'true':n?'mixed':'false');}
+ function syncControls(){
+  host.querySelectorAll('[data-comparison-series]').forEach(b=>b.setAttribute('aria-pressed',String(state.selected.has(b.dataset.comparisonSeries))));
+  host.querySelectorAll('[data-bar-toggle]').forEach(b=>toggleState(b,b._rows));toggleState(host.querySelector('#comparison-all'),state.catalog);
+  host.querySelector('#comparison-selected-count').textContent=state.selected.size+' / '+state.catalog.length;
+ }
+ function controls(){
+  baseline.replaceChildren(...state.catalog.map(r=>new Option(r.label,r.key)));baseline.value=state.baseline;
+  const groups=host.querySelector('#comparison-series');groups.replaceChildren();
+  const names=[...new Set(state.catalog.map(r=>state.group==='model'?r.model:r.version))];
+  for(const name of names){
+   const rows=state.catalog.filter(r=>(state.group==='model'?r.model:r.version)===name);
+   const group=document.createElement('section');group.className='comparison-model';group.innerHTML=`<header><h3>${esc(name)}</h3><button class="comparison-group-toggle" data-bar-toggle></button></header><div class="comparison-pills"></div>`;
+   const toggle=group.querySelector('[data-bar-toggle]');toggle._rows=rows;toggle.setAttribute('aria-label',name+' 全部曲线');toggle.onclick=()=>{const on=rows.some(r=>!state.selected.has(r.key));rows.forEach(r=>on?state.selected.add(r.key):state.selected.delete(r.key));syncControls();paint();};
+   for(const r of rows){const b=document.createElement('button');b.type='button';b.className='comparison-toggle';b.dataset.comparisonSeries=r.key;b.textContent=state.group==='model'?ComparisonModel.display(r):shortModel(r);b.title=r.label+' / '+r.effort;b.style.setProperty('--color',color(r));b.style.setProperty('--pill-text',betaThemeText(color(r)));b.onclick=()=>{if(state.selected.has(r.key)){state.selected.delete(r.key);b.classList.add('hover-muted');}else state.selected.add(r.key);syncControls();paint();};b.onpointerleave=()=>b.classList.remove('hover-muted');group.lastElementChild.append(b);}
+   groups.append(group);
+  }syncControls();betaScheduleSliders();
+ }
+ function rowsFor(d){const runs=[...d.runs,...state.kl.runs.filter(r=>r.dataset===d.id).map(r=>({...r,method:'KL'}))],byKey=new Map(runs.map(r=>[ComparisonModel.key(r),r]));const ref=byKey.get(state.baseline);
+  return state.catalog.filter(s=>state.selected.has(s.key)).map(s=>({...ComparisonModel.compare(byKey.get(s.key),ref,state.round),key:s.key,label:label(s),fullLabel:s.label,color:color(s),run:byKey.get(s.key),isBaseline:s.key===state.baseline}));
+ }
+ function panels(){
+  if(state.layout==='kernel')return state.datasets.map(d=>({id:d.id,title:d.id,rows:rowsFor(d),percent:false}));
+  const byDataset=state.datasets.map(d=>({id:d.id,rows:rowsFor(d)}));
+  return state.catalog.filter(s=>state.selected.has(s.key)&&s.key!==state.baseline).map(s=>({id:s.key,title:label(s),percent:true,rows:byDataset.map(d=>{const r=d.rows.find(r=>r.key===s.key);return {...r,key:d.id,label:d.id,fullLabel:d.id+' · '+s.label,value:r.delta,state:r.value!==null&&r.delta===null?'基线不可用':r.state,isBaseline:false};})}));
+ }
+ function paint(){
+  if(!state.version)return;const grid=host.querySelector('#comparison-grid');
+  host.querySelector('#comparison-round-value').textContent='r'+state.round;slider.value=state.round;slider.style.setProperty('--cutoff-fill',(state.round-5)/45*100+'%');
+  host.querySelector('#comparison-measure-label').textContent=state.layout==='task'?'相对基线 · %':'最快延迟 · ms ↓';
+  const data=panels(),keepCards=new Set(data.map(p=>p.id));[...grid.children].forEach(c=>{if(!keepCards.has(c.dataset.comparisonDataset))c.remove();});
+  for(const d of data){
+   let card=[...grid.children].find(c=>c.dataset.comparisonDataset===d.id);if(!card){card=document.createElement('article');card.className='comparison-card';card.dataset.comparisonDataset=d.id;card.innerHTML=`<header><h2>${esc(d.title)}</h2><span class="comparison-scale-label"></span></header><div class="comparison-plot" role="img"><div class="comparison-guides" aria-hidden="true"></div><div class="comparison-baseline-area"><div class="comparison-baseline-line" aria-hidden="true"><span>基线</span></div></div><div class="comparison-bars"></div></div><div class="comparison-axis"></div><div class="comparison-empty-note"></div>`;grid.append(card);}
+   card.classList.toggle('comparison-task-card',d.percent);
+   const rows=d.rows,ref=d.percent?{value:0,state:''}:rows[0]?.baseline||{},values=rows.filter(r=>r.value!==null).map(r=>r.value),scale=ComparisonModel.scale([...values.map(Math.abs),...(!d.percent&&ref.value>0?[ref.value]:[])]),negative=d.percent&&values.some(v=>v<0),positive=values.some(v=>v>0),origin=negative?(positive?.5:1):0;
+   const project=v=>d.percent?origin+(v<0?-origin:1-origin)*scale.map(Math.abs(v)):scale.map(v);
+   const plot=card.querySelector('.comparison-plot'),bars=card.querySelector('.comparison-bars');
+   card._comparisonRows=rows;card._comparisonScale={max:scale.max,gap:scale.gap,baseline:ref.value,origin};
+   const line=card.querySelector('.comparison-baseline-line');line.hidden=!(d.percent?values.length:ref.value>0)||!rows.length;line.style.left=(project(ref.value||0)*100)+'%';line.title=d.percent?'基线 0%':ref.value>0?'基线 '+num(ref.value)+' ms':'';line.firstElementChild.textContent=d.percent?'0%':'基线';
+   card.querySelector('.comparison-scale-label').textContent=scale.gap?'断轴 //':d.percent?'%':'ms ↓';
+   card.querySelector('.comparison-scale-label').title=scale.gap?'省略 '+num(scale.gap.low)+'–'+num(scale.gap.high)+(d.percent?'%':' ms')+'；两侧分别线性，全部条形与基线共用尺度':'';
+   plot.setAttribute('aria-label',d.title+' 截至 r'+state.round+'；'+rows.map(r=>r.fullLabel+' '+(r.value===null?r.state:d.percent?delta(r.value):num(r.value)+' ms '+delta(r.delta))).join('；'));
+   const keep=new Set(rows.map(r=>r.key));[...bars.children].forEach(el=>{if(!keep.has(el.dataset.barKey))el.remove();});
+   for(const r of rows){let row=[...bars.children].find(el=>el.dataset.barKey===r.key);if(!row){row=document.createElement('div');row.className='comparison-bar-row';row.dataset.barKey=r.key;row.innerHTML='<span class="comparison-label"></span><div class="comparison-track"><span class="comparison-bar-a"></span><span class="comparison-bar-b"></span><span class="comparison-bar-break" aria-hidden="true">//</span><span class="comparison-values"><b></b><em></em></span></div>';bars.append(row);}
+    row.style.order=rows.indexOf(r);row.style.setProperty('--bar-color',r.color);row.classList.toggle('is-empty',r.value===null);row.classList.toggle('is-reference',r.isBaseline);
+    row.querySelector('.comparison-label').textContent=r.label;row.querySelector('.comparison-values b').textContent=r.value===null?r.state:d.percent?delta(r.value):num(r.value)+' ms';row.querySelector('.comparison-values em').textContent=r.value===null||d.percent?'':r.isBaseline?'基线':delta(r.delta);
+    row.title=r.fullLabel+' · '+(r.value===null?(r.reason||r.state):d.percent?delta(r.value)+' · 已保存 r'+r.coverage+'/'+state.round:num(r.value)+' ms · '+delta(r.delta)+' · 最快 r'+r.round+' · 已保存 r'+r.coverage+'/'+state.round+' · '+r.state);
+    const a=row.querySelector('.comparison-bar-a'),b=row.querySelector('.comparison-bar-b'),br=row.querySelector('.comparison-bar-break'),v=r.value||0,sign=v<0?-1:1,cross=scale.gap&&Math.abs(v)>=scale.gap.high;
+    const segment=(el,start,end)=>{el.style.left=Math.min(start,end)*100+'%';el.style.width=Math.abs(end-start)*100+'%';};
+    segment(a,origin,cross?project(sign*scale.gap.low):project(v));segment(b,cross?project(sign*scale.gap.high):origin,cross?project(v):origin);
+    br.hidden=!cross;if(cross){br.style.left=Math.min(project(sign*scale.gap.low),project(sign*scale.gap.high))*100+'%';br.style.width=Math.abs(project(sign*scale.gap.high)-project(sign*scale.gap.low))*100+'%';}
+    row.querySelector('.comparison-values').style.left=((r.value===null?0:Math.max(origin,project(v)))*100)+'%';
+   }
+   let ticks;
+   if(d.percent){ticks=[[origin,'0']];if(negative)ticks.push([0,'−'+num(scale.max)]);if(positive)ticks.push([1,'+'+num(scale.max)]);}
+   else ticks=scale.gap?[[0,'0'],[.7,num(scale.gap.low)],[1,num(scale.max)]]:[[0,'0'],[.5,num(scale.max/2)],[1,num(scale.max)]];
+   const tick=(x,v)=>`<span style="left:${x*100}%;${x===0?'transform:none':x===1?'transform:translateX(-100%)':scale.gap&&x===.7?'transform:translateX(-100%)':''}">${v}</span>`;
+   const guides=card.querySelector('.comparison-guides');while(guides.children.length<ticks.length)guides.append(document.createElement('i'));while(guides.children.length>ticks.length)guides.lastElementChild.remove();ticks.forEach(([x],i)=>guides.children[i].style.left=(x*100)+'%');const axis=card.querySelector('.comparison-axis');axis.innerHTML=ticks.map(([x,v])=>tick(x,v)).join('');if(scale.gap){for(const sign of d.percent?[(negative?-1:null),(positive?1:null)].filter(x=>x!==null):[1])axis.innerHTML+=`<i style="left:${project(sign*(scale.gap.low+scale.gap.high)/2)*100}%" title="${esc(card.querySelector('.comparison-scale-label').title)}">//</i>`;}
+   axis.hidden=!values.length;
+   card.querySelector('.comparison-empty-note').textContent=!rows.length?'选择对比任务':!d.percent&&!(ref.value>0)?'基线 · '+(ref.state||'不适用'):'';
+  }
+  if(!data.length){const note=document.createElement('p');note.className='comparison-empty-note';note.textContent='选择对比任务';grid.append(note);}
+ }
+ async function ensure(){
+  if(!manifest||betaView!=='comparison')return;const version=manifest.updated_at;if(state.version===version){paint();return;}if(state.pending===version)return;state.pending=version;const seq=++state.load;
+  status.innerHTML='<span class="result-spinner" aria-hidden="true"></span> 加载中…';host.setAttribute('aria-busy','true');
+  try{const [datasets,kl]=await Promise.all([Promise.all(manifest.datasets.map(d=>datasetJSON(d,version))),publishedKL(version)]);
+   if(seq!==state.load||manifest.updated_at!==version)return;if(kl.updated_at!==version||datasets.some(d=>d.updated_at!==version))throw Error('数据版本尚在同步');
+   state.datasets=datasets;state.kl=kl;state.catalog=ComparisonModel.catalog(datasets,kl);state.version=version;
+   if(!state.selected)state.selected=new Set(state.catalog.map(r=>r.key));if(!state.catalog.some(r=>r.key===state.baseline))state.baseline=defaultBaseline();controls();paint();status.textContent='';
+  }catch(error){if(seq===state.load){status.innerHTML='暂未加载 <button type="button">重试</button>';status.querySelector('button').onclick=ensure;status.title=error.message;}}
+  finally{if(seq===state.load){state.pending=null;host.removeAttribute('aria-busy');}}
+ }
+ let frame;slider.oninput=()=>{state.round=Number(slider.value);host.querySelector('#comparison-round-value').textContent='r'+state.round;cancelAnimationFrame(frame);frame=requestAnimationFrame(paint);};
+ baseline.onchange=()=>{state.baseline=baseline.value;paint();};
+ host.querySelector('#comparison-reset').onclick=()=>{cancelAnimationFrame(frame);state.round=30;state.baseline=defaultBaseline();state.selected=new Set(state.catalog.map(r=>r.key));controls();paint();};
+ host.querySelectorAll('[data-bar-group]').forEach(b=>b.onclick=()=>{state.group=b.dataset.barGroup;host.querySelectorAll('[data-bar-group]').forEach(x=>{x.classList.toggle('selected',x===b);x.setAttribute('aria-pressed',String(x===b));});controls();paint();});
+ host.querySelector('#comparison-all').onclick=()=>{state.selected=state.selected.size===state.catalog.length?new Set():new Set(state.catalog.map(r=>r.key));syncControls();paint();};
+ document.querySelectorAll('[data-comparison-preset]').forEach(button=>button.onclick=()=>{state.round=Number(button.dataset.comparisonPreset);betaShowView('comparison',true);betaCloseMenu();paint();});
+ host.querySelectorAll('[data-bar-layout]').forEach(b=>b.onclick=()=>{if(state.layout===b.dataset.barLayout)return;state.layout=b.dataset.barLayout;host.querySelectorAll('[data-bar-layout]').forEach(x=>{x.classList.toggle('selected',x===b);x.setAttribute('aria-pressed',String(x===b));});paint();betaScheduleSliders();});
+ window.resultComparison={ensure,state,rowsFor,panels,paint};if(betaView==='comparison')ensure();
+})();
+
+/* CannBot reads a versioned public snapshot. No runner or device actions. */
+window.cannbotDashboard=(()=>{
+ let snapshot=null,pending=null,dataset=null,model='Astra 6.2',scope='kernel';
+ const root=()=>document.querySelector('#beta-cannbot-view');
+ const q=id=>root().querySelector(id);
+ const colors={'Astra 6.2':'#007aff','Sol 6.2':'#e83291','DeepSeek':'#00a477'};
+ const labels={prepared:'待运行',not_run:'待运行',queued:'等待中',waiting:'等待中',paused:'暂停',running:'运行中',complete:'已完成',blocked:'暂停'};
+ const outcomes={passed:'通过',failed:'候选失败'};
+ const rounds=run=>run.rounds_completed??(run.started_at?'—':0);
+ const fmt=value=>value==null?'—':Number(value).toLocaleString('en-US',{maximumFractionDigits:4});
+ function choice(container,values,selected,onSelect){
+  if(container.dataset.options!==values.join('|')){
+   container.dataset.options=values.join('|');container.replaceChildren(...values.map(value=>{
+    const b=document.createElement('button');b.type='button';b.textContent=value;b.dataset.value=value;
+    b.onclick=()=>onSelect(value);return b;
+   }));
+  }
+  [...container.children].forEach(b=>{const on=b.dataset.value===selected;b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));});
+ }
+ function locationState(){
+  const url=new URL(location);url.searchParams.set('cake_dataset',dataset);url.searchParams.set('cake_model',model);
+  history.replaceState(null,'',url);
+ }
+ function chart(run){
+  const points=run.evaluations.filter(p=>p.latency_ms!=null&&p.evaluation_index!=null);
+  if(!points.length)return '<div class="cake-empty"><span class="cake-empty-mark">—</span><strong>待产生有效测量</strong><span>每轮 3 个候选 · 最多 20 轮</span></div>';
+  const width=800,height=330,left=65,right=25,top=20,bottom=45,maxX=Math.max(1,...points.map(p=>p.evaluation_index)),maxY=Math.max(...points.map(p=>p.latency_ms))*1.12;
+  const x=n=>left+(width-left-right)*n/maxX,y=n=>height-bottom-(height-top-bottom)*n/maxY;
+  const ticks=Array.from({length:5},(_,i)=>maxY*i/4);
+  let best=Infinity;const steps=[];
+  for(const p of points){if(steps.length)steps.push(`${x(p.evaluation_index)},${y(best)}`);best=Math.min(best,p.latency_ms);steps.push(`${x(p.evaluation_index)},${y(best)}`);}
+  return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="CannBot 候选测量 P50，按有效评测序号排列" style="--cake-color:${colors[run.model]}">${ticks.map(v=>`<line x1="${left}" x2="${width-right}" y1="${y(v)}" y2="${y(v)}" class="cake-grid"/><text x="${left-10}" y="${y(v)+4}" text-anchor="end">${fmt(v)}</text>`).join('')}<polyline points="${steps.join(' ')}" fill="none" stroke="var(--cake-color)" stroke-width="2.5"/>${points.map(p=>`<circle cx="${x(p.evaluation_index)}" cy="${y(p.latency_ms)}" r="4" fill="var(--cake-color)"><title>第 ${p.round} 轮 · 候选 ${p.candidate} · ${fmt(p.latency_ms)} ms</title></circle>`).join('')}<text x="${left}" y="${height-15}">0</text><text x="${width-right}" y="${height-15}" text-anchor="end">${maxX}</text><text x="${width/2}" y="${height-10}" text-anchor="middle">有效评测</text></svg>`;
+ }
+ function render(){
+  if(!snapshot)return;
+  if(!snapshot.datasets.includes(dataset))dataset=snapshot.datasets[0];
+  const models=[...new Set(snapshot.runs.map(r=>r.model))];if(!models.includes(model))model=models[0];
+  choice(q('#cake-datasets'),snapshot.datasets,dataset,value=>{dataset=value;locationState();render();});
+  choice(q('#cake-models'),models,model,value=>{model=value;locationState();render();});
+  const run=snapshot.runs.find(r=>r.dataset===dataset&&r.model===model);
+  q('#cake-phase').textContent=run.status==='not_run'?labels.not_run:snapshot.paused?(run.started_at?'已暂停':'准备已暂停 · 等待框架更新'):labels[run.status]||run.status;
+  q('#cake-json').href=(document.body.dataset.apiBase||'./')+'api/v1/cannbot.json';
+  const metrics=[['已结算有效轮',`${rounds(run)} / ${run.round_budget}`],['有效评测',fmt(run.valid_evaluations)],['累计时间',run.net_seconds==null?'—':fmt(run.net_seconds/60)+' min'],['累计 token',fmt(run.total_tokens)]];
+  q('#cake-metrics').innerHTML=metrics.map(([label,value])=>`<div class="card cake-metric"><span>${label}</span><strong>${value}</strong></div>`).join('');
+  q('#cake-chart').innerHTML=chart(run);q('#cake-evaluation-count').textContent=run.evaluations.length+' 次';
+  q('#cake-evaluations').innerHTML=run.evaluations.length?`<table><thead><tr><th>评测</th><th>轮次 / 候选</th><th>状态</th><th>P50 ms</th></tr></thead><tbody>${run.evaluations.map(p=>`<tr><td>${p.evaluation_index==null?'—':p.evaluation_index}</td><td>${p.round??'—'} / ${p.candidate??'—'}</td><td>${outcomes[p.outcome]}</td><td>${fmt(p.latency_ms)}</td></tr>`).join('')}</tbody></table>`:'<div class="cake-empty"><span class="cake-empty-mark">—</span><strong>尚无已结算的有效轮</strong></div>';
+  const rows=snapshot.runs.filter(r=>scope==='all'||r.dataset===dataset);
+  q('#cake-tasks').innerHTML=`<table><thead><tr><th>Kernel</th><th>模型 / effort</th><th>状态</th><th>有效轮</th><th>有效评测</th><th>开始 SGT</th><th>完成 SGT</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.dataset)}</td><td><span class="cake-model-dot" style="background:${colors[r.model]}"></span>${esc(r.model)} <small>${esc(r.effort)}</small></td><td><span class="status ${r.status==='complete'?'complete':'not_run'}">${labels[r.status]||esc(r.status)}</span></td><td>${rounds(r)} / ${r.round_budget}</td><td>${r.valid_evaluations}</td><td>${date(r.started_at)}</td><td>${date(r.finished_at)}</td></tr>`).join('')}</tbody></table>`;
+  q('#cake-workspaces').innerHTML=rows.map(r=>`<div class="cake-workspace-row"><strong>${esc(r.dataset)} · ${esc(r.model)}</strong><code>${esc(r.workspace_path||"—")}</code><button type="button" ${r.workspace_path?"":"disabled"} data-cake-copy="${esc(r.id)}">复制</button></div>`).join('');
+  root().querySelectorAll('[data-cake-copy]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(snapshot.runs.find(r=>r.id===b.dataset.cakeCopy).workspace_path);b.textContent='已复制';}catch{b.textContent='复制失败';}});
+  root().querySelectorAll('[data-cake-scope]').forEach(b=>{const on=b.dataset.cakeScope===scope;b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));b.onclick=()=>{scope=b.dataset.cakeScope;render();};});
+  betaScheduleSliders();
+ }
+ let windowsChecked=0;
+ async function updateWindowsTable(){
+  if(Date.now()-windowsChecked<30000)return;
+  windowsChecked=Date.now();
+  try{
+   const batch=await getJSON('./api/v1/'+manifest.cannbot.windows_url);
+   const rows=new Map(batch.tasks.map(task=>[task.dataset,task]));
+   const panel=q('#windows-cannbot');
+   for(const row of panel.querySelectorAll('tbody tr')){
+    const cells=row.cells,task=rows.get(cells[0].textContent);
+    cells[1].textContent=task?(labels[task.status]||task.status):'待运行';
+    cells[2].textContent=task?task.rounds+' / '+task.budget:'0 / 20';
+    cells[3].textContent=task?task.attempts:'0';
+   }
+   panel.querySelector('p').textContent=rows.size?
+    (batch.paused?'已暂停':'当前批次')+' · Astra 6.2 / high · '+date(batch.updated_at)+' SGT':
+    '待运行 · Astra 6.2 / high';
+  }catch{q('#windows-cannbot p').textContent='暂时无法读取 Windows 批次';}
+ }
+ async function ensure(){
+  if(!manifest?.cannbot)return;
+  updateWindowsTable();
+  if(snapshot?.updated_at===manifest.updated_at){render();return;}
+  if(pending)return pending;
+  const version=manifest.updated_at;const params=new URL(location).searchParams;
+  dataset=dataset||params.get('cake_dataset');model=params.get('cake_model')||model;
+  q('#cannbot-loading').hidden=false;
+  pending=getJSON('./api/v1/'+manifest.cannbot.url+'?v='+encodeURIComponent(version)).then(data=>{
+   if(data.updated_at!==manifest.updated_at)throw Error('数据版本已更新，请刷新');
+   snapshot=data;q('#cannbot-loading').hidden=true;q('#cannbot-content').hidden=false;render();betaAnimateContent(q('#cannbot-content'));
+  }).catch(()=>{q('#cannbot-loading').textContent='暂时无法读取 · 请刷新';}).finally(()=>{pending=null;});
+  return pending;
+ }
+ if(betaView==='cannbot')ensure();
+ return {ensure};
+})();

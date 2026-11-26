@@ -1,220 +1,173 @@
 {
-  "schema_version": 2,
-  "edition": "current",
-  "published_at": "2026-11-26T16:39:07+00:00",
-  "updated_at": null,
-  "models": [
-    "Astra 6.2",
-    "Sol 6.2",
-    "DeepSeek"
-  ],
+  "schema_version": 1,
+  "updated_at": "2026-11-26T16:59:38+00:00",
+  "published_at": "2026-11-26T16:59:38+00:00",
+  "refresh_seconds": 60,
+  "counts": {
+    "datasets": 8,
+    "runs_with_records": 0,
+    "saved_records": 0,
+    "performance_samples": 0
+  },
+  "update_cadence_minutes": null,
+  "next_update_estimated_at": null,
+  "task_events": [],
+  "campaign_runs": [],
   "datasets": [
-    {
-      "id": "FA3",
-      "title": "FA3 backward",
-      "suite": "fa3-backward-sm90",
-      "groups": [
-        "bv",
-        "aligned",
-        "kl",
-        "cannbot"
-      ],
-      "workload": "BF16 | B2 S4096 H6 D128 | causal",
-      "url": "fa3.json"
-    },
-    {
-      "id": "GDN",
-      "title": "GDN prefill",
-      "suite": "gdn-prefill-sm100",
-      "groups": [
-        "bv",
-        "aligned",
-        "kl",
-        "cannbot"
-      ],
-      "workload": "FP16 | S2048 QK16 V32 D128",
-      "url": "gdn.json"
-    },
-    {
-      "id": "Based",
-      "title": "Based",
-      "suite": "thunderkittens-based-h100",
-      "groups": [
-        "bv",
-        "aligned",
-        "kl",
-        "cannbot"
-      ],
-      "workload": "BF16 | B16 H16 N1024 D16 DV64",
-      "url": "based.json"
-    },
     {
       "id": "Sonny",
       "title": "FA forward",
       "suite": "sonny-mha-forward-rtx3090",
-      "groups": [
-        "bv",
-        "aligned",
-        "kl",
-        "cannbot"
-      ],
-      "workload": "FP16 | B16 S4096 H16 D128 | noncausal",
-      "url": "sonny.json"
+      "url": "sonny.json",
+      "updated_at": "2026-11-26T16:59:38+00:00"
     },
     {
       "id": "GQA",
       "title": "GQA decode",
       "suite": "flashinfer-gqa-decode-a100",
-      "groups": [
-        "bv",
-        "aligned",
-        "kl",
-        "cannbot"
-      ],
-      "workload": "FP16 | Q32 KV4 D128 L32768",
-      "url": "gqa.json"
+      "url": "gqa.json",
+      "updated_at": "2026-11-26T16:59:38+00:00"
     },
     {
-      "id": "MQA",
-      "title": "MQA",
-      "suite": "deepgemm-mqa-h800",
-      "groups": [
-        "bv",
-        "aligned",
-        "kl",
-        "cannbot"
-      ],
-      "workload": "FP8 | SQ2048 SK8192 H32 D64",
-      "url": "mqa.json"
+      "id": "FA3",
+      "title": "FA3 backward",
+      "suite": "fa3-backward-sm90",
+      "url": "fa3.json",
+      "updated_at": "2026-11-26T16:59:38+00:00"
+    },
+    {
+      "id": "GDN",
+      "title": "GDN prefill",
+      "suite": "gdn-prefill-sm100",
+      "url": "gdn.json",
+      "updated_at": "2026-11-26T16:59:38+00:00"
+    },
+    {
+      "id": "Based",
+      "title": "Based",
+      "suite": "thunderkittens-based-h100",
+      "url": "based.json",
+      "updated_at": "2026-11-26T16:59:38+00:00"
     },
     {
       "id": "Mega",
       "title": "Mega mHC",
       "suite": "deepgemm-mega-mhc-sm100",
-      "groups": [
-        "bv",
-        "aligned",
-        "kl",
-        "cannbot"
-      ],
-      "workload": "BF16 | M64 H4096 HC4",
-      "url": "mega.json"
+      "url": "mega.json",
+      "updated_at": "2026-11-26T16:59:38+00:00"
+    },
+    {
+      "id": "MQA",
+      "title": "MQA",
+      "suite": "deepgemm-mqa-h800",
+      "url": "mqa.json",
+      "updated_at": "2026-11-26T16:59:38+00:00"
     },
     {
       "id": "FlashMLA",
       "title": "FlashMLA",
       "suite": "flashmla-dense-decode-sm90",
-      "groups": [
-        "kl",
-        "cannbot"
+      "url": "flashmla.json",
+      "categories": [
+        "kl"
       ],
-      "workload": "",
-      "url": "flashmla.json"
-    },
-    {
-      "id": "HSTU",
-      "title": "HSTU",
-      "suite": null,
-      "groups": [
-        "cannbot"
-      ]
-    },
-    {
-      "id": "FlashKDA",
-      "title": "FlashKDA",
-      "suite": null,
-      "groups": [
-        "cannbot"
-      ]
+      "updated_at": "2026-11-26T16:59:38+00:00"
     }
   ],
+  "running_runs": [],
+  "sources": {},
+  "units": {
+    "latency": "ms",
+    "speedup": "baseline_ms / method_ms"
+  },
+  "notes": [],
   "categories": [
     {
       "id": "bv",
-      "label": "B/V",
-      "methods": [
-        "B0",
-        "B1",
-        "B2",
-        "B3",
-        "V0"
-      ],
-      "versions": {
-        "B1": [
-          "B1-r1"
-        ],
-        "B2": [
-          "B2-r1",
-          "B2-r2"
-        ],
-        "B3": [
-          "B3-r1",
-          "B3-r2"
-        ],
-        "V0": [
-          "V0-r2",
-          "V0-r3"
-        ]
-      }
+      "label": "B0–B3 / V0"
     },
     {
       "id": "aligned",
-      "label": "Aligned KL",
-      "methods": [
-        "V0",
-        "Aligned KL"
-      ],
-      "versions": {
-        "V0": [
-          "V0-r2",
-          "V0-r3"
-        ]
-      }
+      "label": "Aligned KL"
     },
     {
       "id": "kl",
-      "label": "KL",
-      "methods": [
-        "KL"
-      ]
-    },
-    {
-      "id": "cannbot",
-      "label": "CannBot",
-      "methods": [
-        "CAKE"
-      ]
+      "label": "KL"
     }
   ],
-  "records": [],
-  "counts": {
-    "datasets": 10,
-    "runs_with_records": 0,
-    "saved_records": 0,
-    "performance_samples": 0
-  },
-  "running_runs": [],
-  "waiting_runs": [],
-  "paused_runs": [],
-  "task_events": [],
-  "workspaces": {
-    "rows": []
-  },
   "kl": {
     "url": "kl.json",
     "run_count": 0,
+    "source_captured_at": null,
     "running_runs": [],
-    "queue": []
+    "waiting_cards": [],
+    "waiting_runs": [],
+    "queue": [],
+    "registered_sources": []
   },
+  "bv_revisions": {
+    "runs": [],
+    "queue": [],
+    "editions": [
+      {
+        "id": "v0-r3",
+        "label": "V0-r3"
+      },
+      {
+        "id": "bn-r2",
+        "label": "B0–B3-r2"
+      }
+    ]
+  },
+  "bv_resources": [],
+  "waiting_cards": [],
+  "waiting_runs": [],
+  "paused_runs": [],
+  "frontend_version": "current-layout-20261127",
+  "workspaces": {
+    "schema_version": 1,
+    "updated_at": "2026-11-26T16:59:38+00:00",
+    "rows": []
+  },
+  "beta_frontend_version": "current-nav-20261127",
   "cannbot": {
+    "schema_version": 1,
     "url": "cannbot.json",
-    "windows_url": "cannbot-windows.json",
+    "datasets": [
+      "FA3",
+      "GDN",
+      "Based",
+      "Sonny",
+      "GQA",
+      "MQA",
+      "Mega",
+      "FlashMLA",
+      "HSTU",
+      "FlashKDA"
+    ],
     "counts": {
       "tasks": 0,
       "running": 0,
       "complete": 0,
       "evaluations": 0
-    }
+    },
+    "running_runs": [],
+    "paused": true,
+    "captured_at": null,
+    "windows_url": "cannbot-windows.json"
   },
-  "edition_started_at": "2026-11-26T16:39:07+00:00"
+  "collaborators": {
+    "schema_version": 1,
+    "sources": [],
+    "resources": [],
+    "receiver": {}
+  },
+  "upstream_source_updated_at": null,
+  "edition": "current",
+  "edition_started_at": "2026-11-26T16:39:07+00:00",
+  "models": [
+    "Astra 6.2",
+    "Sol 6.2",
+    "DeepSeek"
+  ]
 }
