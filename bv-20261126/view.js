@@ -16,7 +16,8 @@ function render(){
   const tr=document.createElement("tr");const b=make("button",c.method);b.onclick=()=>{chosen=c.method;render()};const td=document.createElement("td");td.append(b);tr.append(td);
   const timed=c.attempts.filter(a=>a.timing);const best=timed.length?timed.reduce((a,b)=>a.timing.p50_ms<=b.timing.p50_ms?a:b):null;
   const phase=(names[c.status]||c.status)+(c.stage?" · "+c.stage:"");
-  for(const text of [phase,c.native_attempts+" / "+c.valid_rounds,ms(best?.timing.p50_ms),ms(c.formal?.p50_ms),c.formal?.sample_count??best?.timing.sample_count??"—"])tr.append(make("td",text));
+  const speed=best&&Number.isFinite(c.pytorch_p50_ms)?(c.pytorch_p50_ms/best.timing.p50_ms).toFixed(2)+"×":"—";
+  for(const text of [phase,c.native_attempts+" / "+c.valid_rounds,ms(best?.timing.p50_ms),ms(c.pytorch_p50_ms),speed,ms(c.formal?.p50_ms),c.formal?.sample_count??best?.timing.sample_count??"—"])tr.append(make("td",text));
   el("rows").append(tr);
   if(c.method!==chosen)continue;
   const box=el("attempts");box.append(make("h2",c.method+" · "+c.dataset));
