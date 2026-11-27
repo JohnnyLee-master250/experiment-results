@@ -1,6 +1,5 @@
 'use strict';
 let klData=null,klRun=null,klApply=null,klSequence=0;
-let klReference=null;
 const klRunChoices=new Map();
 function selectedKL(runs){
  const wanted=new URL(location).searchParams.get('run')||klRunChoices.get(datasetId);
@@ -11,28 +10,6 @@ function selectKLRun(id){
  if(!klRun)return;
  klRunChoices.set(datasetId,id);klApply=klRun.applies.at(-1)?.apply??null;
  const url=new URL(location);url.searchParams.set('run',id);url.searchParams.delete('apply');history.replaceState(null,'',url);renderKL();
-}
-const klReferenceCache=new Map(),klReferenceVisible={overview:true,candidates:true};
-const klMatchedVisible={overview:{same:true,reduced:true},candidates:{same:true,reduced:true}};
-function selectV0AstraReference(dataset,roundLimit=Infinity){
- const run=dataset.runs.find(r=>r.method_version==='V0-r2'&&r.model_id==='gpt-6-astra'&&r.effort==='high'&&r.method==='V0'&&r.status==='complete');
- if(!run)return null;
- const points=run.search.filter(p=>p.round<=roundLimit&&p.status==='passed'&&Number.isFinite(p.timing?.mean_ms)&&p.timing.mean_ms>0);
- if(!points.length)return null;
- const best=points.reduce((a,b)=>a.timing.mean_ms<=b.timing.mean_ms?a:b);
- return {latency_ms:best.timing.mean_ms,round:best.round,run_id:run.id,environment:run.environment};
-}
-function klMatchedReferences(dataset,run){
- const latest=run?.aligned?.count;
- if(!dataset||!Number.isInteger(latest)||latest<1)return [];
- const v0=dataset.runs.find(r=>r.method_version==='V0-r2'&&r.model_id==='gpt-6-astra'&&r.effort==='high'&&r.method==='V0'&&r.status==='complete');
- if(!v0)return [];
- return [{kind:'same',requested:latest,color:'#D55E00',dash:'7 4'},
-         {kind:'reduced',requested:Math.floor(latest*2/3),color:'#6F61A6',dash:'3 4'}].map(spec=>{
-  const limit=Math.min(30,v0.budget??30,spec.requested);
-  const ref=selectV0AstraReference(dataset,limit);
-  return ref?{...ref,...spec,limit,caption:`V0 ${spec.kind==='same'?'同轮次':'2/3 轮次'} · 截至 r${limit} 最快 · ${fmt(ref.latency_ms)} ms`}:null;
- }).filter(Boolean);
 }
 function klAxisAnnotations(run){
  const applies=new Map(),candidates=new Map();
@@ -72,12 +49,10 @@ async function loadKL(id,focusRun=null,focusModel=null){
  const seq=++klSequence;++loadSeq;++alignedSequence;setCategory('kl');datasetId=id;
  const request=beginResultRequest('kl',id,focusRun);
  try{
-  const meta=manifest.datasets.find(d=>d.id===id),version=manifest.updated_at,key=`${version}:${id}`;
-  const [nextKL,dataset]=await Promise.all([publishedKL(version),datasetJSON(meta,version)]);
+  const nextKL=await publishedKL(manifest.updated_at);
   if(seq!==klSequence||category!=='kl')return;
   if(nextKL.updated_at!==manifest.updated_at)throw Error('发布版本尚在同步');
-  klData=nextKL;klReferenceCache.set(key,selectV0AstraReference(dataset));klDatasetCache.set(key,dataset);
-  klReference=klReferenceCache.get(key);
+  klData=nextKL;
   const runs=klData.runs.filter(r=>r.dataset===id);klRun=runs.find(r=>r.id===focusRun)||(focusModel&&runs.find(r=>r.model===focusModel))||selectedKL(runs);if(klRun)klRunChoices.set(id,klRun.id);
   const wanted=Number(new URL(location).searchParams.get('apply'));
   if(!klRun?.applies.some(a=>a.apply===klApply))klApply=klRun?.applies.at(-1)?.apply??null;
@@ -95,10 +70,9 @@ function klPlotHeight(el,fallback){
  const h=typeof getComputedStyle==='function'?parseFloat(getComputedStyle(el).getPropertyValue('--kl-plot-height')):NaN;
  return Number.isFinite(h)&&h>=200?h:fallback;
 }
-function klChart(target,points,label,maxX,selectable=false,reference=null,axisTicks=new Map(),extraReferences=[]){
+function klChart(target,points,label,maxX,selectable=false,axisTicks=new Map()){
  const el=$(target);configureRoundBrush(el,null);
  const values=points.filter(p=>Number.isFinite(p.y)&&p.y>0);
- const references=[...(reference?[{...reference,kind:'full',color:'#CC79A7',dash:'8 4',caption:`V0 Astra 6.2/high 全程最快搜索均值：${fmt(reference.latency_ms)} ms，第 ${reference.round} 轮`}]:[]),...extraReferences];
  if(axisMode!=='round'){
   let readout=el.parentNode.querySelector('.cost-readout');
   if(!readout){readout=document.createElement('div');readout.className='cost-readout';readout.setAttribute('aria-live','polite');el.after(readout);}
@@ -106,16 +80,16 @@ function klChart(target,points,label,maxX,selectable=false,reference=null,axisTi
   const series={id:klRun.id,name:'KL',color:'#0072B2',points:points.map(p=>({...p,
    name:selectable?'Apply '+p.x:'Apply '+klApply+' · 内部 '+(axisTicks.get(p.x)?.text||p.x),
    applyButton:selectable?p.x:null,selected:selectable&&p.x===klApply}))};
-  costChart(el,[series],{references,readout,both:true,scope:'kl',viewKey:klRun.id+(selectable?'':':apply'+klApply),redraw:renderKL});
+  costChart(el,[series],{readout,both:true,scope:'kl',viewKey:klRun.id+(selectable?'':':apply'+klApply),redraw:renderKL});
   return;
  }
  const costReadout=el.parentNode.querySelector('.cost-readout');if(costReadout)costReadout.hidden=true;
- if(!values.length&&!references.length){bindMeasurementChart(el,[],'kl',renderKL);el.innerHTML='<div class="kl-empty">暂无有效测量<br><small>结果保存后自动更新，缺失值不补成 0。</small></div>';return;}
+ if(!values.length){bindMeasurementChart(el,[],'kl',renderKL);el.innerHTML='<div class="kl-empty">暂无有效测量<br><small>结果保存后自动更新，缺失值不补成 0。</small></div>';return;}
  const w=Math.max(el.clientWidth||600,300),h=klPlotHeight(el,330);
  const longest=Math.max(1,...[...axisTicks.values()].map(t=>t.text.length))*6;
  const rotate=longest>(w-110)/Math.max(1,maxX-1)-6;
  const pad={l:rotate?82:58,r:24,t:24,b:rotate?115:45};
- const domainValues=[...values.flatMap(p=>[p.y,...bandValues(p.timing,'kl')]),...points.map(p=>p.best),...references.map(r=>r.latency_ms)].filter(Number.isFinite);
+ const domainValues=[...values.flatMap(p=>[p.y,...bandValues(p.timing,'kl')]),...points.map(p=>p.best)].filter(Number.isFinite);
  const scale=latencyScale(el,'kl',[0,Math.max(...domainValues)*1.12],domainValues,pad.t,h-pad.b),{min:ymin,max:ymax}=scale;
  const x=v=>pad.l+(v-1)/Math.max(1,maxX-1)*(w-pad.l-pad.r),y=scale.project;
  let grid='',line='',bestLine='',last=null,lastBest=null;
@@ -130,10 +104,6 @@ function klChart(target,points,label,maxX,selectable=false,reference=null,axisTi
   if(scale.valid(p.best)){bestLine+=(lastBest?` H${x(p.x)} V${y(p.best)}`:`M${x(p.x)},${y(p.best)}`);lastBest=p;}
  }
  let markup=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}"><text data-chart-key="y-label" x="12" y="16">ms ↓${scale.log?' · log':''}</text>${grid}${sampleBandSVG(points,x,y,'#0072B2','kl',el.id,false)}<path data-chart-key="kl-best" d="${bestLine}" fill="none" stroke="#009E73" stroke-width="2" stroke-dasharray="5 3"/><path data-chart-key="kl-measurements" d="${line}" fill="none" stroke="#0072B2" stroke-width="2"/>${values.map(p=>`<circle${measurementMarker(p.measurement)} cx="${x(p.x)}" cy="${y(p.y)}" r="${selectable&&p.x===klApply?6:4}" fill="#0072B2" ${selectable?`data-apply-point="${p.x}" role="button" tabindex="0" aria-label="选择 Apply ${p.x}，${fmt(p.y)} 毫秒"`:''}><title>${esc(label)} ${p.x}: ${fmt(p.y)} ms</title></circle>`).join('')}<text data-chart-key="x-label" x="${w/2}" y="${h-1}" text-anchor="middle">${esc(label)}</text>`;
- if(references.length){
-  for(const ref of references)markup+=`<line class="${ref.kind==='full'?'kl-v0-reference':'kl-v0-matched'}" data-reference="${ref.kind}" x1="${pad.l}" x2="${w-pad.r}" y1="${y(ref.latency_ms)}" y2="${y(ref.latency_ms)}" stroke="${ref.color}" stroke-width="2" stroke-dasharray="${ref.dash}"><title>${esc(ref.caption)}${ref.kind==='full'?'':` · 最快记录为 r${ref.round}`}</title></line>`;
-  if(!values.length)markup+=`<text x="${w/2}" y="${h/2}" text-anchor="middle">暂无 KL 有效测量</text>`;
- }
  renderChartMarkup(el,markup+'</svg>');
  el._inspectionScale={min:1,max:maxX,ymin,ymax,logY:scale.log,invertY:scale.invert,width:w,height:h,left:pad.l,right:w-pad.r,top:pad.t,bottom:h-pad.b};
  bindMeasurementChart(el,values.map(p=>({...p.measurement,color:'#0072B2'})),'kl',renderKL);
@@ -157,21 +127,11 @@ function renderKL(){
  $('#kl-apply').innerHTML=r.applies.map(a=>`<option value="${a.apply}" ${a.apply===klApply?'selected':''}>Apply ${a.apply} · ${a.round_outcome==='attribution_pending'?'待归因':klStatus(a.status)}${a.delivery_number?' · 第 '+a.delivery_number+' 次交付':''}</option>`).join('')||'<option value="">暂无 Apply</option>';
  $('#kl-apply').disabled=!r.applies.length;$('#kl-apply').value=klApply==null?'':String(klApply);$('#kl-apply').onchange=e=>selectApply(e.target.value);
  let best=null;const points=r.applies.map(a=>{const v=a.delivered?.accepted?a.delivered.latency_ms:null;if(v!=null)best=best==null?v:Math.min(best,v);return {x:a.apply,y:v,best,timing:a.delivered?.timing,measurement:measurementInfo({...r,method:'KL'},{apply:a.apply,round:Math.max(0,...(r.aligned?.points||[]).filter(p=>p.counted&&p.apply<=a.apply).map(p=>p.round)),y:v,timing:a.delivered?.timing}),axes:a.axes,epoch:r.id.startsWith('kl-astra-high-serial-20261102-')&&r.dataset==='Mega'&&a.apply>=5?2:1};});
- const axes=klAxisAnnotations(r),matched=klMatchedReferences(klDatasetCache.get(`${manifest.updated_at}:${datasetId}`),r);
- for(const chart of ['overview','candidates']){
-  const toggle=$(`#kl-v0-${chart}`);toggle.disabled=!klReference;toggle.checked=!!klReference&&klReferenceVisible[chart];
-  toggle.onchange=()=>{klReferenceVisible[chart]=toggle.checked;renderKL();};
-  $(`#kl-v0-${chart}-label`).textContent=klReference?`V0 Astra 6.2/high 最快线 · ${fmt(klReference.latency_ms)} ms`:'无对应 V0 Astra 6.2 结果';
-  $(`#kl-matched-${chart}`).innerHTML=['same','reduced'].map(kind=>{
-   const ref=matched.find(r=>r.kind===kind),text=ref?.caption||`V0 ${kind==='same'?'同轮次':'2/3 轮次'} · 暂无对应轮次的有效结果`;
-   return `<label class="kl-reference-toggle" style="color:${ref?.color||'#76818f'}"><input type="checkbox" data-matched-kind="${kind}" ${ref&&klMatchedVisible[chart][kind]?'checked':''} ${ref?'':'disabled'} style="accent-color:${ref?.color||'#76818f'}"><span>${esc(text)}</span></label>`;
-  }).join('');
-  $(`#kl-matched-${chart}`).querySelectorAll('input').forEach(toggle=>toggle.onchange=()=>{klMatchedVisible[chart][toggle.dataset.matchedKind]=toggle.checked;renderKL();});
- }
- klChart('#kl-overview',points,r.external_source?'Apply 执行序号':'Apply',Math.max(r.budget||0,...r.applies.map(a=>a.apply)),true,klReferenceVisible.overview?klReference:null,axes.applies,matched.filter(ref=>klMatchedVisible.overview[ref.kind]));
- for(const which of ['overview','candidates'])chartResetButton($('#kl-'+which),'kl-'+which,()=>{clearCostWindows('kl');klReferenceVisible[which]=true;klMatchedVisible[which]={same:true,reduced:true};if(which==='candidates')klApply=klRun.applies.at(-1)?.apply??null;renderKL();});
+ const axes=klAxisAnnotations(r);
+ klChart('#kl-overview',points,r.external_source?'Apply 执行序号':'Apply',Math.max(r.budget||0,...r.applies.map(a=>a.apply)),true,axes.applies);
+ for(const which of ['overview','candidates'])chartResetButton($('#kl-'+which),'kl-'+which,()=>{clearCostWindows('kl');if(which==='candidates')klApply=klRun.applies.at(-1)?.apply??null;renderKL();});
  const a=r.applies.find(a=>a.apply===klApply),inner=a?.candidates||[];best=null;
- klChart('#kl-candidates',inner.map(c=>{const v=(r.valid_rounds!=null?c.accepted:c.correctness_passed)?c.latency_ms:null;if(c.accepted&&v!=null)best=best==null?v:Math.min(best,v);return {x:c.sequence,y:v,best,timing:c.timing,measurement:measurementInfo({...r,method:'KL'},{apply:klApply,inner_sequence:c.sequence,round:r.aligned?.points.find(p=>p.apply===klApply&&p.inner_sequence===c.sequence)?.round,y:v,timing:c.timing}),axes:c.axes,eligible:c.accepted,status:c.status};}),'内部候选序号',Math.max(2,inner.length),false,klReferenceVisible.candidates?klReference:null,axes.candidates.get(klApply),matched.filter(ref=>klMatchedVisible.candidates[ref.kind]));
+ klChart('#kl-candidates',inner.map(c=>{const v=(r.valid_rounds!=null?c.accepted:c.correctness_passed)?c.latency_ms:null;if(c.accepted&&v!=null)best=best==null?v:Math.min(best,v);return {x:c.sequence,y:v,best,timing:c.timing,measurement:measurementInfo({...r,method:'KL'},{apply:klApply,inner_sequence:c.sequence,round:r.aligned?.points.find(p=>p.apply===klApply&&p.inner_sequence===c.sequence)?.round,y:v,timing:c.timing}),axes:c.axes,eligible:c.accepted,status:c.status};}),'内部候选序号',Math.max(2,inner.length),false,axes.candidates.get(klApply));
  $('#kl-inner-status').textContent=a?`${a.round_outcome==='attribution_pending'?'待归因':klStatus(a.status)} · 已用 ${a.elapsed_seconds==null?'未知':fmt(a.elapsed_seconds/60,1)+' 分钟'} · ${a.evaluations} 次评测 · ${a.infrastructure_errors} 次基础设施异常 · ${a.reused_snapshots} 份结果复用快照`:'尚未启动；候选次数没有预设上限，受 Apply 时限约束。';
  $('#kl-candidate-rows').innerHTML=inner.map(c=>`<tr><td>${c.sequence}</td><td>${klStatus(c.status)}</td><td>${({compile:'编译',correctness:'正确性',performance:'性能门禁'})[c.stage]||'—'}</td><td>${c.accepted?'通过':c.correctness_passed?'正确性通过':'—'}</td><td class="num">${fmt(c.latency_ms)}</td><td class="num">${fmt(c.reference_latency_ms)}</td><td>${c.reused?'复用，不新增评测':'新记录'}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">暂无候选评测记录</td></tr>';
  $('#kl-apply-rows').innerHTML=r.applies.map(a=>`<tr><td><button data-apply-row="${a.apply}">Apply ${a.apply}</button></td><td>${a.round_outcome==='attribution_pending'?'待归因':klStatus(a.status)}</td><td>${a.evaluations}</td><td>${a.infrastructure_errors}</td><td class="num">${fmt(a.delivered?.latency_ms)}</td><td class="num">${a.elapsed_seconds==null?'—':fmt(a.elapsed_seconds/60,1)}</td><td>${date(a.ended_at)}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">已登记任务，等待正式启动</td></tr>';
@@ -183,11 +143,11 @@ function renderKL(){
 
 // A shared view: only reads published numeric results, never changes experiments.
 let alignedSequence=0,alignedDataset=null,alignedRun=null;
-const alignedViews=new Map(),klDatasetCache=new Map();
+const alignedViews=new Map();
 function alignedViewKey(dataset){return (dataset.comparison_scope||'aligned')+':'+dataset.id+':'+axisMode;}
 function alignedView(dataset,series){
  const key=alignedViewKey(dataset);
- if(!alignedViews.has(key))alignedViews.set(key,{visible:new Set(series.filter(r=>axisMode!=='round'||r.model.startsWith('Astra 6.2')||(r.available&&isArchivedV0(r))).map(r=>r.id)),mode:'best',zoom:false,compressed:false,visualScale:1});
+ if(!alignedViews.has(key))alignedViews.set(key,{visible:new Set(series.filter(r=>axisMode!=='round'||r.model.startsWith('Astra 6.2')).map(r=>r.id)),mode:'best',zoom:false,compressed:false,visualScale:1});
  return alignedViews.get(key);
 }
 function alignedPeers(dataset,run){return [...(run?[run]:[]),...(klData?.runs.filter(r=>r.dataset===dataset.id&&r.id!==run?.id)||[])];}

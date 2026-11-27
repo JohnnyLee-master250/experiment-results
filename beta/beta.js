@@ -39,7 +39,7 @@ let betaPreview=null;
 let betaPreviewRoute=null;
 let betaControlsRendering=0;
 let betaBannerIntroduced=false;
-const betaAlignedSources=new Map(),betaKLChartArgs=new Map();
+const betaAlignedSources=new Map();
 // Shared colours for model groupings and existing dashboard accents.
 const betaSeries={orange:'#f4780c',red:'#ce2e40',rose:'#eb6aad',violet:'#9a5bda',green:'#349f3a',teal:'#18abbe',blue:'#0171c2',gold:'#cdb500',umber:'#85591e',neutral:'#526c89'};
 // Colours still written as literals by the shared chart engine are remapped here.
@@ -52,7 +52,7 @@ Object.assign(REVISION_MODEL_COLORS,{'Astra 6.2':betaSeries.violet,'Sol 6.2':bet
 // Method buttons and their curves share one colour across result views.
 const curveMethodColors={
  B1:'#ab5509', B2:'#4b8107', B3:'#7457cb',
- V1:'#bf364c', 'V1-no-arch':'#087e8f', 'V0-r2':'#8a6c08', 'V0-r3':'#a8409a',
+ V1:'#bf364c', 'V1-no-arch':'#087e8f',
  KL:betaSeries.blue, CannBot:'#0a8465'
 };
 comparisonColor=function(run,scope=category){
@@ -76,7 +76,7 @@ function betaTintCharts(){
 function betaUpdateTitle(){
  const title=manifest?.datasets.find(d=>d.id===datasetId)?.title||datasetId;
  const section=betaConfig.result_sections.find(s=>s.id===category)?.label;
- $('#beta-title').textContent=betaView==='cannbot'?'CannBot · CAKE':betaView==='comparison'?'结果对比':betaView==='workspaces'?'工作树路径':betaView==='logs'?'完成日志':betaView==='queue'?'队列情况':betaFuture?'V0-r3':title+(section?' · '+section:'');
+ $('#beta-title').textContent=betaView==='cannbot'?'CannBot · CAKE':betaView==='comparison'?'结果对比':betaView==='workspaces'?'工作树路径':betaView==='logs'?'完成日志':betaView==='queue'?'队列情况':title+(section?' · '+section:'');
  const metadata=$('#beta-run-meta');if(!metadata)return;
  const r=category==='kl'&&betaView==='results'&&!betaFuture&&klRun?.dataset===datasetId?klRun:null;
  betaMarkMenus();
@@ -132,7 +132,6 @@ function betaShowView(view,push=false){
  betaView=['results','comparison','logs','queue','workspaces','cannbot'].includes(view)?view:'results';
  if(betaView!=='results'&&betaPreview){betaPreview=null;betaHighlightCurves();}
  $('#beta-results-view').hidden=betaView!=='results'||betaFuture;
- $('#beta-future-view').hidden=betaView!=='results'||!betaFuture;
  $('#beta-workspaces-view').hidden=betaView!=='workspaces';
  $('#beta-cannbot-view').hidden=betaView!=='cannbot';
  if(betaView==='cannbot')window.cannbotDashboard?.ensure();
@@ -207,18 +206,12 @@ function betaQueueTable(){
  $('#kl-queue').innerHTML=`<table><thead><tr><th>顺序</th><th>测试集</th><th>模型</th><th>环境</th><th>状态</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.position}</td><td><a href="?view=results&category=${runCategory(r)}&dataset=${esc(r.dataset)}&run=${esc(r.id)}" data-beta-category-target="${r.category}" data-beta-queued="${esc(r.id)}" data-target="${esc(r.dataset)}">${esc(r.dataset)} · ${esc(methodDisplayLabel(r))} ↗</a></td><td>${esc(r.model)} <small>${esc(r.effort)}</small></td><td>${esc(r.environment_name)}</td><td><span class="badge ${esc(r.status)}">${klStatus(r.status)}</span></td></tr>`).join('')}</tbody></table>`;
  $$('[data-beta-queued]').forEach(a=>a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();betaFuture=false;betaShowView('results');betaURL(true);if(a.dataset.betaCategoryTarget==='bv')await openRun(a.dataset.target,a.dataset.betaQueued,true);else await loadKL(a.dataset.target,a.dataset.betaQueued);betaSync();});
 }
-function betaV0Labels(node=$('#beta-results-view')){
- for(const child of [...node.childNodes]){
-  if(child.nodeType===3&&child.nodeValue.includes('V0'))child.nodeValue=child.nodeValue.replace(/\bV0\b(?!-r[23])/g,'V0-r2');
-  else if(child.nodeType===1&&!['SCRIPT','STYLE'].includes(child.tagName))betaV0Labels(child);
- }
-}
 function betaBindQueueLinks(){
  $$('[data-running],[data-campaign-run]').forEach(a=>{const existing=a.onclick;a.onclick=async e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;betaFuture=false;betaShowView('results');betaURL(true);await existing(e);betaSync();};});
 }
 function betaSync(){
  if(!manifest)return;
- betaMenus();betaQueueTable();betaV0Labels();betaShowView(betaView);
+ betaMenus();betaQueueTable();betaShowView(betaView);
  $('#beta-completed-total').textContent=(manifest.workspaces?.rows||[]).filter(r=>r.status==='complete').length;
  const betaRunningCount=allRunningRuns().length;
  $('#beta-running-total').textContent=betaRunningCount;
@@ -281,10 +274,6 @@ function betaControlInfo(label){
  const host=label.closest('.aligned-controls')?.parentElement;
  if(host){const scope='#'+host.id,source=betaAlignedSources.get(scope);if(!source)return null;
   const ids=input.dataset.alignedRun?[input.dataset.alignedRun]:alignedSeries(source.dataset,source.run).filter(r=>r.model===input.dataset.alignedModel).map(r=>r.id);return {scope,ids};}
- if(label.classList.contains('kl-reference-toggle')){
-  const suffix=input.id?.replace('kl-v0-','')||input.closest('[id^=kl-matched-]')?.id.replace('kl-matched-','');
-  return {scope:'ref:#kl-'+suffix,ids:[],kind:input.dataset.matchedKind||'full'};
- }
  return null;
 }
 function betaDecorateControls(){
@@ -383,9 +372,9 @@ function betaSyncSliders(){
 }
 function betaHighlightCurves(){
  betaTintCharts();
- const scope=betaPreview?.scope,root=!scope?null:scope==='bv'?$('#bv-panel'):scope==='kl'?$('#kl-body'):scope.startsWith('ref:')?$(scope.slice(4)):$(scope);
- const selector=scope==='kl'?'path[data-chart-key="kl-best"],path[data-chart-key="kl-measurements"],path[data-run]':scope?.startsWith('ref:')?'[data-reference]':'path[data-run],path[data-aligned-curve]';
- const paths=root?[...root.querySelectorAll(selector)].filter(p=>scope==='kl'?betaPreview.ids.includes(klRun?.id):scope.startsWith('ref:')?p.dataset.reference===betaPreview.kind:betaPreview.ids.includes(p.dataset.run||p.dataset.alignedCurve)):[];
+ const scope=betaPreview?.scope,root=!scope?null:scope==='bv'?$('#bv-panel'):scope==='kl'?$('#kl-body'):$(scope);
+ const selector=scope==='kl'?'path[data-chart-key="kl-best"],path[data-chart-key="kl-measurements"],path[data-run]':'path[data-run],path[data-aligned-curve]';
+ const paths=root?[...root.querySelectorAll(selector)].filter(p=>scope==='kl'?betaPreview.ids.includes(klRun?.id):betaPreview.ids.includes(p.dataset.run||p.dataset.alignedCurve)):[];
  const emphasized=new Set(paths);
  $$('[data-beta-glint]').forEach(e=>{if(!emphasized.has(e._curveSource)||e.parentNode!==e._curveSource?.parentNode)e.remove();});
  $$('.beta-curve-highlight').forEach(e=>{if(!emphasized.has(e))e.classList.remove('beta-curve-highlight');});
@@ -414,7 +403,6 @@ function betaRedrawPreview(scope){
  if(scope==='#beta-cannbot-view')window.cannbotDashboard?.redraw();
  else if(scope==='bv')renderCharts();
  else if(scope==='kl')renderKL();
- else if(scope.startsWith('ref:')){const args=betaKLChartArgs.get(scope.slice(4));if(args)klChart(...args);}
  else {const s=betaAlignedSources.get(scope);if(s)renderAligned(scope,s.dataset,s.run,true);}
 }
 function betaSetPreview(next){
@@ -491,13 +479,7 @@ const betaOriginalControls=renderControls;
 renderControls=function(){betaControlsRendering++;try{const snapshot=betaControlSnapshot($('#series-controls'));betaOriginalControls();betaRestoreControls(snapshot,$('#series-controls'));}finally{betaControlsRendering--;}};
 const betaOriginalKLChart=klChart;
 klChart=function(...args){
- betaKLChartArgs.set(args[0],args);
- const renderArgs=[...args];
- if(betaPreview?.scope==='ref:'+args[0]){
-  if(betaPreview.kind==='full')renderArgs[5]=klReference;
-  else {const ref=klMatchedReferences(klDatasetCache.get(`${manifest.updated_at}:${datasetId}`),klRun).find(r=>r.kind===betaPreview.kind);if(ref)renderArgs[7]=[...(args[7]||[]).filter(r=>r.kind!==ref.kind),ref];}
- }
- betaOriginalKLChart(...renderArgs);betaHighlightCurves();
+ betaOriginalKLChart(...args);betaHighlightCurves();
 };
 
 // One persistent black slider per comparison view; only reorganize the controls.
@@ -555,8 +537,6 @@ const betaSummarySection=$('#summary').closest('section'),betaSummaryDetails=doc
 betaSummaryDetails.className=betaSummarySection.className;betaSummaryDetails.open=false;betaSummaryHead.innerHTML='<span>实验组</span><span>延迟 ms ↓ · 完成日期 SGT</span>';betaSummaryDetails.append(betaSummaryHead,betaSummarySection.querySelector('.table-wrap'));betaSummarySection.replaceWith(betaSummaryDetails);
 for(const id of ['kl-overview','kl-candidates']){
  const chart=$('#'+id),card=chart.parentNode;card.querySelector('.chart-title').after(chart);
- const refs=document.createElement('div');refs.className='speed-reference-controls';refs.setAttribute('aria-label','参考线');chart.after(refs);
- for(const node of [...card.children])if(node.matches('.kl-reference-toggle,[id^="kl-matched-"]'))refs.append(node);
 }
 const queueView=$('#beta-queue-view');queueView.append($('.running-bar'),$('#paused-bar'),$('#waiting-bar'),$('#campaign-status'));
 const queueSection=$('#kl-queue').closest('section');queueSection.querySelector('h3').textContent='完整队列';queueSection.querySelector('.section-head>span').textContent='原队列顺序';queueView.append(queueSection);
@@ -564,8 +544,8 @@ const legacyLog=$('#task-log');legacyLog.hidden=true;$('#beta-legacy-log').appen
 $$('a[href^="./api/"]').forEach(a=>a.setAttribute('href',(document.body.dataset.apiBase||'./')+a.getAttribute('href').slice(2)));
 const originalRenderRunning=renderRunning;renderRunning=function(){originalRenderRunning();betaBindQueueLinks();betaSync();};
 const betaOriginalSetMode=setMode;setMode=function(value){betaOriginalSetMode(value);betaScheduleSliders();};
-const originalRenderAll=renderAll;renderAll=function(){originalRenderAll();betaV0Labels();betaUpdateTitle();betaDecorateControls();betaHighlightCurves();betaResultMotion();};
-const originalRenderKL=renderKL;renderKL=function(){betaControlsRendering++;try{const saved=['overview','candidates'].map(id=>betaControlSnapshot($('#kl-matched-'+id)));originalRenderKL();saved.forEach(s=>{if(s)betaRestoreControls(s,s.host);});betaV0Labels();betaQueueTable();betaShowView(betaView);betaDecorateControls();betaHighlightCurves();betaResultMotion();}finally{betaControlsRendering--;}};
+const originalRenderAll=renderAll;renderAll=function(){originalRenderAll();betaUpdateTitle();betaDecorateControls();betaHighlightCurves();betaResultMotion();};
+const originalRenderKL=renderKL;renderKL=function(){betaControlsRendering++;try{originalRenderKL();betaQueueTable();betaShowView(betaView);betaDecorateControls();betaHighlightCurves();betaResultMotion();}finally{betaControlsRendering--;}};
 const originalRenderNav=renderNav;renderNav=function(){originalRenderNav();betaShowView(betaView);};
 const originalRenderAligned=renderAligned;renderAligned=function(target,dataset,run,preserveControls=false){
  if(!dataset)return;betaAlignedSources.set(target,{dataset,run});
@@ -573,7 +553,7 @@ const originalRenderAligned=renderAligned;renderAligned=function(target,dataset,
  const controls=betaControlSnapshot($(target).querySelector('.aligned-controls'));
  originalRenderAligned(target,dataset,run,betaPreview?.scope===target?betaPreview.ids:[]);
  betaRestoreControls(controls,$(target).querySelector('.aligned-controls'));
- betaV0Labels();betaDecorateControls();betaHighlightCurves();
+ betaDecorateControls();betaHighlightCurves();
  if(isComparison())betaResultMotion();
  }finally{betaControlsRendering--;}
 };
@@ -685,7 +665,7 @@ window.workspaceDirectory=(()=>{
   const method=new URL(location).searchParams.get('ws')||'all';if(methods.includes(method))$('#ws-method').value=method;
   render();
  }
- $('#workspace-method-menu').innerHTML=['B1','B2','B3','V1','V1-no-arch','V0','KL','CAKE'].map(f=>`<div>${methods.filter(v=>v===f||f==='V0'&&v.startsWith('V0-r')).map(v=>`<button data-workspace-method="${v}">${v}</button>`).join('')}</div>`).join('');
+ $('#workspace-method-menu').innerHTML=['B1','B2','B3','V1','V1-no-arch','KL','CAKE'].map(f=>`<div>${methods.filter(v=>v===f).map(v=>`<button data-workspace-method="${v}">${v}</button>`).join('')}</div>`).join('');
  $$('[data-workspace-method]').forEach(b=>b.onclick=()=>setMethod(b.dataset.workspaceMethod));
  $$('select[id^="ws-"],input[type=date][id^="ws-"]').forEach(el=>el.onchange=()=>{limit=40;selected.clear();if(el.id==='ws-method'){setMethod(el.value);return;}render(true);});
  $('#ws-search').oninput=()=>{limit=40;selected.clear();render();};
@@ -733,7 +713,7 @@ const ComparisonModel=(()=>{
  function catalog(datasets,kl){
   const map=new Map();for(const d of datasets)for(const r of d.runs.filter(supported))if(!map.has(key(r)))map.set(key(r),{...r,key:key(r),version:version(r),label:r.model+' · '+display(r)});
   for(const r of kl.runs){const v={...r,method:'KL'};if(supported(v)&&!map.has(key(v)))map.set(key(v),{...v,key:key(v),version:'KL',label:v.model+' · KL'});}
-  const models=['Astra 6.2','Sol 6.2','DeepSeek','Astra'],methods=[...currentMethods,'V0-r2','V0-r3','KL'];
+  const models=['Astra 6.2','Sol 6.2','DeepSeek','Astra'],methods=[...currentMethods,'KL'];
   return [...map.values()].sort((a,b)=>models.indexOf(a.model)-models.indexOf(b.model)||methods.indexOf(a.version)-methods.indexOf(b.version));
  }
  function scale(values){

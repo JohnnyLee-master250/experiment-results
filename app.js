@@ -4,22 +4,20 @@ const FRONTEND_VERSION=$('meta[name="frontend-version"]')?.content;
 const COLORS={B1:'#0072B2',B2:'#D55E00',B3:'#CC79A7',V0:'#009E73'};
 const LABELS={running:'正在跑',complete:'已完成',paused:'已暂停',not_run:'未跑',no_data:'无数据',ended:'已结束',blocked:'待处理',waiting:'等待中',awaiting_audit:'待验收'};
 const MODELS=['Astra 6.2','Sol 6.2','DeepSeek'];
-const METHODS=['B1','B2','B3','V1','V1-no-arch','V0'];
+const METHODS=['B1','B2','B3','V1','V1-no-arch'];
 const DASH={'Astra 6.2':'7 4','Sol 6.2':'','DeepSeek':'2 4'};
 let manifest,data,cache=new Map(),visible=new Set(),datasetId=new URL(location).searchParams.get('dataset')||'GQA',mode='best',activeSamples=null,loadSeq=0,needsReload=false;
 let focusedRun=null,initialRun=new URL(location).searchParams.get('run');
 let eventLimit=12;
 function requestedBVEdition(){return 'all';}
 let bvEdition=requestedBVEdition();
-function isArchivedV0(run){return ['V0-r2','V0-r3'].includes(methodLabel(run));}
 function methodLabel(run){if(run?.edition==='bv-20261126')return run.baseMethod||run.method;const label=run?.method_version||run?.method||'';return /^B[0-3]$/.test(label)?label+'-r1':label==='V0'?'V0-r2':label;}
 function methodDisplayLabel(run){const label=methodLabel(run);return ['Sol 6.2','DeepSeek'].includes(run?.model)&&/^B[0-3]-r\d+$/.test(label)?label.split('-r')[0]:label;}
 function isComparison(scope=category){return ['aligned','all','all-with-b01'].includes(scope);}
 function comparisonHasB(scope){return scope==='all'||scope==='all-with-b01';}
 const currentMethods=['B1','B2','B3','V1','V1-no-arch'];
-function isVSeries(run){return ['V0','V1','V1-no-arch'].includes(run.method);}
+function isVSeries(run){return ['V1','V1-no-arch'].includes(run.method);}
 function showBVRun(run){
- if(run.method==='V0')return ['V0-r2','V0-r3'].includes(run.method_version);
  return currentMethods.includes(run.method)&&(run.edition==='bv-20261126'||run.external_source&&run.method_version===run.method);
 }
 function runCategory(run){return run?.method==='KL'||run?.category==='kl'?'kl':run?.method==='V0'||/^V0-r/.test(run?.method_version||'')?'aligned':'bv';}
@@ -60,7 +58,7 @@ function axisControls() {
 }
 function defaultRuns(dataset,axis) {
  const key=editionKey(dataset)+':'+(axis==='round'?'round':'cost');
- return new Set(axisVisibility.get(key) || dataset.runs.filter(r=>axis==='round'?(r.model==='Astra 6.2'||isArchivedV0(r))&&usable(r):r.method!=='B0'&&r.search.some(p=>p.axes)).map(r=>r.id));
+ return new Set(axisVisibility.get(key) || dataset.runs.filter(r=>axis==='round'?r.model==='Astra 6.2'&&usable(r):r.method!=='B0'&&r.search.some(p=>p.axes)).map(r=>r.id));
 }
 function changeAxis(next) {
  if (!['round','time','tokens'].includes(next)) return;
@@ -521,7 +519,7 @@ function renderComparisonControls(host,series,chosen,scope,onChange){
  const byTask=comparisonGroupMode(scope)==='task';
  const entries=series.filter(r=>byTask||r.baseMethod!=='B0');
  const keys=[...new Set(entries.map(r=>byTask?r.method:r.model))];
- if(byTask)keys.sort((a,b)=>{const order=['B1','B2','B3','V1','V1-no-arch','V0','Aligned KL','CannBot'];return order.indexOf(a.split('-r')[0])-order.indexOf(b.split('-r')[0])||a.localeCompare(b);});
+ if(byTask)keys.sort((a,b)=>{const order=['B1','B2','B3','V1','V1-no-arch','Aligned KL','CannBot'];return order.indexOf(a.split('-r')[0])-order.indexOf(b.split('-r')[0])||a.localeCompare(b);});
  if(!byTask&&scope==='bv')keys.sort((a,b)=>MODELS.indexOf(a)-MODELS.indexOf(b));
  const groups=keys.map(key=>({key,rows:entries.filter(r=>(byTask?r.method:r.model)===key)}));
  const inputAttr=scope==='bv'?'data-series':'data-aligned-run';
