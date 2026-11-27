@@ -17,9 +17,9 @@
       "status": "running",
       "phase": "evaluating",
       "native_stage": "l3_search",
-      "native_attempts": 27,
-      "reported_attempts": 27,
-      "valid_rounds": 27,
+      "native_attempts": 28,
+      "reported_attempts": 28,
+      "valid_rounds": 28,
       "budget": 51,
       "card_id": "LxrgZ",
       "environment_name": "DevEnvC_LxrgZ",
@@ -35,12 +35,12 @@
       "device_request": {
         "card": "LxrgZ",
         "position": 1,
-        "ticket": 31,
+        "ticket": 32,
         "status": "running",
         "cell_id": "bv26--V1--HSTU--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795814295.3382072,
-        "acquired_at": 1795814295.3388035
+        "queued_at": 1795814774.904449,
+        "acquired_at": 1795814774.9049995
       },
       "source_id": "bv-20261126-local-001",
       "search": [
@@ -1406,6 +1406,55 @@
           },
           "pytorch": null,
           "job_id": "01a21ed2-4d2e-7520-a35d-9f6770a51a86"
+        },
+        {
+          "round": 28,
+          "role": "candidate",
+          "status": "passed",
+          "outcome": "passed",
+          "timing": {
+            "p50_ms": 93.3143081665039,
+            "samples_ms": [
+              93.33145904541016,
+              93.22435760498047,
+              93.23088073730469,
+              94.02781677246094,
+              93.11164093017578,
+              93.42098236083984,
+              93.29144287109375,
+              93.35813903808594,
+              93.1352767944336,
+              93.74752044677734,
+              93.23271942138672,
+              93.40747833251953,
+              93.39459991455078,
+              93.33956146240234,
+              93.55023956298828,
+              92.8324203491211,
+              93.29715728759766,
+              93.15206146240234,
+              93.40760040283203,
+              93.00621795654297,
+              93.35182189941406,
+              93.23037719726562,
+              93.27046203613281,
+              94.15650177001953,
+              93.1025390625,
+              93.3830795288086,
+              93.29650115966797,
+              93.39482116699219,
+              93.16007995605469,
+              93.75567626953125
+            ],
+            "sample_count": 30,
+            "mean_ms": 93.3533810933431,
+            "p10_ms": 93.1107307434082,
+            "p90_ms": 93.74833602905274,
+            "min_ms": 92.8324203491211,
+            "max_ms": 94.15650177001953
+          },
+          "pytorch": null,
+          "job_id": "01a21edf-9d81-7c94-9b79-ee946ad11987"
         }
       ],
       "formal": null,
@@ -1415,23 +1464,23 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 15004.387226171792,
-        "net_duration_seconds": 14703.182607147843,
-        "probe_duration_seconds": 301.2046190239489,
-        "main_tokens": 44674694,
+        "duration_seconds": 15483.950875725597,
+        "net_duration_seconds": 15167.684608198702,
+        "probe_duration_seconds": 316.2662675268948,
+        "main_tokens": 45544804,
         "reviewer_tokens": 2271556,
         "probe_tokens": 81159,
         "main_native": {
-          "totalTokens": 44674694,
-          "inputTokens": 44630313,
-          "cachedInputTokens": 44489344,
-          "outputTokens": 44381,
-          "reasoningOutputTokens": 7675
+          "totalTokens": 45544804,
+          "inputTokens": 45500262,
+          "cachedInputTokens": 45358720,
+          "outputTokens": 44542,
+          "reasoningOutputTokens": 7709
         }
       },
-      "search_best_round": 27,
-      "search_best_ms": 113.81983947753906,
-      "valid_measurements": 27,
+      "search_best_round": 28,
+      "search_best_ms": 93.3143081665039,
+      "valid_measurements": 28,
       "excluded_records": 0
     }
   ],
@@ -2039,7 +2088,7 @@
       "excluded_records": 0
     }
   ],
-  "updated_at": "2026-11-27T21:23:32.026134+00:00",
+  "updated_at": "2026-11-27T21:28:15.510824+00:00",
   "bv_20261126": {
     "api": "bv-20261126-hstu.json",
     "slots": [
@@ -2335,9 +2384,9 @@
         "status": "running",
         "phase": "evaluating",
         "native_stage": "l3_search",
-        "native_attempts": 27,
-        "reported_attempts": 27,
-        "valid_rounds": 27,
+        "native_attempts": 28,
+        "reported_attempts": 28,
+        "valid_rounds": 28,
         "budget": 51,
         "card_id": "LxrgZ",
         "environment_name": "DevEnvC_LxrgZ",
@@ -2353,12 +2402,12 @@
         "device_request": {
           "card": "LxrgZ",
           "position": 1,
-          "ticket": 31,
+          "ticket": 32,
           "status": "running",
           "cell_id": "bv26--V1--HSTU--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795814295.3382072,
-          "acquired_at": 1795814295.3388035
+          "queued_at": 1795814774.904449,
+          "acquired_at": 1795814774.9049995
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -2686,8 +2735,8 @@
         "method": "V1",
         "model": "gpt-6.2-astra",
         "status": "running",
-        "native_attempts": 27,
-        "valid_rounds": 27,
+        "native_attempts": 28,
+        "valid_rounds": 28,
         "attempts": [
           {
             "number": 1,
@@ -3965,6 +4014,52 @@
             "native_outcome": "passed",
             "job_id": "01a21ed2-4d2e-7520-a35d-9f6770a51a86",
             "job_status": "succeeded"
+          },
+          {
+            "number": 28,
+            "outcome": "passed",
+            "timing": {
+              "p50_ms": 93.3143081665039,
+              "samples_ms": [
+                93.33145904541016,
+                93.22435760498047,
+                93.23088073730469,
+                94.02781677246094,
+                93.11164093017578,
+                93.42098236083984,
+                93.29144287109375,
+                93.35813903808594,
+                93.1352767944336,
+                93.74752044677734,
+                93.23271942138672,
+                93.40747833251953,
+                93.39459991455078,
+                93.33956146240234,
+                93.55023956298828,
+                92.8324203491211,
+                93.29715728759766,
+                93.15206146240234,
+                93.40760040283203,
+                93.00621795654297,
+                93.35182189941406,
+                93.23037719726562,
+                93.27046203613281,
+                94.15650177001953,
+                93.1025390625,
+                93.3830795288086,
+                93.29650115966797,
+                93.39482116699219,
+                93.16007995605469,
+                93.75567626953125
+              ],
+              "sample_count": 30
+            },
+            "pytorch": null,
+            "correct_trials": 5,
+            "total_trials": 5,
+            "native_outcome": "passed",
+            "job_id": "01a21edf-9d81-7c94-9b79-ee946ad11987",
+            "job_status": "succeeded"
           }
         ],
         "budget": 51,
@@ -3985,30 +4080,30 @@
         "native_state": "evaluating",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 15004.387226171792,
-          "net_duration_seconds": 14703.182607147843,
-          "probe_duration_seconds": 301.2046190239489,
-          "main_tokens": 44674694,
+          "duration_seconds": 15483.950875725597,
+          "net_duration_seconds": 15167.684608198702,
+          "probe_duration_seconds": 316.2662675268948,
+          "main_tokens": 45544804,
           "reviewer_tokens": 2271556,
           "probe_tokens": 81159,
           "main_native": {
-            "totalTokens": 44674694,
-            "inputTokens": 44630313,
-            "cachedInputTokens": 44489344,
-            "outputTokens": 44381,
-            "reasoningOutputTokens": 7675
+            "totalTokens": 45544804,
+            "inputTokens": 45500262,
+            "cachedInputTokens": 45358720,
+            "outputTokens": 44542,
+            "reasoningOutputTokens": 7709
           }
         },
         "pytorch_p50_ms": 4685.742919921875,
         "device_request": {
           "card": "LxrgZ",
           "position": 1,
-          "ticket": 31,
+          "ticket": 32,
           "status": "running",
           "cell_id": "bv26--V1--HSTU--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795814295.3382072,
-          "acquired_at": 1795814295.3388035
+          "queued_at": 1795814774.904449,
+          "acquired_at": 1795814774.9049995
         }
       },
       {
