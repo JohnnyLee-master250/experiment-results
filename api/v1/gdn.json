@@ -3,7 +3,7 @@
   "suite": "gdn-prefill-sm100",
   "title": "GDN prefill",
   "workload": "FP16 | S2048 QK16 V32 D128",
-  "updated_at": "2026-11-27T13:08:13.551169+00:00",
+  "updated_at": "2026-11-27T13:13:14.255257+00:00",
   "runs": [
     {
       "id": "bv26--V1--GDN--gpt-astra",
@@ -6143,7 +6143,7 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "reviewing",
+      "phase": "queued",
       "native_stage": "l3_search",
       "native_attempts": 34,
       "reported_attempts": 33,
@@ -6160,7 +6160,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "RXVG3",
+        "position": 2,
+        "ticket": 280,
+        "status": "queued",
+        "cell_id": "bv26--V1--GDN--gpt-sol",
+        "operation": "eval",
+        "queued_at": 1795785133.656909,
+        "acquired_at": null
+      },
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -10217,18 +10226,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 15361.388507258147,
-        "net_duration_seconds": 15015.484722591937,
+        "duration_seconds": 15653.758816428483,
+        "net_duration_seconds": 15307.855031762272,
         "probe_duration_seconds": 345.9037846662104,
-        "main_tokens": 92746696,
-        "reviewer_tokens": 3290018,
+        "main_tokens": 95775044,
+        "reviewer_tokens": 4423416,
         "probe_tokens": 163664,
         "main_native": {
-          "totalTokens": 92746696,
-          "inputTokens": 92623836,
-          "cachedInputTokens": 92214400,
-          "outputTokens": 122860,
-          "reasoningOutputTokens": 47267
+          "totalTokens": 95775044,
+          "inputTokens": 95649341,
+          "cachedInputTokens": 95230336,
+          "outputTokens": 125703,
+          "reasoningOutputTokens": 48736
         }
       },
       "search_best_round": 31,
@@ -11626,7 +11635,7 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "reviewing",
+        "phase": "queued",
         "native_stage": "l3_search",
         "native_attempts": 34,
         "reported_attempts": 33,
@@ -11643,7 +11652,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "RXVG3",
+          "position": 2,
+          "ticket": 280,
+          "status": "queued",
+          "cell_id": "bv26--V1--GDN--gpt-sol",
+          "operation": "eval",
+          "queued_at": 1795785133.656909,
+          "acquired_at": null
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -21862,24 +21880,34 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/kernel-bridge/V1/workspaces/20261127T085101923012Z-v1-r1-gpt-6.2-sol-medium-gdn-prefill-sm100-single-s2048-qk16-v32-d128-fp16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/kernel-bridge/V1",
-        "native_state": "reviewing",
+        "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 15361.388507258147,
-          "net_duration_seconds": 15015.484722591937,
+          "duration_seconds": 15653.758816428483,
+          "net_duration_seconds": 15307.855031762272,
           "probe_duration_seconds": 345.9037846662104,
-          "main_tokens": 92746696,
-          "reviewer_tokens": 3290018,
+          "main_tokens": 95775044,
+          "reviewer_tokens": 4423416,
           "probe_tokens": 163664,
           "main_native": {
-            "totalTokens": 92746696,
-            "inputTokens": 92623836,
-            "cachedInputTokens": 92214400,
-            "outputTokens": 122860,
-            "reasoningOutputTokens": 47267
+            "totalTokens": 95775044,
+            "inputTokens": 95649341,
+            "cachedInputTokens": 95230336,
+            "outputTokens": 125703,
+            "reasoningOutputTokens": 48736
           }
         },
-        "pytorch_p50_ms": 181.49030303955078
+        "pytorch_p50_ms": 181.49030303955078,
+        "device_request": {
+          "card": "RXVG3",
+          "position": 2,
+          "ticket": 280,
+          "status": "queued",
+          "cell_id": "bv26--V1--GDN--gpt-sol",
+          "operation": "eval",
+          "queued_at": 1795785133.656909,
+          "acquired_at": null
+        }
       },
       {
         "dataset": "GDN",
