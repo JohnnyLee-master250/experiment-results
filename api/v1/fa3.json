@@ -3,7 +3,7 @@
   "suite": "fa3-backward-sm90",
   "title": "FA3 backward",
   "workload": "BF16 | B2 S4096 H6 D128 | causal",
-  "updated_at": "2026-11-27T18:23:13.704106+00:00",
+  "updated_at": "2026-11-27T18:33:12.200372+00:00",
   "runs": [
     {
       "id": "bv26--V1--FA3--gpt-astra",
@@ -6035,7 +6035,7 @@
       "status": "running",
       "phase": "evaluating",
       "native_stage": "l3_search",
-      "native_attempts": 21,
+      "native_attempts": 22,
       "reported_attempts": 20,
       "valid_rounds": 20,
       "budget": 51,
@@ -6053,12 +6053,12 @@
       "device_request": {
         "card": "RXVG3",
         "position": 1,
-        "ticket": 383,
+        "ticket": 386,
         "status": "running",
         "cell_id": "bv26--V1--FA3--gpt-sol",
         "operation": "eval",
-        "queued_at": 1795803492.6102114,
-        "acquired_at": 1795803788.2263505
+        "queued_at": 1795803909.056351,
+        "acquired_at": 1795804323.475761
       },
       "source_id": "bv-20261126-local-001",
       "search": [
@@ -8560,6 +8560,15 @@
           },
           "pytorch": null,
           "job_id": "01a21e37-27a1-7d27-b5c7-7ca54e4e40a7"
+        },
+        {
+          "round": 22,
+          "role": "candidate",
+          "status": "unclassified",
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "job_id": "01a21e3f-438d-744c-a92b-49b664b616c6"
         }
       ],
       "formal": null,
@@ -8569,24 +8578,24 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 12570.512767167762,
-        "net_duration_seconds": 12363.317501876503,
-        "probe_duration_seconds": 207.1952652912587,
-        "main_tokens": 59678822,
+        "duration_seconds": 13105.771859914064,
+        "net_duration_seconds": 12898.475030388683,
+        "probe_duration_seconds": 207.29682952538133,
+        "main_tokens": 63412814,
         "reviewer_tokens": 2124523,
         "probe_tokens": 68631,
         "main_native": {
-          "totalTokens": 59678822,
-          "inputTokens": 59618094,
-          "cachedInputTokens": 59337344,
-          "outputTokens": 60728,
-          "reasoningOutputTokens": 11019
+          "totalTokens": 63412814,
+          "inputTokens": 63349810,
+          "cachedInputTokens": 63062400,
+          "outputTokens": 63004,
+          "reasoningOutputTokens": 11561
         }
       },
       "search_best_round": 20,
       "search_best_ms": 4.185070037841797,
       "valid_measurements": 20,
-      "excluded_records": 1
+      "excluded_records": 2
     }
   ],
   "slots": [
@@ -9476,7 +9485,7 @@
         "status": "running",
         "phase": "evaluating",
         "native_stage": "l3_search",
-        "native_attempts": 21,
+        "native_attempts": 22,
         "reported_attempts": 20,
         "valid_rounds": 20,
         "budget": 51,
@@ -9494,12 +9503,12 @@
         "device_request": {
           "card": "RXVG3",
           "position": 1,
-          "ticket": 383,
+          "ticket": 386,
           "status": "running",
           "cell_id": "bv26--V1--FA3--gpt-sol",
           "operation": "eval",
-          "queued_at": 1795803492.6102114,
-          "acquired_at": 1795803788.2263505
+          "queued_at": 1795803909.056351,
+          "acquired_at": 1795804323.475761
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -15651,7 +15660,7 @@
         "method": "V1",
         "model": "gpt-6.2-sol",
         "status": "running",
-        "native_attempts": 21,
+        "native_attempts": 22,
         "valid_rounds": 20,
         "attempts": [
           {
@@ -18089,6 +18098,17 @@
             "native_outcome": "passed",
             "job_id": "01a21e37-27a1-7d27-b5c7-7ca54e4e40a7",
             "job_status": "succeeded"
+          },
+          {
+            "number": 22,
+            "outcome": "unclassified",
+            "timing": null,
+            "pytorch": null,
+            "correct_trials": 0,
+            "total_trials": 5,
+            "native_outcome": "failed",
+            "job_id": "01a21e3f-438d-744c-a92b-49b664b616c6",
+            "job_status": "failed"
           }
         ],
         "budget": 51,
@@ -18109,30 +18129,30 @@
         "native_state": "evaluating",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 12570.512767167762,
-          "net_duration_seconds": 12363.317501876503,
-          "probe_duration_seconds": 207.1952652912587,
-          "main_tokens": 59678822,
+          "duration_seconds": 13105.771859914064,
+          "net_duration_seconds": 12898.475030388683,
+          "probe_duration_seconds": 207.29682952538133,
+          "main_tokens": 63412814,
           "reviewer_tokens": 2124523,
           "probe_tokens": 68631,
           "main_native": {
-            "totalTokens": 59678822,
-            "inputTokens": 59618094,
-            "cachedInputTokens": 59337344,
-            "outputTokens": 60728,
-            "reasoningOutputTokens": 11019
+            "totalTokens": 63412814,
+            "inputTokens": 63349810,
+            "cachedInputTokens": 63062400,
+            "outputTokens": 63004,
+            "reasoningOutputTokens": 11561
           }
         },
         "pytorch_p50_ms": 14.510310173034668,
         "device_request": {
           "card": "RXVG3",
           "position": 1,
-          "ticket": 383,
+          "ticket": 386,
           "status": "running",
           "cell_id": "bv26--V1--FA3--gpt-sol",
           "operation": "eval",
-          "queued_at": 1795803492.6102114,
-          "acquired_at": 1795803788.2263505
+          "queued_at": 1795803909.056351,
+          "acquired_at": 1795804323.475761
         }
       },
       {
