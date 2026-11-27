@@ -5892,38 +5892,38 @@
       "card": "uYtpx",
       "environment_id": "2a8b976225f54aa7a6d48c694b832bbd",
       "run_id": "35d58a77683f391f",
-      "stage": "ready",
+      "stage": "evaluating",
       "started_at": "2026-11-27T19:35:47.365378+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/baselines-910C/B1/workspaces/20261127T193547365378Z-gpt-high-flashinfer-gqa-decode-a100-single-q32-kv4-d128-l32768-fp16",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/baselines-910C/B1",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 15143.5513746012,
-        "net_duration_seconds": 14572.619189692661,
+        "duration_seconds": 15357.791398338974,
+        "net_duration_seconds": 14786.859213430434,
         "probe_duration_seconds": 570.932184908539,
-        "main_tokens": 55164608,
+        "main_tokens": 55954086,
         "reviewer_tokens": 2574152,
         "probe_tokens": 326249,
         "main_native": {
-          "totalTokens": 55164608,
-          "inputTokens": 55094996,
-          "cachedInputTokens": 54951168,
-          "outputTokens": 69612,
-          "reasoningOutputTokens": 22844
+          "totalTokens": 55954086,
+          "inputTokens": 55883664,
+          "cachedInputTokens": 55739392,
+          "outputTokens": 70422,
+          "reasoningOutputTokens": 23557
         }
       },
       "pytorch_p50_ms": 6.617660045623779,
       "device_request": {
         "card": "uYtpx",
-        "position": 3,
+        "position": 1,
         "ticket": 698,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--B1--GQA--gpt-astra",
         "operation": "eval",
         "queued_at": 1795823291.4021435,
-        "acquired_at": null
+        "acquired_at": 1795823504.950877
       }
     },
     {
@@ -10649,14 +10649,14 @@
         "duration_seconds": 28539.676731521264,
         "net_duration_seconds": 27939.230062050745,
         "probe_duration_seconds": 600.4466694705188,
-        "main_tokens": 92507275,
+        "main_tokens": 93354625,
         "reviewer_tokens": 1319527,
         "probe_tokens": 297857,
         "main_native": {
-          "totalTokens": 92507275,
-          "inputTokens": 92430278,
-          "cachedInputTokens": 92116480,
-          "outputTokens": 76997,
+          "totalTokens": 93354625,
+          "inputTokens": 93277528,
+          "cachedInputTokens": 92963328,
+          "outputTokens": 77097,
           "reasoningOutputTokens": 23757
         }
       },
@@ -19241,14 +19241,14 @@
         "duration_seconds": 23783.198016250506,
         "net_duration_seconds": 23557.357160892338,
         "probe_duration_seconds": 225.84085535816848,
-        "main_tokens": 57777519,
+        "main_tokens": 58451953,
         "reviewer_tokens": 239658,
         "probe_tokens": 95228,
         "main_native": {
-          "totalTokens": 57777519,
-          "inputTokens": 57724208,
-          "cachedInputTokens": 57587072,
-          "outputTokens": 53311,
+          "totalTokens": 58451953,
+          "inputTokens": 58398542,
+          "cachedInputTokens": 58260992,
+          "outputTokens": 53411,
           "reasoningOutputTokens": 11580
         }
       },
@@ -19305,8 +19305,8 @@
       "method": "B2",
       "model": "gpt-6.2-astra",
       "status": "running",
-      "native_attempts": 8,
-      "valid_rounds": 8,
+      "native_attempts": 9,
+      "valid_rounds": 9,
       "attempts": [
         {
           "number": 1,
@@ -20340,6 +20340,122 @@
           "native_outcome": "passed",
           "job_id": "01a21f65-b526-7a7a-8814-30d2d2ecf4d2",
           "job_status": "succeeded"
+        },
+        {
+          "number": 9,
+          "outcome": "passed",
+          "timing": {
+            "p50_ms": 1.163320004940033,
+            "samples_ms": [
+              1.2322399616241455,
+              1.1607199907302856,
+              1.1586799621582031,
+              1.1609599590301514,
+              1.1611599922180176,
+              1.1628600358963013,
+              1.1713199615478516,
+              1.166260004043579,
+              1.1643400192260742,
+              1.168720006942749,
+              1.1655999422073364,
+              1.1640000343322754,
+              1.1638799905776978,
+              1.1628400087356567,
+              1.1632599830627441,
+              1.1683000326156616,
+              1.1689399480819702,
+              1.1593999862670898,
+              1.163140058517456,
+              1.1655800342559814,
+              1.163059949874878,
+              1.1633800268173218,
+              1.1634800434112549,
+              1.161139965057373,
+              1.1615400314331055,
+              1.1655199527740479,
+              1.1681599617004395,
+              1.165560007095337,
+              1.1605199575424194,
+              1.1693400144577026,
+              1.1563999652862549,
+              1.161120057106018,
+              1.163100004196167,
+              1.160599946975708,
+              1.1619800329208374,
+              1.1667799949645996,
+              1.1680400371551514,
+              1.1625800132751465,
+              1.1653399467468262,
+              1.1608200073242188,
+              1.1688799858093262,
+              1.1647599935531616,
+              1.1669000387191772,
+              1.1601999998092651,
+              1.1671600341796875,
+              1.1628400087356567,
+              1.1642600297927856,
+              1.159600019454956,
+              1.160979986190796,
+              1.1596599817276,
+              1.158460021018982,
+              1.163640022277832,
+              1.164080023765564,
+              1.157039999961853,
+              1.1612199544906616,
+              1.1656399965286255,
+              1.1685800552368164,
+              1.1649999618530273,
+              1.1648999452590942,
+              1.1588200330734253,
+              1.1628400087356567,
+              1.1631200313568115,
+              1.1619999408721924,
+              1.160159945487976,
+              1.1658799648284912,
+              1.1659400463104248,
+              1.1638400554656982,
+              1.1619000434875488,
+              1.161180019378662,
+              1.1674799919128418,
+              1.1612199544906616,
+              1.1714799404144287,
+              1.164680004119873,
+              1.1670600175857544,
+              1.161679983139038,
+              1.1622999906539917,
+              1.1674200296401978,
+              1.1577999591827393,
+              1.167099952697754,
+              1.16211998462677,
+              1.1681599617004395,
+              1.1650400161743164,
+              1.1628400087356567,
+              1.1622400283813477,
+              1.162179946899414,
+              1.165179967880249,
+              1.1670199632644653,
+              1.163040041923523,
+              1.1575599908828735,
+              1.163699984550476,
+              1.1647599935531616,
+              1.1627600193023682,
+              1.1658600568771362,
+              1.1666200160980225,
+              1.1612800359725952,
+              1.1626800298690796,
+              1.1611599922180176,
+              1.1574599742889404,
+              1.1648000478744507,
+              1.1634600162506104
+            ],
+            "sample_count": 100
+          },
+          "pytorch": null,
+          "correct_trials": 5,
+          "total_trials": 5,
+          "native_outcome": "passed",
+          "job_id": "01a21f6a-b5ee-7c86-9316-1be48c7befcb",
+          "job_status": "succeeded"
         }
       ],
       "budget": 51,
@@ -20360,29 +20476,29 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 2865.8054095953703,
-        "net_duration_seconds": 2763.184188676998,
-        "probe_duration_seconds": 102.62122091837227,
-        "main_tokens": 6731278,
+        "duration_seconds": 3191.1330808624625,
+        "net_duration_seconds": 3060.7816737033427,
+        "probe_duration_seconds": 130.35140715911984,
+        "main_tokens": 7518380,
         "reviewer_tokens": 270815,
-        "probe_tokens": 54569,
+        "probe_tokens": 68457,
         "main_native": {
-          "totalTokens": 6731278,
-          "inputTokens": 6708379,
-          "cachedInputTokens": 6627584,
-          "outputTokens": 22899,
-          "reasoningOutputTokens": 5239
+          "totalTokens": 7518380,
+          "inputTokens": 7493421,
+          "cachedInputTokens": 7410560,
+          "outputTokens": 24959,
+          "reasoningOutputTokens": 5703
         }
       },
       "pytorch_p50_ms": 177.89604949951172,
       "device_request": {
         "card": "uYtpx",
-        "position": 2,
-        "ticket": 697,
+        "position": 3,
+        "ticket": 700,
         "status": "queued",
         "cell_id": "bv26--B2--GDN--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795823248.7776039,
+        "queued_at": 1795823571.5718763,
         "acquired_at": null
       }
     },
@@ -33380,38 +33496,38 @@
       "card": "uYtpx",
       "environment_id": "2a8b976225f54aa7a6d48c694b832bbd",
       "run_id": "92cff05a78541f68",
-      "stage": "profiling",
+      "stage": "ready",
       "started_at": "2026-11-27T23:16:25.431088+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/baselines-910C/B3/workspaces/20261127T231625431088Z-gpt-high-gdn-prefill-sm100-single-s2048-qk16-v32-d128-fp16",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/baselines-910C/B3",
-      "native_state": "profiling",
+      "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 1884.7037235312164,
-        "net_duration_seconds": 1827.8826061747968,
+        "duration_seconds": 2027.0985129773617,
+        "net_duration_seconds": 1970.2773956209421,
         "probe_duration_seconds": 56.82111735641956,
-        "main_tokens": 3472944,
+        "main_tokens": 4075678,
         "reviewer_tokens": 274504,
         "probe_tokens": 27002,
         "main_native": {
-          "totalTokens": 3472944,
-          "inputTokens": 3460121,
-          "cachedInputTokens": 3395200,
-          "outputTokens": 12823,
-          "reasoningOutputTokens": 3954
+          "totalTokens": 4075678,
+          "inputTokens": 4060347,
+          "cachedInputTokens": 3991680,
+          "outputTokens": 15331,
+          "reasoningOutputTokens": 4651
         }
       },
       "pytorch_p50_ms": 182.90621185302734,
       "device_request": {
         "card": "uYtpx",
-        "position": 1,
-        "ticket": 696,
-        "status": "running",
+        "position": 2,
+        "ticket": 699,
+        "status": "queued",
         "cell_id": "bv26--B3--GDN--gpt-astra",
-        "operation": "msprof",
-        "queued_at": 1795823094.8305922,
-        "acquired_at": 1795823269.9400115
+        "operation": "eval",
+        "queued_at": 1795823477.4028392,
+        "acquired_at": null
       }
     },
     {
@@ -38091,18 +38207,28 @@
         "duration_seconds": 28694.541926961392,
         "net_duration_seconds": 28075.13551034592,
         "probe_duration_seconds": 619.4064166154712,
-        "main_tokens": 97669283,
+        "main_tokens": 98768748,
         "reviewer_tokens": 1919345,
         "probe_tokens": 177252,
         "main_native": {
-          "totalTokens": 97669283,
-          "inputTokens": 97599185,
-          "cachedInputTokens": 97417856,
-          "outputTokens": 70098,
-          "reasoningOutputTokens": 16994
+          "totalTokens": 98768748,
+          "inputTokens": 98697240,
+          "cachedInputTokens": 98515456,
+          "outputTokens": 71508,
+          "reasoningOutputTokens": 17012
         }
       },
-      "pytorch_p50_ms": 187.25918579101562
+      "pytorch_p50_ms": 187.25918579101562,
+      "device_request": {
+        "card": "RXVG3",
+        "position": 3,
+        "ticket": 482,
+        "status": "queued",
+        "cell_id": "bv26--B3--Sonny--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795823331.823544,
+        "acquired_at": null
+      }
     },
     {
       "dataset": "Sonny",
@@ -73448,18 +73574,18 @@
       "native_state": "finishing",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 32070.134056476876,
-        "net_duration_seconds": 31721.939809735864,
+        "duration_seconds": 32291.398209450766,
+        "net_duration_seconds": 31943.203962709755,
         "probe_duration_seconds": 348.19424674101174,
-        "main_tokens": 191975824,
+        "main_tokens": 193744963,
         "reviewer_tokens": 6539188,
         "probe_tokens": 137225,
         "main_native": {
-          "totalTokens": 191975824,
-          "inputTokens": 191846856,
-          "cachedInputTokens": 191384320,
-          "outputTokens": 128968,
-          "reasoningOutputTokens": 26297
+          "totalTokens": 193744963,
+          "inputTokens": 193615816,
+          "cachedInputTokens": 193152384,
+          "outputTokens": 129147,
+          "reasoningOutputTokens": 26349
         }
       },
       "pytorch_p50_ms": 14.510310173034668,
@@ -87686,18 +87812,28 @@
         "duration_seconds": 24017.88796056807,
         "net_duration_seconds": 23581.748815637082,
         "probe_duration_seconds": 436.13914493098855,
-        "main_tokens": 85641918,
+        "main_tokens": 86917567,
         "reviewer_tokens": 1891284,
         "probe_tokens": 134971,
         "main_native": {
-          "totalTokens": 85641918,
-          "inputTokens": 85587724,
-          "cachedInputTokens": 85179904,
-          "outputTokens": 54194,
-          "reasoningOutputTokens": 9330
+          "totalTokens": 86917567,
+          "inputTokens": 86863039,
+          "cachedInputTokens": 86452992,
+          "outputTokens": 54528,
+          "reasoningOutputTokens": 9342
         }
       },
-      "pytorch_p50_ms": 4016.7525634765625
+      "pytorch_p50_ms": 4016.7525634765625,
+      "device_request": {
+        "card": "imkdG",
+        "position": 3,
+        "ticket": 75,
+        "status": "queued",
+        "cell_id": "bv26--V1--FlashKDA--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795823320.469591,
+        "acquired_at": null
+      }
     },
     {
       "dataset": "FlashKDA",
@@ -90212,15 +90348,15 @@
         "duration_seconds": 24000.66332049668,
         "net_duration_seconds": 23592.994795974344,
         "probe_duration_seconds": 407.66852452233434,
-        "main_tokens": 60317293,
+        "main_tokens": 61192634,
         "reviewer_tokens": 1462506,
         "probe_tokens": 80789,
         "main_native": {
-          "totalTokens": 60317293,
-          "inputTokens": 60266957,
-          "cachedInputTokens": 60125952,
-          "outputTokens": 50336,
-          "reasoningOutputTokens": 10844
+          "totalTokens": 61192634,
+          "inputTokens": 61142127,
+          "cachedInputTokens": 61000704,
+          "outputTokens": 50507,
+          "reasoningOutputTokens": 10886
         }
       },
       "pytorch_p50_ms": 2337.9825439453125,
@@ -104403,15 +104539,15 @@
         "duration_seconds": 24019.32857540436,
         "net_duration_seconds": 23601.49392136,
         "probe_duration_seconds": 417.8346540443599,
-        "main_tokens": 73073792,
+        "main_tokens": 74078391,
         "reviewer_tokens": 3406898,
         "probe_tokens": 94885,
         "main_native": {
-          "totalTokens": 73073792,
-          "inputTokens": 73012624,
-          "cachedInputTokens": 72843008,
-          "outputTokens": 61168,
-          "reasoningOutputTokens": 12786
+          "totalTokens": 74078391,
+          "inputTokens": 74017065,
+          "cachedInputTokens": 73846912,
+          "outputTokens": 61326,
+          "reasoningOutputTokens": 12817
         }
       },
       "pytorch_p50_ms": 4685.742919921875,
@@ -134235,31 +134371,31 @@
       {
         "card": "uYtpx",
         "position": 1,
-        "ticket": 696,
+        "ticket": 698,
         "status": "running",
-        "cell_id": "bv26--B3--GDN--gpt-astra",
-        "operation": "msprof",
-        "queued_at": 1795823094.8305922,
-        "acquired_at": 1795823269.9400115
+        "cell_id": "bv26--B1--GQA--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795823291.4021435,
+        "acquired_at": 1795823504.950877
       },
       {
         "card": "uYtpx",
         "position": 2,
-        "ticket": 697,
+        "ticket": 699,
         "status": "queued",
-        "cell_id": "bv26--B2--GDN--gpt-astra",
+        "cell_id": "bv26--B3--GDN--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795823248.7776039,
+        "queued_at": 1795823477.4028392,
         "acquired_at": null
       },
       {
         "card": "uYtpx",
         "position": 3,
-        "ticket": 698,
+        "ticket": 700,
         "status": "queued",
-        "cell_id": "bv26--B1--GQA--gpt-astra",
+        "cell_id": "bv26--B2--GDN--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795823291.4021435,
+        "queued_at": 1795823571.5718763,
         "acquired_at": null
       },
       {
@@ -134283,6 +134419,16 @@
         "acquired_at": null
       },
       {
+        "card": "RXVG3",
+        "position": 3,
+        "ticket": 482,
+        "status": "queued",
+        "cell_id": "bv26--B3--Sonny--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795823331.823544,
+        "acquired_at": null
+      },
+      {
         "card": "imkdG",
         "position": 1,
         "ticket": 73,
@@ -134303,6 +134449,16 @@
         "acquired_at": null
       },
       {
+        "card": "imkdG",
+        "position": 3,
+        "ticket": 75,
+        "status": "queued",
+        "cell_id": "bv26--V1--FlashKDA--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795823320.469591,
+        "acquired_at": null
+      },
+      {
         "card": "LxrgZ",
         "position": 1,
         "ticket": 52,
@@ -134316,5 +134472,5 @@
     "hold": false,
     "known": true
   },
-  "updated_at": "2026-11-27T23:48:35.184210+00:00"
+  "updated_at": "2026-11-27T23:53:16.716046+00:00"
 }
