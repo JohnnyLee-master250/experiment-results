@@ -15,7 +15,7 @@ function selectKLRun(id){
 const klReferenceCache=new Map(),klReferenceVisible={overview:true,candidates:true};
 const klMatchedVisible={overview:{same:true,reduced:true},candidates:{same:true,reduced:true}};
 function selectV0AstraReference(dataset,roundLimit=Infinity){
- const run=dataset.runs.find(r=>!r.edition&&r.model==='Astra 6.2'&&r.effort==='high'&&r.method==='V0'&&r.status==='complete');
+ const run=dataset.runs.find(r=>r.method_version==='V0-r2'&&r.model_id==='gpt-6-astra'&&r.effort==='high'&&r.method==='V0'&&r.status==='complete');
  if(!run)return null;
  const points=run.search.filter(p=>p.round<=roundLimit&&p.status==='passed'&&Number.isFinite(p.timing?.mean_ms)&&p.timing.mean_ms>0);
  if(!points.length)return null;
@@ -25,7 +25,7 @@ function selectV0AstraReference(dataset,roundLimit=Infinity){
 function klMatchedReferences(dataset,run){
  const latest=run?.aligned?.count;
  if(!dataset||!Number.isInteger(latest)||latest<1)return [];
- const v0=dataset.runs.find(r=>!r.edition&&r.model==='Astra 6.2'&&r.effort==='high'&&r.method==='V0'&&r.status==='complete');
+ const v0=dataset.runs.find(r=>r.method_version==='V0-r2'&&r.model_id==='gpt-6-astra'&&r.effort==='high'&&r.method==='V0'&&r.status==='complete');
  if(!v0)return [];
  return [{kind:'same',requested:latest,color:'#D55E00',dash:'7 4'},
          {kind:'reduced',requested:Math.floor(latest*2/3),color:'#6F61A6',dash:'3 4'}].map(spec=>{
@@ -60,7 +60,7 @@ function klAxisAnnotations(run){
 const KL_LABELS={not_run:'未开始',running:'运行中',complete:'已完成',ended:'已结束 · 未独立验收',waiting:'等待中',blocked:'已暂停',paused:'已暂停',completed:'已交付',failed:'失败',interrupted:'中断',awaiting_audit:'待验收',unknown:'待核对',passed:'通过',infrastructure_error:'基础设施异常'};
 function klStatus(s){return KL_LABELS[s]||'待核对';}
 function setCategory(id){
- category=['kl','aligned','all','all-with-b01'].includes(id)?id:'bv';axisControls();
+ category=id==='all-with-b01'?'all':['kl','aligned','all'].includes(id)?id:'bv';axisControls();
  $('#bv-panel').hidden=category!=='bv';$('#kl-panel').hidden=category!=='kl';$('#aligned-panel').hidden=!isComparison();
  $$('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===category)));
 }
@@ -192,12 +192,16 @@ function alignedView(dataset,series){
 }
 function alignedPeers(dataset,run){return [...(run?[run]:[]),...(klData?.runs.filter(r=>r.dataset===dataset.id&&r.id!==run?.id)||[])];}
 function alignedSeries(dataset,run){
- const series=dataset.runs.filter(r=>r.method!=='B0'&&showBVRun(r,dataset.comparison_scope)&&(comparisonHasB(dataset.comparison_scope)||r.method==='V0')).map(r=>({
+ const series=dataset.runs.filter(r=>r.method!=='B0'&&showBVRun(r,dataset.comparison_scope)&&(comparisonHasB(dataset.comparison_scope)||isVSeries(r))).map(r=>({
   id:r.id,edition:r.edition,model:r.model,effort:r.effort,method:methodLabel(r),baseMethod:r.method,available:r.search.length>0,color:comparisonColor(r,dataset.comparison_scope||'aligned'),dash:seriesDash(r),
   points:r.search.map(p=>({round:p.round,y:p.status==='passed'?p.timing?.mean_ms??null:null,status:p.status,axes:p.axes,recorded_at:p.recorded_at,timing:p.timing,measurement:measurementInfo(r,{...p,y:p.timing?.mean_ms})}))
  }));
  for(const r of alignedPeers(dataset,run))series.push({id:r.id,model:r.model,effort:r.effort,method:'Aligned KL',baseMethod:'KL',available:(r.aligned?.points||[]).some(p=>p.counted),color:comparisonColor({...r,baseMethod:'KL'},dataset.comparison_scope||'aligned'),dash:DASH[r.model]||'',
   points:(r.aligned?.points||[]).filter(p=>p.counted).map(p=>({...p,y:p.latency_ms,measurement:measurementInfo({...r,method:'KL'},{...p,y:p.latency_ms}),epoch:r.id.startsWith('kl-astra-high-serial-20261102-')&&r.dataset==='Mega'&&p.apply>=5?2:1}))});
+ for(const r of dataset.cakeRuns||[]){
+  const line=window.cannbotDashboard.toSeries(r);
+  series.push({...line,points:line.points.map(p=>({...p,round:p.index}))});
+ }
  return series;
 }
 async function loadAligned(id,focusRun=null,scope=isComparison()?category:'aligned',push=false){
@@ -206,19 +210,22 @@ async function loadAligned(id,focusRun=null,scope=isComparison()?category:'align
  const meta=manifest.datasets.find(d=>d.id===id)||manifest.datasets[0];datasetId=meta.id;
  const request=beginResultRequest(scope,meta.id,focusRun,push);
  try{
-  const [d,k]=await Promise.all([
+  const [d,k,cake]=await Promise.all([
    datasetJSON(meta),
-   publishedKL()
+   publishedKL(),
+   comparisonHasB(scope)&&manifest.cannbot?getJSON("./api/v1/"+manifest.cannbot.url+"?v="+encodeURIComponent(manifest.updated_at)):null
   ]);
   if(seq!==alignedSequence||category!==scope)return;
-  if(d.updated_at!==manifest.updated_at||k.updated_at!==manifest.updated_at)throw Error('发布版本尚在同步');
-  cache.set(meta.id,d);klData=k;alignedDataset={...d,comparison_scope:scope};alignedRun=k.runs.find(r=>r.dataset===meta.id);needsReload=false;
+  if(d.updated_at!==manifest.updated_at||k.updated_at!==manifest.updated_at||(cake&&cake.updated_at!==manifest.updated_at))throw Error('发布版本尚在同步');
+  cache.set(meta.id,d);klData=k;const cakeRows=(cake?.runs||[]).filter(r=>r.dataset===d.id);
+  const cakeRuns=cakeRows.filter((r,i)=>!cake.slots?.includes(r)||!cakeRows.some(other=>other.model===r.model&&!cake.slots?.includes(other))&&cakeRows.findIndex(other=>other.model===r.model)===i);
+  alignedDataset={...d,comparison_scope:scope,cakeRuns};alignedRun=k.runs.find(r=>r.dataset===meta.id);needsReload=false;
   const series=alignedSeries(alignedDataset,alignedRun),view=alignedView(alignedDataset,series);
   if(focusRun&&series.some(r=>r.id===focusRun)){view.visible.add(focusRun);focusedRun=focusRun;}else if(focusRun)focusedRun=null;
   const url=new URL(location);url.searchParams.set('category',scope);url.searchParams.set('dataset',meta.id);url.searchParams.delete('apply');url.searchParams.delete('edition');
   if(focusRun)url.searchParams.set('run',focusRun);else if(!series.some(r=>r.id===url.searchParams.get('run')))url.searchParams.delete('run');
   if(focusRun)url.hash='';history.replaceState(null,'',url);
-  $('#aligned-name').textContent=`${d.title} · ${scope==='all-with-b01'?'All（with B0/1）':scope==='all'?'All':'V/Aligned KL'}`;
+  $('#aligned-name').textContent=`${d.title} · ${comparisonHasB(scope)?'All':'V/Aligned KL'}`;
   renderNav();renderAligned('#aligned-content',alignedDataset,alignedRun);showNotice('');finishResultRequest(request);
   $('#updated').textContent=date(manifest.updated_at);$('#updated').dateTime=manifest.updated_at;
   if(focusRun)window.scrollTo({top:0,left:0,behavior:'instant'});
@@ -242,12 +249,12 @@ function renderAligned(target,dataset,run,previewIds=[]){
  host.dataset.comparisonKey=key;
  const selected=all.filter(r=>view.visible.has(r.id)||previewIds.includes(r.id)),peers=alignedPeers(dataset,run);
  const points=peers.flatMap(r=>(r.aligned?.points||[]).map(p=>({...p,run_id:r.id,model:r.model,effort:r.effort})));
- const records=dataset.runs.filter(r=>showBVRun(r,dataset.comparison_scope)&&(comparisonHasB(dataset.comparison_scope)||r.method==='V0'));
+ const records=dataset.runs.filter(r=>showBVRun(r,dataset.comparison_scope)&&(comparisonHasB(dataset.comparison_scope)||isVSeries(r)));
  const redraw=()=>renderAligned(target,dataset,run);
  const retainedControls=host.querySelector(':scope > .aligned-controls'),retainedCard=host.querySelector(':scope > .aligned-card'),retainedChart=host.querySelector('.aligned-chart'),retainedRange=host.querySelector('.comparison-range');
  const recordKey=(dataset.comparison_scope||'aligned')+':'+dataset.id;
  const retainedRecords=new Map(host.dataset.recordsKey===recordKey?[...host.querySelectorAll(':scope > details[data-record-panel]')].map(d=>[d.dataset.recordPanel,d]):[]);host.dataset.recordsKey=recordKey;
- const scaffold=`<p class="kl-caption aligned-note">${comparisonHasB(dataset.comparison_scope)?'B/V':'V'} 均值 · KL 分组中位数${peers.some(r=>r.external_source||r.measurement==='p50_of_100_samples')?' · 6.2 KL：P50（见各组计时协议）':''}</p>
+ const scaffold=`<p class="kl-caption aligned-note">${comparisonHasB(dataset.comparison_scope)?'B/V':'V'} 均值 · KL 分组中位数${dataset.cakeRuns?.length?' · CannBot 候选 P50':''}${peers.some(r=>r.external_source||r.measurement==='p50_of_100_samples')?' · 6.2 KL：P50（见各组计时协议）':''}</p>
  <div class="aligned-controls"></div>
  <section class="chart-card aligned-card"><div class="chart-title"><h3>速度曲线</h3></div><div class="plot-options"><div class="segments" aria-label="曲线指标"><button data-aligned-mode="best" aria-pressed="${view.mode==='best'}" class="${view.mode==='best'?'selected':''}">搜索最优</button><button data-aligned-mode="raw" aria-pressed="${view.mode==='raw'}" class="${view.mode==='raw'?'selected':''}">逐次测量</button></div><label class="chip aligned-compression" style="--color:#8a56d6" title="仅轮次轴：KL 轮次 ÷ 1.5，真实轮次不变"><input type="checkbox" data-aligned-compress ${view.compressed?'checked':''} ${axisMode!=='round'?'disabled':''}>KL ×⅔</label><label><input data-aligned-zoom type="checkbox" ${view.zoom?'checked':''}> 收敛放大</label><span class="mark-key">● 测量 · — 最优阶梯 · × 失败</span><button data-aligned-csv>CSV ↓</button></div>
  <div class="chart aligned-chart" tabindex="0" role="img" aria-label="${comparisonHasB(dataset.comparison_scope)?'全部结果':'V 与 Aligned KL'} 按有效评测次数对比"></div><div class="readout aligned-readout" aria-live="polite"></div></section>

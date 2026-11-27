@@ -4,7 +4,7 @@ const FRONTEND_VERSION=$('meta[name="frontend-version"]')?.content;
 const COLORS={B1:'#0072B2',B2:'#D55E00',B3:'#CC79A7',V0:'#009E73'};
 const LABELS={running:'正在跑',complete:'已完成',paused:'已暂停',not_run:'未跑',no_data:'无数据',ended:'已结束',blocked:'待处理',waiting:'等待中',awaiting_audit:'待验收'};
 const MODELS=['Astra 6.2','Sol 6.2','DeepSeek'];
-const METHODS=['B1','B2','B3','V0'];
+const METHODS=['B1','B2','B3','V1','V1-no-arch','V0'];
 const DASH={'Astra 6.2':'7 4','Sol 6.2':'','DeepSeek':'2 4'};
 let manifest,data,cache=new Map(),visible=new Set(),datasetId=new URL(location).searchParams.get('dataset')||'GQA',mode='best',activeSamples=null,loadSeq=0,needsReload=false;
 let focusedRun=null,initialRun=new URL(location).searchParams.get('run');
@@ -15,8 +15,13 @@ function methodLabel(run){if(run?.edition==='bv-20261126')return run.baseMethod|
 function methodDisplayLabel(run){const label=methodLabel(run);return ['Sol 6.2','DeepSeek'].includes(run?.model)&&/^B[0-3]-r\d+$/.test(label)?label.split('-r')[0]:label;}
 function isComparison(scope=category){return ['aligned','all','all-with-b01'].includes(scope);}
 function comparisonHasB(scope){return scope==='all'||scope==='all-with-b01';}
-function showBVRun(run,scope){return scope==='all-with-b01'||!['B0','B1'].includes(run.method);}
-function runCategory(run){if(['B0','B1'].includes(run?.method))return 'all-with-b01';return run?.method==='KL'||run?.category==='kl'?'kl':run?.method==='V0'||/^V0-r/.test(run?.method_version||'')?'aligned':'bv';}
+const currentMethods=['B1','B2','B3','V1','V1-no-arch'];
+function isVSeries(run){return ['V0','V1','V1-no-arch'].includes(run.method);}
+function showBVRun(run){
+ if(run.method==='V0')return ['V0-r2','V0-r3'].includes(run.method_version);
+ return currentMethods.includes(run.method)&&(run.edition==='bv-20261126'||run.external_source&&run.method_version===run.method);
+}
+function runCategory(run){return run?.method==='KL'||run?.category==='kl'?'kl':run?.method==='V0'||/^V0-r/.test(run?.method_version||'')?'aligned':'bv';}
 function runById(id){return [...(manifest?.running_runs||[]),...(manifest?.bv_revisions?.runs||[]),...(manifest?.campaign_runs||[])].find(r=>r.id===id);}
 function openRun(dataset,id,push=true){const r=runById(id);return isComparison(runCategory(r))?loadAligned(dataset,id,runCategory(r),push):loadDataset(dataset,true,id,push);}
 function seriesDash(run){return run?.edition?(run.method==='V0'?'10 3 2 3':'4 3'):(DASH[run?.model]||'');}
@@ -168,7 +173,7 @@ function chartResetButton(chart,key,action){
 function datasetHasResults(id){
  if(category==='kl'&&klData){const rows=klData.runs.filter(r=>r.dataset===id&&(!klRun||r.model===klRun.model));return rows.some(r=>r.applies.some(a=>a.delivered?.accepted||(a.candidates||[]).length));}
  const d=cache.get(id);if(!d)return null;
- const hasBV=d.runs.some(r=>r.method!=='B0'&&showBVRun(r,category)&&(category!=='aligned'||r.method==='V0')&&r.search.length);
+ const hasBV=d.runs.some(r=>r.method!=='B0'&&showBVRun(r,category)&&(category!=='aligned'||isVSeries(r))&&r.search.length);
  return hasBV||(isComparison()&&klData?.runs.some(r=>r.dataset===id&&(r.aligned?.points||[]).some(p=>p.counted)))||false;
 }
 
@@ -515,7 +520,7 @@ function renderComparisonControls(host,series,chosen,scope,onChange){
  const byTask=comparisonGroupMode(scope)==='task';
  const entries=series.filter(r=>byTask||r.baseMethod!=='B0');
  const keys=[...new Set(entries.map(r=>byTask?r.method:r.model))];
- if(byTask)keys.sort((a,b)=>{const order=['B0','B1','B2','B3','V0','Aligned KL'];return order.indexOf(a.split('-r')[0])-order.indexOf(b.split('-r')[0])||a.localeCompare(b);});
+ if(byTask)keys.sort((a,b)=>{const order=['B1','B2','B3','V1','V1-no-arch','V0','Aligned KL','CannBot'];return order.indexOf(a.split('-r')[0])-order.indexOf(b.split('-r')[0])||a.localeCompare(b);});
  if(!byTask&&scope==='bv')keys.sort((a,b)=>MODELS.indexOf(a)-MODELS.indexOf(b));
  const groups=keys.map(key=>({key,rows:entries.filter(r=>(byTask?r.method:r.model)===key)}));
  const inputAttr=scope==='bv'?'data-series':'data-aligned-run';
@@ -564,7 +569,7 @@ function renderSummary(){
   return `<tr class="${group}" style="--color:${comparisonColor(r,'bv')}"><td><input class="row-check" type="checkbox" data-row="${r.id}" aria-label="显示 ${r.model} ${r.method}" ${visible.has(r.id)?'checked':''} ${usable(r)?'':'disabled'}></td><td><span class="model-label">${r.model}</span><span class="effort-label">${esc(r.effort)}</span></td><td><span class="swatch"></span> ${methodDisplayLabel(r)}</td><td>${badge(r.status)}</td><td>${r.reported_attempts} / ${r.budget}</td><td class="date">${date(r.finished_at)}</td><td class="num">${fmt(r.search_best_ms)}</td><td class="num">${range}</td><td class="num">${fmt(r.formal?.mean_ms)}</td><td class="num">${r.formal&&r.formal_pytorch?fmt(r.formal_pytorch.mean_ms/r.formal.mean_ms,3)+'×':'—'}</td></tr>`;
  }).join('');
  $$('[data-row]').forEach(e=>e.onchange=()=>toggle(e.dataset.row,e.checked));
- $('#correctness tbody').innerHTML=data.runs.filter(r=>r.method==='B0').map(r=>`<tr><td>${r.model} <span class="effort-label">${esc(r.effort)}</span></td><td>${methodDisplayLabel(r)}</td><td>${badge(r.status)}</td><td>${r.reported_attempts} / ${r.budget}</td><td>${r.accepted===true?'通过':r.accepted===false?'未接受':'—'}</td><td class="date">${date(r.finished_at)}</td></tr>`).join('');
+
 }
 function roundRows(){
  const filter=$('#round-run').value,st=$('#round-status').value;
@@ -679,7 +684,7 @@ function renderReadout(n){
   return `<span style="--color:${comparisonColor(r,'bv')}"><i class="swatch"></i>${r.model} ${methodDisplayLabel(r)} <strong>${fmt(m?.mean_ms)}</strong>${m?' ms':''}</span>`;
  }).join('');
 }
-function renderCharts(){if(!data)return;renderChart($('#detail'),true);renderReadout(roundBudget()+2);renderB0Cost();}
+function renderCharts(){if(!data)return;renderChart($('#detail'),true);renderReadout(roundBudget()+2);}
 function syncRange(){ $('#y-mode').value=state.ymode; }
 function applyRange(){
  state.ymode=$('#y-mode').value==='focus'?'focus':'all';
@@ -835,18 +840,7 @@ function costChart(el, lines, options={}) {
  else if(note)note.textContent='所选范围暂无测量点';
  return [ymin,ymax];
 }
-function renderB0Cost(){
- const host=$('#b0-cost');
- const runs=data?.runs.filter(r=>r.method==='B0'&&r.search.some(p=>p.axes))||[];
- host.hidden=axisMode==='round'||!runs.length;
- if(host.hidden)return;
- host.innerHTML='<div class="chart" id="b0-cost-chart"></div><div class="cost-readout" aria-live="polite"></div>';
- const lines=runs.map(run=>({id:run.id,name:run.model+' '+methodDisplayLabel(run),color:'#526c89',dash:DASH[run.model],points:run.search.map(p=>({axes:p.axes,name:'r'+p.round,y:p.status==='passed'?1:p.status==='failed'?0:null,status:p.status}))}));
- costChart(host.querySelector('.chart'),lines,{height:148,binary:true,yLabel:'正确性',yRange:[-.15,1.2],readout:host.querySelector('.cost-readout')});
-}
-
 refresh();
-
 
 // Saved measurement samples: display only, never experimental accounting.
 const measurementBands=new Map(),measurementSelections=new Map(),measurementStatsCache=new WeakMap();

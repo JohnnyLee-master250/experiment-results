@@ -47,7 +47,7 @@ const betaAlignedSources=new Map(),betaKLChartArgs=new Map();
 const betaSeries={orange:'#f4780c',red:'#ce2e40',rose:'#eb6aad',violet:'#9a5bda',green:'#349f3a',teal:'#18abbe',blue:'#0171c2',gold:'#cdb500',umber:'#85591e',neutral:'#526c89'};
 // Colours still written as literals by the shared chart engine are remapped here.
 const betaPalette={'#0072b2':betaSeries.blue,'#e69a00':betaSeries.blue,'#d55e00':betaSeries.orange,'#cc79a7':betaSeries.rose,'#009e73':betaSeries.green,'#e69f00':betaSeries.gold,'#6f61a6':betaSeries.violet,'#8a56d6':betaSeries.neutral};
-Object.assign(COLORS,{B1:betaSeries.gold,B2:betaSeries.orange,B3:betaSeries.rose,V0:betaSeries.green});
+Object.assign(COLORS,{B1:betaSeries.gold,B2:betaSeries.orange,B3:betaSeries.rose,V1:betaSeries.red,'V1-no-arch':betaSeries.violet,V0:betaSeries.green});
 Object.assign(REVISION_COLORS,{'B1-r2':betaSeries.umber,'B2-r2':betaSeries.red,'B3-r2':betaSeries.violet,'V0-r3':betaSeries.teal});
 // Grouped by task, colour names the model; its revised batch takes the neighbouring hue.
 Object.assign(MODEL_COLORS,{'Astra 6.2':betaSeries.blue,'Sol 6.2':betaSeries.green,'DeepSeek':betaSeries.orange});
@@ -681,7 +681,7 @@ window.workspaceDirectory=(()=>{
   const method=new URL(location).searchParams.get('ws')||'all';if(methods.includes(method))$('#ws-method').value=method;
   render();
  }
- $('#workspace-method-menu').innerHTML=['B0','B1','B2','B3','V0','KL','CAKE'].map(f=>`<div>${methods.filter(v=>v===f||v.startsWith(f+'-')).map(v=>`<button data-workspace-method="${v}">${v}</button>`).join('')}</div>`).join('');
+ $('#workspace-method-menu').innerHTML=['B1','B2','B3','V1','V1-no-arch','V0','KL','CAKE'].map(f=>`<div>${methods.filter(v=>v===f||f==='V0'&&v.startsWith('V0-r')).map(v=>`<button data-workspace-method="${v}">${v}</button>`).join('')}</div>`).join('');
  $$('[data-workspace-method]').forEach(b=>b.onclick=()=>setMethod(b.dataset.workspaceMethod));
  $$('select[id^="ws-"],input[type=date][id^="ws-"]').forEach(el=>el.onchange=()=>{limit=40;selected.clear();if(el.id==='ws-method'){setMethod(el.value);return;}render(true);});
  $('#ws-search').oninput=()=>{limit=40;selected.clear();render();};
@@ -696,7 +696,7 @@ window.workspaceDirectory=(()=>{
  function contextSync(){
   if(!manifest?.workspaces)return;
   const key=datasetId+':'+category+':'+(category==='kl'?klRun?.id:'');if(contextKey!==key){context.open=false;contextKey=key;}
-  const records=manifest.workspaces.rows.filter(r=>r.method!=='CAKE'&&r.dataset===datasetId&&r.workspace_path&&(category==='kl'?r.id===klRun?.id:category==='aligned'?['V0','KL'].includes(r.method):category==='bv'?r.method!=='KL'&&!['B0','B1'].includes(r.method):category==='all'?!['B0','B1'].includes(r.method):true));
+  const records=manifest.workspaces.rows.filter(r=>r.method!=='CAKE'&&r.dataset===datasetId&&r.workspace_path&&(category==='kl'?r.id===klRun?.id:category==='aligned'?(isVSeries(r)||r.method==='KL'):category==='bv'?r.method!=='KL':true));
   const body=context.querySelector('.workspace-context-rows');const html=records.map(r=>`<div class="workspace-row"><div class="workspace-label"><strong>${esc(methodDisplayLabel(r))} / ${esc(r.model)}</strong><span>${esc(r.effort||'')}</span></div><code>${esc(r.workspace_path)}</code><button data-context-copy="${esc(r.id)}">复制</button></div>`).join('')||'<p class="empty">暂无工作区</p>';
   if(body.innerHTML!==html){body.innerHTML=html;body.querySelectorAll('[data-context-copy]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(records.find(r=>r.id===b.dataset.contextCopy).workspace_path);b.textContent='已复制';}catch{b.textContent='请选中复制';}});}
  }
@@ -712,7 +712,7 @@ window.workspaceDirectory=(()=>{
 const ComparisonModel=(()=>{
  const version=r=>r.method==='KL'?'KL':r.method_version||(/^B[0-3]$/.test(r.method)?r.method+'-r1':r.method==='V0'?'V0-r2':r.method);
  const key=r=>[r.model,r.effort||'',version(r)].join('|');
- const supported=r=>['Astra 6.2','Sol 6.2','DeepSeek'].includes(r.model)&&['B2','B3','V0','KL'].includes(r.method);
+ const supported=r=>r.method==='KL'||showBVRun(r);
  const points=r=>r.method==='KL'?(r.aligned?.points||[]).filter(p=>p.counted).map(p=>({round:p.round,latency:p.accepted&&p.status==='passed'?p.latency_ms:null})): (r.search||[]).map(p=>({round:p.round,latency:p.status==='passed'?p.timing?.mean_ms:null}));
  const display=r=>{const v=version(r);return r.model!=='Astra 6.2'&&/^B\d-r\d+$/.test(v)?v.split('-r')[0]:v;};
  function measure(r,n){
@@ -729,7 +729,7 @@ const ComparisonModel=(()=>{
  function catalog(datasets,kl){
   const map=new Map();for(const d of datasets)for(const r of d.runs.filter(supported))if(!map.has(key(r)))map.set(key(r),{...r,key:key(r),version:version(r),label:r.model+' · '+display(r)});
   for(const r of kl.runs){const v={...r,method:'KL'};if(supported(v)&&!map.has(key(v)))map.set(key(v),{...v,key:key(v),version:'KL',label:v.model+' · KL'});}
-  const models=['Astra 6.2','Sol 6.2','DeepSeek'],methods=['B2-r1','B2-r2','B3-r1','B3-r2','V0-r2','V0-r3','KL'];
+  const models=['Astra 6.2','Sol 6.2','DeepSeek','Astra'],methods=[...currentMethods,'V0-r2','V0-r3','KL'];
   return [...map.values()].sort((a,b)=>models.indexOf(a.model)-models.indexOf(b.model)||methods.indexOf(a.version)-methods.indexOf(b.version));
  }
  function scale(values){
@@ -746,7 +746,7 @@ if(typeof document!=='undefined')(()=>{
  const state={round:30,selected:null,baseline:null,group:'model',layout:'kernel',datasets:[],kl:null,catalog:[],version:null,pending:null,load:0};
  // Same palette and rule as the curve pages: grouped by model, colour names the
  // task version; grouped by task, colour names the model.
- const versionColors={'B2-r1':betaSeries.orange,'B2-r2':betaSeries.red,'B3-r1':betaSeries.rose,'B3-r2':betaSeries.violet,'V0-r2':betaSeries.green,'V0-r3':betaSeries.teal,'KL':betaSeries.blue};
+ const versionColors={'B1':betaSeries.gold,'B2':betaSeries.orange,'B3':betaSeries.rose,'V1':betaSeries.red,'V1-no-arch':betaSeries.violet,'V0-r2':betaSeries.green,'V0-r3':betaSeries.teal,'KL':betaSeries.blue};
  const modelColors={'Astra 6.2':betaSeries.blue,'Sol 6.2':betaSeries.green,'DeepSeek':betaSeries.orange};
  const color=s=>(state.group==='task'?modelColors[s.model]:versionColors[s.version])||betaSeries.neutral;
  const delta=v=>v===null?'—':(Math.abs(v)<.05?'0':(v>0?'+':'−')+Math.abs(v).toFixed(1))+'%';
@@ -979,5 +979,5 @@ window.cannbotDashboard=(()=>{
  }
  if(betaView==='cannbot')ensure();
  new ResizeObserver(entries=>{const width=entries[0].contentRect.width;if(width>0&&width!==lastWidth){lastWidth=width;drawChart();}}).observe(q('#cake-chart'));
- return {ensure,redraw:drawChart};
+ return {ensure,redraw:drawChart,toSeries:chartRun};
 })();
