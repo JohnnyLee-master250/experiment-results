@@ -1,6 +1,6 @@
 {
   "dataset": "GDN",
-  "updated_at": "2026-11-27T03:23:10.505498+00:00",
+  "updated_at": "2026-11-27T03:38:10.582642+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -183,27 +183,37 @@
       "card": "RXVG3",
       "environment_id": "204e37e699434e5682bea05cfa7cfe38",
       "run_id": "265055c8274085a3",
-      "stage": "l1_overview",
+      "stage": "l3_search",
       "started_at": "2026-11-27T03:20:57.008190+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/kernel-bridge/V1/workspaces/20261127T032057008190Z-v1-r1-gpt-6.2-astra-high-gdn-prefill-sm100-single-s2048-qk16-v32-d128-fp16",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/kernel-bridge/V1",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 113.8972136657685,
-        "net_duration_seconds": 0.2733248118311167,
-        "probe_duration_seconds": 113.62388885393739,
-        "main_tokens": 285607,
-        "reviewer_tokens": 0,
+        "duration_seconds": 956.4862945955247,
+        "net_duration_seconds": 842.7576496712863,
+        "probe_duration_seconds": 113.72864492423832,
+        "main_tokens": 3667822,
+        "reviewer_tokens": 252567,
         "probe_tokens": 29789,
         "main_native": {
-          "totalTokens": 285607,
-          "inputTokens": 284849,
-          "cachedInputTokens": 249984,
-          "outputTokens": 758,
-          "reasoningOutputTokens": 6
+          "totalTokens": 3667822,
+          "inputTokens": 3656321,
+          "cachedInputTokens": 3561856,
+          "outputTokens": 11501,
+          "reasoningOutputTokens": 499
         }
+      },
+      "device_request": {
+        "card": "RXVG3",
+        "position": 1,
+        "ticket": 2,
+        "status": "running",
+        "cell_id": "bv26--V1--GDN--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795750233.8749402,
+        "acquired_at": 1795750613.4409342
       }
     },
     {
