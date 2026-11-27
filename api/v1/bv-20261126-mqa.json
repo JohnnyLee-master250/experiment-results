@@ -1,6 +1,6 @@
 {
   "dataset": "MQA",
-  "updated_at": "2026-11-27T17:08:31.239694+00:00",
+  "updated_at": "2026-11-27T17:13:14.418571+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -9535,24 +9535,34 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/kernel-bridge/V1/workspaces/20261127T132115888578Z-v1-r1-gpt-6.2-sol-medium-deepgemm-mqa-h800-sq2048-sk8192-h32-d64-fp8",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/kernel-bridge/V1",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 13617.138227608055,
-        "net_duration_seconds": 13162.47963774018,
-        "probe_duration_seconds": 454.658589867875,
-        "main_tokens": 84753311,
+        "duration_seconds": 13847.696302924305,
+        "net_duration_seconds": 13258.916189990938,
+        "probe_duration_seconds": 588.7801129333675,
+        "main_tokens": 86463895,
         "reviewer_tokens": 4233105,
         "probe_tokens": 232106,
         "main_native": {
-          "totalTokens": 84753311,
-          "inputTokens": 84668466,
-          "cachedInputTokens": 84343552,
-          "outputTokens": 84845,
-          "reasoningOutputTokens": 23312
+          "totalTokens": 86463895,
+          "inputTokens": 86377101,
+          "cachedInputTokens": 86048512,
+          "outputTokens": 86794,
+          "reasoningOutputTokens": 24021
         }
       },
-      "pytorch_p50_ms": 27.21481990814209
+      "pytorch_p50_ms": 27.21481990814209,
+      "device_request": {
+        "card": "uYtpx",
+        "position": 1,
+        "ticket": 470,
+        "status": "running",
+        "cell_id": "bv26--V1--MQA--gpt-sol",
+        "operation": "eval",
+        "queued_at": 1795799469.6097906,
+        "acquired_at": 1795799523.4020388
+      }
     },
     {
       "dataset": "MQA",
