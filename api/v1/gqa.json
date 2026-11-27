@@ -3,7 +3,7 @@
   "suite": "flashinfer-gqa-decode-a100",
   "title": "GQA decode",
   "workload": "FP16 | Q32 KV4 D128 L32768",
-  "updated_at": "2026-11-27T03:43:10.808511+00:00",
+  "updated_at": "2026-11-27T03:48:10.958501+00:00",
   "runs": [
     {
       "id": "bv26--V1--GQA--gpt-astra",
@@ -36,11 +36,11 @@
       "device_request": {
         "card": "RXVG3",
         "position": 2,
-        "ticket": 6,
+        "ticket": 9,
         "status": "queued",
         "cell_id": "bv26--V1--GQA--gpt-astra",
-        "operation": "msprof",
-        "queued_at": 1795750899.4011772,
+        "operation": "eval",
+        "queued_at": 1795751241.2570505,
         "acquired_at": null
       },
       "source_id": "bv-20261126-local-001",
@@ -282,18 +282,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 1208.1113261058927,
-        "net_duration_seconds": 1018.2544645294547,
+        "duration_seconds": 1540.8738941345364,
+        "net_duration_seconds": 1351.0170325580984,
         "probe_duration_seconds": 189.85686157643795,
-        "main_tokens": 4151429,
-        "reviewer_tokens": 528344,
+        "main_tokens": 5354224,
+        "reviewer_tokens": 807411,
         "probe_tokens": 44659,
         "main_native": {
-          "totalTokens": 4151429,
-          "inputTokens": 4138188,
-          "cachedInputTokens": 4031232,
-          "outputTokens": 13241,
-          "reasoningOutputTokens": 384
+          "totalTokens": 5354224,
+          "inputTokens": 5338302,
+          "cachedInputTokens": 5223168,
+          "outputTokens": 15922,
+          "reasoningOutputTokens": 574
         }
       },
       "search_best_round": 1,
@@ -1723,11 +1723,11 @@
         "device_request": {
           "card": "RXVG3",
           "position": 2,
-          "ticket": 6,
+          "ticket": 9,
           "status": "queued",
           "cell_id": "bv26--V1--GQA--gpt-astra",
-          "operation": "msprof",
-          "queued_at": 1795750899.4011772,
+          "operation": "eval",
+          "queued_at": 1795751241.2570505,
           "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
@@ -2296,32 +2296,32 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/kernel-bridge/V1/workspaces/20261127T032102249088Z-v1-r1-gpt-6.2-astra-high-flashinfer-gqa-decode-a100-single-q32-kv4-d128-l32768-fp16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/kernel-bridge/V1",
-        "native_state": "pending_review",
+        "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 1208.1113261058927,
-          "net_duration_seconds": 1018.2544645294547,
+          "duration_seconds": 1540.8738941345364,
+          "net_duration_seconds": 1351.0170325580984,
           "probe_duration_seconds": 189.85686157643795,
-          "main_tokens": 4151429,
-          "reviewer_tokens": 528344,
+          "main_tokens": 5354224,
+          "reviewer_tokens": 807411,
           "probe_tokens": 44659,
           "main_native": {
-            "totalTokens": 4151429,
-            "inputTokens": 4138188,
-            "cachedInputTokens": 4031232,
-            "outputTokens": 13241,
-            "reasoningOutputTokens": 384
+            "totalTokens": 5354224,
+            "inputTokens": 5338302,
+            "cachedInputTokens": 5223168,
+            "outputTokens": 15922,
+            "reasoningOutputTokens": 574
           }
         },
         "pytorch_p50_ms": 6.787699937820435,
         "device_request": {
           "card": "RXVG3",
           "position": 2,
-          "ticket": 6,
+          "ticket": 9,
           "status": "queued",
           "cell_id": "bv26--V1--GQA--gpt-astra",
-          "operation": "msprof",
-          "queued_at": 1795750899.4011772,
+          "operation": "eval",
+          "queued_at": 1795751241.2570505,
           "acquired_at": null
         }
       },
