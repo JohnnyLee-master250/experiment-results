@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-27T03:53:11.312945+00:00",
-  "published_at": "2026-11-27T03:53:11.312945+00:00",
+  "updated_at": "2026-11-27T03:58:11.509483+00:00",
+  "published_at": "2026-11-27T03:58:11.509483+00:00",
   "refresh_seconds": 60,
   "counts": {
     "datasets": 10,
     "runs_with_records": 6,
-    "saved_records": 141,
-    "performance_samples": 13200
+    "saved_records": 144,
+    "performance_samples": 13500
   },
   "update_cadence_minutes": 5,
   "next_update_estimated_at": null,
@@ -32,9 +32,9 @@
           "status": "running",
           "phase": "queued",
           "native_stage": "l3_search",
-          "native_attempts": 2,
-          "reported_attempts": 2,
-          "valid_rounds": 2,
+          "native_attempts": 3,
+          "reported_attempts": 3,
+          "valid_rounds": 3,
           "budget": 51,
           "card_id": "RXVG3",
           "environment_name": "DevEnvC_RXVG3",
@@ -49,12 +49,12 @@
           "verified_at": null,
           "device_request": {
             "card": "RXVG3",
-            "position": 2,
-            "ticket": 12,
+            "position": 3,
+            "ticket": 15,
             "status": "queued",
             "cell_id": "bv26--V1--GQA--gpt-astra",
             "operation": "eval",
-            "queued_at": 1795751476.2811363,
+            "queued_at": 1795751782.6777036,
             "acquired_at": null
           },
           "source_id": "bv-20261126-local-001"
@@ -79,11 +79,11 @@
           "method": "V1",
           "method_version": "V1 · 11/26",
           "status": "running",
-          "phase": "evaluating",
+          "phase": "queued",
           "native_stage": "l3_search",
-          "native_attempts": 2,
-          "reported_attempts": 2,
-          "valid_rounds": 2,
+          "native_attempts": 3,
+          "reported_attempts": 3,
+          "valid_rounds": 3,
           "budget": 51,
           "card_id": "RXVG3",
           "environment_name": "DevEnvC_RXVG3",
@@ -98,13 +98,13 @@
           "verified_at": null,
           "device_request": {
             "card": "RXVG3",
-            "position": 1,
-            "ticket": 11,
-            "status": "running",
+            "position": 2,
+            "ticket": 14,
+            "status": "queued",
             "cell_id": "bv26--V1--GDN--gpt-astra",
             "operation": "eval",
-            "queued_at": 1795751403.2181492,
-            "acquired_at": 1795751586.142772
+            "queued_at": 1795751706.3812172,
+            "acquired_at": null
           },
           "source_id": "bv-20261126-local-001"
         }
@@ -128,7 +128,7 @@
           "method": "V1",
           "method_version": "V1 · 11/26",
           "status": "running",
-          "phase": "ready",
+          "phase": "evaluating",
           "native_stage": "l3_search",
           "native_attempts": 3,
           "reported_attempts": 3,
@@ -145,7 +145,16 @@
           "finished_at": null,
           "independently_complete": false,
           "verified_at": null,
-          "device_request": null,
+          "device_request": {
+            "card": "RXVG3",
+            "position": 1,
+            "ticket": 13,
+            "status": "running",
+            "cell_id": "bv26--V1--Based--gpt-astra",
+            "operation": "eval",
+            "queued_at": 1795751616.500785,
+            "acquired_at": 1795751770.3374512
+          },
           "source_id": "bv-20261126-local-001"
         }
       ]
@@ -168,8 +177,8 @@
           "method": "B2",
           "method_version": "B2 · 11/26",
           "status": "running",
-          "phase": "reviewing",
-          "native_stage": "reviewing",
+          "phase": "queued",
+          "native_stage": "ready",
           "native_attempts": 41,
           "reported_attempts": 41,
           "valid_rounds": 41,
@@ -185,7 +194,16 @@
           "finished_at": null,
           "independently_complete": false,
           "verified_at": null,
-          "device_request": null,
+          "device_request": {
+            "card": "uYtpx",
+            "position": 2,
+            "ticket": 155,
+            "status": "queued",
+            "cell_id": "bv26--B2--Sonny--gpt-astra",
+            "operation": "eval",
+            "queued_at": 1795751679.7471893,
+            "acquired_at": null
+          },
           "source_id": "bv-20261126-local-001"
         }
       ]
@@ -208,7 +226,7 @@
           "method": "V1-no-arch",
           "method_version": "V1-no-arch · 11/26",
           "status": "running",
-          "phase": "queued",
+          "phase": "evaluating",
           "native_stage": "l3_search",
           "native_attempts": 47,
           "reported_attempts": 42,
@@ -227,13 +245,13 @@
           "verified_at": null,
           "device_request": {
             "card": "uYtpx",
-            "position": 2,
+            "position": 1,
             "ticket": 154,
-            "status": "queued",
+            "status": "running",
             "cell_id": "bv26--V1-no-arch--Sonny--gpt-astra",
             "operation": "eval",
             "queued_at": 1795751328.926065,
-            "acquired_at": null
+            "acquired_at": 1795751730.5520906
           },
           "source_id": "bv-20261126-local-001"
         }
@@ -257,11 +275,11 @@
           "method": "V1",
           "method_version": "V1 · 11/26",
           "status": "running",
-          "phase": "evaluating",
+          "phase": "queued",
           "native_stage": "l3_search",
-          "native_attempts": 46,
-          "reported_attempts": 43,
-          "valid_rounds": 43,
+          "native_attempts": 47,
+          "reported_attempts": 44,
+          "valid_rounds": 44,
           "budget": 51,
           "card_id": "uYtpx",
           "environment_name": "DevEnvC_uYtpx",
@@ -276,13 +294,13 @@
           "verified_at": null,
           "device_request": {
             "card": "uYtpx",
-            "position": 1,
-            "ticket": 153,
-            "status": "running",
+            "position": 3,
+            "ticket": 156,
+            "status": "queued",
             "cell_id": "bv26--V1--Sonny--gpt-astra",
             "operation": "eval",
-            "queued_at": 1795751070.9741237,
-            "acquired_at": 1795751493.1095145
+            "queued_at": 1795751791.1510334,
+            "acquired_at": null
           },
           "source_id": "bv-20261126-local-001"
         }
@@ -301,8 +319,8 @@
       "method": "B2",
       "method_version": "B2 · 11/26",
       "status": "running",
-      "phase": "reviewing",
-      "native_stage": "reviewing",
+      "phase": "queued",
+      "native_stage": "ready",
       "native_attempts": 41,
       "reported_attempts": 41,
       "valid_rounds": 41,
@@ -318,7 +336,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "uYtpx",
+        "position": 2,
+        "ticket": 155,
+        "status": "queued",
+        "cell_id": "bv26--B2--Sonny--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795751679.7471893,
+        "acquired_at": null
+      },
       "source_id": "bv-20261126-local-001"
     },
     {
@@ -334,9 +361,9 @@
       "status": "running",
       "phase": "queued",
       "native_stage": "l3_search",
-      "native_attempts": 2,
-      "reported_attempts": 2,
-      "valid_rounds": 2,
+      "native_attempts": 3,
+      "reported_attempts": 3,
+      "valid_rounds": 3,
       "budget": 51,
       "card_id": "RXVG3",
       "environment_name": "DevEnvC_RXVG3",
@@ -351,12 +378,12 @@
       "verified_at": null,
       "device_request": {
         "card": "RXVG3",
-        "position": 2,
-        "ticket": 12,
+        "position": 3,
+        "ticket": 15,
         "status": "queued",
         "cell_id": "bv26--V1--GQA--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795751476.2811363,
+        "queued_at": 1795751782.6777036,
         "acquired_at": null
       },
       "source_id": "bv-20261126-local-001"
@@ -372,11 +399,11 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "evaluating",
+      "phase": "queued",
       "native_stage": "l3_search",
-      "native_attempts": 2,
-      "reported_attempts": 2,
-      "valid_rounds": 2,
+      "native_attempts": 3,
+      "reported_attempts": 3,
+      "valid_rounds": 3,
       "budget": 51,
       "card_id": "RXVG3",
       "environment_name": "DevEnvC_RXVG3",
@@ -391,13 +418,13 @@
       "verified_at": null,
       "device_request": {
         "card": "RXVG3",
-        "position": 1,
-        "ticket": 11,
-        "status": "running",
+        "position": 2,
+        "ticket": 14,
+        "status": "queued",
         "cell_id": "bv26--V1--GDN--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795751403.2181492,
-        "acquired_at": 1795751586.142772
+        "queued_at": 1795751706.3812172,
+        "acquired_at": null
       },
       "source_id": "bv-20261126-local-001"
     },
@@ -412,11 +439,11 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "evaluating",
+      "phase": "queued",
       "native_stage": "l3_search",
-      "native_attempts": 46,
-      "reported_attempts": 43,
-      "valid_rounds": 43,
+      "native_attempts": 47,
+      "reported_attempts": 44,
+      "valid_rounds": 44,
       "budget": 51,
       "card_id": "uYtpx",
       "environment_name": "DevEnvC_uYtpx",
@@ -431,13 +458,13 @@
       "verified_at": null,
       "device_request": {
         "card": "uYtpx",
-        "position": 1,
-        "ticket": 153,
-        "status": "running",
+        "position": 3,
+        "ticket": 156,
+        "status": "queued",
         "cell_id": "bv26--V1--Sonny--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795751070.9741237,
-        "acquired_at": 1795751493.1095145
+        "queued_at": 1795751791.1510334,
+        "acquired_at": null
       },
       "source_id": "bv-20261126-local-001"
     },
@@ -452,7 +479,7 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "ready",
+      "phase": "evaluating",
       "native_stage": "l3_search",
       "native_attempts": 3,
       "reported_attempts": 3,
@@ -469,7 +496,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "RXVG3",
+        "position": 1,
+        "ticket": 13,
+        "status": "running",
+        "cell_id": "bv26--V1--Based--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795751616.500785,
+        "acquired_at": 1795751770.3374512
+      },
       "source_id": "bv-20261126-local-001"
     },
     {
@@ -483,7 +519,7 @@
       "method": "V1-no-arch",
       "method_version": "V1-no-arch · 11/26",
       "status": "running",
-      "phase": "queued",
+      "phase": "evaluating",
       "native_stage": "l3_search",
       "native_attempts": 47,
       "reported_attempts": 42,
@@ -502,13 +538,13 @@
       "verified_at": null,
       "device_request": {
         "card": "uYtpx",
-        "position": 2,
+        "position": 1,
         "ticket": 154,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--V1-no-arch--Sonny--gpt-astra",
         "operation": "eval",
         "queued_at": 1795751328.926065,
-        "acquired_at": null
+        "acquired_at": 1795751730.5520906
       },
       "source_id": "bv-20261126-local-001"
     }
@@ -519,49 +555,49 @@
       "title": "FA forward",
       "suite": "sonny-mha-forward-rtx3090",
       "url": "sonny.json",
-      "updated_at": "2026-11-27T03:53:11.312945+00:00"
+      "updated_at": "2026-11-27T03:58:11.509483+00:00"
     },
     {
       "id": "GQA",
       "title": "GQA decode",
       "suite": "flashinfer-gqa-decode-a100",
       "url": "gqa.json",
-      "updated_at": "2026-11-27T03:53:11.312945+00:00"
+      "updated_at": "2026-11-27T03:58:11.509483+00:00"
     },
     {
       "id": "FA3",
       "title": "FA3 backward",
       "suite": "fa3-backward-sm90",
       "url": "fa3.json",
-      "updated_at": "2026-11-27T03:53:11.312945+00:00"
+      "updated_at": "2026-11-27T03:58:11.509483+00:00"
     },
     {
       "id": "GDN",
       "title": "GDN prefill",
       "suite": "gdn-prefill-sm100",
       "url": "gdn.json",
-      "updated_at": "2026-11-27T03:53:11.312945+00:00"
+      "updated_at": "2026-11-27T03:58:11.509483+00:00"
     },
     {
       "id": "Based",
       "title": "Based",
       "suite": "thunderkittens-based-h100",
       "url": "based.json",
-      "updated_at": "2026-11-27T03:53:11.312945+00:00"
+      "updated_at": "2026-11-27T03:58:11.509483+00:00"
     },
     {
       "id": "Mega",
       "title": "Mega mHC",
       "suite": "deepgemm-mega-mhc-sm100",
       "url": "mega.json",
-      "updated_at": "2026-11-27T03:53:11.312945+00:00"
+      "updated_at": "2026-11-27T03:58:11.509483+00:00"
     },
     {
       "id": "MQA",
       "title": "MQA",
       "suite": "deepgemm-mqa-h800",
       "url": "mqa.json",
-      "updated_at": "2026-11-27T03:53:11.312945+00:00"
+      "updated_at": "2026-11-27T03:58:11.509483+00:00"
     },
     {
       "id": "FlashMLA",
@@ -571,21 +607,21 @@
       "categories": [
         "kl"
       ],
-      "updated_at": "2026-11-27T03:53:11.312945+00:00"
+      "updated_at": "2026-11-27T03:58:11.509483+00:00"
     },
     {
       "id": "HSTU",
       "title": "HSTU",
       "suite": "hstu-silu-forward-sm90",
       "url": "hstu.json",
-      "updated_at": "2026-11-27T03:53:11.312945+00:00"
+      "updated_at": "2026-11-27T03:58:11.509483+00:00"
     },
     {
       "id": "FlashKDA",
       "title": "FlashKDA",
       "suite": "flashkda-forward-sm90",
       "url": "flashkda.json",
-      "updated_at": "2026-11-27T03:53:11.312945+00:00"
+      "updated_at": "2026-11-27T03:58:11.509483+00:00"
     }
   ],
   "running_runs": [
@@ -600,8 +636,8 @@
       "method": "B2",
       "method_version": "B2 · 11/26",
       "status": "running",
-      "phase": "reviewing",
-      "native_stage": "reviewing",
+      "phase": "queued",
+      "native_stage": "ready",
       "native_attempts": 41,
       "reported_attempts": 41,
       "valid_rounds": 41,
@@ -617,7 +653,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "uYtpx",
+        "position": 2,
+        "ticket": 155,
+        "status": "queued",
+        "cell_id": "bv26--B2--Sonny--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795751679.7471893,
+        "acquired_at": null
+      },
       "source_id": "bv-20261126-local-001"
     },
     {
@@ -633,9 +678,9 @@
       "status": "running",
       "phase": "queued",
       "native_stage": "l3_search",
-      "native_attempts": 2,
-      "reported_attempts": 2,
-      "valid_rounds": 2,
+      "native_attempts": 3,
+      "reported_attempts": 3,
+      "valid_rounds": 3,
       "budget": 51,
       "card_id": "RXVG3",
       "environment_name": "DevEnvC_RXVG3",
@@ -650,12 +695,12 @@
       "verified_at": null,
       "device_request": {
         "card": "RXVG3",
-        "position": 2,
-        "ticket": 12,
+        "position": 3,
+        "ticket": 15,
         "status": "queued",
         "cell_id": "bv26--V1--GQA--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795751476.2811363,
+        "queued_at": 1795751782.6777036,
         "acquired_at": null
       },
       "source_id": "bv-20261126-local-001"
@@ -671,11 +716,11 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "evaluating",
+      "phase": "queued",
       "native_stage": "l3_search",
-      "native_attempts": 2,
-      "reported_attempts": 2,
-      "valid_rounds": 2,
+      "native_attempts": 3,
+      "reported_attempts": 3,
+      "valid_rounds": 3,
       "budget": 51,
       "card_id": "RXVG3",
       "environment_name": "DevEnvC_RXVG3",
@@ -690,13 +735,13 @@
       "verified_at": null,
       "device_request": {
         "card": "RXVG3",
-        "position": 1,
-        "ticket": 11,
-        "status": "running",
+        "position": 2,
+        "ticket": 14,
+        "status": "queued",
         "cell_id": "bv26--V1--GDN--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795751403.2181492,
-        "acquired_at": 1795751586.142772
+        "queued_at": 1795751706.3812172,
+        "acquired_at": null
       },
       "source_id": "bv-20261126-local-001"
     },
@@ -711,11 +756,11 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "evaluating",
+      "phase": "queued",
       "native_stage": "l3_search",
-      "native_attempts": 46,
-      "reported_attempts": 43,
-      "valid_rounds": 43,
+      "native_attempts": 47,
+      "reported_attempts": 44,
+      "valid_rounds": 44,
       "budget": 51,
       "card_id": "uYtpx",
       "environment_name": "DevEnvC_uYtpx",
@@ -730,13 +775,13 @@
       "verified_at": null,
       "device_request": {
         "card": "uYtpx",
-        "position": 1,
-        "ticket": 153,
-        "status": "running",
+        "position": 3,
+        "ticket": 156,
+        "status": "queued",
         "cell_id": "bv26--V1--Sonny--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795751070.9741237,
-        "acquired_at": 1795751493.1095145
+        "queued_at": 1795751791.1510334,
+        "acquired_at": null
       },
       "source_id": "bv-20261126-local-001"
     },
@@ -751,7 +796,7 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "ready",
+      "phase": "evaluating",
       "native_stage": "l3_search",
       "native_attempts": 3,
       "reported_attempts": 3,
@@ -768,7 +813,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "RXVG3",
+        "position": 1,
+        "ticket": 13,
+        "status": "running",
+        "cell_id": "bv26--V1--Based--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795751616.500785,
+        "acquired_at": 1795751770.3374512
+      },
       "source_id": "bv-20261126-local-001"
     },
     {
@@ -782,7 +836,7 @@
       "method": "V1-no-arch",
       "method_version": "V1-no-arch · 11/26",
       "status": "running",
-      "phase": "queued",
+      "phase": "evaluating",
       "native_stage": "l3_search",
       "native_attempts": 47,
       "reported_attempts": 42,
@@ -801,13 +855,13 @@
       "verified_at": null,
       "device_request": {
         "card": "uYtpx",
-        "position": 2,
+        "position": 1,
         "ticket": 154,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--V1-no-arch--Sonny--gpt-astra",
         "operation": "eval",
         "queued_at": 1795751328.926065,
-        "acquired_at": null
+        "acquired_at": 1795751730.5520906
       },
       "source_id": "bv-20261126-local-001"
     }
@@ -855,8 +909,8 @@
         "method": "B2",
         "method_version": "B2 · 11/26",
         "status": "running",
-        "phase": "reviewing",
-        "native_stage": "reviewing",
+        "phase": "queued",
+        "native_stage": "ready",
         "native_attempts": 41,
         "reported_attempts": 41,
         "valid_rounds": 41,
@@ -872,7 +926,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "uYtpx",
+          "position": 2,
+          "ticket": 155,
+          "status": "queued",
+          "cell_id": "bv26--B2--Sonny--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795751679.7471893,
+          "acquired_at": null
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -888,9 +951,9 @@
         "status": "running",
         "phase": "queued",
         "native_stage": "l3_search",
-        "native_attempts": 2,
-        "reported_attempts": 2,
-        "valid_rounds": 2,
+        "native_attempts": 3,
+        "reported_attempts": 3,
+        "valid_rounds": 3,
         "budget": 51,
         "card_id": "RXVG3",
         "environment_name": "DevEnvC_RXVG3",
@@ -905,12 +968,12 @@
         "verified_at": null,
         "device_request": {
           "card": "RXVG3",
-          "position": 2,
-          "ticket": 12,
+          "position": 3,
+          "ticket": 15,
           "status": "queued",
           "cell_id": "bv26--V1--GQA--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751476.2811363,
+          "queued_at": 1795751782.6777036,
           "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
@@ -926,11 +989,11 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "evaluating",
+        "phase": "queued",
         "native_stage": "l3_search",
-        "native_attempts": 2,
-        "reported_attempts": 2,
-        "valid_rounds": 2,
+        "native_attempts": 3,
+        "reported_attempts": 3,
+        "valid_rounds": 3,
         "budget": 51,
         "card_id": "RXVG3",
         "environment_name": "DevEnvC_RXVG3",
@@ -945,13 +1008,13 @@
         "verified_at": null,
         "device_request": {
           "card": "RXVG3",
-          "position": 1,
-          "ticket": 11,
-          "status": "running",
+          "position": 2,
+          "ticket": 14,
+          "status": "queued",
           "cell_id": "bv26--V1--GDN--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751403.2181492,
-          "acquired_at": 1795751586.142772
+          "queued_at": 1795751706.3812172,
+          "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -966,11 +1029,11 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "evaluating",
+        "phase": "queued",
         "native_stage": "l3_search",
-        "native_attempts": 46,
-        "reported_attempts": 43,
-        "valid_rounds": 43,
+        "native_attempts": 47,
+        "reported_attempts": 44,
+        "valid_rounds": 44,
         "budget": 51,
         "card_id": "uYtpx",
         "environment_name": "DevEnvC_uYtpx",
@@ -985,13 +1048,13 @@
         "verified_at": null,
         "device_request": {
           "card": "uYtpx",
-          "position": 1,
-          "ticket": 153,
-          "status": "running",
+          "position": 3,
+          "ticket": 156,
+          "status": "queued",
           "cell_id": "bv26--V1--Sonny--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751070.9741237,
-          "acquired_at": 1795751493.1095145
+          "queued_at": 1795751791.1510334,
+          "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -1006,7 +1069,7 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "ready",
+        "phase": "evaluating",
         "native_stage": "l3_search",
         "native_attempts": 3,
         "reported_attempts": 3,
@@ -1023,7 +1086,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "RXVG3",
+          "position": 1,
+          "ticket": 13,
+          "status": "running",
+          "cell_id": "bv26--V1--Based--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795751616.500785,
+          "acquired_at": 1795751770.3374512
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -1037,7 +1109,7 @@
         "method": "V1-no-arch",
         "method_version": "V1-no-arch · 11/26",
         "status": "running",
-        "phase": "queued",
+        "phase": "evaluating",
         "native_stage": "l3_search",
         "native_attempts": 47,
         "reported_attempts": 42,
@@ -1056,13 +1128,13 @@
         "verified_at": null,
         "device_request": {
           "card": "uYtpx",
-          "position": 2,
+          "position": 1,
           "ticket": 154,
-          "status": "queued",
+          "status": "running",
           "cell_id": "bv26--V1-no-arch--Sonny--gpt-astra",
           "operation": "eval",
           "queued_at": 1795751328.926065,
-          "acquired_at": null
+          "acquired_at": 1795751730.5520906
         },
         "source_id": "bv-20261126-local-001"
       }
@@ -9842,7 +9914,7 @@
   "frontend_version": "current-layout-20261127",
   "workspaces": {
     "schema_version": 1,
-    "updated_at": "2026-11-27T03:53:11.312945+00:00",
+    "updated_at": "2026-11-27T03:58:11.509483+00:00",
     "rows": [
       {
         "id": "bv26--B2--Sonny--gpt-astra",
@@ -9855,8 +9927,8 @@
         "method": "B2",
         "method_version": "B2 · 11/26",
         "status": "running",
-        "phase": "reviewing",
-        "native_stage": "reviewing",
+        "phase": "queued",
+        "native_stage": "ready",
         "native_attempts": 41,
         "reported_attempts": 41,
         "valid_rounds": 41,
@@ -9872,7 +9944,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "uYtpx",
+          "position": 2,
+          "ticket": 155,
+          "status": "queued",
+          "cell_id": "bv26--B2--Sonny--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795751679.7471893,
+          "acquired_at": null
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -9888,9 +9969,9 @@
         "status": "running",
         "phase": "queued",
         "native_stage": "l3_search",
-        "native_attempts": 2,
-        "reported_attempts": 2,
-        "valid_rounds": 2,
+        "native_attempts": 3,
+        "reported_attempts": 3,
+        "valid_rounds": 3,
         "budget": 51,
         "card_id": "RXVG3",
         "environment_name": "DevEnvC_RXVG3",
@@ -9905,12 +9986,12 @@
         "verified_at": null,
         "device_request": {
           "card": "RXVG3",
-          "position": 2,
-          "ticket": 12,
+          "position": 3,
+          "ticket": 15,
           "status": "queued",
           "cell_id": "bv26--V1--GQA--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751476.2811363,
+          "queued_at": 1795751782.6777036,
           "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
@@ -9926,11 +10007,11 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "evaluating",
+        "phase": "queued",
         "native_stage": "l3_search",
-        "native_attempts": 2,
-        "reported_attempts": 2,
-        "valid_rounds": 2,
+        "native_attempts": 3,
+        "reported_attempts": 3,
+        "valid_rounds": 3,
         "budget": 51,
         "card_id": "RXVG3",
         "environment_name": "DevEnvC_RXVG3",
@@ -9945,13 +10026,13 @@
         "verified_at": null,
         "device_request": {
           "card": "RXVG3",
-          "position": 1,
-          "ticket": 11,
-          "status": "running",
+          "position": 2,
+          "ticket": 14,
+          "status": "queued",
           "cell_id": "bv26--V1--GDN--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751403.2181492,
-          "acquired_at": 1795751586.142772
+          "queued_at": 1795751706.3812172,
+          "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -9966,11 +10047,11 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "evaluating",
+        "phase": "queued",
         "native_stage": "l3_search",
-        "native_attempts": 46,
-        "reported_attempts": 43,
-        "valid_rounds": 43,
+        "native_attempts": 47,
+        "reported_attempts": 44,
+        "valid_rounds": 44,
         "budget": 51,
         "card_id": "uYtpx",
         "environment_name": "DevEnvC_uYtpx",
@@ -9985,13 +10066,13 @@
         "verified_at": null,
         "device_request": {
           "card": "uYtpx",
-          "position": 1,
-          "ticket": 153,
-          "status": "running",
+          "position": 3,
+          "ticket": 156,
+          "status": "queued",
           "cell_id": "bv26--V1--Sonny--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751070.9741237,
-          "acquired_at": 1795751493.1095145
+          "queued_at": 1795751791.1510334,
+          "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -10006,7 +10087,7 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "ready",
+        "phase": "evaluating",
         "native_stage": "l3_search",
         "native_attempts": 3,
         "reported_attempts": 3,
@@ -10023,7 +10104,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "RXVG3",
+          "position": 1,
+          "ticket": 13,
+          "status": "running",
+          "cell_id": "bv26--V1--Based--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795751616.500785,
+          "acquired_at": 1795751770.3374512
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -10037,7 +10127,7 @@
         "method": "V1-no-arch",
         "method_version": "V1-no-arch · 11/26",
         "status": "running",
-        "phase": "queued",
+        "phase": "evaluating",
         "native_stage": "l3_search",
         "native_attempts": 47,
         "reported_attempts": 42,
@@ -10056,13 +10146,13 @@
         "verified_at": null,
         "device_request": {
           "card": "uYtpx",
-          "position": 2,
+          "position": 1,
           "ticket": 154,
-          "status": "queued",
+          "status": "running",
           "cell_id": "bv26--V1-no-arch--Sonny--gpt-astra",
           "operation": "eval",
           "queued_at": 1795751328.926065,
-          "acquired_at": null
+          "acquired_at": 1795751730.5520906
         },
         "source_id": "bv-20261126-local-001"
       }
@@ -10173,41 +10263,61 @@
         {
           "card": "uYtpx",
           "position": 1,
-          "ticket": 153,
+          "ticket": 154,
           "status": "running",
-          "cell_id": "bv26--V1--Sonny--gpt-astra",
+          "cell_id": "bv26--V1-no-arch--Sonny--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751070.9741237,
-          "acquired_at": 1795751493.1095145
+          "queued_at": 1795751328.926065,
+          "acquired_at": 1795751730.5520906
         },
         {
           "card": "uYtpx",
           "position": 2,
-          "ticket": 154,
+          "ticket": 155,
           "status": "queued",
-          "cell_id": "bv26--V1-no-arch--Sonny--gpt-astra",
+          "cell_id": "bv26--B2--Sonny--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751328.926065,
+          "queued_at": 1795751679.7471893,
+          "acquired_at": null
+        },
+        {
+          "card": "uYtpx",
+          "position": 3,
+          "ticket": 156,
+          "status": "queued",
+          "cell_id": "bv26--V1--Sonny--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795751791.1510334,
           "acquired_at": null
         },
         {
           "card": "RXVG3",
           "position": 1,
-          "ticket": 11,
+          "ticket": 13,
           "status": "running",
-          "cell_id": "bv26--V1--GDN--gpt-astra",
+          "cell_id": "bv26--V1--Based--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751403.2181492,
-          "acquired_at": 1795751586.142772
+          "queued_at": 1795751616.500785,
+          "acquired_at": 1795751770.3374512
         },
         {
           "card": "RXVG3",
           "position": 2,
-          "ticket": 12,
+          "ticket": 14,
+          "status": "queued",
+          "cell_id": "bv26--V1--GDN--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795751706.3812172,
+          "acquired_at": null
+        },
+        {
+          "card": "RXVG3",
+          "position": 3,
+          "ticket": 15,
           "status": "queued",
           "cell_id": "bv26--V1--GQA--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751476.2811363,
+          "queued_at": 1795751782.6777036,
           "acquired_at": null
         }
       ],
