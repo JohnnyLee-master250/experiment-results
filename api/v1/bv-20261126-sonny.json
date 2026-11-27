@@ -1,6 +1,6 @@
 {
   "dataset": "Sonny",
-  "updated_at": "2026-11-27T22:48:15.663779+00:00",
+  "updated_at": "2026-11-27T22:53:15.083041+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -3883,38 +3883,38 @@
       "card": "RXVG3",
       "environment_id": "204e37e699434e5682bea05cfa7cfe38",
       "run_id": "1764408e020226ad",
-      "stage": "ready",
+      "stage": "evaluating",
       "started_at": "2026-11-27T15:50:16.387035+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/baselines-910C/B1/workspaces/20261127T155016387035Z-gpt-high-sonny-mha-forward-rtx3090-production-b16-s4096-h16-d128-fp16-noncausal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/baselines-910C/B1",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 24852.11643066071,
-        "net_duration_seconds": 24301.6427111011,
+        "duration_seconds": 25168.644576445222,
+        "net_duration_seconds": 24618.170856885612,
         "probe_duration_seconds": 550.4737195596099,
-        "main_tokens": 76125596,
+        "main_tokens": 76924754,
         "reviewer_tokens": 981415,
         "probe_tokens": 270696,
         "main_native": {
-          "totalTokens": 76125596,
-          "inputTokens": 76054589,
-          "cachedInputTokens": 75752832,
-          "outputTokens": 71007,
+          "totalTokens": 76924754,
+          "inputTokens": 76853647,
+          "cachedInputTokens": 76551424,
+          "outputTokens": 71107,
           "reasoningOutputTokens": 22846
         }
       },
       "pytorch_p50_ms": 187.00076293945312,
       "device_request": {
         "card": "RXVG3",
-        "position": 2,
+        "position": 1,
         "ticket": 463,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--B1--Sonny--gpt-astra",
         "operation": "eval",
         "queued_at": 1795819489.9147248,
-        "acquired_at": null
+        "acquired_at": 1795819784.8358994
       }
     },
     {
@@ -10059,7 +10059,7 @@
       "method": "B3",
       "model": "gpt-6.2-astra",
       "status": "running",
-      "native_attempts": 36,
+      "native_attempts": 37,
       "valid_rounds": 33,
       "attempts": [
         {
@@ -14027,6 +14027,17 @@
           "native_outcome": "passed",
           "job_id": "01a21f27-532b-734b-b55c-58b248317c1d",
           "job_status": "succeeded"
+        },
+        {
+          "number": 37,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 3,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a21f31-595a-757b-a47a-78648994b098",
+          "job_status": "failed"
         }
       ],
       "budget": 51,
@@ -14039,38 +14050,38 @@
       "card": "RXVG3",
       "environment_id": "204e37e699434e5682bea05cfa7cfe38",
       "run_id": "c163d430ec793f1e",
-      "stage": "evaluating",
+      "stage": "ready",
       "started_at": "2026-11-27T15:50:08.856178+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/baselines-910C/B3/workspaces/20261127T155008856178Z-gpt-high-sonny-mha-forward-rtx3090-production-b16-s4096-h16-d128-fp16-noncausal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/baselines-910C/B3",
-      "native_state": "evaluating",
+      "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 25044.778362620622,
-        "net_duration_seconds": 24446.630354240537,
-        "probe_duration_seconds": 598.1480083800852,
-        "main_tokens": 80427213,
+        "duration_seconds": 25188.467821402475,
+        "net_duration_seconds": 24590.12810504809,
+        "probe_duration_seconds": 598.339716354385,
+        "main_tokens": 82262578,
         "reviewer_tokens": 1528733,
         "probe_tokens": 163727,
         "main_native": {
-          "totalTokens": 80427213,
-          "inputTokens": 80364353,
-          "cachedInputTokens": 80197760,
-          "outputTokens": 62860,
-          "reasoningOutputTokens": 14604
+          "totalTokens": 82262578,
+          "inputTokens": 82198886,
+          "cachedInputTokens": 82030208,
+          "outputTokens": 63692,
+          "reasoningOutputTokens": 14879
         }
       },
       "pytorch_p50_ms": 187.25918579101562,
       "device_request": {
         "card": "RXVG3",
-        "position": 1,
-        "ticket": 462,
-        "status": "running",
+        "position": 2,
+        "ticket": 464,
+        "status": "queued",
         "cell_id": "bv26--B3--Sonny--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795819248.2767282,
-        "acquired_at": 1795819653.4361446
+        "queued_at": 1795819806.9808342,
+        "acquired_at": null
       }
     },
     {
