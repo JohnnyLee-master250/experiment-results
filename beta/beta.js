@@ -885,28 +885,8 @@ window.cannbotDashboard=(()=>{
   root().querySelectorAll('[data-cake-scope]').forEach(b=>{const on=b.dataset.cakeScope===scope;b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));b.onclick=()=>{scope=b.dataset.cakeScope;render();};});
   betaScheduleSliders();
  }
- let windowsChecked=0;
- async function updateWindowsTable(){
-  if(Date.now()-windowsChecked<30000)return;
-  windowsChecked=Date.now();
-  try{
-   const batch=await getJSON('./api/v1/'+manifest.cannbot.windows_url);
-   const rows=new Map(batch.tasks.map(task=>[task.dataset,task]));
-   const panel=q('#windows-cannbot');
-   for(const row of panel.querySelectorAll('tbody tr')){
-    const cells=row.cells,task=rows.get(cells[0].textContent);
-    cells[1].textContent=task?(labels[task.status]||task.status):'待运行';
-    cells[2].textContent=task?task.rounds+' / '+task.budget:'0 / 20';
-    cells[3].textContent=task?task.attempts:'0';
-   }
-   panel.querySelector('p').textContent=rows.size?
-    (batch.paused?'已暂停':'当前批次')+' · Astra 6.2 / high · '+date(batch.updated_at)+' SGT':
-    '待运行 · Astra 6.2 / high';
-  }catch{q('#windows-cannbot p').textContent='暂时无法读取 Windows 批次';}
- }
  async function ensure(){
   if(!manifest?.cannbot)return;
-  updateWindowsTable();
   if(snapshot?.updated_at===manifest.updated_at){render();return;}
   if(pending)return pending;
   const version=manifest.updated_at;const params=new URL(location).searchParams;
