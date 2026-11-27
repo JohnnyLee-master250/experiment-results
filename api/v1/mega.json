@@ -3,7 +3,7 @@
   "suite": "deepgemm-mega-mhc-sm100",
   "title": "Mega mHC",
   "workload": "BF16 | M64 H4096 HC4",
-  "updated_at": "2026-11-27T05:08:11.603401+00:00",
+  "updated_at": "2026-11-27T05:13:11.725385+00:00",
   "runs": [
     {
       "id": "bv26--V1--Mega--gpt-astra",
@@ -16,7 +16,7 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "ready",
+      "phase": "queued",
       "native_stage": "l3_search",
       "native_attempts": 0,
       "reported_attempts": 0,
@@ -33,7 +33,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "uYtpx",
+        "position": 3,
+        "ticket": 170,
+        "status": "queued",
+        "cell_id": "bv26--V1--Mega--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795756171.0538387,
+        "acquired_at": null
+      },
       "source_id": "bv-20261126-local-001",
       "search": [],
       "formal": null,
@@ -43,18 +52,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 457.3964152634144,
-        "net_duration_seconds": 385.44209337979555,
+        "duration_seconds": 459.9631962366402,
+        "net_duration_seconds": 388.0088743530214,
         "probe_duration_seconds": 71.95432188361883,
-        "main_tokens": 2225292,
+        "main_tokens": 3732218,
         "reviewer_tokens": 427078,
         "probe_tokens": 44502,
         "main_native": {
-          "totalTokens": 2225292,
-          "inputTokens": 2216235,
-          "cachedInputTokens": 2129792,
-          "outputTokens": 9057,
-          "reasoningOutputTokens": 153
+          "totalTokens": 3732218,
+          "inputTokens": 3719403,
+          "cachedInputTokens": 3626240,
+          "outputTokens": 12815,
+          "reasoningOutputTokens": 555
         }
       },
       "search_best_round": null,
@@ -1464,7 +1473,7 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "ready",
+        "phase": "queued",
         "native_stage": "l3_search",
         "native_attempts": 0,
         "reported_attempts": 0,
@@ -1481,7 +1490,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "uYtpx",
+          "position": 3,
+          "ticket": 170,
+          "status": "queued",
+          "cell_id": "bv26--V1--Mega--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795756171.0538387,
+          "acquired_at": null
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -1829,19 +1847,29 @@
         "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 457.3964152634144,
-          "net_duration_seconds": 385.44209337979555,
+          "duration_seconds": 459.9631962366402,
+          "net_duration_seconds": 388.0088743530214,
           "probe_duration_seconds": 71.95432188361883,
-          "main_tokens": 2225292,
+          "main_tokens": 3732218,
           "reviewer_tokens": 427078,
           "probe_tokens": 44502,
           "main_native": {
-            "totalTokens": 2225292,
-            "inputTokens": 2216235,
-            "cachedInputTokens": 2129792,
-            "outputTokens": 9057,
-            "reasoningOutputTokens": 153
+            "totalTokens": 3732218,
+            "inputTokens": 3719403,
+            "cachedInputTokens": 3626240,
+            "outputTokens": 12815,
+            "reasoningOutputTokens": 555
           }
+        },
+        "device_request": {
+          "card": "uYtpx",
+          "position": 3,
+          "ticket": 170,
+          "status": "queued",
+          "cell_id": "bv26--V1--Mega--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795756171.0538387,
+          "acquired_at": null
         }
       },
       {
