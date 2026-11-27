@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-27T04:03:11.779321+00:00",
-  "published_at": "2026-11-27T04:03:11.779321+00:00",
+  "updated_at": "2026-11-27T04:06:51.650931+00:00",
+  "published_at": "2026-11-27T04:06:51.650931+00:00",
   "refresh_seconds": 60,
   "counts": {
     "datasets": 10,
-    "runs_with_records": 6,
-    "saved_records": 148,
-    "performance_samples": 13900
+    "runs_with_records": 11,
+    "saved_records": 565,
+    "performance_samples": 41000
   },
   "update_cadence_minutes": 5,
   "next_update_estimated_at": null,
@@ -30,7 +30,7 @@
           "method": "V1",
           "method_version": "V1 · 11/26",
           "status": "running",
-          "phase": "queued",
+          "phase": "evaluating",
           "native_stage": "l3_search",
           "native_attempts": 4,
           "reported_attempts": 4,
@@ -49,13 +49,13 @@
           "verified_at": null,
           "device_request": {
             "card": "RXVG3",
-            "position": 3,
+            "position": 1,
             "ticket": 18,
-            "status": "queued",
+            "status": "running",
             "cell_id": "bv26--V1--GQA--gpt-astra",
             "operation": "eval",
             "queued_at": 1795752096.8672533,
-            "acquired_at": null
+            "acquired_at": 1795752331.5293238
           },
           "source_id": "bv-20261126-local-001"
         }
@@ -81,9 +81,9 @@
           "status": "running",
           "phase": "queued",
           "native_stage": "l3_search",
-          "native_attempts": 4,
-          "reported_attempts": 4,
-          "valid_rounds": 4,
+          "native_attempts": 5,
+          "reported_attempts": 5,
+          "valid_rounds": 5,
           "budget": 51,
           "card_id": "RXVG3",
           "environment_name": "DevEnvC_RXVG3",
@@ -98,12 +98,12 @@
           "verified_at": null,
           "device_request": {
             "card": "RXVG3",
-            "position": 2,
-            "ticket": 17,
+            "position": 3,
+            "ticket": 20,
             "status": "queued",
             "cell_id": "bv26--V1--GDN--gpt-astra",
             "operation": "eval",
-            "queued_at": 1795752005.8265061,
+            "queued_at": 1795752359.8680573,
             "acquired_at": null
           },
           "source_id": "bv-20261126-local-001"
@@ -128,11 +128,11 @@
           "method": "V1",
           "method_version": "V1 · 11/26",
           "status": "running",
-          "phase": "evaluating",
+          "phase": "queued",
           "native_stage": "l3_search",
-          "native_attempts": 4,
-          "reported_attempts": 4,
-          "valid_rounds": 4,
+          "native_attempts": 5,
+          "reported_attempts": 5,
+          "valid_rounds": 5,
           "budget": 51,
           "card_id": "RXVG3",
           "environment_name": "DevEnvC_RXVG3",
@@ -147,17 +147,83 @@
           "verified_at": null,
           "device_request": {
             "card": "RXVG3",
-            "position": 1,
-            "ticket": 16,
-            "status": "running",
+            "position": 2,
+            "ticket": 19,
+            "status": "queued",
             "cell_id": "bv26--V1--Based--gpt-astra",
             "operation": "eval",
-            "queued_at": 1795751948.691489,
-            "acquired_at": 1795752095.191907
+            "queued_at": 1795752266.9113774,
+            "acquired_at": null
           },
           "source_id": "bv-20261126-local-001"
         }
       ]
+    },
+    {
+      "id": "upload-hel19-7bdcb56dba2353be3cbbcb5a-ffb50778d3d8c307",
+      "kind": "ended",
+      "at": "2026-11-27T01:44:48.040563+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-7bdcb56dba2353be3cbbcb5a",
+          "model": "Astra 6.2",
+          "effort": "high",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T14:46:41.356105+00:00",
+          "finished_at": "2026-11-27T01:44:48.040563+00:00",
+          "dataset": "FlashMLA",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-af6ec27890035cad05587692-8d1b7809403589fa",
+      "kind": "ended",
+      "at": "2026-11-26T23:41:07.535194+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-af6ec27890035cad05587692",
+          "model": "Astra 6.2",
+          "effort": "high",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T14:45:40.294956+00:00",
+          "finished_at": "2026-11-26T23:41:07.535194+00:00",
+          "dataset": "FA3",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
     },
     {
       "id": "bv26--B2--Sonny--gpt-astra:started:2026-11-26T18:22:59.398938+00:00",
@@ -177,11 +243,11 @@
           "method": "B2",
           "method_version": "B2 · 11/26",
           "status": "running",
-          "phase": "evaluating",
-          "native_stage": "evaluating",
-          "native_attempts": 41,
-          "reported_attempts": 41,
-          "valid_rounds": 41,
+          "phase": "queued",
+          "native_stage": "ready",
+          "native_attempts": 42,
+          "reported_attempts": 42,
+          "valid_rounds": 42,
           "budget": 51,
           "card_id": "uYtpx",
           "environment_name": "DevEnvC_uYtpx",
@@ -196,13 +262,13 @@
           "verified_at": null,
           "device_request": {
             "card": "uYtpx",
-            "position": 1,
-            "ticket": 155,
-            "status": "running",
+            "position": 3,
+            "ticket": 158,
+            "status": "queued",
             "cell_id": "bv26--B2--Sonny--gpt-astra",
             "operation": "eval",
-            "queued_at": 1795751679.7471893,
-            "acquired_at": 1795751969.0154548
+            "queued_at": 1795752278.5475361,
+            "acquired_at": null
           },
           "source_id": "bv-20261126-local-001"
         }
@@ -245,7 +311,7 @@
           "verified_at": null,
           "device_request": {
             "card": "uYtpx",
-            "position": 3,
+            "position": 2,
             "ticket": 157,
             "status": "queued",
             "cell_id": "bv26--V1-no-arch--Sonny--gpt-astra",
@@ -275,7 +341,7 @@
           "method": "V1",
           "method_version": "V1 · 11/26",
           "status": "running",
-          "phase": "queued",
+          "phase": "evaluating",
           "native_stage": "l3_search",
           "native_attempts": 47,
           "reported_attempts": 44,
@@ -294,20 +360,795 @@
           "verified_at": null,
           "device_request": {
             "card": "uYtpx",
-            "position": 2,
+            "position": 1,
             "ticket": 156,
-            "status": "queued",
+            "status": "running",
             "cell_id": "bv26--V1--Sonny--gpt-astra",
             "operation": "eval",
             "queued_at": 1795751791.1510334,
-            "acquired_at": null
+            "acquired_at": 1795752204.9660172
           },
           "source_id": "bv-20261126-local-001"
         }
       ]
+    },
+    {
+      "id": "upload-hel19-af6ec27890035cad05587692-0280cfcb4e75e3dd",
+      "kind": "resumed",
+      "at": "2026-11-26T15:20:53.712571+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-af6ec27890035cad05587692",
+          "model": "Astra 6.2",
+          "effort": "high",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T14:45:40.294956+00:00",
+          "finished_at": "2026-11-26T23:41:07.535194+00:00",
+          "dataset": "FA3",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-af6ec27890035cad05587692-698fffbd21007368",
+      "kind": "paused",
+      "at": "2026-11-26T14:59:09.371763+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-af6ec27890035cad05587692",
+          "model": "Astra 6.2",
+          "effort": "high",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T14:45:40.294956+00:00",
+          "finished_at": "2026-11-26T23:41:07.535194+00:00",
+          "dataset": "FA3",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-7bdcb56dba2353be3cbbcb5a-110836421adf9074",
+      "kind": "started",
+      "at": "2026-11-26T14:46:41.356105+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-7bdcb56dba2353be3cbbcb5a",
+          "model": "Astra 6.2",
+          "effort": "high",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T14:46:41.356105+00:00",
+          "finished_at": "2026-11-27T01:44:48.040563+00:00",
+          "dataset": "FlashMLA",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-af6ec27890035cad05587692-dd15285aab2b9bec",
+      "kind": "started",
+      "at": "2026-11-26T14:45:40.294956+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-af6ec27890035cad05587692",
+          "model": "Astra 6.2",
+          "effort": "high",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T14:45:40.294956+00:00",
+          "finished_at": "2026-11-26T23:41:07.535194+00:00",
+          "dataset": "FA3",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-83494f7f35c8e6876737255f-f8e2edd228af112f",
+      "kind": "ended",
+      "at": "2026-11-26T14:23:41.703563+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-83494f7f35c8e6876737255f",
+          "model": "Sol 6.2",
+          "effort": "medium",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T05:34:39.081405+00:00",
+          "finished_at": "2026-11-26T14:23:41.703563+00:00",
+          "dataset": "GQA",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-b0750fa85773695a20c9d1ff-ca56db1cc6cc9664",
+      "kind": "ended",
+      "at": "2026-11-26T14:13:50.628446+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-b0750fa85773695a20c9d1ff",
+          "model": "Sol 6.2",
+          "effort": "medium",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T05:35:33.952247+00:00",
+          "finished_at": "2026-11-26T14:13:50.628446+00:00",
+          "dataset": "Based",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-83494f7f35c8e6876737255f-6084084a8d8faa7e",
+      "kind": "resumed",
+      "at": "2026-11-26T06:10:27.340296+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-83494f7f35c8e6876737255f",
+          "model": "Sol 6.2",
+          "effort": "medium",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T05:34:39.081405+00:00",
+          "finished_at": "2026-11-26T14:23:41.703563+00:00",
+          "dataset": "GQA",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-b0750fa85773695a20c9d1ff-ac26b8ed18f7b496",
+      "kind": "resumed",
+      "at": "2026-11-26T06:06:29.725558+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-b0750fa85773695a20c9d1ff",
+          "model": "Sol 6.2",
+          "effort": "medium",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T05:35:33.952247+00:00",
+          "finished_at": "2026-11-26T14:13:50.628446+00:00",
+          "dataset": "Based",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-83494f7f35c8e6876737255f-fcd77742ff166c2f",
+      "kind": "paused",
+      "at": "2026-11-26T06:05:34.067315+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-83494f7f35c8e6876737255f",
+          "model": "Sol 6.2",
+          "effort": "medium",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T05:34:39.081405+00:00",
+          "finished_at": "2026-11-26T14:23:41.703563+00:00",
+          "dataset": "GQA",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-b0750fa85773695a20c9d1ff-551e9121b2319112",
+      "kind": "paused",
+      "at": "2026-11-26T06:02:38.569422+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-b0750fa85773695a20c9d1ff",
+          "model": "Sol 6.2",
+          "effort": "medium",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T05:35:33.952247+00:00",
+          "finished_at": "2026-11-26T14:13:50.628446+00:00",
+          "dataset": "Based",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-83494f7f35c8e6876737255f-0db7e30737f42ce3",
+      "kind": "resumed",
+      "at": "2026-11-26T05:51:36.938295+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-83494f7f35c8e6876737255f",
+          "model": "Sol 6.2",
+          "effort": "medium",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T05:34:39.081405+00:00",
+          "finished_at": "2026-11-26T14:23:41.703563+00:00",
+          "dataset": "GQA",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-b0750fa85773695a20c9d1ff-c883cb7f40560131",
+      "kind": "resumed",
+      "at": "2026-11-26T05:51:34.258004+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-b0750fa85773695a20c9d1ff",
+          "model": "Sol 6.2",
+          "effort": "medium",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T05:35:33.952247+00:00",
+          "finished_at": "2026-11-26T14:13:50.628446+00:00",
+          "dataset": "Based",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-b0750fa85773695a20c9d1ff-2abd6693e2dd6c6b",
+      "kind": "paused",
+      "at": "2026-11-26T05:46:17.224471+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-b0750fa85773695a20c9d1ff",
+          "model": "Sol 6.2",
+          "effort": "medium",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T05:35:33.952247+00:00",
+          "finished_at": "2026-11-26T14:13:50.628446+00:00",
+          "dataset": "Based",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-83494f7f35c8e6876737255f-000f7de7cae0d5ce",
+      "kind": "paused",
+      "at": "2026-11-26T05:40:38.709105+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-83494f7f35c8e6876737255f",
+          "model": "Sol 6.2",
+          "effort": "medium",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T05:34:39.081405+00:00",
+          "finished_at": "2026-11-26T14:23:41.703563+00:00",
+          "dataset": "GQA",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-b0750fa85773695a20c9d1ff-cc0010abc68d8f5d",
+      "kind": "started",
+      "at": "2026-11-26T05:35:33.952247+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-b0750fa85773695a20c9d1ff",
+          "model": "Sol 6.2",
+          "effort": "medium",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T05:35:33.952247+00:00",
+          "finished_at": "2026-11-26T14:13:50.628446+00:00",
+          "dataset": "Based",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-83494f7f35c8e6876737255f-ee4284d0accdd161",
+      "kind": "started",
+      "at": "2026-11-26T05:34:39.081405+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-83494f7f35c8e6876737255f",
+          "model": "Sol 6.2",
+          "effort": "medium",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_M8IXB",
+          "environment_name": "DevEnvC_M8IXB",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-26T05:34:39.081405+00:00",
+          "finished_at": "2026-11-26T14:23:41.703563+00:00",
+          "dataset": "GQA",
+          "category": "cannbot",
+          "method": "CAKE",
+          "budget": 21,
+          "method_version": "CAKE",
+          "reported_attempts": 21,
+          "current_apply": 0,
+          "internal_round": 0,
+          "round_budget": 21,
+          "rounds_completed": 21
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-b1b64104145b4950d85fbd57-4d0f51852f96847f",
+      "kind": "ended",
+      "at": "2026-11-22T12:50:39.329983+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-b1b64104145b4950d85fbd57",
+          "model": "Astra 6.2",
+          "effort": "high",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_8MZlZ",
+          "environment_name": "DevEnvC_8MZlZ",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-21T03:55:20.261843+00:00",
+          "finished_at": "2026-11-22T12:50:39.329983+00:00",
+          "dataset": "Mega",
+          "category": "kl",
+          "method": "KL",
+          "budget": 10,
+          "method_version": "KL",
+          "reported_attempts": 10,
+          "current_apply": 11,
+          "internal_round": 157,
+          "valid_rounds": 10
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-b1b64104145b4950d85fbd57-03169c62f5afc487",
+      "kind": "resumed",
+      "at": "2026-11-22T05:59:19.433754+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-b1b64104145b4950d85fbd57",
+          "model": "Astra 6.2",
+          "effort": "high",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_8MZlZ",
+          "environment_name": "DevEnvC_8MZlZ",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-21T03:55:20.261843+00:00",
+          "finished_at": "2026-11-22T12:50:39.329983+00:00",
+          "dataset": "Mega",
+          "category": "kl",
+          "method": "KL",
+          "budget": 10,
+          "method_version": "KL",
+          "reported_attempts": 10,
+          "current_apply": 11,
+          "internal_round": 157,
+          "valid_rounds": 10
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-b1b64104145b4950d85fbd57-dcbe72048b0e1dc4",
+      "kind": "paused",
+      "at": "2026-11-21T07:17:35.868399+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-b1b64104145b4950d85fbd57",
+          "model": "Astra 6.2",
+          "effort": "high",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_8MZlZ",
+          "environment_name": "DevEnvC_8MZlZ",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-21T03:55:20.261843+00:00",
+          "finished_at": "2026-11-22T12:50:39.329983+00:00",
+          "dataset": "Mega",
+          "category": "kl",
+          "method": "KL",
+          "budget": 10,
+          "method_version": "KL",
+          "reported_attempts": 10,
+          "current_apply": 11,
+          "internal_round": 157,
+          "valid_rounds": 10
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
+    },
+    {
+      "id": "upload-hel19-b1b64104145b4950d85fbd57-75f27041cb4fda32",
+      "kind": "started",
+      "at": "2026-11-21T03:55:20.261843+00:00",
+      "runs": [
+        {
+          "id": "upload-hel19-b1b64104145b4950d85fbd57",
+          "model": "Astra 6.2",
+          "effort": "high",
+          "status": "ended",
+          "phase": "ended",
+          "card_id": "DevEnvC_8MZlZ",
+          "environment_name": "DevEnvC_8MZlZ",
+          "queue_group": "hel19-upload-v1",
+          "queue_position": null,
+          "workspace_path": null,
+          "started_at": "2026-11-21T03:55:20.261843+00:00",
+          "finished_at": "2026-11-22T12:50:39.329983+00:00",
+          "dataset": "Mega",
+          "category": "kl",
+          "method": "KL",
+          "budget": 10,
+          "method_version": "KL",
+          "reported_attempts": 10,
+          "current_apply": 11,
+          "internal_round": 157,
+          "valid_rounds": 10
+        }
+      ],
+      "reason": "",
+      "time_basis": "recorded"
     }
   ],
   "campaign_runs": [
+    {
+      "id": "upload-hel19-b1b64104145b4950d85fbd57",
+      "model": "Astra 6.2",
+      "effort": "high",
+      "status": "ended",
+      "phase": "ended",
+      "card_id": "DevEnvC_8MZlZ",
+      "environment_name": "DevEnvC_8MZlZ",
+      "queue_group": "hel19-upload-v1",
+      "queue_position": null,
+      "workspace_path": null,
+      "started_at": "2026-11-21T03:55:20.261843+00:00",
+      "finished_at": "2026-11-22T12:50:39.329983+00:00",
+      "dataset": "Mega",
+      "category": "kl",
+      "method": "KL",
+      "budget": 10,
+      "method_version": "KL",
+      "reported_attempts": 10,
+      "current_apply": 11,
+      "internal_round": 157,
+      "valid_rounds": 10
+    },
+    {
+      "id": "upload-hel19-7bdcb56dba2353be3cbbcb5a",
+      "model": "Astra 6.2",
+      "effort": "high",
+      "status": "ended",
+      "phase": "ended",
+      "card_id": "DevEnvC_M8IXB",
+      "environment_name": "DevEnvC_M8IXB",
+      "queue_group": "hel19-upload-v1",
+      "queue_position": null,
+      "workspace_path": null,
+      "started_at": "2026-11-26T14:46:41.356105+00:00",
+      "finished_at": "2026-11-27T01:44:48.040563+00:00",
+      "dataset": "FlashMLA",
+      "category": "cannbot",
+      "method": "CAKE",
+      "budget": 21,
+      "method_version": "CAKE",
+      "reported_attempts": 21,
+      "current_apply": 0,
+      "internal_round": 0,
+      "round_budget": 21,
+      "rounds_completed": 21
+    },
+    {
+      "id": "upload-hel19-83494f7f35c8e6876737255f",
+      "model": "Sol 6.2",
+      "effort": "medium",
+      "status": "ended",
+      "phase": "ended",
+      "card_id": "DevEnvC_M8IXB",
+      "environment_name": "DevEnvC_M8IXB",
+      "queue_group": "hel19-upload-v1",
+      "queue_position": null,
+      "workspace_path": null,
+      "started_at": "2026-11-26T05:34:39.081405+00:00",
+      "finished_at": "2026-11-26T14:23:41.703563+00:00",
+      "dataset": "GQA",
+      "category": "cannbot",
+      "method": "CAKE",
+      "budget": 21,
+      "method_version": "CAKE",
+      "reported_attempts": 21,
+      "current_apply": 0,
+      "internal_round": 0,
+      "round_budget": 21,
+      "rounds_completed": 21
+    },
+    {
+      "id": "upload-hel19-af6ec27890035cad05587692",
+      "model": "Astra 6.2",
+      "effort": "high",
+      "status": "ended",
+      "phase": "ended",
+      "card_id": "DevEnvC_M8IXB",
+      "environment_name": "DevEnvC_M8IXB",
+      "queue_group": "hel19-upload-v1",
+      "queue_position": null,
+      "workspace_path": null,
+      "started_at": "2026-11-26T14:45:40.294956+00:00",
+      "finished_at": "2026-11-26T23:41:07.535194+00:00",
+      "dataset": "FA3",
+      "category": "cannbot",
+      "method": "CAKE",
+      "budget": 21,
+      "method_version": "CAKE",
+      "reported_attempts": 21,
+      "current_apply": 0,
+      "internal_round": 0,
+      "round_budget": 21,
+      "rounds_completed": 21
+    },
+    {
+      "id": "upload-hel19-b0750fa85773695a20c9d1ff",
+      "model": "Sol 6.2",
+      "effort": "medium",
+      "status": "ended",
+      "phase": "ended",
+      "card_id": "DevEnvC_M8IXB",
+      "environment_name": "DevEnvC_M8IXB",
+      "queue_group": "hel19-upload-v1",
+      "queue_position": null,
+      "workspace_path": null,
+      "started_at": "2026-11-26T05:35:33.952247+00:00",
+      "finished_at": "2026-11-26T14:13:50.628446+00:00",
+      "dataset": "Based",
+      "category": "cannbot",
+      "method": "CAKE",
+      "budget": 21,
+      "method_version": "CAKE",
+      "reported_attempts": 21,
+      "current_apply": 0,
+      "internal_round": 0,
+      "round_budget": 21,
+      "rounds_completed": 21
+    },
     {
       "id": "bv26--B2--Sonny--gpt-astra",
       "dataset": "Sonny",
@@ -319,11 +1160,11 @@
       "method": "B2",
       "method_version": "B2 · 11/26",
       "status": "running",
-      "phase": "evaluating",
-      "native_stage": "evaluating",
-      "native_attempts": 41,
-      "reported_attempts": 41,
-      "valid_rounds": 41,
+      "phase": "queued",
+      "native_stage": "ready",
+      "native_attempts": 42,
+      "reported_attempts": 42,
+      "valid_rounds": 42,
       "budget": 51,
       "card_id": "uYtpx",
       "environment_name": "DevEnvC_uYtpx",
@@ -338,13 +1179,13 @@
       "verified_at": null,
       "device_request": {
         "card": "uYtpx",
-        "position": 1,
-        "ticket": 155,
-        "status": "running",
+        "position": 3,
+        "ticket": 158,
+        "status": "queued",
         "cell_id": "bv26--B2--Sonny--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795751679.7471893,
-        "acquired_at": 1795751969.0154548
+        "queued_at": 1795752278.5475361,
+        "acquired_at": null
       },
       "source_id": "bv-20261126-local-001"
     },
@@ -359,7 +1200,7 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "queued",
+      "phase": "evaluating",
       "native_stage": "l3_search",
       "native_attempts": 4,
       "reported_attempts": 4,
@@ -378,13 +1219,13 @@
       "verified_at": null,
       "device_request": {
         "card": "RXVG3",
-        "position": 3,
+        "position": 1,
         "ticket": 18,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--V1--GQA--gpt-astra",
         "operation": "eval",
         "queued_at": 1795752096.8672533,
-        "acquired_at": null
+        "acquired_at": 1795752331.5293238
       },
       "source_id": "bv-20261126-local-001"
     },
@@ -401,9 +1242,9 @@
       "status": "running",
       "phase": "queued",
       "native_stage": "l3_search",
-      "native_attempts": 4,
-      "reported_attempts": 4,
-      "valid_rounds": 4,
+      "native_attempts": 5,
+      "reported_attempts": 5,
+      "valid_rounds": 5,
       "budget": 51,
       "card_id": "RXVG3",
       "environment_name": "DevEnvC_RXVG3",
@@ -418,12 +1259,12 @@
       "verified_at": null,
       "device_request": {
         "card": "RXVG3",
-        "position": 2,
-        "ticket": 17,
+        "position": 3,
+        "ticket": 20,
         "status": "queued",
         "cell_id": "bv26--V1--GDN--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795752005.8265061,
+        "queued_at": 1795752359.8680573,
         "acquired_at": null
       },
       "source_id": "bv-20261126-local-001"
@@ -439,7 +1280,7 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "queued",
+      "phase": "evaluating",
       "native_stage": "l3_search",
       "native_attempts": 47,
       "reported_attempts": 44,
@@ -458,13 +1299,13 @@
       "verified_at": null,
       "device_request": {
         "card": "uYtpx",
-        "position": 2,
+        "position": 1,
         "ticket": 156,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--V1--Sonny--gpt-astra",
         "operation": "eval",
         "queued_at": 1795751791.1510334,
-        "acquired_at": null
+        "acquired_at": 1795752204.9660172
       },
       "source_id": "bv-20261126-local-001"
     },
@@ -479,11 +1320,11 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "evaluating",
+      "phase": "queued",
       "native_stage": "l3_search",
-      "native_attempts": 4,
-      "reported_attempts": 4,
-      "valid_rounds": 4,
+      "native_attempts": 5,
+      "reported_attempts": 5,
+      "valid_rounds": 5,
       "budget": 51,
       "card_id": "RXVG3",
       "environment_name": "DevEnvC_RXVG3",
@@ -498,13 +1339,13 @@
       "verified_at": null,
       "device_request": {
         "card": "RXVG3",
-        "position": 1,
-        "ticket": 16,
-        "status": "running",
+        "position": 2,
+        "ticket": 19,
+        "status": "queued",
         "cell_id": "bv26--V1--Based--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795751948.691489,
-        "acquired_at": 1795752095.191907
+        "queued_at": 1795752266.9113774,
+        "acquired_at": null
       },
       "source_id": "bv-20261126-local-001"
     },
@@ -538,7 +1379,7 @@
       "verified_at": null,
       "device_request": {
         "card": "uYtpx",
-        "position": 3,
+        "position": 2,
         "ticket": 157,
         "status": "queued",
         "cell_id": "bv26--V1-no-arch--Sonny--gpt-astra",
@@ -555,49 +1396,49 @@
       "title": "FA forward",
       "suite": "sonny-mha-forward-rtx3090",
       "url": "sonny.json",
-      "updated_at": "2026-11-27T04:03:11.779321+00:00"
+      "updated_at": "2026-11-27T04:06:51.650931+00:00"
     },
     {
       "id": "GQA",
       "title": "GQA decode",
       "suite": "flashinfer-gqa-decode-a100",
       "url": "gqa.json",
-      "updated_at": "2026-11-27T04:03:11.779321+00:00"
+      "updated_at": "2026-11-27T04:06:51.650931+00:00"
     },
     {
       "id": "FA3",
       "title": "FA3 backward",
       "suite": "fa3-backward-sm90",
       "url": "fa3.json",
-      "updated_at": "2026-11-27T04:03:11.779321+00:00"
+      "updated_at": "2026-11-27T04:06:51.650931+00:00"
     },
     {
       "id": "GDN",
       "title": "GDN prefill",
       "suite": "gdn-prefill-sm100",
       "url": "gdn.json",
-      "updated_at": "2026-11-27T04:03:11.779321+00:00"
+      "updated_at": "2026-11-27T04:06:51.650931+00:00"
     },
     {
       "id": "Based",
       "title": "Based",
       "suite": "thunderkittens-based-h100",
       "url": "based.json",
-      "updated_at": "2026-11-27T04:03:11.779321+00:00"
+      "updated_at": "2026-11-27T04:06:51.650931+00:00"
     },
     {
       "id": "Mega",
       "title": "Mega mHC",
       "suite": "deepgemm-mega-mhc-sm100",
       "url": "mega.json",
-      "updated_at": "2026-11-27T04:03:11.779321+00:00"
+      "updated_at": "2026-11-27T04:06:51.650931+00:00"
     },
     {
       "id": "MQA",
       "title": "MQA",
       "suite": "deepgemm-mqa-h800",
       "url": "mqa.json",
-      "updated_at": "2026-11-27T04:03:11.779321+00:00"
+      "updated_at": "2026-11-27T04:06:51.650931+00:00"
     },
     {
       "id": "FlashMLA",
@@ -607,21 +1448,21 @@
       "categories": [
         "kl"
       ],
-      "updated_at": "2026-11-27T04:03:11.779321+00:00"
+      "updated_at": "2026-11-27T04:06:51.650931+00:00"
     },
     {
       "id": "HSTU",
       "title": "HSTU",
       "suite": "hstu-silu-forward-sm90",
       "url": "hstu.json",
-      "updated_at": "2026-11-27T04:03:11.779321+00:00"
+      "updated_at": "2026-11-27T04:06:51.650931+00:00"
     },
     {
       "id": "FlashKDA",
       "title": "FlashKDA",
       "suite": "flashkda-forward-sm90",
       "url": "flashkda.json",
-      "updated_at": "2026-11-27T04:03:11.779321+00:00"
+      "updated_at": "2026-11-27T04:06:51.650931+00:00"
     }
   ],
   "running_runs": [
@@ -636,11 +1477,11 @@
       "method": "B2",
       "method_version": "B2 · 11/26",
       "status": "running",
-      "phase": "evaluating",
-      "native_stage": "evaluating",
-      "native_attempts": 41,
-      "reported_attempts": 41,
-      "valid_rounds": 41,
+      "phase": "queued",
+      "native_stage": "ready",
+      "native_attempts": 42,
+      "reported_attempts": 42,
+      "valid_rounds": 42,
       "budget": 51,
       "card_id": "uYtpx",
       "environment_name": "DevEnvC_uYtpx",
@@ -655,13 +1496,13 @@
       "verified_at": null,
       "device_request": {
         "card": "uYtpx",
-        "position": 1,
-        "ticket": 155,
-        "status": "running",
+        "position": 3,
+        "ticket": 158,
+        "status": "queued",
         "cell_id": "bv26--B2--Sonny--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795751679.7471893,
-        "acquired_at": 1795751969.0154548
+        "queued_at": 1795752278.5475361,
+        "acquired_at": null
       },
       "source_id": "bv-20261126-local-001"
     },
@@ -676,7 +1517,7 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "queued",
+      "phase": "evaluating",
       "native_stage": "l3_search",
       "native_attempts": 4,
       "reported_attempts": 4,
@@ -695,13 +1536,13 @@
       "verified_at": null,
       "device_request": {
         "card": "RXVG3",
-        "position": 3,
+        "position": 1,
         "ticket": 18,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--V1--GQA--gpt-astra",
         "operation": "eval",
         "queued_at": 1795752096.8672533,
-        "acquired_at": null
+        "acquired_at": 1795752331.5293238
       },
       "source_id": "bv-20261126-local-001"
     },
@@ -718,9 +1559,9 @@
       "status": "running",
       "phase": "queued",
       "native_stage": "l3_search",
-      "native_attempts": 4,
-      "reported_attempts": 4,
-      "valid_rounds": 4,
+      "native_attempts": 5,
+      "reported_attempts": 5,
+      "valid_rounds": 5,
       "budget": 51,
       "card_id": "RXVG3",
       "environment_name": "DevEnvC_RXVG3",
@@ -735,12 +1576,12 @@
       "verified_at": null,
       "device_request": {
         "card": "RXVG3",
-        "position": 2,
-        "ticket": 17,
+        "position": 3,
+        "ticket": 20,
         "status": "queued",
         "cell_id": "bv26--V1--GDN--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795752005.8265061,
+        "queued_at": 1795752359.8680573,
         "acquired_at": null
       },
       "source_id": "bv-20261126-local-001"
@@ -756,7 +1597,7 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "queued",
+      "phase": "evaluating",
       "native_stage": "l3_search",
       "native_attempts": 47,
       "reported_attempts": 44,
@@ -775,13 +1616,13 @@
       "verified_at": null,
       "device_request": {
         "card": "uYtpx",
-        "position": 2,
+        "position": 1,
         "ticket": 156,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--V1--Sonny--gpt-astra",
         "operation": "eval",
         "queued_at": 1795751791.1510334,
-        "acquired_at": null
+        "acquired_at": 1795752204.9660172
       },
       "source_id": "bv-20261126-local-001"
     },
@@ -796,11 +1637,11 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "evaluating",
+      "phase": "queued",
       "native_stage": "l3_search",
-      "native_attempts": 4,
-      "reported_attempts": 4,
-      "valid_rounds": 4,
+      "native_attempts": 5,
+      "reported_attempts": 5,
+      "valid_rounds": 5,
       "budget": 51,
       "card_id": "RXVG3",
       "environment_name": "DevEnvC_RXVG3",
@@ -815,13 +1656,13 @@
       "verified_at": null,
       "device_request": {
         "card": "RXVG3",
-        "position": 1,
-        "ticket": 16,
-        "status": "running",
+        "position": 2,
+        "ticket": 19,
+        "status": "queued",
         "cell_id": "bv26--V1--Based--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795751948.691489,
-        "acquired_at": 1795752095.191907
+        "queued_at": 1795752266.9113774,
+        "acquired_at": null
       },
       "source_id": "bv-20261126-local-001"
     },
@@ -855,7 +1696,7 @@
       "verified_at": null,
       "device_request": {
         "card": "uYtpx",
-        "position": 3,
+        "position": 2,
         "ticket": 157,
         "status": "queued",
         "cell_id": "bv26--V1-no-arch--Sonny--gpt-astra",
@@ -888,8 +1729,8 @@
   ],
   "kl": {
     "url": "kl.json",
-    "run_count": 0,
-    "source_captured_at": null,
+    "run_count": 1,
+    "source_captured_at": "2026-11-27T04:06:51.650931+00:00",
     "running_runs": [],
     "waiting_cards": [],
     "waiting_runs": [],
@@ -909,11 +1750,11 @@
         "method": "B2",
         "method_version": "B2 · 11/26",
         "status": "running",
-        "phase": "evaluating",
-        "native_stage": "evaluating",
-        "native_attempts": 41,
-        "reported_attempts": 41,
-        "valid_rounds": 41,
+        "phase": "queued",
+        "native_stage": "ready",
+        "native_attempts": 42,
+        "reported_attempts": 42,
+        "valid_rounds": 42,
         "budget": 51,
         "card_id": "uYtpx",
         "environment_name": "DevEnvC_uYtpx",
@@ -928,13 +1769,13 @@
         "verified_at": null,
         "device_request": {
           "card": "uYtpx",
-          "position": 1,
-          "ticket": 155,
-          "status": "running",
+          "position": 3,
+          "ticket": 158,
+          "status": "queued",
           "cell_id": "bv26--B2--Sonny--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751679.7471893,
-          "acquired_at": 1795751969.0154548
+          "queued_at": 1795752278.5475361,
+          "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -949,7 +1790,7 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "queued",
+        "phase": "evaluating",
         "native_stage": "l3_search",
         "native_attempts": 4,
         "reported_attempts": 4,
@@ -968,13 +1809,13 @@
         "verified_at": null,
         "device_request": {
           "card": "RXVG3",
-          "position": 3,
+          "position": 1,
           "ticket": 18,
-          "status": "queued",
+          "status": "running",
           "cell_id": "bv26--V1--GQA--gpt-astra",
           "operation": "eval",
           "queued_at": 1795752096.8672533,
-          "acquired_at": null
+          "acquired_at": 1795752331.5293238
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -991,9 +1832,9 @@
         "status": "running",
         "phase": "queued",
         "native_stage": "l3_search",
-        "native_attempts": 4,
-        "reported_attempts": 4,
-        "valid_rounds": 4,
+        "native_attempts": 5,
+        "reported_attempts": 5,
+        "valid_rounds": 5,
         "budget": 51,
         "card_id": "RXVG3",
         "environment_name": "DevEnvC_RXVG3",
@@ -1008,12 +1849,12 @@
         "verified_at": null,
         "device_request": {
           "card": "RXVG3",
-          "position": 2,
-          "ticket": 17,
+          "position": 3,
+          "ticket": 20,
           "status": "queued",
           "cell_id": "bv26--V1--GDN--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795752005.8265061,
+          "queued_at": 1795752359.8680573,
           "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
@@ -1029,7 +1870,7 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "queued",
+        "phase": "evaluating",
         "native_stage": "l3_search",
         "native_attempts": 47,
         "reported_attempts": 44,
@@ -1048,13 +1889,13 @@
         "verified_at": null,
         "device_request": {
           "card": "uYtpx",
-          "position": 2,
+          "position": 1,
           "ticket": 156,
-          "status": "queued",
+          "status": "running",
           "cell_id": "bv26--V1--Sonny--gpt-astra",
           "operation": "eval",
           "queued_at": 1795751791.1510334,
-          "acquired_at": null
+          "acquired_at": 1795752204.9660172
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -1069,11 +1910,11 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "evaluating",
+        "phase": "queued",
         "native_stage": "l3_search",
-        "native_attempts": 4,
-        "reported_attempts": 4,
-        "valid_rounds": 4,
+        "native_attempts": 5,
+        "reported_attempts": 5,
+        "valid_rounds": 5,
         "budget": 51,
         "card_id": "RXVG3",
         "environment_name": "DevEnvC_RXVG3",
@@ -1088,13 +1929,13 @@
         "verified_at": null,
         "device_request": {
           "card": "RXVG3",
-          "position": 1,
-          "ticket": 16,
-          "status": "running",
+          "position": 2,
+          "ticket": 19,
+          "status": "queued",
           "cell_id": "bv26--V1--Based--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751948.691489,
-          "acquired_at": 1795752095.191907
+          "queued_at": 1795752266.9113774,
+          "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -1128,7 +1969,7 @@
         "verified_at": null,
         "device_request": {
           "card": "uYtpx",
-          "position": 3,
+          "position": 2,
           "ticket": 157,
           "status": "queued",
           "cell_id": "bv26--V1-no-arch--Sonny--gpt-astra",
@@ -9914,8 +10755,83 @@
   "frontend_version": "current-layout-20261127",
   "workspaces": {
     "schema_version": 1,
-    "updated_at": "2026-11-27T04:03:11.779321+00:00",
+    "updated_at": "2026-11-27T04:06:51.650931+00:00",
     "rows": [
+      {
+        "id": "upload-hel19-b1b64104145b4950d85fbd57",
+        "dataset": "Mega",
+        "method": "KL",
+        "method_version": "KL",
+        "model": "Astra 6.2",
+        "effort": "high",
+        "status": "ended",
+        "started_at": "2026-11-21T03:55:20.261843+00:00",
+        "finished_at": "2026-11-22T12:50:39.329983+00:00",
+        "verified_at": null,
+        "independently_complete": false,
+        "workspace_path": null,
+        "source_id": "hel19-upload-v1"
+      },
+      {
+        "id": "upload-hel19-7bdcb56dba2353be3cbbcb5a",
+        "dataset": "FlashMLA",
+        "method": "CAKE",
+        "method_version": "CAKE",
+        "model": "Astra 6.2",
+        "effort": "high",
+        "status": "ended",
+        "started_at": "2026-11-26T14:46:41.356105+00:00",
+        "finished_at": "2026-11-27T01:44:48.040563+00:00",
+        "verified_at": null,
+        "independently_complete": false,
+        "workspace_path": null,
+        "source_id": "hel19-upload-v1"
+      },
+      {
+        "id": "upload-hel19-83494f7f35c8e6876737255f",
+        "dataset": "GQA",
+        "method": "CAKE",
+        "method_version": "CAKE",
+        "model": "Sol 6.2",
+        "effort": "medium",
+        "status": "ended",
+        "started_at": "2026-11-26T05:34:39.081405+00:00",
+        "finished_at": "2026-11-26T14:23:41.703563+00:00",
+        "verified_at": null,
+        "independently_complete": false,
+        "workspace_path": null,
+        "source_id": "hel19-upload-v1"
+      },
+      {
+        "id": "upload-hel19-af6ec27890035cad05587692",
+        "dataset": "FA3",
+        "method": "CAKE",
+        "method_version": "CAKE",
+        "model": "Astra 6.2",
+        "effort": "high",
+        "status": "ended",
+        "started_at": "2026-11-26T14:45:40.294956+00:00",
+        "finished_at": "2026-11-26T23:41:07.535194+00:00",
+        "verified_at": null,
+        "independently_complete": false,
+        "workspace_path": null,
+        "source_id": "hel19-upload-v1"
+      },
+      {
+        "id": "upload-hel19-b0750fa85773695a20c9d1ff",
+        "dataset": "Based",
+        "method": "CAKE",
+        "method_version": "CAKE",
+        "model": "Sol 6.2",
+        "effort": "medium",
+        "status": "ended",
+        "started_at": "2026-11-26T05:35:33.952247+00:00",
+        "finished_at": "2026-11-26T14:13:50.628446+00:00",
+        "verified_at": null,
+        "independently_complete": false,
+        "workspace_path": null,
+        "source_id": "hel19-upload-v1"
+      },
       {
         "id": "bv26--B2--Sonny--gpt-astra",
         "dataset": "Sonny",
@@ -9927,11 +10843,11 @@
         "method": "B2",
         "method_version": "B2 · 11/26",
         "status": "running",
-        "phase": "evaluating",
-        "native_stage": "evaluating",
-        "native_attempts": 41,
-        "reported_attempts": 41,
-        "valid_rounds": 41,
+        "phase": "queued",
+        "native_stage": "ready",
+        "native_attempts": 42,
+        "reported_attempts": 42,
+        "valid_rounds": 42,
         "budget": 51,
         "card_id": "uYtpx",
         "environment_name": "DevEnvC_uYtpx",
@@ -9946,13 +10862,13 @@
         "verified_at": null,
         "device_request": {
           "card": "uYtpx",
-          "position": 1,
-          "ticket": 155,
-          "status": "running",
+          "position": 3,
+          "ticket": 158,
+          "status": "queued",
           "cell_id": "bv26--B2--Sonny--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751679.7471893,
-          "acquired_at": 1795751969.0154548
+          "queued_at": 1795752278.5475361,
+          "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -9967,7 +10883,7 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "queued",
+        "phase": "evaluating",
         "native_stage": "l3_search",
         "native_attempts": 4,
         "reported_attempts": 4,
@@ -9986,13 +10902,13 @@
         "verified_at": null,
         "device_request": {
           "card": "RXVG3",
-          "position": 3,
+          "position": 1,
           "ticket": 18,
-          "status": "queued",
+          "status": "running",
           "cell_id": "bv26--V1--GQA--gpt-astra",
           "operation": "eval",
           "queued_at": 1795752096.8672533,
-          "acquired_at": null
+          "acquired_at": 1795752331.5293238
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -10009,9 +10925,9 @@
         "status": "running",
         "phase": "queued",
         "native_stage": "l3_search",
-        "native_attempts": 4,
-        "reported_attempts": 4,
-        "valid_rounds": 4,
+        "native_attempts": 5,
+        "reported_attempts": 5,
+        "valid_rounds": 5,
         "budget": 51,
         "card_id": "RXVG3",
         "environment_name": "DevEnvC_RXVG3",
@@ -10026,12 +10942,12 @@
         "verified_at": null,
         "device_request": {
           "card": "RXVG3",
-          "position": 2,
-          "ticket": 17,
+          "position": 3,
+          "ticket": 20,
           "status": "queued",
           "cell_id": "bv26--V1--GDN--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795752005.8265061,
+          "queued_at": 1795752359.8680573,
           "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
@@ -10047,7 +10963,7 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "queued",
+        "phase": "evaluating",
         "native_stage": "l3_search",
         "native_attempts": 47,
         "reported_attempts": 44,
@@ -10066,13 +10982,13 @@
         "verified_at": null,
         "device_request": {
           "card": "uYtpx",
-          "position": 2,
+          "position": 1,
           "ticket": 156,
-          "status": "queued",
+          "status": "running",
           "cell_id": "bv26--V1--Sonny--gpt-astra",
           "operation": "eval",
           "queued_at": 1795751791.1510334,
-          "acquired_at": null
+          "acquired_at": 1795752204.9660172
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -10087,11 +11003,11 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "evaluating",
+        "phase": "queued",
         "native_stage": "l3_search",
-        "native_attempts": 4,
-        "reported_attempts": 4,
-        "valid_rounds": 4,
+        "native_attempts": 5,
+        "reported_attempts": 5,
+        "valid_rounds": 5,
         "budget": 51,
         "card_id": "RXVG3",
         "environment_name": "DevEnvC_RXVG3",
@@ -10106,13 +11022,13 @@
         "verified_at": null,
         "device_request": {
           "card": "RXVG3",
-          "position": 1,
-          "ticket": 16,
-          "status": "running",
+          "position": 2,
+          "ticket": 19,
+          "status": "queued",
           "cell_id": "bv26--V1--Based--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751948.691489,
-          "acquired_at": 1795752095.191907
+          "queued_at": 1795752266.9113774,
+          "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -10146,7 +11062,7 @@
         "verified_at": null,
         "device_request": {
           "card": "uYtpx",
-          "position": 3,
+          "position": 2,
           "ticket": 157,
           "status": "queued",
           "cell_id": "bv26--V1-no-arch--Sonny--gpt-astra",
@@ -10175,14 +11091,14 @@
       "FlashKDA"
     ],
     "counts": {
-      "tasks": 0,
+      "tasks": 4,
       "running": 0,
       "complete": 0,
-      "evaluations": 0
+      "evaluations": 257
     },
     "running_runs": [],
     "paused": true,
-    "captured_at": null,
+    "captured_at": "2026-11-27T04:06:51.650931+00:00",
     "windows_url": "cannbot-windows.json"
   },
   "collaborators": {
@@ -10208,7 +11124,12 @@
       "bv26--V1--GDN--gpt-astra",
       "bv26--V1--GQA--gpt-astra",
       "bv26--V1--Sonny--gpt-astra",
-      "bv26--V1-no-arch--Sonny--gpt-astra"
+      "bv26--V1-no-arch--Sonny--gpt-astra",
+      "upload-hel19-7bdcb56dba2353be3cbbcb5a",
+      "upload-hel19-83494f7f35c8e6876737255f",
+      "upload-hel19-af6ec27890035cad05587692",
+      "upload-hel19-b0750fa85773695a20c9d1ff",
+      "upload-hel19-b1b64104145b4950d85fbd57"
     ]
   },
   "bv_20261126": {
@@ -10263,26 +11184,16 @@
         {
           "card": "uYtpx",
           "position": 1,
-          "ticket": 155,
+          "ticket": 156,
           "status": "running",
-          "cell_id": "bv26--B2--Sonny--gpt-astra",
+          "cell_id": "bv26--V1--Sonny--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751679.7471893,
-          "acquired_at": 1795751969.0154548
+          "queued_at": 1795751791.1510334,
+          "acquired_at": 1795752204.9660172
         },
         {
           "card": "uYtpx",
           "position": 2,
-          "ticket": 156,
-          "status": "queued",
-          "cell_id": "bv26--V1--Sonny--gpt-astra",
-          "operation": "eval",
-          "queued_at": 1795751791.1510334,
-          "acquired_at": null
-        },
-        {
-          "card": "uYtpx",
-          "position": 3,
           "ticket": 157,
           "status": "queued",
           "cell_id": "bv26--V1-no-arch--Sonny--gpt-astra",
@@ -10291,33 +11202,43 @@
           "acquired_at": null
         },
         {
+          "card": "uYtpx",
+          "position": 3,
+          "ticket": 158,
+          "status": "queued",
+          "cell_id": "bv26--B2--Sonny--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795752278.5475361,
+          "acquired_at": null
+        },
+        {
           "card": "RXVG3",
           "position": 1,
-          "ticket": 16,
+          "ticket": 18,
           "status": "running",
-          "cell_id": "bv26--V1--Based--gpt-astra",
+          "cell_id": "bv26--V1--GQA--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795751948.691489,
-          "acquired_at": 1795752095.191907
+          "queued_at": 1795752096.8672533,
+          "acquired_at": 1795752331.5293238
         },
         {
           "card": "RXVG3",
           "position": 2,
-          "ticket": 17,
+          "ticket": 19,
           "status": "queued",
-          "cell_id": "bv26--V1--GDN--gpt-astra",
+          "cell_id": "bv26--V1--Based--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795752005.8265061,
+          "queued_at": 1795752266.9113774,
           "acquired_at": null
         },
         {
           "card": "RXVG3",
           "position": 3,
-          "ticket": 18,
+          "ticket": 20,
           "status": "queued",
-          "cell_id": "bv26--V1--GQA--gpt-astra",
+          "cell_id": "bv26--V1--GDN--gpt-astra",
           "operation": "eval",
-          "queued_at": 1795752096.8672533,
+          "queued_at": 1795752359.8680573,
           "acquired_at": null
         }
       ],
@@ -10343,8 +11264,8 @@
         "revision": 1,
         "run": "cake-astra-flashmla",
         "suite": "flashmla-dense-decode-sm90",
-        "edition": "history",
-        "data": "collaborator-history.json"
+        "edition": "current",
+        "data": "cannbot.json"
       },
       {
         "campaign": "hel19-kl-cb-v1r1area-202611",
@@ -10356,8 +11277,8 @@
         "revision": 1,
         "run": "cake-sol-gqa",
         "suite": "flashinfer-gqa-decode-a100",
-        "edition": "history",
-        "data": "collaborator-history.json"
+        "edition": "current",
+        "data": "cannbot.json"
       },
       {
         "campaign": "hel19-kl-cb-v1r1area-202611",
@@ -10369,8 +11290,8 @@
         "revision": 1,
         "run": "cake-astra-fa3",
         "suite": "fa3-backward-sm90",
-        "edition": "history",
-        "data": "collaborator-history.json"
+        "edition": "current",
+        "data": "cannbot.json"
       },
       {
         "campaign": "hel19-kl-cb-v1r1area-202611",
@@ -10382,8 +11303,8 @@
         "revision": 1,
         "run": "cake-sol-based",
         "suite": "thunderkittens-based-h100",
-        "edition": "history",
-        "data": "collaborator-history.json"
+        "edition": "current",
+        "data": "cannbot.json"
       },
       {
         "campaign": "hel19-kl-cb-v1r1area-202611",
@@ -10395,8 +11316,8 @@
         "revision": 1,
         "run": "kl-astra-mega",
         "suite": "deepgemm-mega-mhc-sm100",
-        "edition": "history",
-        "data": "collaborator-history.json"
+        "edition": "current",
+        "data": "kl.json"
       }
     ]
   }
