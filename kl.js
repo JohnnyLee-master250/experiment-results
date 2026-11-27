@@ -193,7 +193,7 @@ function alignedView(dataset,series){
 function alignedPeers(dataset,run){return [...(run?[run]:[]),...(klData?.runs.filter(r=>r.dataset===dataset.id&&r.id!==run?.id)||[])];}
 function alignedSeries(dataset,run){
  const series=dataset.runs.filter(r=>r.method!=='B0'&&showBVRun(r,dataset.comparison_scope)&&(comparisonHasB(dataset.comparison_scope)||r.method==='V0')).map(r=>({
-  id:r.id,model:r.model,effort:r.effort,method:methodLabel(r),baseMethod:r.method,available:r.search.length>0,color:comparisonColor(r,dataset.comparison_scope||'aligned'),dash:seriesDash(r),
+  id:r.id,edition:r.edition,model:r.model,effort:r.effort,method:methodLabel(r),baseMethod:r.method,available:r.search.length>0,color:comparisonColor(r,dataset.comparison_scope||'aligned'),dash:seriesDash(r),
   points:r.search.map(p=>({round:p.round,y:p.status==='passed'?p.timing?.mean_ms??null:null,status:p.status,axes:p.axes,recorded_at:p.recorded_at,timing:p.timing,measurement:measurementInfo(r,{...p,y:p.timing?.mean_ms})}))
  }));
  for(const r of alignedPeers(dataset,run))series.push({id:r.id,model:r.model,effort:r.effort,method:'Aligned KL',baseMethod:'KL',available:(r.aligned?.points||[]).some(p=>p.counted),color:comparisonColor({...r,baseMethod:'KL'},dataset.comparison_scope||'aligned'),dash:DASH[r.model]||'',

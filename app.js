@@ -11,7 +11,7 @@ let focusedRun=null,initialRun=new URL(location).searchParams.get('run');
 let eventLimit=12;
 function requestedBVEdition(){return 'all';}
 let bvEdition=requestedBVEdition();
-function methodLabel(run){const label=run?.method_version||run?.method||'';return /^B[0-3]$/.test(label)?label+'-r1':label==='V0'?'V0-r2':label;}
+function methodLabel(run){if(run?.edition==='bv-20261126')return run.baseMethod||run.method;const label=run?.method_version||run?.method||'';return /^B[0-3]$/.test(label)?label+'-r1':label==='V0'?'V0-r2':label;}
 function methodDisplayLabel(run){const label=methodLabel(run);return ['Sol 6.2','DeepSeek'].includes(run?.model)&&/^B[0-3]-r\d+$/.test(label)?label.split('-r')[0]:label;}
 function isComparison(scope=category){return ['aligned','all','all-with-b01'].includes(scope);}
 function comparisonHasB(scope){return scope==='all'||scope==='all-with-b01';}
