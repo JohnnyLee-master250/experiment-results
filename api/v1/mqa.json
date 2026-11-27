@@ -3,7 +3,7 @@
   "suite": "deepgemm-mqa-h800",
   "title": "MQA",
   "workload": "FP8 | SQ2048 SK8192 H32 D64",
-  "updated_at": "2026-11-27T16:53:14.785994+00:00",
+  "updated_at": "2026-11-27T16:58:14.098471+00:00",
   "runs": [
     {
       "id": "astra-mqa-v0",
@@ -15777,7 +15777,7 @@
       "method": "V1",
       "method_version": "V1",
       "status": "running",
-      "phase": "ready",
+      "phase": "evaluating",
       "native_stage": "l3_search",
       "native_attempts": 29,
       "reported_attempts": 27,
@@ -15794,7 +15794,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "uYtpx",
+        "position": 1,
+        "ticket": 463,
+        "status": "running",
+        "cell_id": "bv26--V1--MQA--gpt-sol",
+        "operation": "eval",
+        "queued_at": 1795798478.5108988,
+        "acquired_at": 1795798617.4690063
+      },
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -19146,18 +19155,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 12709.308778584003,
-        "net_duration_seconds": 12331.175530297682,
-        "probe_duration_seconds": 378.13324828632176,
-        "main_tokens": 78324584,
+        "duration_seconds": 12941.73838349618,
+        "net_duration_seconds": 12487.241383878514,
+        "probe_duration_seconds": 454.496999617666,
+        "main_tokens": 80259386,
         "reviewer_tokens": 3581620,
-        "probe_tokens": 190945,
+        "probe_tokens": 232106,
         "main_native": {
-          "totalTokens": 78324584,
-          "inputTokens": 78244143,
-          "cachedInputTokens": 77930368,
-          "outputTokens": 80441,
-          "reasoningOutputTokens": 21072
+          "totalTokens": 80259386,
+          "inputTokens": 80177717,
+          "cachedInputTokens": 79860736,
+          "outputTokens": 81669,
+          "reasoningOutputTokens": 21519
         }
       },
       "search_best_round": 29,
@@ -20051,7 +20060,7 @@
         "method": "V1",
         "method_version": "V1",
         "status": "running",
-        "phase": "ready",
+        "phase": "evaluating",
         "native_stage": "l3_search",
         "native_attempts": 29,
         "reported_attempts": 27,
@@ -20068,7 +20077,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "uYtpx",
+          "position": 1,
+          "ticket": 463,
+          "status": "running",
+          "cell_id": "bv26--V1--MQA--gpt-sol",
+          "operation": "eval",
+          "queued_at": 1795798478.5108988,
+          "acquired_at": 1795798617.4690063
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -29497,24 +29515,34 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/kernel-bridge/V1/workspaces/20261127T132115888578Z-v1-r1-gpt-6.2-sol-medium-deepgemm-mqa-h800-sq2048-sk8192-h32-d64-fp8",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/kernel-bridge/V1",
-        "native_state": "ready",
+        "native_state": "evaluating",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 12709.308778584003,
-          "net_duration_seconds": 12331.175530297682,
-          "probe_duration_seconds": 378.13324828632176,
-          "main_tokens": 78324584,
+          "duration_seconds": 12941.73838349618,
+          "net_duration_seconds": 12487.241383878514,
+          "probe_duration_seconds": 454.496999617666,
+          "main_tokens": 80259386,
           "reviewer_tokens": 3581620,
-          "probe_tokens": 190945,
+          "probe_tokens": 232106,
           "main_native": {
-            "totalTokens": 78324584,
-            "inputTokens": 78244143,
-            "cachedInputTokens": 77930368,
-            "outputTokens": 80441,
-            "reasoningOutputTokens": 21072
+            "totalTokens": 80259386,
+            "inputTokens": 80177717,
+            "cachedInputTokens": 79860736,
+            "outputTokens": 81669,
+            "reasoningOutputTokens": 21519
           }
         },
-        "pytorch_p50_ms": 27.21481990814209
+        "pytorch_p50_ms": 27.21481990814209,
+        "device_request": {
+          "card": "uYtpx",
+          "position": 1,
+          "ticket": 463,
+          "status": "running",
+          "cell_id": "bv26--V1--MQA--gpt-sol",
+          "operation": "eval",
+          "queued_at": 1795798478.5108988,
+          "acquired_at": 1795798617.4690063
+        }
       },
       {
         "dataset": "MQA",
