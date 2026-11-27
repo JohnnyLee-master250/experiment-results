@@ -1,6 +1,6 @@
 {
   "dataset": "GQA",
-  "updated_at": "2026-11-27T08:48:12.500585+00:00",
+  "updated_at": "2026-11-27T08:53:11.828497+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -6248,27 +6248,37 @@
       "card": "RXVG3",
       "environment_id": "204e37e699434e5682bea05cfa7cfe38",
       "run_id": "cb7e2fcb67bf7e0c",
-      "stage": "l2_adapt",
+      "stage": "l3_search",
       "started_at": "2026-11-27T08:42:53.215341+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/kernel-bridge/V1/workspaces/20261127T084253215341Z-v1-r1-gpt-6.2-sol-medium-flashinfer-gqa-decode-a100-single-q32-kv4-d128-l32768-fp16",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/kernel-bridge/V1",
-      "native_state": "reviewing",
+      "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 280.7133529111743,
-        "net_duration_seconds": 218.04269548878074,
-        "probe_duration_seconds": 62.67065742239356,
-        "main_tokens": 1428531,
-        "reviewer_tokens": null,
+        "duration_seconds": 454.18862553685904,
+        "net_duration_seconds": 391.5090036075562,
+        "probe_duration_seconds": 62.67962192930281,
+        "main_tokens": 3112649,
+        "reviewer_tokens": 381062,
         "probe_tokens": 27734,
         "main_native": {
-          "totalTokens": 1428531,
-          "inputTokens": 1418963,
-          "cachedInputTokens": 1317760,
-          "outputTokens": 9568,
-          "reasoningOutputTokens": 192
+          "totalTokens": 3112649,
+          "inputTokens": 3096850,
+          "cachedInputTokens": 2977920,
+          "outputTokens": 15799,
+          "reasoningOutputTokens": 695
         }
+      },
+      "device_request": {
+        "card": "RXVG3",
+        "position": 2,
+        "ticket": 165,
+        "status": "queued",
+        "cell_id": "bv26--V1--GQA--gpt-sol",
+        "operation": "eval",
+        "queued_at": 1795769514.9564817,
+        "acquired_at": null
       }
     },
     {
