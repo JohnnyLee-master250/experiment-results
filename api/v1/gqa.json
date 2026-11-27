@@ -3,7 +3,7 @@
   "suite": "flashinfer-gqa-decode-a100",
   "title": "GQA decode",
   "workload": "FP16 | Q32 KV4 D128 L32768",
-  "updated_at": "2026-11-27T11:03:13.088494+00:00",
+  "updated_at": "2026-11-27T11:13:12.708242+00:00",
   "runs": [
     {
       "id": "bv26--V1--GQA--gpt-astra",
@@ -6273,11 +6273,11 @@
       "device_request": {
         "card": "RXVG3",
         "position": 3,
-        "ticket": 222,
+        "ticket": 226,
         "status": "queued",
         "cell_id": "bv26--V1--GQA--gpt-sol",
-        "operation": "msprof",
-        "queued_at": 1795777325.283679,
+        "operation": "eval",
+        "queued_at": 1795777880.0494668,
         "acquired_at": null
       },
       "source_id": "bv-20261126-local-001",
@@ -8221,18 +8221,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 8344.580257507041,
-        "net_duration_seconds": 8209.033944390714,
+        "duration_seconds": 8906.496552128345,
+        "net_duration_seconds": 8770.950239012018,
         "probe_duration_seconds": 135.54631311632693,
-        "main_tokens": 42554176,
-        "reviewer_tokens": 1662808,
+        "main_tokens": 45660770,
+        "reviewer_tokens": 2206200,
         "probe_tokens": 55028,
         "main_native": {
-          "totalTokens": 42554176,
-          "inputTokens": 42511508,
-          "cachedInputTokens": 42121600,
-          "outputTokens": 42668,
-          "reasoningOutputTokens": 4845
+          "totalTokens": 45660770,
+          "inputTokens": 45616542,
+          "cachedInputTokens": 45218944,
+          "outputTokens": 44228,
+          "reasoningOutputTokens": 5138
         }
       },
       "search_best_round": 19,
@@ -9650,11 +9650,11 @@
         "device_request": {
           "card": "RXVG3",
           "position": 3,
-          "ticket": 222,
+          "ticket": 226,
           "status": "queued",
           "cell_id": "bv26--V1--GQA--gpt-sol",
-          "operation": "msprof",
-          "queued_at": 1795777325.283679,
+          "operation": "eval",
+          "queued_at": 1795777880.0494668,
           "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
@@ -17925,32 +17925,32 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/kernel-bridge/V1/workspaces/20261127T084253215341Z-v1-r1-gpt-6.2-sol-medium-flashinfer-gqa-decode-a100-single-q32-kv4-d128-l32768-fp16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/kernel-bridge/V1",
-        "native_state": "pending_review",
+        "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 8344.580257507041,
-          "net_duration_seconds": 8209.033944390714,
+          "duration_seconds": 8906.496552128345,
+          "net_duration_seconds": 8770.950239012018,
           "probe_duration_seconds": 135.54631311632693,
-          "main_tokens": 42554176,
-          "reviewer_tokens": 1662808,
+          "main_tokens": 45660770,
+          "reviewer_tokens": 2206200,
           "probe_tokens": 55028,
           "main_native": {
-            "totalTokens": 42554176,
-            "inputTokens": 42511508,
-            "cachedInputTokens": 42121600,
-            "outputTokens": 42668,
-            "reasoningOutputTokens": 4845
+            "totalTokens": 45660770,
+            "inputTokens": 45616542,
+            "cachedInputTokens": 45218944,
+            "outputTokens": 44228,
+            "reasoningOutputTokens": 5138
           }
         },
         "pytorch_p50_ms": 6.7809998989105225,
         "device_request": {
           "card": "RXVG3",
           "position": 3,
-          "ticket": 222,
+          "ticket": 226,
           "status": "queued",
           "cell_id": "bv26--V1--GQA--gpt-sol",
-          "operation": "msprof",
-          "queued_at": 1795777325.283679,
+          "operation": "eval",
+          "queued_at": 1795777880.0494668,
           "acquired_at": null
         }
       },
