@@ -1,6 +1,6 @@
 {
   "dataset": "FlashKDA",
-  "updated_at": "2026-11-27T17:18:13.019818+00:00",
+  "updated_at": "2026-11-27T17:23:14.344064+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -183,27 +183,37 @@
       "card": "imkdG",
       "environment_id": "41a832c5c8be46e6a39fcd54e51992f9",
       "run_id": "700fbb0e54ab7bb1",
-      "stage": "l2_adapt",
+      "stage": "l3_search",
       "started_at": "2026-11-27T17:08:11.750594+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/kernel-bridge/V1/workspaces/20261127T170811750594Z-v1-r1-gpt-6.2-astra-high-flashkda-forward-sm90-b1-t8192-h96-d128-bf16-fp32-state",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/kernel-bridge/V1",
-      "native_state": "reviewing",
+      "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 549.607046591118,
-        "net_duration_seconds": 414.4023264143616,
-        "probe_duration_seconds": 135.20472017675638,
-        "main_tokens": 2227064,
-        "reviewer_tokens": 499637,
+        "duration_seconds": 650.7288913056254,
+        "net_duration_seconds": 515.5095747429878,
+        "probe_duration_seconds": 135.2193165626377,
+        "main_tokens": 4114301,
+        "reviewer_tokens": 817299,
         "probe_tokens": 26988,
         "main_native": {
-          "totalTokens": 2227064,
-          "inputTokens": 2217294,
-          "cachedInputTokens": 2117888,
-          "outputTokens": 9770,
-          "reasoningOutputTokens": 581
+          "totalTokens": 4114301,
+          "inputTokens": 4100059,
+          "cachedInputTokens": 3985664,
+          "outputTokens": 14242,
+          "reasoningOutputTokens": 1188
         }
+      },
+      "device_request": {
+        "card": "imkdG",
+        "position": 2,
+        "ticket": 3,
+        "status": "queued",
+        "cell_id": "bv26--V1--FlashKDA--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795800038.7040844,
+        "acquired_at": null
       }
     },
     {
