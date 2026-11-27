@@ -3,7 +3,7 @@
   "suite": "gdn-prefill-sm100",
   "title": "GDN prefill",
   "workload": "FP16 | S2048 QK16 V32 D128",
-  "updated_at": "2026-11-27T04:43:11.659453+00:00",
+  "updated_at": "2026-11-27T04:48:11.462826+00:00",
   "runs": [
     {
       "id": "bv26--V1--GDN--gpt-astra",
@@ -18,7 +18,7 @@
       "status": "running",
       "phase": "ready",
       "native_stage": "l3_search",
-      "native_attempts": 12,
+      "native_attempts": 13,
       "reported_attempts": 11,
       "valid_rounds": 11,
       "budget": 51,
@@ -1463,6 +1463,15 @@
           },
           "pytorch": null,
           "job_id": "01a21b4e-a434-77de-8aee-13acb26bca62"
+        },
+        {
+          "round": 13,
+          "role": "candidate",
+          "status": "unclassified",
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "job_id": "01a21b54-55c3-7c8a-9458-8db39743b619"
         }
       ],
       "formal": null,
@@ -1472,24 +1481,24 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 4929.590774200857,
-        "net_duration_seconds": 4769.431291483343,
-        "probe_duration_seconds": 160.15948271751404,
-        "main_tokens": 15396823,
+        "duration_seconds": 5226.567678991705,
+        "net_duration_seconds": 5066.361824952066,
+        "probe_duration_seconds": 160.20585403963923,
+        "main_tokens": 16613301,
         "reviewer_tokens": 461119,
         "probe_tokens": 44964,
         "main_native": {
-          "totalTokens": 15396823,
-          "inputTokens": 15369974,
-          "cachedInputTokens": 15134208,
-          "outputTokens": 26849,
-          "reasoningOutputTokens": 4909
+          "totalTokens": 16613301,
+          "inputTokens": 16580628,
+          "cachedInputTokens": 16343936,
+          "outputTokens": 32673,
+          "reasoningOutputTokens": 6549
         }
       },
       "search_best_round": 10,
       "search_best_ms": 6.358019828796387,
       "valid_measurements": 11,
-      "excluded_records": 1
+      "excluded_records": 2
     }
   ],
   "slots": [
@@ -2895,7 +2904,7 @@
         "status": "running",
         "phase": "ready",
         "native_stage": "l3_search",
-        "native_attempts": 12,
+        "native_attempts": 13,
         "reported_attempts": 11,
         "valid_rounds": 11,
         "budget": 51,
@@ -3237,7 +3246,7 @@
         "method": "V1",
         "model": "gpt-6.2-astra",
         "status": "running",
-        "native_attempts": 12,
+        "native_attempts": 13,
         "valid_rounds": 11,
         "attempts": [
           {
@@ -4631,6 +4640,17 @@
             "native_outcome": "passed",
             "job_id": "01a21b4e-a434-77de-8aee-13acb26bca62",
             "job_status": "succeeded"
+          },
+          {
+            "number": 13,
+            "outcome": "unclassified",
+            "timing": null,
+            "pytorch": null,
+            "correct_trials": 0,
+            "total_trials": 5,
+            "native_outcome": "failed",
+            "job_id": "01a21b54-55c3-7c8a-9458-8db39743b619",
+            "job_status": "failed"
           }
         ],
         "budget": 51,
@@ -4651,18 +4671,18 @@
         "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 4929.590774200857,
-          "net_duration_seconds": 4769.431291483343,
-          "probe_duration_seconds": 160.15948271751404,
-          "main_tokens": 15396823,
+          "duration_seconds": 5226.567678991705,
+          "net_duration_seconds": 5066.361824952066,
+          "probe_duration_seconds": 160.20585403963923,
+          "main_tokens": 16613301,
           "reviewer_tokens": 461119,
           "probe_tokens": 44964,
           "main_native": {
-            "totalTokens": 15396823,
-            "inputTokens": 15369974,
-            "cachedInputTokens": 15134208,
-            "outputTokens": 26849,
-            "reasoningOutputTokens": 4909
+            "totalTokens": 16613301,
+            "inputTokens": 16580628,
+            "cachedInputTokens": 16343936,
+            "outputTokens": 32673,
+            "reasoningOutputTokens": 6549
           }
         },
         "pytorch_p50_ms": 177.21075439453125

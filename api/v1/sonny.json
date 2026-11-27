@@ -3,7 +3,7 @@
   "suite": "sonny-mha-forward-rtx3090",
   "title": "FA forward",
   "workload": "FP16 | B16 S4096 H16 D128 | noncausal",
-  "updated_at": "2026-11-27T04:43:11.659453+00:00",
+  "updated_at": "2026-11-27T04:48:11.462826+00:00",
   "runs": [
     {
       "id": "bv26--B2--Sonny--gpt-astra",
@@ -5411,14 +5411,14 @@
         "duration_seconds": 36971.47184490785,
         "net_duration_seconds": 35714.691680310294,
         "probe_duration_seconds": 1256.780164597556,
-        "main_tokens": 118706782,
+        "main_tokens": 118891862,
         "reviewer_tokens": 2372555,
         "probe_tokens": 661864,
         "main_native": {
-          "totalTokens": 118706782,
-          "inputTokens": 118611800,
-          "cachedInputTokens": 118328704,
-          "outputTokens": 94982,
+          "totalTokens": 118891862,
+          "inputTokens": 118796755,
+          "cachedInputTokens": 118513024,
+          "outputTokens": 95107,
           "reasoningOutputTokens": 26155
         }
       },
@@ -5438,7 +5438,7 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "ready",
+      "phase": "queued",
       "native_stage": "l3_search",
       "native_attempts": 51,
       "reported_attempts": 48,
@@ -5455,7 +5455,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "uYtpx",
+        "position": 3,
+        "ticket": 168,
+        "status": "queued",
+        "cell_id": "bv26--V1--Sonny--gpt-astra",
+        "operation": "finish",
+        "queued_at": 1795754598.9015362,
+        "acquired_at": null
+      },
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -11318,15 +11327,15 @@
         "duration_seconds": 37211.028563283384,
         "net_duration_seconds": 35374.773208689076,
         "probe_duration_seconds": 1479.4994996339083,
-        "main_tokens": 114838181,
+        "main_tokens": 115576032,
         "reviewer_tokens": 1986827,
         "probe_tokens": 813252,
         "main_native": {
-          "totalTokens": 114838181,
-          "inputTokens": 114758772,
-          "cachedInputTokens": 114401024,
-          "outputTokens": 79409,
-          "reasoningOutputTokens": 15307
+          "totalTokens": 115576032,
+          "inputTokens": 115496336,
+          "cachedInputTokens": 115137792,
+          "outputTokens": 79696,
+          "reasoningOutputTokens": 15320
         }
       },
       "search_best_round": 51,
@@ -17014,14 +17023,14 @@
         "duration_seconds": 37201.98009336181,
         "net_duration_seconds": 35387.68237703281,
         "probe_duration_seconds": 1432.4362209998071,
-        "main_tokens": 110384222,
+        "main_tokens": 110766352,
         "reviewer_tokens": 2856121,
         "probe_tokens": 778305,
         "main_native": {
-          "totalTokens": 110384222,
-          "inputTokens": 110308127,
-          "cachedInputTokens": 109931264,
-          "outputTokens": 76095,
+          "totalTokens": 110766352,
+          "inputTokens": 110690132,
+          "cachedInputTokens": 110312832,
+          "outputTokens": 76220,
           "reasoningOutputTokens": 12533
         }
       },
@@ -18355,7 +18364,7 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "ready",
+        "phase": "queued",
         "native_stage": "l3_search",
         "native_attempts": 51,
         "reported_attempts": 48,
@@ -18372,7 +18381,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "uYtpx",
+          "position": 3,
+          "ticket": 168,
+          "status": "queued",
+          "cell_id": "bv26--V1--Sonny--gpt-astra",
+          "operation": "finish",
+          "queued_at": 1795754598.9015362,
+          "acquired_at": null
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -23845,14 +23863,14 @@
           "duration_seconds": 36971.47184490785,
           "net_duration_seconds": 35714.691680310294,
           "probe_duration_seconds": 1256.780164597556,
-          "main_tokens": 118706782,
+          "main_tokens": 118891862,
           "reviewer_tokens": 2372555,
           "probe_tokens": 661864,
           "main_native": {
-            "totalTokens": 118706782,
-            "inputTokens": 118611800,
-            "cachedInputTokens": 118328704,
-            "outputTokens": 94982,
+            "totalTokens": 118891862,
+            "inputTokens": 118796755,
+            "cachedInputTokens": 118513024,
+            "outputTokens": 95107,
             "reasoningOutputTokens": 26155
           }
         },
@@ -29694,18 +29712,28 @@
           "duration_seconds": 37211.028563283384,
           "net_duration_seconds": 35374.773208689076,
           "probe_duration_seconds": 1479.4994996339083,
-          "main_tokens": 114838181,
+          "main_tokens": 115576032,
           "reviewer_tokens": 1986827,
           "probe_tokens": 813252,
           "main_native": {
-            "totalTokens": 114838181,
-            "inputTokens": 114758772,
-            "cachedInputTokens": 114401024,
-            "outputTokens": 79409,
-            "reasoningOutputTokens": 15307
+            "totalTokens": 115576032,
+            "inputTokens": 115496336,
+            "cachedInputTokens": 115137792,
+            "outputTokens": 79696,
+            "reasoningOutputTokens": 15320
           }
         },
-        "pytorch_p50_ms": 187.0892791748047
+        "pytorch_p50_ms": 187.0892791748047,
+        "device_request": {
+          "card": "uYtpx",
+          "position": 3,
+          "ticket": 168,
+          "status": "queued",
+          "cell_id": "bv26--V1--Sonny--gpt-astra",
+          "operation": "finish",
+          "queued_at": 1795754598.9015362,
+          "acquired_at": null
+        }
       },
       {
         "dataset": "Sonny",
@@ -35269,14 +35297,14 @@
           "duration_seconds": 37201.98009336181,
           "net_duration_seconds": 35387.68237703281,
           "probe_duration_seconds": 1432.4362209998071,
-          "main_tokens": 110384222,
+          "main_tokens": 110766352,
           "reviewer_tokens": 2856121,
           "probe_tokens": 778305,
           "main_native": {
-            "totalTokens": 110384222,
-            "inputTokens": 110308127,
-            "cachedInputTokens": 109931264,
-            "outputTokens": 76095,
+            "totalTokens": 110766352,
+            "inputTokens": 110690132,
+            "cachedInputTokens": 110312832,
+            "outputTokens": 76220,
             "reasoningOutputTokens": 12533
           }
         },
