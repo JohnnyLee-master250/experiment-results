@@ -159,7 +159,9 @@ function betaMenus(){
  // Only replace a menu whose entries changed, so a periodic refresh never
  // restarts the reveal animation under the pointer.
  const fill=(selector,html)=>{const el=$(selector);if(el.dataset.menuHtml!==html){el.dataset.menuHtml=html;el.innerHTML=html;}};
- fill('#beta-result-menu',betaConfig.result_sections.map(s=>`<button data-beta-category="${esc(s.id)}">${esc(s.label)}${s.status==='planned'?'<small>待接入</small>':''}</button>`).join(''));
+ fill('#beta-result-menu',betaConfig.result_sections.map(s=>`<button data-beta-category="${esc(s.id)}">${esc(s.label)}${s.status==='planned'?'<small>待接入</small>':''}</button>`+(s.id==='kl'?'<button data-beta-view="cannbot">CannBot <small>CAKE</small></button>':'')).join(''));
+ const cakeLink=$('#beta-result-menu [data-beta-view="cannbot"]');
+ if(cakeLink)cakeLink.onclick=()=>{betaShowView('cannbot',true);betaCloseMenu();};
  fill('#beta-dataset-menu',(manifest?.datasets||[]).map(d=>`<button data-beta-dataset="${esc(d.id)}">${esc(d.id)}</button>`).join(''));
  // Queue cards come from the rendered waiting lists, so each entry has a real target.
  fill('#beta-queue-card-menu',$$('#waiting-links .waiting-list[data-card]').map(list=>`<button data-beta-queue="${esc(list.dataset.card)}">${esc(list.closest('.waiting-card')?.querySelector('.waiting-card-heading strong')?.textContent||list.dataset.card)}</button>`).join(''));
@@ -265,6 +267,10 @@ finishResultRequest=function(request,error=null){
 };
 function betaControlInfo(label){
  const input=label?.querySelector('input[type=checkbox]');if(!input||input.disabled)return null;
+ if(label.closest('#cake-series')){
+  const ids=input.dataset.alignedRun?[input.dataset.alignedRun]:[...label.closest('.model-group').querySelectorAll('.chips input:enabled')].map(el=>el.dataset.alignedRun);
+  return {scope:'#beta-cannbot-view',ids};
+ }
  if(input.dataset.series)return {scope:'bv',ids:[input.dataset.series]};
  if(input.dataset.curveGroup){const group=label.closest('.model-group'),ids=[...group.querySelectorAll('.chips input:not(:disabled)')].map(el=>el.dataset.series||el.dataset.alignedRun);return {scope:input.dataset.groupScope==='bv'?'bv':'#aligned-content',ids};}
  if(input.dataset.modelCheck)return {scope:'bv',ids:data.runs.filter(r=>r.model===input.dataset.modelCheck&&usable(r)&&r.method!=='B0').map(r=>r.id)};
@@ -401,7 +407,8 @@ function betaHighlightCurves(){
  }
 }
 function betaRedrawPreview(scope){
- if(scope==='bv')renderCharts();
+ if(scope==='#beta-cannbot-view')window.cannbotDashboard?.redraw();
+ else if(scope==='bv')renderCharts();
  else if(scope==='kl')renderKL();
  else if(scope.startsWith('ref:')){const args=betaKLChartArgs.get(scope.slice(4));if(args)klChart(...args);}
  else {const s=betaAlignedSources.get(scope);if(s)renderAligned(scope,s.dataset,s.run,true);}
@@ -855,28 +862,100 @@ window.cannbotDashboard=(()=>{
   const url=new URL(location);url.searchParams.set('cake_dataset',dataset);url.searchParams.set('cake_model',model);
   history.replaceState(null,'',url);
  }
- function chart(run){
-  const points=run.evaluations.filter(p=>p.latency_ms!=null&&p.evaluation_index!=null);
-  if(!points.length)return '<div class="cake-empty"><span class="cake-empty-mark">—</span><strong>待产生有效测量</strong><span>每轮 3 个候选 · 最多 20 轮</span></div>';
-  const width=800,height=330,left=65,right=25,top=20,bottom=45,maxX=Math.max(1,...points.map(p=>p.evaluation_index)),maxY=Math.max(...points.map(p=>p.latency_ms))*1.12;
-  const x=n=>left+(width-left-right)*n/maxX,y=n=>height-bottom-(height-top-bottom)*n/maxY;
-  const ticks=Array.from({length:5},(_,i)=>maxY*i/4);
-  let best=Infinity;const steps=[];
-  for(const p of points){if(steps.length)steps.push(`${x(p.evaluation_index)},${y(best)}`);best=Math.min(best,p.latency_ms);steps.push(`${x(p.evaluation_index)},${y(best)}`);}
-  return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="CannBot 候选测量 P50，按有效评测序号排列" style="--cake-color:${colors[run.model]}">${ticks.map(v=>`<line x1="${left}" x2="${width-right}" y1="${y(v)}" y2="${y(v)}" class="cake-grid"/><text x="${left-10}" y="${y(v)+4}" text-anchor="end">${fmt(v)}</text>`).join('')}<polyline points="${steps.join(' ')}" fill="none" stroke="var(--cake-color)" stroke-width="2.5"/>${points.map(p=>`<circle cx="${x(p.evaluation_index)}" cy="${y(p.latency_ms)}" r="4" fill="var(--cake-color)"><title>第 ${p.round} 轮 · 候选 ${p.candidate} · ${fmt(p.latency_ms)} ms</title></circle>`).join('')}<text x="${left}" y="${height-15}">0</text><text x="${width-right}" y="${height-15}" text-anchor="end">${maxX}</text><text x="${width/2}" y="${height-10}" text-anchor="middle">有效评测</text></svg>`;
+ let lastWidth=0;
+ const views=new Map();
+ function chartRun(run){
+  const color=colors[run.model]||'#526c89';
+  const points=(run.evaluations||[]).filter(p=>p.counted!==false&&Number.isInteger(p.evaluation_index)).map(p=>{
+   const y=p.outcome==='passed'&&Number.isFinite(p.latency_ms)&&p.latency_ms>0?p.latency_ms:null;
+   const name='评测 '+p.evaluation_index+' · 第 '+(p.round??'—')+' 轮 · 候选 '+(p.candidate??'—');
+   const timing=p.timing||(p.samples_ms?.length?{samples_ms:p.samples_ms,sample_count:p.samples_ms.length,statistic:'p50'}:null);
+   const measurement=y==null?null:measurementInfo(run,{round:p.round,y,timing},{dataset:run.dataset,method:'CannBot',color,pointKey:p.evaluation_index,pointLabel:name,statisticLabel:'P50'});
+   return {index:p.evaluation_index,round:p.round,candidate:p.candidate,name,y,timing,measurement,axes:p.axes,status:p.outcome};
+  }).sort((a,b)=>a.index-b.index);
+  return {id:run.id,name:run.model+' · CannBot',model:run.model,method:'CannBot',baseMethod:'CannBot',effort:run.effort,color,points,available:points.length>0};
+ }
+ function drawChart(){
+  if(!snapshot||betaView!=='cannbot')return;
+  const chart=q('#cake-chart'),rows=snapshot.runs.filter(r=>r.dataset===dataset);
+  // Published slots can carry a different edition from the live run in that slot.
+  const models=[...new Set(rows.map(r=>r.model))];
+  const series=models.flatMap(model=>{
+   const group=rows.filter(r=>r.model===model),actual=group.filter(r=>!snapshot.slots?.includes(r));
+   const runs=actual.length?actual:[group.find(r=>r.evaluations?.length)||group[0]];
+   return runs.map(r=>({...chartRun(r),legendSuffix:runs.length>1?' · '+r.id.slice(-8):''}));
+  });
+  if(!views.has(dataset))views.set(dataset,{axis:'round',mode:'best',zoom:false,visible:new Set(series.filter(r=>r.available&&r.model===model).map(r=>r.id))});
+  const view=views.get(dataset),scope='cake:'+dataset,windowKey=scope+':'+view.axis;
+  const selected=series.filter(r=>view.visible.has(r.id));
+  const preview=betaPreview?.scope==='#beta-cannbot-view'?betaPreview.ids:[];
+  const lines=series.filter(r=>view.visible.has(r.id)||preview.includes(r.id));
+  chart.dataset.measureContext=scope;
+  const maximum=Math.max(1,...series.flatMap(r=>r.points.map(p=>p.index)));
+  const axisValue=(p,axis)=>axis==='round'?p.index:costAxisValue(p.axes,axis);
+  const axisLabel={round:'有效评测序号',time:'累计时间（分钟）',tokens:'累计 token（百万）'};
+  const cursorLabel=v=>view.axis==='round'?'#'+Math.round(v):tickFmt(v)+(view.axis==='time'?' min':' M token');
+  for(const button of root().querySelectorAll('[data-cake-group]')){
+   const active=comparisonGroupMode('cake')===button.dataset.cakeGroup;
+   button.classList.toggle('selected',active);button.setAttribute('aria-pressed',String(active));
+   button.onclick=()=>{betaSetPreview(null);comparisonGrouping.set('cake',button.dataset.cakeGroup);drawChart();};
+  }
+  renderComparisonControls(q('#cake-series'),series,view.visible,'cake',drawChart);
+  for(const button of q('#cake-axes').querySelectorAll('button')){
+   const axis=button.dataset.cakeAxis;
+   button.disabled=axis!=='round'&&!series.some(r=>r.points.some(p=>Number.isFinite(axisValue(p,axis))));
+   button.title=button.disabled?'尚无逐点评测的'+axisLabel[axis]:'';
+   button.classList.toggle('selected',axis===view.axis);button.setAttribute('aria-pressed',String(axis===view.axis));
+   button.onclick=()=>{view.axis=axis;drawChart();};
+  }
+  for(const button of root().querySelectorAll('[data-cake-mode]')){
+   const active=view.mode===button.dataset.cakeMode;button.setAttribute('aria-pressed',String(active));button.classList.toggle('selected',active);
+   button.onclick=()=>{view.mode=button.dataset.cakeMode;drawChart();};
+  }
+  const zoom=q('#cake-y-mode');zoom.value=view.zoom?'focus':'all';
+  zoom.onchange=()=>{view.zoom=zoom.value==='focus';const window=costWindows.get(windowKey);if(window)delete window.y;drawChart();};
+  chartResetButton(chart,'cake',()=>{
+   for(const axis of Object.keys(axisLabel))costWindows.delete(scope+':'+axis);
+   roundWindows.delete(scope+':'+dataset);view.zoom=false;drawChart();
+  });
+  renderRoundRange(chart,scope,maximum,drawChart,{axis:view.axis,dataset,unit:'评测序号',onRangeChange:()=>costWindows.delete(windowKey)});
+  const range=view.axis==='round'?comparisonWindow(scope,maximum,dataset):null;
+  const options={scope,windowKey,range,best:view.mode==='best',zoom:view.zoom,redraw:drawChart,readout:q('#cake-readout'),
+   emptyText:lines.length?'当前横轴暂无有效评测':series.some(r=>r.available)?'选择曲线':'待产生有效测量',
+   axis:{integer:view.axis==='round',label:axisLabel[view.axis],value:p=>axisValue(p,view.axis),cursorLabel,
+    partial:p=>view.axis==='tokens'&&p.axes?.tokens_complete===false,formatRange:values=>values.map(cursorLabel).join(' – '),
+    detail:p=>p.axes?.tokens_complete===false?'token 记录不完整':''}};
+  if(view.axis==='round')options.applySelection=selection=>{
+   if(selection.useX)roundWindows.set(scope+':'+dataset,selection.rounds);
+   if(selection.useY)costWindows.set(windowKey,{y:selection.latencies});else costWindows.delete(windowKey);
+   drawChart();
+  };
+  costChart(chart,lines,options);
+  q('#cake-csv').disabled=!selected.some(r=>r.points.length);
+  q('#cake-csv').onclick=()=>{
+   const fields=['run_id','dataset','model','effort','evaluation_index','round','candidate','status','p50_ms','elapsed_s','tokens'];
+   const records=selected.flatMap(r=>r.points.map(p=>[r.id,dataset,r.model,r.effort,p.index,p.round,p.candidate,p.status,p.y,p.axes?.elapsed_s,p.axes?.tokens]));
+   download('CannBot-'+dataset+'.csv',[fields,...records].map(row=>row.map(csvCell).join(',')).join('\n'),'text/csv');
+  };
+  q('#cake-chart-json').onclick=()=>q('#cake-json').click();
+  betaDecorateControls();betaHighlightCurves();betaScheduleSliders();
+ }
+ function costAxisValue(axes,axis){
+  const value=axis==='time'?axes?.elapsed_s:axes?.tokens;
+  return Number.isFinite(value)?value/(axis==='time'?60:1e6):null;
  }
  function render(){
   if(!snapshot)return;
   if(!snapshot.datasets.includes(dataset))dataset=snapshot.datasets[0];
   const models=[...new Set(snapshot.runs.map(r=>r.model))];if(!models.includes(model))model=models[0];
   choice(q('#cake-datasets'),snapshot.datasets,dataset,value=>{dataset=value;locationState();render();});
-  choice(q('#cake-models'),models,model,value=>{model=value;locationState();render();});
+  choice(q('#cake-models'),models,model,value=>{model=value;const view=views.get(dataset);if(view)view.visible=new Set(snapshot.runs.filter(r=>r.dataset===dataset&&r.model===model&&r.evaluations?.length).map(r=>r.id));locationState();render();});
   const run=snapshot.runs.find(r=>r.dataset===dataset&&r.model===model);
   q('#cake-phase').textContent=run.status==='not_run'?labels.not_run:snapshot.paused?(run.started_at?'已暂停':'准备已暂停 · 等待框架更新'):labels[run.status]||run.status;
   q('#cake-json').href=(document.body.dataset.apiBase||'./')+'api/v1/cannbot.json';
   const metrics=[['已结算有效轮',`${rounds(run)} / ${run.round_budget}`],['有效评测',fmt(run.valid_evaluations)],['累计时间',run.net_seconds==null?'—':fmt(run.net_seconds/60)+' min'],['累计 token',fmt(run.total_tokens)]];
   q('#cake-metrics').innerHTML=metrics.map(([label,value])=>`<div class="card cake-metric"><span>${label}</span><strong>${value}</strong></div>`).join('');
-  q('#cake-chart').innerHTML=chart(run);q('#cake-evaluation-count').textContent=run.evaluations.length+' 次';
+  drawChart();q('#cake-evaluation-count').textContent=run.evaluations.length+' 次';
   q('#cake-evaluations').innerHTML=run.evaluations.length?`<table><thead><tr><th>评测</th><th>轮次 / 候选</th><th>状态</th><th>P50 ms</th></tr></thead><tbody>${run.evaluations.map(p=>`<tr><td>${p.evaluation_index==null?'—':p.evaluation_index}</td><td>${p.round??'—'} / ${p.candidate??'—'}</td><td>${outcomes[p.outcome]}</td><td>${fmt(p.latency_ms)}</td></tr>`).join('')}</tbody></table>`:'<div class="cake-empty"><span class="cake-empty-mark">—</span><strong>尚无已结算的有效轮</strong></div>';
   const rows=snapshot.runs.filter(r=>scope==='all'||r.dataset===dataset);
   q('#cake-tasks').innerHTML=`<table><thead><tr><th>Kernel</th><th>模型 / effort</th><th>状态</th><th>有效轮</th><th>有效评测</th><th>开始 SGT</th><th>完成 SGT</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.dataset)}</td><td><span class="cake-model-dot" style="background:${colors[r.model]}"></span>${esc(r.model)} <small>${esc(r.effort)}</small></td><td><span class="status ${r.status==='complete'?'complete':'not_run'}">${labels[r.status]||esc(r.status)}</span></td><td>${rounds(r)} / ${r.round_budget}</td><td>${r.valid_evaluations}</td><td>${date(r.started_at)}</td><td>${date(r.finished_at)}</td></tr>`).join('')}</tbody></table>`;
@@ -899,5 +978,6 @@ window.cannbotDashboard=(()=>{
   return pending;
  }
  if(betaView==='cannbot')ensure();
- return {ensure};
+ new ResizeObserver(entries=>{const width=entries[0].contentRect.width;if(width>0&&width!==lastWidth){lastWidth=width;drawChart();}}).observe(q('#cake-chart'));
+ return {ensure,redraw:drawChart};
 })();

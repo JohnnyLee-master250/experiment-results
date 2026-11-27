@@ -206,27 +206,27 @@ function clearCostWindows(scope,dataset=datasetId){const prefix=scope+':'+datase
 function latencyKey(chart,scope,dataset=datasetId){return scope+':'+dataset+':'+(chart.id||'plot');}
 function clearLatencyWindows(scope,dataset=datasetId){const prefix=scope+':'+dataset+':';for(const key of latencyWindows.keys())if(key.startsWith(prefix))latencyWindows.delete(key);}
 function latencyWindow(chart,scope,automatic){return latencyWindows.get(latencyKey(chart,scope))||automatic;}
-function comparisonWindow(scope,maximum){
- const max=Math.max(1,Math.ceil(maximum)),custom=roundWindows.get(scope+':'+datasetId);
+function comparisonWindow(scope,maximum,dataset=datasetId){
+ const max=Math.max(1,Math.ceil(maximum)),custom=roundWindows.get(scope+':'+dataset);
  const hi=custom?Math.max(1,Math.min(max,custom[1])):max;
  return [custom?Math.max(0,Math.min(hi-1,custom[0])):0,hi];
 }
-function renderRoundRange(chart,scope,maximum,redraw){
+function renderRoundRange(chart,scope,maximum,redraw,{dataset=datasetId,axis=axisMode,onRangeChange=()=>clearLatencyWindows(scope,dataset),unit="轮次"}={}){
  let box=chart._rangeBox;
  if(!box?.isConnected){box=document.createElement('div');box.className='comparison-range';chart._rangeBox=box;const parent=speedControlShell(chart)?.querySelector('.round-range-slot');if(parent)parent.append(box);else chart.before(box);}
- box.hidden=axisMode!=='round';if(box.hidden)return;
- const key=scope+':'+datasetId,max=Math.max(1,Math.ceil(maximum)),range=comparisonWindow(scope,max);
+ box.hidden=axis!=='round';if(box.hidden)return;
+ const key=scope+':'+dataset,max=Math.max(1,Math.ceil(maximum)),range=comparisonWindow(scope,max,dataset);
  if(!box.querySelector('input'))box.innerHTML='<output data-range-value="0" aria-label="起始轮次"></output><div class="range-track"><span class="range-selected"></span><input type="range" data-range-bound="0" aria-label="起始轮次" min="0" step="1"><input type="range" data-range-bound="1" aria-label="截止轮次" min="0" step="1"></div><output data-range-value="1" aria-label="截止轮次"></output>';
- box.title='拖动调整轮次范围；双击恢复自动范围';
+ box.title='拖动调整'+unit+'范围；双击恢复自动范围';
  box.dataset.rangeKey=key;
  const inputs=[...box.querySelectorAll('input')];
  inputs.forEach((input,i)=>{
-  input.max=String(max);input.value=String(range[i]);input.setAttribute('aria-valuetext','r'+range[i]);
+  input.setAttribute('aria-label',(i?'截止':'起始')+unit);input.max=String(max);input.value=String(range[i]);input.setAttribute('aria-valuetext','r'+range[i]);
   box.querySelector(`[data-range-value="${i}"]`).textContent=range[i];
   input.onpointerdown=()=>{rangeDragging=true;};
   input.oninput=()=>{
-   clearLatencyWindows(scope);
-   const next=comparisonWindow(scope,max),value=Number(input.value);
+   onRangeChange();
+   const next=comparisonWindow(scope,max,dataset),value=Number(input.value);
    next[i]=i?Math.max(next[0]+1,value):Math.min(next[1]-1,value);if(next[0]===0&&next[1]===max)roundWindows.delete(key);else roundWindows.set(key,next);
    input.value=String(next[i]);box.querySelector(`[data-range-value="${i}"]`).textContent=next[i];
    box.style.setProperty('--range-start',next[0]/max*100+'%');box.style.setProperty('--range-end',next[1]/max*100+'%');
@@ -235,7 +235,7 @@ function renderRoundRange(chart,scope,maximum,redraw){
   };
  });
  box.style.setProperty('--range-start',range[0]/max*100+'%');box.style.setProperty('--range-end',range[1]/max*100+'%');
- box.ondblclick=()=>{roundWindows.delete(key);clearLatencyWindows(scope);redraw();};
+ box.ondblclick=()=>{roundWindows.delete(key);onRangeChange();redraw();};
 }
 window.addEventListener('pointerup',()=>{rangeDragging=false;});
 window.addEventListener('pointercancel',()=>{rangeDragging=false;});
@@ -530,7 +530,7 @@ function renderComparisonControls(host,series,chosen,scope,onChange){
   const effort=!byTask&&new Set(rows.map(r=>r.effort)).size===1?rows[0].effort:'';
   return `<div class="model-group"><div class="model-heading"><button type="button" data-curve-group-title="${esc(key)}" aria-label="切换 ${esc(key)} 全部曲线" ${available.length?'':'disabled'}><strong>${esc(key)}</strong></button>${effort?`<span class="effort">${esc(effort)}</span>`:''}<label class="model-toggle ${mixed?'mixed':''}" title="${n}/${available.length} 条曲线已显示"><span>${available.length?(all?'全部':mixed?'部分':'关闭'):'无曲线'}</span><input type="checkbox" data-curve-group="${esc(key)}" data-group-scope="${scope}" aria-label="${esc(key)} 全部曲线" aria-checked="${mixed?'mixed':String(all)}" ${all?'checked':''} ${available.length?'':'disabled'}></label></div><div class="chips">${rows.map(r=>{
    const ok=r.available!==false,on=ok&&chosen.has(r.id),label=byTask?r.model:r.method==='Aligned KL'?'KL':methodDisplayLabel(r);
-   return `<label class="chip ${on?'active':''} ${ok?'':'disabled'}" style="--color:${r.color}" title="${esc(r.baseMethod==='B0'?'正确性实验，不绘制速度曲线':r.model+' / '+r.effort+' · '+r.method+(ok?'':' · 尚无评测结果'))}"><input type="checkbox" ${inputAttr}="${esc(r.id)}" aria-label="${esc(r.model+' '+r.method+' 曲线')}" ${on?'checked':''} ${ok?'':'disabled'}>${esc(label)}${byTask?`<small>${esc(r.effort)}</small>`:''}</label>`;
+   return `<label class="chip ${on?'active':''} ${ok?'':'disabled'}" style="--color:${r.color}" title="${esc(r.baseMethod==='B0'?'正确性实验，不绘制速度曲线':r.model+' / '+r.effort+' · '+r.method+(ok?'':' · 尚无评测结果'))}"><input type="checkbox" ${inputAttr}="${esc(r.id)}" aria-label="${esc(r.model+' '+r.method+' 曲线')}" ${on?'checked':''} ${ok?'':'disabled'}>${esc(label+(r.legendSuffix||''))}${byTask?`<small>${esc(r.effort)}</small>`:''}</label>`;
   }).join('')}</div></div>`;
  }).join('');
  }
@@ -688,6 +688,11 @@ function applyRange(){
  for(const [key,window] of costWindows)if(key.startsWith('bv:'+datasetId+':'))delete window.y;
  showNotice('');renderCharts();
 }
+function download(filename,content,type){
+ const url=URL.createObjectURL(new Blob([content],{type})),link=document.createElement('a');
+ link.href=url;link.download=filename;document.body.append(link);link.click();link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),10000);
+}
 function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"';}
 $('#csv').onclick=()=>{
  const head=['dataset','model','effort','method','round','role','status','review','mean_ms','p10_ms','p90_ms','samples','pytorch_ms','pytorch_speedup','finished_at','elapsed_seconds','reported_tokens'];
@@ -720,14 +725,15 @@ window.addEventListener('popstate',()=>{document.dispatchEvent(new CustomEvent('
 // All cost views plot the verified coordinate on each record, including failed searches.
 function costChart(el, lines, options={}) {
  configureRoundBrush(el,null);
- const scope=options.scope||category,key=costWindowKey(el,scope,options.viewKey||''),custom=costWindows.get(key);
+ const axis=options.axis,pointX=axis?.value||(p=>costX(p.axes));
+ const scope=options.scope||category,key=options.windowKey||costWindowKey(el,scope,options.viewKey||''),custom=costWindows.get(key);
  const width=Math.max(300,el.clientWidth||700),height=options.height||el.clientHeight||330;
  const pad={l:width<420?51:66,r:20,t:23,b:44};
- const series=lines.map(line=>({...line,points:line.points.filter(p=>Number.isFinite(costX(p.axes)))}));
- const items=series.flatMap(line=>line.points.map(p=>({line,p,x:costX(p.axes)}))).sort((a,b)=>a.x-b.x);
+ const series=lines.map(line=>({...line,points:line.points.filter(p=>Number.isFinite(pointX(p)))}));
+ const items=series.flatMap(line=>line.points.map(p=>({line,p,x:pointX(p)}))).sort((a,b)=>a.x-b.x);
  const note=options.readout;
  if(!items.length){
-  el.innerHTML='<div class="cost-empty">暂无所选曲线的横轴数据</div>';
+  el.innerHTML='<div class="cost-empty">'+esc(options.emptyText||"暂无所选曲线的横轴数据")+'</div>';
   if(note)note.textContent='';
   if(!options.binary)bindMeasurementChart(el,[],scope,options.redraw||renderCharts);
   el.onkeydown=el.onpointermove=null;
@@ -741,14 +747,14 @@ function costChart(el, lines, options={}) {
  let ymin=0,ymax=Math.max(.001,...vals,...refs.map(r=>r.latency_ms))*1.08;
  if(options.zoom&&vals.length){
   const tails=series.flatMap(r=>{
-   const measured=r.points.filter(p=>!p.formal&&Number.isFinite(p.y)&&within(costX(p.axes)));
+   const measured=r.points.filter(p=>!p.formal&&Number.isFinite(p.y)&&within(pointX(p)));
    return measured.length?[Math.min(...measured.map(p=>p.y))]:[];
   }).sort((a,b)=>a-b);
   let cluster=tails;
   for(let i=3;i<tails.length;i++)if(tails[i]/tails[i-1]>=2){cluster=tails.slice(0,i);break;}
   if(cluster.length){const a=cluster[0],b=cluster.at(-1),dy=Math.max((b-a)*.16,b*.04,.000001);ymin=Math.max(0,a-dy);ymax=b+dy;}
  }
- const bandDomain=series.flatMap(r=>bandPoints(r.points,options.best).filter(p=>within(costX(p.axes)))).flatMap(p=>bandValues(p.bandTiming,scope));
+ const bandDomain=series.flatMap(r=>bandPoints(r.points,options.best).filter(p=>within(pointX(p)))).flatMap(p=>bandValues(p.bandTiming,scope));
  if(bandDomain.length){ymin=Math.min(ymin,Math.min(...bandDomain)*.98);ymax=Math.max(ymax,Math.max(...bandDomain)*1.04);}
  if(options.yRange&&Number.isFinite(options.yRange[0])&&options.yRange[1]>options.yRange[0])[ymin,ymax]=options.yRange;
  if(custom?.y&&custom.y[1]>custom.y[0])[ymin,ymax]=custom.y;
@@ -756,9 +762,9 @@ function costChart(el, lines, options={}) {
  const scale=latencyScale(el,scope,[ymin,ymax],[...vals,...bandDomain,...refs.map(r=>r.latency_ms)],pad.t,height-pad.b,options.binary);
  [ymin,ymax]=[scale.min,scale.max];const y=scale.project;
  const base=height-pad.b,clip='cost-clip-'+(el.id||'aligned')+(el.closest('#kl-panel')?'kl':'');
- const label=axisText(),yLabel=(options.yLabel||'延迟 (ms) ↓')+(scale.log?' · log':'');
+ const label=axis?.label||axisText(),yLabel=(options.yLabel||'延迟 (ms) ↓')+(scale.log?' · log':'');
  let svg='<svg viewBox="0 0 '+width+' '+height+'" role="img"><title>'+esc(label+' / '+yLabel)+'</title><defs><clipPath id="'+clip+'"><rect x="'+(pad.l-4)+'" y="'+(pad.t-6)+'" width="'+(width-pad.l-pad.r+8)+'" height="'+(height-pad.t-pad.b+12)+'"/></clipPath></defs>';
- for(const v of ticks(lo,hi,width<480?4:7))svg+='<text data-chart-key="x-tick:'+v+'" x="'+x(v)+'" y="'+(height-22)+'" text-anchor="middle">'+tickFmt(v)+'</text>';
+ for(const v of ticks(lo,hi,width<480?4:7).filter(v=>!axis?.integer||Number.isInteger(v)))svg+='<text data-chart-key="x-tick:'+v+'" x="'+x(v)+'" y="'+(height-22)+'" text-anchor="middle">'+tickFmt(v)+'</text>';
  for(const v of (options.binary?[0,1]:scale.ticks))svg+='<line data-chart-key="y-grid:'+v+'" x1="'+pad.l+'" x2="'+(width-pad.r)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#edf0f4"/><text data-chart-key="y-tick:'+v+'" x="'+(pad.l-8)+'" y="'+(y(v)+4)+'" text-anchor="end">'+(options.binary?(v?'通过':'未通过'):latencyTick(v))+'</text>';
  svg+='<text data-chart-key="y-label" x="9" y="15">'+esc(yLabel)+'</text><text data-chart-key="x-label" x="'+(width/2)+'" y="'+(height-3)+'" text-anchor="middle">'+esc(label)+'</text><g clip-path="url(#'+clip+')">';
  for(const r of series){
@@ -767,14 +773,14 @@ function costChart(el, lines, options={}) {
    if(p.formal)continue;
    if(p.epoch!==epoch){epoch=p.epoch;best=null;last=false;lastBest=false;}
    if(scale.valid(p.y)&&p.eligible!==false)best=best===null?p.y:Math.min(best,p.y);
-   if(options.both&&best!==null){const px=x(costX(p.axes)),py=y(best);bestPath+=lastBest?' H'+px+' V'+py:' M'+px+','+py;lastBest=true;}
+   if(options.both&&best!==null){const px=x(pointX(p)),py=y(best);bestPath+=lastBest?' H'+px+' V'+py:' M'+px+','+py;lastBest=true;}
    const v=options.best?best:p.y;
    if(!scale.valid(v)){last=false;continue;}
-   const px=x(costX(p.axes)),py=y(v);
+   const px=x(pointX(p)),py=y(v);
    path+=!last?' M'+px+','+py:options.best?' H'+px+' V'+py:' L'+px+','+py;
    last=true;
   }
-  svg+=sampleBandSVG(r.points.filter(p=>!p.formal).map(p=>({...p,x:costX(p.axes)})),x,y,r.color,scope,r.id,options.best);
+  svg+=sampleBandSVG(r.points.filter(p=>!p.formal).map(p=>({...p,x:pointX(p)})),x,y,r.color,scope,r.id,options.best);
   if(bestPath)svg+='<path d="'+bestPath+'" fill="none" stroke="#009E73" stroke-dasharray="5 3"/>';
   svg+='<path class="curve" data-run="'+esc(r.id)+'" data-aligned-curve="'+esc(r.id)+'" d="'+path+'" fill="none" stroke="'+r.color+'" stroke-width="2" stroke-dasharray="'+(r.dash||'')+'"/>';
  }
@@ -784,13 +790,13 @@ function costChart(el, lines, options={}) {
  }
  function description(item){
   const {line,p}=item,measure=Number.isFinite(p.y)?options.binary?(p.y?'通过':'未通过'):fmt(p.y)+' ms':(p.status==='failed'?'失败':'无计时');
-  return [line.name,p.name,measure,costDetail(p)].join(' · ');
+  return [line.name,p.name,measure,(axis?.detail||costDetail)(p)].filter(Boolean).join(' · ');
  }
  for(let i=0;i<items.length;i++){
   const item=items[i],{line,p}=item,px=x(item.x);
   if(!within(item.x)||(Number.isFinite(p.y)&&!scale.valid(p.y)))continue;
   const py=Number.isFinite(p.y)?y(p.y):base-5;
-  const tip=esc(description(item)),partialToken=partial(p.axes);
+  const tip=esc(description(item)),partialToken=axis?axis.partial?.(p):partial(p.axes);
   const attr=(p.measurement?measurementMarker(p.measurement):'')+' class="cost-marker" data-cost-point="'+i+'" tabindex="0" aria-label="'+tip+'"'+(p.applyButton?' data-apply-point="'+p.applyButton+'" role="button"':'')+(partialToken?' data-token-incomplete="true"':'');
   if(partialToken)svg+='<path'+attr+' d="M'+px+','+(py-5)+' l5,9 h-10 Z" fill="white" stroke="#9a5200" stroke-width="1.8"><title>'+tip+'</title></path>';
   else if(p.formal)svg+='<path'+attr+' d="'+star(px,py,6)+'" fill="'+line.color+'"><title>'+tip+'</title></path>';
@@ -799,14 +805,14 @@ function costChart(el, lines, options={}) {
  }
  renderChartMarkup(el,svg+'</g></svg>');el.tabIndex=0;
  if(!options.binary)bindMeasurementChart(el,items.filter(({p})=>p.measurement&&Number.isFinite(p.y)).map(({line,p})=>({...p.measurement,color:line.color})),scope,options.redraw||renderCharts);
- if(options.redraw)configureRoundBrush(el,{scope,continuous:true,min:lo,max:hi,ymin,ymax,logY:scale.log,invertY:scale.invert,width,height,left:pad.l,right:width-pad.r,top:pad.t,bottom:height-pad.b,
-  formatX:values=>values.map(tickFmt).join(' – ')+(axisMode==='time'?' min':' M token'),
-  applySelection:selection=>{
+ if(options.redraw)configureRoundBrush(el,{scope,continuous:!axis?.integer,cursorLabel:axis?.cursorLabel,min:lo,max:hi,ymin,ymax,logY:scale.log,invertY:scale.invert,width,height,left:pad.l,right:width-pad.r,top:pad.t,bottom:height-pad.b,
+  formatX:axis?.formatRange||(values=>values.map(tickFmt).join(' – ')+(axisMode==='time'?' min':' M token')),
+  applySelection:options.applySelection||(selection=>{
    const next={...(costWindows.get(key)||{})};
    if(selection.useX){next.x=selection.rounds;if(!selection.useY)delete next.y;}
    if(selection.useY)next.y=selection.latencies;
    costWindows.set(key,next);options.redraw();
-  }});
+  })});
  let index=0;
  function inspect(i){index=i;if(note)note.textContent=description(items[i]);}
  const markers=el.querySelectorAll('[data-cost-point]');
@@ -887,11 +893,11 @@ function measurementInfo(run,point,extra={}){
  const kl=run.method==='KL'||run.baseMethod==='KL'||extra.kl;
  return {dataset:datasetId,run:run.id,model:run.model||run.name,effort:run.effort||'',method:kl?'KL':methodDisplayLabel(run),round:point.round,apply:point.apply,inner:point.inner_sequence,center:point.y??point.timing?.mean_ms??point.latency_ms,timing:point.timing||null,formal:!!point.formal,...extra};
 }
-function measurementLabel(info){return [info.model,info.method,info.formal?'Final':info.apply?`A${info.apply}${info.round?' · r'+info.round:''}${info.inner?' · #'+info.inner:''}`:'r'+info.round].filter(Boolean).join(' · ');}
-function measurementKey(info){return [info.dataset,info.run,info.formal?'formal':info.apply||'',info.inner||info.round||'delivered'].join('|');}
+function measurementLabel(info){if(info.pointLabel)return [info.model,info.method,info.pointLabel].join(' · ');return [info.model,info.method,info.formal?'Final':info.apply?`A${info.apply}${info.round?' · r'+info.round:''}${info.inner?' · #'+info.inner:''}`:'r'+info.round].filter(Boolean).join(' · ');}
+function measurementKey(info){return [info.dataset,info.run,info.formal?'formal':info.apply||'',info.pointKey??(info.inner||info.round||'delivered')].join('|');}
 function measurementMarker(info){return ` data-measure-key="${esc(measurementKey(info))}" tabindex="0" role="button" aria-label="${esc(measurementLabel(info)+'，查看测量样本')}"`;}
 function bindMeasurementChart(el,entries,scope,redraw){
- el._measurements=new Map(entries.map(info=>[measurementKey(info),info]));el._measurementContext=[category,datasetId,el.id||'aligned',category==='kl'?klRun?.id:'',el.id==='kl-candidates'?klApply:''].join(':');
+ el._measurements=new Map(entries.map(info=>[measurementKey(info),info]));el._measurementContext=el.dataset.measureContext||[category,datasetId,el.id||'aligned',category==='kl'?klRun?.id:'',el.id==='kl-candidates'?klApply:''].join(':');
  let bar=el._measurementTools;
  if(!bar?.isConnected){
   bar=speedControlShell(el);if(!bar)return;el._measurementTools=bar;
@@ -964,10 +970,10 @@ function openMeasurement(info){
   const close=()=>{if(!dialog.open||dialog.classList.contains('closing'))return;dialog.classList.add('closing');setTimeout(()=>{dialog.close();dialog.classList.remove('closing');document.body.classList.remove('measurement-modal-open');},matchMedia('(prefers-reduced-motion: reduce)').matches?0:160);};
   dialog.addEventListener('cancel',e=>{e.preventDefault();close();});dialog.addEventListener('click',e=>{if(e.target===dialog)close();});dialog._close=close;
  }
- const s=sampleStats(info.timing),centerLabel=({device_event_p50:'device-event P50',p50:'P50 · 100 samples',median:'中位数',median_of_group_medians:'组中位数的中位数',arithmetic_mean:'均值'})[info.timing?.statistic]||(info.method==='KL'?'中位数':'均值');
- dialog.innerHTML=`<div class="measurement-sheet"><button class="measurement-close" aria-label="关闭测量详情">×</button><header><p>${esc(info.dataset+' · '+info.method)}</p><h2 id="measurement-title">${esc(info.model)}${info.effort?' <small>'+esc(info.effort)+'</small>':''} <span>${info.formal?'Final':info.apply?'Apply '+info.apply+' · '+(info.round?'r'+info.round:info.inner?'#'+info.inner:'交付'):'r'+info.round}</span></h2><div class="measurement-metrics"><span><b>${fmt(info.center)}</b>ms · ${centerLabel}</span>${s?`<span><b>${s.n}</b>samples</span><span><b>${fmt(s.min)}–${fmt(s.max)}</b>最快–最慢 ms</span><span><b>${fmt(s.p10)}–${fmt(s.p90)}</b>P10–P90 ms</span>`:''}</div></header>${measurementPlots(info)}${s?'<button class="measurement-download">样本 CSV ↓</button>':''}</div>`;
+ const s=sampleStats(info.timing),centerLabel=info.statisticLabel||({device_event_p50:'device-event P50',p50:'P50 · 100 samples',median:'中位数',median_of_group_medians:'组中位数的中位数',arithmetic_mean:'均值'})[info.timing?.statistic]||(info.method==='KL'?'中位数':'均值');
+ dialog.innerHTML=`<div class="measurement-sheet"><button class="measurement-close" aria-label="关闭测量详情">×</button><header><p>${esc(info.dataset+' · '+info.method)}</p><h2 id="measurement-title">${esc(info.model)}${info.effort?' <small>'+esc(info.effort)+'</small>':''} <span>${info.pointLabel?esc(info.pointLabel):info.formal?'Final':info.apply?'Apply '+info.apply+' · '+(info.round?'r'+info.round:info.inner?'#'+info.inner:'交付'):'r'+info.round}</span></h2><div class="measurement-metrics"><span><b>${fmt(info.center)}</b>ms · ${centerLabel}</span>${s?`<span><b>${s.n}</b>samples</span><span><b>${fmt(s.min)}–${fmt(s.max)}</b>最快–最慢 ms</span><span><b>${fmt(s.p10)}–${fmt(s.p90)}</b>P10–P90 ms</span>`:''}</div></header>${measurementPlots(info)}${s?'<button class="measurement-download">样本 CSV ↓</button>':''}</div>`;
  dialog.querySelector('.measurement-close').onclick=dialog._close;
- if(s)dialog.querySelector('.measurement-download').onclick=()=>{let group=1,end=s.groups[0];const rows=s.samples.map((v,i)=>{while(i>=end){end+=s.groups[group++];}return [i+1,group,v].join(',');});download(`${info.dataset}-${info.model}-${info.method}-${info.round||'apply'+info.apply}-samples.csv`,'sample,group,latency_ms\n'+rows.join('\n'),'text/csv');};
+ if(s)dialog.querySelector('.measurement-download').onclick=()=>{let group=1,end=s.groups[0];const rows=s.samples.map((v,i)=>{while(i>=end){end+=s.groups[group++];}return [i+1,group,v].join(',');});download(`${info.dataset}-${info.model}-${info.method}-${info.pointKey!=null?'eval'+info.pointKey:info.round||'apply'+info.apply}-samples.csv`,'sample,group,latency_ms\n'+rows.join('\n'),'text/csv');};
  if(!dialog.open)dialog.showModal();dialog.scrollTop=0;document.body.classList.add('measurement-modal-open');dialog.querySelector('.measurement-close').focus({preventScroll:true});
 }
 
@@ -992,7 +998,8 @@ function paintMeasurementCursor(el){
  const rect=svg.getBoundingClientRect(),view=svg.viewBox.baseVal,x=(p.x-rect.left)*view.width/rect.width,y=(p.y-rect.top)*view.height/rect.height;
  if(x<c.left||x>c.right||y<c.top||y>c.bottom||el._roundBrush?.drag?.active){layer.setAttribute('visibility','hidden');return;}
  let label;
- if(axisMode==='round'&&category!=='kl'){label='r'+Math.max(0,Math.round(c.min+(x-c.left)/(c.right-c.left)*(c.max-c.min)));}
+ if(c.cursorLabel){label=c.cursorLabel(c.min+(x-c.left)/(c.right-c.left)*(c.max-c.min));}
+ else if(axisMode==='round'&&category!=='kl'){label='r'+Math.max(0,Math.round(c.min+(x-c.left)/(c.right-c.left)*(c.max-c.min)));}
  else {let best=null;for(const n of svg.querySelectorAll('[data-measure-key]')){const info=el._measurements?.get(n.dataset.measureKey);if(!info||!Number.isFinite(info.round)||info.formal)continue;const b=n.getBBox(),distance=Math.abs(x-b.x-b.width/2);if(!best||distance<best.distance)best={distance,round:info.round};}label=best?'r'+best.round:'r—';}
  const line=layer.querySelector('line');line.setAttribute('x1',x);line.setAttribute('x2',x);line.setAttribute('y1',c.top);line.setAttribute('y2',c.bottom);
  const width=Math.max(36,label.length*7+14),cx=Math.max(c.left+width/2,Math.min(c.right-width/2,x)),back=layer.querySelector('rect'),text=layer.querySelector('text');back.setAttribute('x',cx-width/2);back.setAttribute('y',Math.max(0,c.top-24));back.setAttribute('width',width);back.setAttribute('height',20);text.setAttribute('x',cx);text.setAttribute('y',Math.max(0,c.top-24)+14);text.textContent=label;layer.setAttribute('visibility','visible');

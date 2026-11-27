@@ -640,7 +640,13 @@ body[data-beta-view=queue] [data-beta-banner-queue]{display:none}
 .cake-workspaces { margin-top:20px;padding:22px 24px; }.cake-workspaces summary { cursor:pointer;font-size:22px;font-weight:600; }
 .cake-workspace-row { display:grid;grid-template-columns:180px 1fr auto;gap:16px;align-items:center;margin-top:24px;font-size:14px; }.cake-workspace-row code { overflow-wrap:anywhere;color:#6e6e73; }
 .cake-workspace-row button { border:1px solid #d2d2d7;border-radius:999px;background:#fff;color:#0071e3;padding:8px 18px; }
-.cake-notice { padding:32px;color:#6e6e73; }.cake-grid { stroke:#ececf1;stroke-width:1; }#cake-chart svg { width:100%;height:auto; }#cake-chart svg text { fill:#86868b;font-size:12px; }
+.cake-notice { padding:32px;color:#6e6e73; }.cake-grid { stroke:#ececf1;stroke-width:1; }#cake-chart { height:clamp(280px,38vw,380px); } #cake-chart > svg { width:100%;height:100%; }#cake-chart svg text { fill:#86868b;font-size:12px; }
 @media(max-width:900px) { .cake-panels { grid-template-columns:1fr; }.cake-control-row { align-items:flex-start;flex-direction:column;gap:10px; }.cake-control-row>span {flex:none;}.cake-metrics { gap:12px; }.cake-metric { padding:18px; }.cake-metric>strong {font-size:24px;}.cake-panel-head {flex-wrap:wrap;} }
 @media(max-width:540px) { .cake-metrics {grid-template-columns:repeat(2,minmax(0,1fr));}.cake-controls,.cake-panel,.cake-task-card {padding:18px;}.cake-workspace-row {grid-template-columns:1fr auto;}.cake-workspace-row code {grid-column:1 / -1;grid-row:2;}.cake-control-row .segments {max-width:100%;overflow-x:auto;flex-wrap:nowrap;} }
 @media(prefers-reduced-motion:reduce) { #beta-cannbot-view .card {transition:none;} }
+
+/* Fit the shared plot toolbar inside the CannBot split panel. */
+#beta-cannbot-view .speed-toolbar { padding-inline:0; }
+#beta-cannbot-view .speed-toolbar > .plot-options { width:100%;max-width:100%;box-sizing:border-box; }
+#beta-cannbot-view .bv-range-controls { min-width:0;flex-wrap:wrap; }
+#beta-cannbot-view .measurement-capsule { min-width:0; }
