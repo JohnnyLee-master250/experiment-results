@@ -3,7 +3,7 @@
   "suite": "deepgemm-mega-mhc-sm100",
   "title": "Mega mHC",
   "workload": "BF16 | M64 H4096 HC4",
-  "updated_at": "2026-11-27T09:18:12.269116+00:00",
+  "updated_at": "2026-11-27T09:23:12.351285+00:00",
   "runs": [
     {
       "id": "bv26--V1--Mega--gpt-astra",
@@ -16,7 +16,7 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "ready",
+      "phase": "queued",
       "native_stage": "l3_search",
       "native_attempts": 33,
       "reported_attempts": 31,
@@ -33,7 +33,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "uYtpx",
+        "position": 2,
+        "ticket": 267,
+        "status": "queued",
+        "cell_id": "bv26--V1--Mega--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795771114.7344468,
+        "acquired_at": null
+      },
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -3861,18 +3870,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 15451.714191548526,
-        "net_duration_seconds": 14860.9874699153,
+        "duration_seconds": 15485.35424762033,
+        "net_duration_seconds": 14894.627525987104,
         "probe_duration_seconds": 590.7267216332257,
-        "main_tokens": 45218626,
+        "main_tokens": 46127123,
         "reviewer_tokens": 1106114,
         "probe_tokens": 269083,
         "main_native": {
-          "totalTokens": 45218626,
-          "inputTokens": 45183179,
-          "cachedInputTokens": 45031296,
-          "outputTokens": 35447,
-          "reasoningOutputTokens": 2890
+          "totalTokens": 46127123,
+          "inputTokens": 46090405,
+          "cachedInputTokens": 45937792,
+          "outputTokens": 36718,
+          "reasoningOutputTokens": 3195
         }
       },
       "search_best_round": 33,
@@ -5282,7 +5291,7 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "ready",
+        "phase": "queued",
         "native_stage": "l3_search",
         "native_attempts": 33,
         "reported_attempts": 31,
@@ -5299,7 +5308,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "uYtpx",
+          "position": 2,
+          "ticket": 267,
+          "status": "queued",
+          "cell_id": "bv26--V1--Mega--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795771114.7344468,
+          "acquired_at": null
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -9371,21 +9389,31 @@
         "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 15451.714191548526,
-          "net_duration_seconds": 14860.9874699153,
+          "duration_seconds": 15485.35424762033,
+          "net_duration_seconds": 14894.627525987104,
           "probe_duration_seconds": 590.7267216332257,
-          "main_tokens": 45218626,
+          "main_tokens": 46127123,
           "reviewer_tokens": 1106114,
           "probe_tokens": 269083,
           "main_native": {
-            "totalTokens": 45218626,
-            "inputTokens": 45183179,
-            "cachedInputTokens": 45031296,
-            "outputTokens": 35447,
-            "reasoningOutputTokens": 2890
+            "totalTokens": 46127123,
+            "inputTokens": 46090405,
+            "cachedInputTokens": 45937792,
+            "outputTokens": 36718,
+            "reasoningOutputTokens": 3195
           }
         },
-        "pytorch_p50_ms": 1.9185699820518494
+        "pytorch_p50_ms": 1.9185699820518494,
+        "device_request": {
+          "card": "uYtpx",
+          "position": 2,
+          "ticket": 267,
+          "status": "queued",
+          "cell_id": "bv26--V1--Mega--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795771114.7344468,
+          "acquired_at": null
+        }
       },
       {
         "dataset": "Mega",
