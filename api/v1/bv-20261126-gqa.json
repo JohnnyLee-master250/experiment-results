@@ -1,6 +1,6 @@
 {
   "dataset": "GQA",
-  "updated_at": "2026-11-27T09:38:12.619362+00:00",
+  "updated_at": "2026-11-27T09:43:12.076198+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -6235,7 +6235,7 @@
       "method": "V1",
       "model": "gpt-6.2-sol",
       "status": "running",
-      "native_attempts": 6,
+      "native_attempts": 7,
       "valid_rounds": 6,
       "attempts": [
         {
@@ -7038,6 +7038,17 @@
           "native_outcome": "passed",
           "job_id": "01a21c58-c5fd-7f40-adc8-a67bb1e74e84",
           "job_status": "succeeded"
+        },
+        {
+          "number": 7,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a21c5f-5789-75de-aa4c-cf52ba481bb1",
+          "job_status": "failed"
         }
       ],
       "budget": 51,
@@ -7058,29 +7069,29 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 3035.343809539452,
-        "net_duration_seconds": 2947.8286742474884,
-        "probe_duration_seconds": 87.51513529196382,
-        "main_tokens": 18838585,
+        "duration_seconds": 3415.952314859256,
+        "net_duration_seconds": 3328.401393391192,
+        "probe_duration_seconds": 87.55092146806419,
+        "main_tokens": 20582368,
         "reviewer_tokens": 743415,
         "probe_tokens": 41304,
         "main_native": {
-          "totalTokens": 18838585,
-          "inputTokens": 18811728,
-          "cachedInputTokens": 18635264,
-          "outputTokens": 26857,
-          "reasoningOutputTokens": 1923
+          "totalTokens": 20582368,
+          "inputTokens": 20553145,
+          "cachedInputTokens": 20369536,
+          "outputTokens": 29223,
+          "reasoningOutputTokens": 2299
         }
       },
       "pytorch_p50_ms": 6.7809998989105225,
       "device_request": {
         "card": "RXVG3",
         "position": 2,
-        "ticket": 183,
+        "ticket": 186,
         "status": "queued",
         "cell_id": "bv26--V1--GQA--gpt-sol",
         "operation": "eval",
-        "queued_at": 1795772060.2774692,
+        "queued_at": 1795772434.1271803,
         "acquired_at": null
       }
     },
