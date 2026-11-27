@@ -3,7 +3,7 @@
   "suite": "deepgemm-mqa-h800",
   "title": "MQA",
   "workload": "FP8 | SQ2048 SK8192 H32 D64",
-  "updated_at": "2026-11-27T09:53:26.557800+00:00",
+  "updated_at": "2026-11-27T09:58:13.222726+00:00",
   "runs": [
     {
       "id": "bv26--V1--MQA--gpt-astra",
@@ -16,7 +16,7 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "queued",
+      "phase": "evaluating",
       "native_stage": "l3_search",
       "native_attempts": 34,
       "reported_attempts": 31,
@@ -35,13 +35,13 @@
       "verified_at": null,
       "device_request": {
         "card": "uYtpx",
-        "position": 2,
+        "position": 1,
         "ticket": 281,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--V1--MQA--gpt-astra",
         "operation": "eval",
         "queued_at": 1795773149.0695896,
-        "acquired_at": null
+        "acquired_at": 1795773372.7761664
       },
       "source_id": "bv-20261126-local-001",
       "search": [
@@ -3879,18 +3879,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 16235.979568950832,
-        "net_duration_seconds": 15714.077252414078,
+        "duration_seconds": 16486.09827613458,
+        "net_duration_seconds": 15964.195959597826,
         "probe_duration_seconds": 521.9023165367544,
-        "main_tokens": 47620766,
+        "main_tokens": 48512511,
         "reviewer_tokens": 1072022,
         "probe_tokens": 238000,
         "main_native": {
-          "totalTokens": 47620766,
-          "inputTokens": 47579113,
-          "cachedInputTokens": 47415936,
-          "outputTokens": 41653,
-          "reasoningOutputTokens": 6907
+          "totalTokens": 48512511,
+          "inputTokens": 48470718,
+          "cachedInputTokens": 48306944,
+          "outputTokens": 41793,
+          "reasoningOutputTokens": 6920
         }
       },
       "search_best_round": 32,
@@ -5300,7 +5300,7 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "queued",
+        "phase": "evaluating",
         "native_stage": "l3_search",
         "native_attempts": 34,
         "reported_attempts": 31,
@@ -5319,13 +5319,13 @@
         "verified_at": null,
         "device_request": {
           "card": "uYtpx",
-          "position": 2,
+          "position": 1,
           "ticket": 281,
-          "status": "queued",
+          "status": "running",
           "cell_id": "bv26--V1--MQA--gpt-astra",
           "operation": "eval",
           "queued_at": 1795773149.0695896,
-          "acquired_at": null
+          "acquired_at": 1795773372.7761664
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -9406,33 +9406,33 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/kernel-bridge/V1/workspaces/20261127T052126737841Z-v1-r1-gpt-6.2-astra-high-deepgemm-mqa-h800-sq2048-sk8192-h32-d64-fp8",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/kernel-bridge/V1",
-        "native_state": "ready",
+        "native_state": "evaluating",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 16235.979568950832,
-          "net_duration_seconds": 15714.077252414078,
+          "duration_seconds": 16486.09827613458,
+          "net_duration_seconds": 15964.195959597826,
           "probe_duration_seconds": 521.9023165367544,
-          "main_tokens": 47620766,
+          "main_tokens": 48512511,
           "reviewer_tokens": 1072022,
           "probe_tokens": 238000,
           "main_native": {
-            "totalTokens": 47620766,
-            "inputTokens": 47579113,
-            "cachedInputTokens": 47415936,
-            "outputTokens": 41653,
-            "reasoningOutputTokens": 6907
+            "totalTokens": 48512511,
+            "inputTokens": 48470718,
+            "cachedInputTokens": 48306944,
+            "outputTokens": 41793,
+            "reasoningOutputTokens": 6920
           }
         },
         "pytorch_p50_ms": 27.765230178833008,
         "device_request": {
           "card": "uYtpx",
-          "position": 2,
+          "position": 1,
           "ticket": 281,
-          "status": "queued",
+          "status": "running",
           "cell_id": "bv26--V1--MQA--gpt-astra",
           "operation": "eval",
           "queued_at": 1795773149.0695896,
-          "acquired_at": null
+          "acquired_at": 1795773372.7761664
         }
       },
       {
