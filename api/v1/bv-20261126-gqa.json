@@ -1,6 +1,6 @@
 {
   "dataset": "GQA",
-  "updated_at": "2026-11-27T06:08:11.704527+00:00",
+  "updated_at": "2026-11-27T06:13:12.727826+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -3321,24 +3321,34 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/kernel-bridge/V1/workspaces/20261127T032102249088Z-v1-r1-gpt-6.2-astra-high-flashinfer-gqa-decode-a100-single-q32-kv4-d128-l32768-fp16",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/kernel-bridge/V1",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 10025.077296918258,
-        "net_duration_seconds": 9659.549600305036,
+        "duration_seconds": 10255.316703723744,
+        "net_duration_seconds": 9889.789007110521,
         "probe_duration_seconds": 365.52769661322236,
-        "main_tokens": 25547846,
+        "main_tokens": 26510635,
         "reviewer_tokens": 807411,
         "probe_tokens": 135019,
         "main_native": {
-          "totalTokens": 25547846,
-          "inputTokens": 25516758,
-          "cachedInputTokens": 25377152,
-          "outputTokens": 31088,
-          "reasoningOutputTokens": 4102
+          "totalTokens": 26510635,
+          "inputTokens": 26477164,
+          "cachedInputTokens": 26332672,
+          "outputTokens": 33471,
+          "reasoningOutputTokens": 5140
         }
       },
-      "pytorch_p50_ms": 6.787699937820435
+      "pytorch_p50_ms": 6.787699937820435,
+      "device_request": {
+        "card": "RXVG3",
+        "position": 1,
+        "ticket": 90,
+        "status": "running",
+        "cell_id": "bv26--V1--GQA--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795759767.309566,
+        "acquired_at": 1795759917.4980824
+      }
     },
     {
       "dataset": "GQA",
