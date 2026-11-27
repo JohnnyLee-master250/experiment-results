@@ -3,7 +3,7 @@
   "suite": "fa3-backward-sm90",
   "title": "FA3 backward",
   "workload": "BF16 | B2 S4096 H6 D128 | causal",
-  "updated_at": "2026-11-27T12:33:13.299052+00:00",
+  "updated_at": "2026-11-27T12:38:13.033379+00:00",
   "runs": [
     {
       "id": "bv26--V1--FA3--gpt-astra",
@@ -16,7 +16,7 @@
       "method": "V1",
       "method_version": "V1 · 11/26",
       "status": "running",
-      "phase": "ready",
+      "phase": "evaluating",
       "native_stage": "l3_search",
       "native_attempts": 46,
       "reported_attempts": 43,
@@ -33,7 +33,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "uYtpx",
+        "position": 1,
+        "ticket": 342,
+        "status": "running",
+        "cell_id": "bv26--V1--FA3--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795782807.3106825,
+        "acquired_at": 1795783072.6490498
+      },
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -5298,18 +5307,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 22359.311126424,
-        "net_duration_seconds": 21752.13564429432,
+        "duration_seconds": 22654.010177992284,
+        "net_duration_seconds": 22046.834695862606,
         "probe_duration_seconds": 607.1754821296781,
-        "main_tokens": 76890639,
+        "main_tokens": 77782766,
         "reviewer_tokens": 2308106,
         "probe_tokens": 254896,
         "main_native": {
-          "totalTokens": 76890639,
-          "inputTokens": 76820505,
-          "cachedInputTokens": 76413952,
-          "outputTokens": 70134,
-          "reasoningOutputTokens": 17549
+          "totalTokens": 77782766,
+          "inputTokens": 77711529,
+          "cachedInputTokens": 77300608,
+          "outputTokens": 71237,
+          "reasoningOutputTokens": 17935
         }
       },
       "search_best_round": 46,
@@ -6719,7 +6728,7 @@
         "method": "V1",
         "method_version": "V1 · 11/26",
         "status": "running",
-        "phase": "ready",
+        "phase": "evaluating",
         "native_stage": "l3_search",
         "native_attempts": 46,
         "reported_attempts": 43,
@@ -6736,7 +6745,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "uYtpx",
+          "position": 1,
+          "ticket": 342,
+          "status": "running",
+          "cell_id": "bv26--V1--FA3--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795782807.3106825,
+          "acquired_at": 1795783072.6490498
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -12208,24 +12226,34 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/kernel-bridge/V1/workspaces/20261127T062018725898Z-v1-r1-gpt-6.2-astra-high-fa3-backward-sm90-b2-s4096-h6-d128-bf16-causal",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/kernel-bridge/V1",
-        "native_state": "ready",
+        "native_state": "evaluating",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 22359.311126424,
-          "net_duration_seconds": 21752.13564429432,
+          "duration_seconds": 22654.010177992284,
+          "net_duration_seconds": 22046.834695862606,
           "probe_duration_seconds": 607.1754821296781,
-          "main_tokens": 76890639,
+          "main_tokens": 77782766,
           "reviewer_tokens": 2308106,
           "probe_tokens": 254896,
           "main_native": {
-            "totalTokens": 76890639,
-            "inputTokens": 76820505,
-            "cachedInputTokens": 76413952,
-            "outputTokens": 70134,
-            "reasoningOutputTokens": 17549
+            "totalTokens": 77782766,
+            "inputTokens": 77711529,
+            "cachedInputTokens": 77300608,
+            "outputTokens": 71237,
+            "reasoningOutputTokens": 17935
           }
         },
-        "pytorch_p50_ms": 14.381040096282959
+        "pytorch_p50_ms": 14.381040096282959,
+        "device_request": {
+          "card": "uYtpx",
+          "position": 1,
+          "ticket": 342,
+          "status": "running",
+          "cell_id": "bv26--V1--FA3--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795782807.3106825,
+          "acquired_at": 1795783072.6490498
+        }
       },
       {
         "dataset": "FA3",
