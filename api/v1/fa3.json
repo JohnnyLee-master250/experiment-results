@@ -3,7 +3,7 @@
   "suite": "fa3-backward-sm90",
   "title": "FA3 backward",
   "workload": "BF16 | B2 S4096 H6 D128 | causal",
-  "updated_at": "2026-11-27T06:23:12.372465+00:00",
+  "updated_at": "2026-11-27T06:28:11.880814+00:00",
   "runs": [
     {
       "id": "bv26--V1--FA3--gpt-astra",
@@ -17,7 +17,7 @@
       "method_version": "V1 · 11/26",
       "status": "running",
       "phase": "ready",
-      "native_stage": "l1_mechanisms",
+      "native_stage": "l2_adapt",
       "native_attempts": 0,
       "reported_attempts": 0,
       "valid_rounds": 0,
@@ -43,18 +43,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 147.79743111878633,
-        "net_duration_seconds": 86.03364375606179,
-        "probe_duration_seconds": 61.76378736272454,
-        "main_tokens": 541475,
-        "reviewer_tokens": 0,
+        "duration_seconds": 438.49748179130256,
+        "net_duration_seconds": 376.68518123589456,
+        "probe_duration_seconds": 61.812300555408,
+        "main_tokens": 2011161,
+        "reviewer_tokens": 281552,
         "probe_tokens": 29807,
         "main_native": {
-          "totalTokens": 541475,
-          "inputTokens": 538427,
-          "cachedInputTokens": 485120,
-          "outputTokens": 3048,
-          "reasoningOutputTokens": 6
+          "totalTokens": 2011161,
+          "inputTokens": 2001772,
+          "cachedInputTokens": 1921536,
+          "outputTokens": 9389,
+          "reasoningOutputTokens": 130
         }
       },
       "search_best_round": null,
@@ -1465,7 +1465,7 @@
         "method_version": "V1 · 11/26",
         "status": "running",
         "phase": "ready",
-        "native_stage": "l1_mechanisms",
+        "native_stage": "l2_adapt",
         "native_attempts": 0,
         "reported_attempts": 0,
         "valid_rounds": 0,
@@ -1821,7 +1821,7 @@
         "card": "uYtpx",
         "environment_id": "2a8b976225f54aa7a6d48c694b832bbd",
         "run_id": "1342085643db6e83",
-        "stage": "l1_mechanisms",
+        "stage": "l2_adapt",
         "started_at": "2026-11-27T06:20:18.725898+00:00",
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/kernel-bridge/V1/workspaces/20261127T062018725898Z-v1-r1-gpt-6.2-astra-high-fa3-backward-sm90-b2-s4096-h6-d128-bf16-causal",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx",
@@ -1829,18 +1829,18 @@
         "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 147.79743111878633,
-          "net_duration_seconds": 86.03364375606179,
-          "probe_duration_seconds": 61.76378736272454,
-          "main_tokens": 541475,
-          "reviewer_tokens": 0,
+          "duration_seconds": 438.49748179130256,
+          "net_duration_seconds": 376.68518123589456,
+          "probe_duration_seconds": 61.812300555408,
+          "main_tokens": 2011161,
+          "reviewer_tokens": 281552,
           "probe_tokens": 29807,
           "main_native": {
-            "totalTokens": 541475,
-            "inputTokens": 538427,
-            "cachedInputTokens": 485120,
-            "outputTokens": 3048,
-            "reasoningOutputTokens": 6
+            "totalTokens": 2011161,
+            "inputTokens": 2001772,
+            "cachedInputTokens": 1921536,
+            "outputTokens": 9389,
+            "reasoningOutputTokens": 130
           }
         }
       },
