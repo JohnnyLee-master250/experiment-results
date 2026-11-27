@@ -1,6 +1,6 @@
 {
   "dataset": "GQA",
-  "updated_at": "2026-11-27T10:08:12.367706+00:00",
+  "updated_at": "2026-11-27T10:13:27.155186+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -7215,24 +7215,34 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/kernel-bridge/V1/workspaces/20261127T084253215341Z-v1-r1-gpt-6.2-sol-medium-flashinfer-gqa-decode-a100-single-q32-kv4-d128-l32768-fp16",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/kernel-bridge/V1",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 5111.991953501478,
-        "net_duration_seconds": 4976.849437393248,
+        "duration_seconds": 5403.070082996041,
+        "net_duration_seconds": 5267.927566887811,
         "probe_duration_seconds": 135.14251610822976,
-        "main_tokens": 28061296,
+        "main_tokens": 29306866,
         "reviewer_tokens": 1662808,
         "probe_tokens": 55028,
         "main_native": {
-          "totalTokens": 28061296,
-          "inputTokens": 28027157,
-          "cachedInputTokens": 27663744,
-          "outputTokens": 34139,
-          "reasoningOutputTokens": 3352
+          "totalTokens": 29306866,
+          "inputTokens": 29272232,
+          "cachedInputTokens": 28906496,
+          "outputTokens": 34634,
+          "reasoningOutputTokens": 3373
         }
       },
-      "pytorch_p50_ms": 6.7809998989105225
+      "pytorch_p50_ms": 6.7809998989105225,
+      "device_request": {
+        "card": "RXVG3",
+        "position": 1,
+        "ticket": 199,
+        "status": "running",
+        "cell_id": "bv26--V1--GQA--gpt-sol",
+        "operation": "eval",
+        "queued_at": 1795774092.8412335,
+        "acquired_at": 1795774376.2082283
+      }
     },
     {
       "dataset": "GQA",
