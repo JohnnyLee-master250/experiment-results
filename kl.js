@@ -187,7 +187,7 @@ const alignedViews=new Map(),klDatasetCache=new Map();
 function alignedViewKey(dataset){return (dataset.comparison_scope||'aligned')+':'+dataset.id+':'+axisMode;}
 function alignedView(dataset,series){
  const key=alignedViewKey(dataset);
- if(!alignedViews.has(key))alignedViews.set(key,{visible:new Set(series.filter(r=>axisMode!=='round'||r.model.startsWith('Astra 6.2')).map(r=>r.id)),mode:'best',zoom:false,compressed:false,visualScale:1});
+ if(!alignedViews.has(key))alignedViews.set(key,{visible:new Set(series.filter(r=>axisMode!=='round'||r.model.startsWith('Astra 6.2')||(r.available&&isArchivedV0(r))).map(r=>r.id)),mode:'best',zoom:false,compressed:false,visualScale:1});
  return alignedViews.get(key);
 }
 function alignedPeers(dataset,run){return [...(run?[run]:[]),...(klData?.runs.filter(r=>r.dataset===dataset.id&&r.id!==run?.id)||[])];}
@@ -199,7 +199,7 @@ function alignedSeries(dataset,run){
  for(const r of alignedPeers(dataset,run))series.push({id:r.id,model:r.model,effort:r.effort,method:'Aligned KL',baseMethod:'KL',available:(r.aligned?.points||[]).some(p=>p.counted),color:comparisonColor({...r,baseMethod:'KL'},dataset.comparison_scope||'aligned'),dash:DASH[r.model]||'',
   points:(r.aligned?.points||[]).filter(p=>p.counted).map(p=>({...p,y:p.latency_ms,measurement:measurementInfo({...r,method:'KL'},{...p,y:p.latency_ms}),epoch:r.id.startsWith('kl-astra-high-serial-20261102-')&&r.dataset==='Mega'&&p.apply>=5?2:1}))});
  for(const r of dataset.cakeRuns||[]){
-  const line=window.cannbotDashboard.toSeries(r);
+  const line=window.cannbotDashboard.toSeries(r,comparisonColor({...r,baseMethod:'CannBot'},dataset.comparison_scope||'all'));
   series.push({...line,points:line.points.map(p=>({...p,round:p.index}))});
  }
  return series;

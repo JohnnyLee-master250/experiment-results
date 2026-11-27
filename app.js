@@ -11,6 +11,7 @@ let focusedRun=null,initialRun=new URL(location).searchParams.get('run');
 let eventLimit=12;
 function requestedBVEdition(){return 'all';}
 let bvEdition=requestedBVEdition();
+function isArchivedV0(run){return ['V0-r2','V0-r3'].includes(methodLabel(run));}
 function methodLabel(run){if(run?.edition==='bv-20261126')return run.baseMethod||run.method;const label=run?.method_version||run?.method||'';return /^B[0-3]$/.test(label)?label+'-r1':label==='V0'?'V0-r2':label;}
 function methodDisplayLabel(run){const label=methodLabel(run);return ['Sol 6.2','DeepSeek'].includes(run?.model)&&/^B[0-3]-r\d+$/.test(label)?label.split('-r')[0]:label;}
 function isComparison(scope=category){return ['aligned','all','all-with-b01'].includes(scope);}
@@ -59,7 +60,7 @@ function axisControls() {
 }
 function defaultRuns(dataset,axis) {
  const key=editionKey(dataset)+':'+(axis==='round'?'round':'cost');
- return new Set(axisVisibility.get(key) || dataset.runs.filter(r=>axis==='round'?r.model==='Astra 6.2'&&usable(r):r.method!=='B0'&&r.search.some(p=>p.axes)).map(r=>r.id));
+ return new Set(axisVisibility.get(key) || dataset.runs.filter(r=>axis==='round'?(r.model==='Astra 6.2'||isArchivedV0(r))&&usable(r):r.method!=='B0'&&r.search.some(p=>p.axes)).map(r=>r.id));
 }
 function changeAxis(next) {
  if (!['round','time','tokens'].includes(next)) return;

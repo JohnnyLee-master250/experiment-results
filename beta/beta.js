@@ -40,10 +40,7 @@ let betaPreviewRoute=null;
 let betaControlsRendering=0;
 let betaBannerIntroduced=false;
 const betaAlignedSources=new Map(),betaKLChartArgs=new Map();
-// One series palette for the whole site. A method keeps its hue family in every
-// view and its later revision takes the neighbouring hue: B2 orange -> red,
-// B3 rose -> violet, V0 green -> teal, KL blue; retired B1 uses earth tones.
-// Tuned in OKLCH for even weight; every pair is >= 15 dE (OKLab) apart.
+// Shared colours for model groupings and existing dashboard accents.
 const betaSeries={orange:'#f4780c',red:'#ce2e40',rose:'#eb6aad',violet:'#9a5bda',green:'#349f3a',teal:'#18abbe',blue:'#0171c2',gold:'#cdb500',umber:'#85591e',neutral:'#526c89'};
 // Colours still written as literals by the shared chart engine are remapped here.
 const betaPalette={'#0072b2':betaSeries.blue,'#e69a00':betaSeries.blue,'#d55e00':betaSeries.orange,'#cc79a7':betaSeries.rose,'#009e73':betaSeries.green,'#e69f00':betaSeries.gold,'#6f61a6':betaSeries.violet,'#8a56d6':betaSeries.neutral};
@@ -52,12 +49,19 @@ Object.assign(REVISION_COLORS,{'B1-r2':betaSeries.umber,'B2-r2':betaSeries.red,'
 // Grouped by task, colour names the model; its revised batch takes the neighbouring hue.
 Object.assign(MODEL_COLORS,{'Astra 6.2':betaSeries.blue,'Sol 6.2':betaSeries.green,'DeepSeek':betaSeries.orange});
 Object.assign(REVISION_MODEL_COLORS,{'Astra 6.2':betaSeries.violet,'Sol 6.2':betaSeries.teal,'DeepSeek':betaSeries.red});
-// Revisions keep their own colour in every result view, including All, so two
-// revisions of one method never share a colour on the same chart.
+// Method buttons and their curves share one colour across result views.
+const curveMethodColors={
+ B1:'#ab5509', B2:'#4b8107', B3:'#7457cb',
+ V1:'#bf364c', 'V1-no-arch':'#087e8f', 'V0-r2':'#8a6c08', 'V0-r3':'#a8409a',
+ KL:betaSeries.blue, CannBot:'#0a8465'
+};
 comparisonColor=function(run,scope=category){
- const label=methodLabel(run),revised=Object.hasOwn(REVISION_COLORS,label),method=run.baseMethod||run.method;
- if(comparisonGroupMode(scope)==='task')return (revised?REVISION_MODEL_COLORS[run.model]:MODEL_COLORS[run.model])||betaSeries.neutral;
- return (revised?REVISION_COLORS[label]:COLORS[method])||(['KL','Aligned KL'].includes(method)?betaSeries.blue:betaSeries.neutral);
+ const label=methodLabel(run),method=run.baseMethod||run.method;
+ if(comparisonGroupMode(scope)==='task'){
+  const models=Object.hasOwn(REVISION_COLORS,label)?REVISION_MODEL_COLORS:MODEL_COLORS;
+  return models[run.model]||(run.model==='Astra'?betaSeries.violet:betaSeries.neutral);
+ }
+ return curveMethodColors[label]||curveMethodColors[method]||betaSeries.neutral;
 };
 // White labels everywhere except on the one light fill (gold), which takes ink.
 function betaThemeText(color){
@@ -746,7 +750,7 @@ if(typeof document!=='undefined')(()=>{
  const state={round:30,selected:null,baseline:null,group:'model',layout:'kernel',datasets:[],kl:null,catalog:[],version:null,pending:null,load:0};
  // Same palette and rule as the curve pages: grouped by model, colour names the
  // task version; grouped by task, colour names the model.
- const versionColors={'B1':betaSeries.gold,'B2':betaSeries.orange,'B3':betaSeries.rose,'V1':betaSeries.red,'V1-no-arch':betaSeries.violet,'V0-r2':betaSeries.green,'V0-r3':betaSeries.teal,'KL':betaSeries.blue};
+ const versionColors=curveMethodColors;
  const modelColors={'Astra 6.2':betaSeries.blue,'Sol 6.2':betaSeries.green,'DeepSeek':betaSeries.orange};
  const color=s=>(state.group==='task'?modelColors[s.model]:versionColors[s.version])||betaSeries.neutral;
  const delta=v=>v===null?'—':(Math.abs(v)<.05?'0':(v>0?'+':'−')+Math.abs(v).toFixed(1))+'%';
@@ -864,8 +868,7 @@ window.cannbotDashboard=(()=>{
  }
  let lastWidth=0;
  const views=new Map();
- function chartRun(run){
-  const color=colors[run.model]||'#526c89';
+ function chartRun(run,color=colors[run.model]||'#526c89'){
   const points=(run.evaluations||[]).filter(p=>p.counted!==false&&Number.isInteger(p.evaluation_index)).map(p=>{
    const y=p.outcome==='passed'&&Number.isFinite(p.latency_ms)&&p.latency_ms>0?p.latency_ms:null;
    const name='评测 '+p.evaluation_index+' · 第 '+(p.round??'—')+' 轮 · 候选 '+(p.candidate??'—');
