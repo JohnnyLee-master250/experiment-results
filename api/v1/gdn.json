@@ -3,7 +3,7 @@
   "suite": "gdn-prefill-sm100",
   "title": "GDN prefill",
   "workload": "FP16 | S2048 QK16 V32 D128",
-  "updated_at": "2026-11-28T09:53:16.350068+00:00",
+  "updated_at": "2026-11-28T09:59:02.496429+00:00",
   "runs": [
     {
       "id": "bv26--B1--GDN--gpt-astra",
@@ -30541,9 +30541,9 @@
       "method": "V1",
       "method_version": "V1",
       "status": "running",
-      "phase": "queued",
+      "phase": "pending_review",
       "native_stage": "l3_search",
-      "native_attempts": 12,
+      "native_attempts": 13,
       "reported_attempts": 7,
       "valid_rounds": 7,
       "budget": 51,
@@ -30558,16 +30558,7 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": {
-        "card": "8MZlZ",
-        "position": 3,
-        "ticket": 75,
-        "status": "queued",
-        "cell_id": "bv26--V1--GDN--deepseek",
-        "operation": "eval",
-        "queued_at": 1795859293.2160702,
-        "acquired_at": null
-      },
+      "device_request": null,
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -31227,6 +31218,15 @@
           "timing": null,
           "pytorch": null,
           "job_id": "01a2218d-752f-74a1-9fa5-dc7f0e662378"
+        },
+        {
+          "round": 13,
+          "role": "candidate",
+          "status": "unclassified",
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "job_id": "01a22197-44ad-76bd-b110-3276a22b6210"
         }
       ],
       "formal": null,
@@ -31236,17 +31236,17 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 10816.879576520994,
+        "duration_seconds": 11468.80276314728,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 185652876,
+        "main_tokens": 194956836,
         "reviewer_tokens": 9904533,
         "probe_tokens": null
       },
       "search_best_round": 4,
       "search_best_ms": 2799.2977294921875,
       "valid_measurements": 4,
-      "excluded_records": 8
+      "excluded_records": 9
     }
   ],
   "slots": [
@@ -31993,9 +31993,9 @@
         "method": "V1",
         "method_version": "V1",
         "status": "running",
-        "phase": "queued",
+        "phase": "pending_review",
         "native_stage": "l3_search",
-        "native_attempts": 12,
+        "native_attempts": 13,
         "reported_attempts": 7,
         "valid_rounds": 7,
         "budget": 51,
@@ -32010,16 +32010,7 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": {
-          "card": "8MZlZ",
-          "position": 3,
-          "ticket": 75,
-          "status": "queued",
-          "cell_id": "bv26--V1--GDN--deepseek",
-          "operation": "eval",
-          "queued_at": 1795859293.2160702,
-          "acquired_at": null
-        },
+        "device_request": null,
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -61925,7 +61916,7 @@
         "method": "V1",
         "model": "deepseek-flash",
         "status": "running",
-        "native_attempts": 12,
+        "native_attempts": 13,
         "valid_rounds": 7,
         "attempts": [
           {
@@ -62584,6 +62575,17 @@
             "native_outcome": "failed",
             "job_id": "01a2218d-752f-74a1-9fa5-dc7f0e662378",
             "job_status": "failed"
+          },
+          {
+            "number": 13,
+            "outcome": "unclassified",
+            "timing": null,
+            "pytorch": null,
+            "correct_trials": 0,
+            "total_trials": 5,
+            "native_outcome": "failed",
+            "job_id": "01a22197-44ad-76bd-b110-3276a22b6210",
+            "job_status": "failed"
           }
         ],
         "budget": 51,
@@ -62601,27 +62603,17 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1/workspaces/20261128T064749947698Z-v1-r1-deepseek-flash-max-gdn-prefill-sm100-single-s2048-qk16-v32-d128-fp16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1",
-        "native_state": "ready",
+        "native_state": "pending_review",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 10816.879576520994,
+          "duration_seconds": 11468.80276314728,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
-          "main_tokens": 185652876,
+          "main_tokens": 194956836,
           "reviewer_tokens": 9904533,
           "probe_tokens": null
         },
-        "pytorch_p50_ms": 455.33428955078125,
-        "device_request": {
-          "card": "8MZlZ",
-          "position": 3,
-          "ticket": 75,
-          "status": "queued",
-          "cell_id": "bv26--V1--GDN--deepseek",
-          "operation": "eval",
-          "queued_at": 1795859293.2160702,
-          "acquired_at": null
-        }
+        "pytorch_p50_ms": 455.33428955078125
       },
       {
         "dataset": "GDN",
