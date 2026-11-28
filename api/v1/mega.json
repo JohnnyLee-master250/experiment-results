@@ -3,7 +3,7 @@
   "suite": "deepgemm-mega-mhc-sm100",
   "title": "Mega mHC",
   "workload": "BF16 | M64 H4096 HC4",
-  "updated_at": "2026-11-28T05:53:16.684136+00:00",
+  "updated_at": "2026-11-28T05:58:16.348352+00:00",
   "runs": [
     {
       "id": "bv26--B2--Mega--gpt-astra",
@@ -16,8 +16,8 @@
       "method": "B2",
       "method_version": "B2",
       "status": "running",
-      "phase": "queued",
-      "native_stage": "pending_review",
+      "phase": "reviewing",
+      "native_stage": "reviewing",
       "native_attempts": 2,
       "reported_attempts": 1,
       "valid_rounds": 1,
@@ -33,16 +33,7 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": {
-        "card": "uYtpx",
-        "position": 3,
-        "ticket": 856,
-        "status": "queued",
-        "cell_id": "bv26--B2--Mega--gpt-astra",
-        "operation": "msprof",
-        "queued_at": 1795845166.050701,
-        "acquired_at": null
-      },
+      "device_request": null,
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -291,18 +282,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 2484.182415302843,
-        "net_duration_seconds": 2414.6106039993465,
+        "duration_seconds": 2751.455452369526,
+        "net_duration_seconds": 2681.8836410660297,
         "probe_duration_seconds": 69.57181130349636,
-        "main_tokens": 2132651,
-        "reviewer_tokens": 0,
+        "main_tokens": 3077656,
+        "reviewer_tokens": null,
         "probe_tokens": 40650,
         "main_native": {
-          "totalTokens": 2132651,
-          "inputTokens": 2126136,
-          "cachedInputTokens": 2077824,
-          "outputTokens": 6515,
-          "reasoningOutputTokens": 701
+          "totalTokens": 3077656,
+          "inputTokens": 3070050,
+          "cachedInputTokens": 3017344,
+          "outputTokens": 7606,
+          "reasoningOutputTokens": 740
         }
       },
       "search_best_round": 2,
@@ -13080,8 +13071,8 @@
         "method": "B2",
         "method_version": "B2",
         "status": "running",
-        "phase": "queued",
-        "native_stage": "pending_review",
+        "phase": "reviewing",
+        "native_stage": "reviewing",
         "native_attempts": 2,
         "reported_attempts": 1,
         "valid_rounds": 1,
@@ -13097,16 +13088,7 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": {
-          "card": "uYtpx",
-          "position": 3,
-          "ticket": 856,
-          "status": "queued",
-          "cell_id": "bv26--B2--Mega--gpt-astra",
-          "operation": "msprof",
-          "queued_at": 1795845166.050701,
-          "acquired_at": null
-        },
+        "device_request": null,
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -13757,39 +13739,29 @@
         "card": "uYtpx",
         "environment_id": "2a8b976225f54aa7a6d48c694b832bbd",
         "run_id": "ef015eb774cd993f",
-        "stage": "pending_review",
+        "stage": "reviewing",
         "started_at": "2026-11-28T05:11:03.744075+00:00",
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/baselines-910C/B2/workspaces/20261128T051103744075Z-gpt-high-deepgemm-mega-mhc-sm100-m64-h4096-hc4-bf16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/baselines-910C/B2",
-        "native_state": "pending_review",
+        "native_state": "reviewing",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 2484.182415302843,
-          "net_duration_seconds": 2414.6106039993465,
+          "duration_seconds": 2751.455452369526,
+          "net_duration_seconds": 2681.8836410660297,
           "probe_duration_seconds": 69.57181130349636,
-          "main_tokens": 2132651,
-          "reviewer_tokens": 0,
+          "main_tokens": 3077656,
+          "reviewer_tokens": null,
           "probe_tokens": 40650,
           "main_native": {
-            "totalTokens": 2132651,
-            "inputTokens": 2126136,
-            "cachedInputTokens": 2077824,
-            "outputTokens": 6515,
-            "reasoningOutputTokens": 701
+            "totalTokens": 3077656,
+            "inputTokens": 3070050,
+            "cachedInputTokens": 3017344,
+            "outputTokens": 7606,
+            "reasoningOutputTokens": 740
           }
         },
-        "pytorch_p50_ms": 1.8799600005149841,
-        "device_request": {
-          "card": "uYtpx",
-          "position": 3,
-          "ticket": 856,
-          "status": "queued",
-          "cell_id": "bv26--B2--Mega--gpt-astra",
-          "operation": "msprof",
-          "queued_at": 1795845166.050701,
-          "acquired_at": null
-        }
+        "pytorch_p50_ms": 1.8799600005149841
       },
       {
         "dataset": "Mega",
