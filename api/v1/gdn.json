@@ -3,7 +3,7 @@
   "suite": "gdn-prefill-sm100",
   "title": "GDN prefill",
   "workload": "FP16 | S2048 QK16 V32 D128",
-  "updated_at": "2026-11-28T10:28:17.630518+00:00",
+  "updated_at": "2026-11-28T10:33:41.207103+00:00",
   "runs": [
     {
       "id": "bv26--B1--GDN--gpt-astra",
@@ -30541,7 +30541,7 @@
       "method": "V1",
       "method_version": "V1",
       "status": "running",
-      "phase": "ready",
+      "phase": "queued",
       "native_stage": "l3_search",
       "native_attempts": 15,
       "reported_attempts": 9,
@@ -30558,7 +30558,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "8MZlZ",
+        "position": 2,
+        "ticket": 93,
+        "status": "queued",
+        "cell_id": "bv26--V1--GDN--deepseek",
+        "operation": "eval",
+        "queued_at": 1795861710.3701084,
+        "acquired_at": null
+      },
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -31474,10 +31483,10 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 13219.961231067777,
+        "duration_seconds": 13235.619575869292,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 228013875,
+        "main_tokens": 230850799,
         "reviewer_tokens": 12206662,
         "probe_tokens": null
       },
@@ -32231,7 +32240,7 @@
         "method": "V1",
         "method_version": "V1",
         "status": "running",
-        "phase": "ready",
+        "phase": "queued",
         "native_stage": "l3_search",
         "native_attempts": 15,
         "reported_attempts": 9,
@@ -32248,7 +32257,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "8MZlZ",
+          "position": 2,
+          "ticket": 93,
+          "status": "queued",
+          "cell_id": "bv26--V1--GDN--deepseek",
+          "operation": "eval",
+          "queued_at": 1795861710.3701084,
+          "acquired_at": null
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -63076,14 +63094,24 @@
         "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 13219.961231067777,
+          "duration_seconds": 13235.619575869292,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
-          "main_tokens": 228013875,
+          "main_tokens": 230850799,
           "reviewer_tokens": 12206662,
           "probe_tokens": null
         },
-        "pytorch_p50_ms": 455.33428955078125
+        "pytorch_p50_ms": 455.33428955078125,
+        "device_request": {
+          "card": "8MZlZ",
+          "position": 2,
+          "ticket": 93,
+          "status": "queued",
+          "cell_id": "bv26--V1--GDN--deepseek",
+          "operation": "eval",
+          "queued_at": 1795861710.3701084,
+          "acquired_at": null
+        }
       },
       {
         "dataset": "GDN",
