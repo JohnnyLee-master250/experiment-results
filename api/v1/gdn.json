@@ -3,7 +3,7 @@
   "suite": "gdn-prefill-sm100",
   "title": "GDN prefill",
   "workload": "FP16 | S2048 QK16 V32 D128",
-  "updated_at": "2026-11-28T07:08:17.041760+00:00",
+  "updated_at": "2026-11-28T07:13:40.906586+00:00",
   "runs": [
     {
       "id": "bv26--B1--GDN--gpt-astra",
@@ -16,8 +16,8 @@
       "method": "B1",
       "method_version": "B1",
       "status": "running",
-      "phase": "profiling",
-      "native_stage": "profiling",
+      "phase": "evaluating",
+      "native_stage": "evaluating",
       "native_attempts": 41,
       "reported_attempts": 39,
       "valid_rounds": 39,
@@ -36,12 +36,12 @@
       "device_request": {
         "card": "RXVG3",
         "position": 1,
-        "ticket": 627,
+        "ticket": 630,
         "status": "running",
         "cell_id": "bv26--B1--GDN--gpt-astra",
-        "operation": "msprof",
-        "queued_at": 1795849456.7456958,
-        "acquired_at": 1795849633.0203097
+        "operation": "eval",
+        "queued_at": 1795849827.5831492,
+        "acquired_at": 1795849992.6882908
       },
       "source_id": "bv-20261126-local-001",
       "search": [
@@ -4822,18 +4822,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 25612.738558916375,
-        "net_duration_seconds": 22744.72776221427,
+        "duration_seconds": 25972.32334362343,
+        "net_duration_seconds": 23104.312546921323,
         "probe_duration_seconds": 547.0914168916643,
-        "main_tokens": 55795293,
-        "reviewer_tokens": 1139380,
+        "main_tokens": 57617943,
+        "reviewer_tokens": 1494530,
         "probe_tokens": 245886,
         "main_native": {
-          "totalTokens": 55795293,
-          "inputTokens": 55688991,
-          "cachedInputTokens": 55341312,
-          "outputTokens": 106302,
-          "reasoningOutputTokens": 44621
+          "totalTokens": 57617943,
+          "inputTokens": 57510464,
+          "cachedInputTokens": 57157760,
+          "outputTokens": 107479,
+          "reasoningOutputTokens": 44689
         }
       },
       "search_best_round": 38,
@@ -29387,11 +29387,11 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 880.4411944318563,
+        "duration_seconds": 1309.9492737632245,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 13753296,
-        "reviewer_tokens": 2301908,
+        "main_tokens": 21708281,
+        "reviewer_tokens": 3001436,
         "probe_tokens": null
       },
       "search_best_round": null,
@@ -29803,8 +29803,8 @@
         "method": "B1",
         "method_version": "B1",
         "status": "running",
-        "phase": "profiling",
-        "native_stage": "profiling",
+        "phase": "evaluating",
+        "native_stage": "evaluating",
         "native_attempts": 41,
         "reported_attempts": 39,
         "valid_rounds": 39,
@@ -29823,12 +29823,12 @@
         "device_request": {
           "card": "RXVG3",
           "position": 1,
-          "ticket": 627,
+          "ticket": 630,
           "status": "running",
           "cell_id": "bv26--B1--GDN--gpt-astra",
-          "operation": "msprof",
-          "queued_at": 1795849456.7456958,
-          "acquired_at": 1795849633.0203097
+          "operation": "eval",
+          "queued_at": 1795849827.5831492,
+          "acquired_at": 1795849992.6882908
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -34938,38 +34938,38 @@
         "card": "RXVG3",
         "environment_id": "204e37e699434e5682bea05cfa7cfe38",
         "run_id": "96c35a1c39256ffe",
-        "stage": "profiling",
+        "stage": "evaluating",
         "started_at": "2026-11-28T00:00:20.504079+00:00",
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/baselines-910C/B1/workspaces/20261128T000020504079Z-gpt-high-gdn-prefill-sm100-single-s2048-qk16-v32-d128-fp16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/baselines-910C/B1",
-        "native_state": "profiling",
+        "native_state": "evaluating",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 25612.738558916375,
-          "net_duration_seconds": 22744.72776221427,
+          "duration_seconds": 25972.32334362343,
+          "net_duration_seconds": 23104.312546921323,
           "probe_duration_seconds": 547.0914168916643,
-          "main_tokens": 55795293,
-          "reviewer_tokens": 1139380,
+          "main_tokens": 57617943,
+          "reviewer_tokens": 1494530,
           "probe_tokens": 245886,
           "main_native": {
-            "totalTokens": 55795293,
-            "inputTokens": 55688991,
-            "cachedInputTokens": 55341312,
-            "outputTokens": 106302,
-            "reasoningOutputTokens": 44621
+            "totalTokens": 57617943,
+            "inputTokens": 57510464,
+            "cachedInputTokens": 57157760,
+            "outputTokens": 107479,
+            "reasoningOutputTokens": 44689
           }
         },
         "pytorch_p50_ms": 182.90723419189453,
         "device_request": {
           "card": "RXVG3",
           "position": 1,
-          "ticket": 627,
+          "ticket": 630,
           "status": "running",
           "cell_id": "bv26--B1--GDN--gpt-astra",
-          "operation": "msprof",
-          "queued_at": 1795849456.7456958,
-          "acquired_at": 1795849633.0203097
+          "operation": "eval",
+          "queued_at": 1795849827.5831492,
+          "acquired_at": 1795849992.6882908
         }
       },
       {
@@ -58946,11 +58946,11 @@
         "native_state": "reviewing",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 880.4411944318563,
+          "duration_seconds": 1309.9492737632245,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
-          "main_tokens": 13753296,
-          "reviewer_tokens": 2301908,
+          "main_tokens": 21708281,
+          "reviewer_tokens": 3001436,
           "probe_tokens": null
         }
       },
