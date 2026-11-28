@@ -1,6 +1,6 @@
 {
   "dataset": "Sonny",
-  "updated_at": "2026-11-28T16:53:40.945041+00:00",
+  "updated_at": "2026-11-28T16:58:18.858539+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -14741,15 +14741,15 @@
       "card": "8MZlZ",
       "environment_id": "2f83e4075b2e4562b7b6af7cabd1d00f",
       "run_id": "50fc0053cd865cbd",
-      "stage": "ready",
+      "stage": "evaluating",
       "started_at": "2026-11-28T06:47:54.803018+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/baselines-910C/B2/workspaces/20261128T064754803018Z-deepseek-max-sonny-mha-forward-rtx3090-production-b16-s4096-h16-d128-fp16-noncausal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/baselines-910C/B2",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 36125.04465547204,
+        "duration_seconds": 36542.869214201346,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 351405802,
@@ -14766,13 +14766,13 @@
       "pytorch_p50_ms": 187.42401123046875,
       "device_request": {
         "card": "8MZlZ",
-        "position": 3,
+        "position": 1,
         "ticket": 179,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--B2--Sonny--deepseek",
         "operation": "eval",
         "queued_at": 1795884607.5328493,
-        "acquired_at": null
+        "acquired_at": 1795885017.456046
       }
     },
     {
@@ -23271,7 +23271,7 @@
       "pytorch_p50_ms": 187.46714782714844,
       "device_request": {
         "card": "EIv1P",
-        "position": 5,
+        "position": 3,
         "ticket": 184,
         "status": "queued",
         "cell_id": "bv26--B3--Sonny--deepseek",
@@ -37215,7 +37215,7 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 36328.65539360233,
+        "duration_seconds": 36427.960269594565,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 487133519,
@@ -37229,7 +37229,17 @@
           "reasoningOutputTokens": 123196
         }
       },
-      "pytorch_p50_ms": 187.5492172241211
+      "pytorch_p50_ms": 187.5492172241211,
+      "device_request": {
+        "card": "8MZlZ",
+        "position": 3,
+        "ticket": 181,
+        "status": "queued",
+        "cell_id": "bv26--V1--Sonny--deepseek",
+        "operation": "eval",
+        "queued_at": 1795884899.7640328,
+        "acquired_at": null
+      }
     },
     {
       "dataset": "Sonny",
@@ -44113,7 +44123,7 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 35434.013444021344,
+        "duration_seconds": 36581.76459004171,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 449522663,
@@ -44130,12 +44140,12 @@
       "pytorch_p50_ms": 187.1291732788086,
       "device_request": {
         "card": "8MZlZ",
-        "position": 2,
-        "ticket": 178,
+        "position": 5,
+        "ticket": 183,
         "status": "queued",
         "cell_id": "bv26--V1-no-arch--Sonny--deepseek",
-        "operation": "msprof",
-        "queued_at": 1795884034.358824,
+        "operation": "eval",
+        "queued_at": 1795885077.068042,
         "acquired_at": null
       }
     }
