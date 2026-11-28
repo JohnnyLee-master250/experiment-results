@@ -1,6 +1,6 @@
 {
   "dataset": "GQA",
-  "updated_at": "2026-11-28T10:19:35.780002+00:00",
+  "updated_at": "2026-11-28T10:23:17.246638+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -29392,7 +29392,7 @@
       "model": "deepseek-flash",
       "status": "running",
       "native_attempts": 14,
-      "valid_rounds": 12,
+      "valid_rounds": 13,
       "attempts": [
         {
           "number": 1,
@@ -30379,7 +30379,7 @@
         },
         {
           "number": 14,
-          "outcome": "unclassified",
+          "outcome": "candidate_failure",
           "timing": null,
           "pytorch": null,
           "correct_trials": 0,
@@ -30407,14 +30407,24 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 12695.351269692183,
+        "duration_seconds": 12722.695476697758,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 291960654,
+        "main_tokens": 297515911,
         "reviewer_tokens": 8177242,
         "probe_tokens": null
       },
-      "pytorch_p50_ms": 4.696759939193726
+      "pytorch_p50_ms": 4.696759939193726,
+      "device_request": {
+        "card": "8MZlZ",
+        "position": 3,
+        "ticket": 90,
+        "status": "queued",
+        "cell_id": "bv26--V1--GQA--deepseek",
+        "operation": "eval",
+        "queued_at": 1795861219.0119975,
+        "acquired_at": null
+      }
     },
     {
       "dataset": "GQA",
