@@ -3,7 +3,7 @@
   "suite": "flashinfer-gqa-decode-a100",
   "title": "GQA decode",
   "workload": "FP16 | Q32 KV4 D128 L32768",
-  "updated_at": "2026-11-28T14:48:17.543240+00:00",
+  "updated_at": "2026-11-28T14:51:30.363444+00:00",
   "runs": [
     {
       "id": "bv26--B1--GQA--gpt-astra",
@@ -30100,8 +30100,8 @@
       "effort": "max",
       "method": "V1",
       "method_version": "V1",
-      "status": "blocked",
-      "phase": "ready",
+      "status": "running",
+      "phase": "evaluating",
       "native_stage": "l3_search",
       "native_attempts": 21,
       "reported_attempts": 17,
@@ -30118,7 +30118,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "8MZlZ",
+        "position": 1,
+        "ticket": 133,
+        "status": "running",
+        "cell_id": "bv26--V1--GQA--deepseek",
+        "operation": "eval",
+        "queued_at": 1795877447.712262,
+        "acquired_at": 1795877447.7128465
+      },
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -31638,7 +31647,7 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 27762.67270217277,
+        "duration_seconds": 28977.77700707689,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 511725695,
@@ -32401,8 +32410,8 @@
         "effort": "max",
         "method": "V1",
         "method_version": "V1",
-        "status": "blocked",
-        "phase": "ready",
+        "status": "running",
+        "phase": "evaluating",
         "native_stage": "l3_search",
         "native_attempts": 21,
         "reported_attempts": 17,
@@ -32419,7 +32428,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "8MZlZ",
+          "position": 1,
+          "ticket": 133,
+          "status": "running",
+          "cell_id": "bv26--V1--GQA--deepseek",
+          "operation": "eval",
+          "queued_at": 1795877447.712262,
+          "acquired_at": 1795877447.7128465
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -61904,7 +61922,7 @@
         "dataset": "GQA",
         "method": "V1",
         "model": "deepseek-flash",
-        "status": "needs_reconciliation",
+        "status": "running",
         "native_attempts": 21,
         "valid_rounds": 17,
         "attempts": [
@@ -63415,10 +63433,10 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1/workspaces/20261128T064750133054Z-v1-r1-deepseek-flash-max-flashinfer-gqa-decode-a100-single-q32-kv4-d128-l32768-fp16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1",
-        "native_state": "ready",
+        "native_state": "evaluating",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 27762.67270217277,
+          "duration_seconds": 28977.77700707689,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
           "main_tokens": 511725695,
@@ -63432,7 +63450,17 @@
             "reasoningOutputTokens": 109750
           }
         },
-        "pytorch_p50_ms": 4.696759939193726
+        "pytorch_p50_ms": 4.696759939193726,
+        "device_request": {
+          "card": "8MZlZ",
+          "position": 1,
+          "ticket": 133,
+          "status": "running",
+          "cell_id": "bv26--V1--GQA--deepseek",
+          "operation": "eval",
+          "queued_at": 1795877447.712262,
+          "acquired_at": 1795877447.7128465
+        }
       },
       {
         "dataset": "GQA",

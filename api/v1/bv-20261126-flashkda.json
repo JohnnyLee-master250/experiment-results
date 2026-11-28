@@ -1,6 +1,6 @@
 {
   "dataset": "FlashKDA",
-  "updated_at": "2026-11-28T14:48:17.543240+00:00",
+  "updated_at": "2026-11-28T14:51:30.363444+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -61,7 +61,7 @@
       "dataset": "FlashKDA",
       "method": "B2",
       "model": "gpt-6.2-astra",
-      "status": "needs_reconciliation",
+      "status": "running",
       "native_attempts": 2,
       "valid_rounds": 2,
       "attempts": [
@@ -413,29 +413,39 @@
       "card": "imkdG",
       "environment_id": "41a832c5c8be46e6a39fcd54e51992f9",
       "run_id": "0e9da9b6851147fe",
-      "stage": "ready",
+      "stage": "evaluating",
       "started_at": "2026-11-28T13:51:51.944582+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/baselines-910C/B2/workspaces/20261128T135151944582Z-gpt-high-flashkda-forward-sm90-b1-t8192-h96-d128-bf16-fp32-state",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/baselines-910C/B2",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 3241.5228707809,
-        "net_duration_seconds": 3160.952796768397,
+        "duration_seconds": 3529.4491399638355,
+        "net_duration_seconds": 3448.8790659513324,
         "probe_duration_seconds": 80.57007401250303,
-        "main_tokens": 5801104,
+        "main_tokens": 6205442,
         "reviewer_tokens": 285423,
         "probe_tokens": 27022,
         "main_native": {
-          "totalTokens": 5801104,
-          "inputTokens": 5785528,
-          "cachedInputTokens": 5712768,
-          "outputTokens": 15576,
-          "reasoningOutputTokens": 3219
+          "totalTokens": 6205442,
+          "inputTokens": 6189118,
+          "cachedInputTokens": 6110976,
+          "outputTokens": 16324,
+          "reasoningOutputTokens": 3312
         }
       },
-      "pytorch_p50_ms": 3910.013671875
+      "pytorch_p50_ms": 3910.013671875,
+      "device_request": {
+        "card": "imkdG",
+        "position": 1,
+        "ticket": 195,
+        "status": "running",
+        "cell_id": "bv26--B2--FlashKDA--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795877441.3614516,
+        "acquired_at": 1795877441.3619955
+      }
     },
     {
       "dataset": "FlashKDA",
