@@ -1,6 +1,6 @@
 {
   "dataset": "FlashMLA",
-  "updated_at": "2026-11-28T06:28:17.965823+00:00",
+  "updated_at": "2026-11-28T06:32:51.400519+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -43,7 +43,7 @@
       "dataset": "FlashMLA",
       "method": "B1",
       "model": "deepseek-flash",
-      "status": "unscheduled",
+      "status": "planned",
       "native_attempts": 0,
       "valid_rounds": 0,
       "attempts": [],
@@ -53,9 +53,9 @@
       "warmup": 10,
       "id": "bv26--B1--FlashMLA--deepseek",
       "effort": "max",
-      "schedule_index": null,
-      "card": null,
-      "environment_id": null
+      "schedule_index": 142,
+      "card": "8MZlZ",
+      "environment_id": "2f83e4075b2e4562b7b6af7cabd1d00f"
     },
     {
       "dataset": "FlashMLA",
@@ -4727,38 +4727,38 @@
       "card": "imkdG",
       "environment_id": "41a832c5c8be46e6a39fcd54e51992f9",
       "run_id": "48925343308c2280",
-      "stage": "ready",
+      "stage": "evaluating",
       "started_at": "2026-11-27T17:08:10.217563+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/baselines-910C/B2/workspaces/20261127T170810217563Z-gpt-high-flashmla-dense-decode-sm90-b128-sq2-hq128-kv32768-d576-bf16-causal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/baselines-910C/B2",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 47589.858938662335,
-        "net_duration_seconds": 44846.16807040424,
+        "duration_seconds": 48081.73626356572,
+        "net_duration_seconds": 45338.04539530762,
         "probe_duration_seconds": 355.89699491485953,
-        "main_tokens": 131447323,
+        "main_tokens": 131617041,
         "reviewer_tokens": 542237,
         "probe_tokens": 163686,
         "main_native": {
-          "totalTokens": 131447323,
-          "inputTokens": 131354896,
-          "cachedInputTokens": 131121536,
-          "outputTokens": 92427,
+          "totalTokens": 131617041,
+          "inputTokens": 131524514,
+          "cachedInputTokens": 131290752,
+          "outputTokens": 92527,
           "reasoningOutputTokens": 22967
         }
       },
       "pytorch_p50_ms": 2337.352294921875,
       "device_request": {
         "card": "imkdG",
-        "position": 2,
+        "position": 1,
         "ticket": 141,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--B2--FlashMLA--gpt-astra",
         "operation": "eval",
         "queued_at": 1795846891.6102314,
-        "acquired_at": null
+        "acquired_at": 1795847371.6451073
       }
     },
     {
@@ -4783,7 +4783,7 @@
       "dataset": "FlashMLA",
       "method": "B2",
       "model": "deepseek-flash",
-      "status": "unscheduled",
+      "status": "planned",
       "native_attempts": 0,
       "valid_rounds": 0,
       "attempts": [],
@@ -4793,9 +4793,9 @@
       "warmup": 10,
       "id": "bv26--B2--FlashMLA--deepseek",
       "effort": "max",
-      "schedule_index": null,
-      "card": null,
-      "environment_id": null
+      "schedule_index": 115,
+      "card": "8MZlZ",
+      "environment_id": "2f83e4075b2e4562b7b6af7cabd1d00f"
     },
     {
       "dataset": "FlashMLA",
@@ -4837,7 +4837,7 @@
       "dataset": "FlashMLA",
       "method": "B3",
       "model": "deepseek-flash",
-      "status": "unscheduled",
+      "status": "planned",
       "native_attempts": 0,
       "valid_rounds": 0,
       "attempts": [],
@@ -4847,9 +4847,9 @@
       "warmup": 10,
       "id": "bv26--B3--FlashMLA--deepseek",
       "effort": "max",
-      "schedule_index": null,
-      "card": null,
-      "environment_id": null
+      "schedule_index": 141,
+      "card": "8MZlZ",
+      "environment_id": "2f83e4075b2e4562b7b6af7cabd1d00f"
     },
     {
       "dataset": "FlashMLA",
@@ -9656,21 +9656,31 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 47976.36546850763,
-        "net_duration_seconds": 47391.384283924475,
+        "duration_seconds": 48021.88838194683,
+        "net_duration_seconds": 47436.907197363675,
         "probe_duration_seconds": 584.9811845831573,
-        "main_tokens": 134700419,
+        "main_tokens": 135041840,
         "reviewer_tokens": 3844449,
         "probe_tokens": 162441,
         "main_native": {
-          "totalTokens": 134700419,
-          "inputTokens": 134616827,
-          "cachedInputTokens": 134416384,
-          "outputTokens": 83592,
-          "reasoningOutputTokens": 19956
+          "totalTokens": 135041840,
+          "inputTokens": 134956300,
+          "cachedInputTokens": 134744832,
+          "outputTokens": 85540,
+          "reasoningOutputTokens": 20533
         }
       },
-      "pytorch_p50_ms": 2337.9825439453125
+      "pytorch_p50_ms": 2337.9825439453125,
+      "device_request": {
+        "card": "imkdG",
+        "position": 2,
+        "ticket": 142,
+        "status": "queued",
+        "cell_id": "bv26--V1--FlashMLA--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795847315.9472167,
+        "acquired_at": null
+      }
     },
     {
       "dataset": "FlashMLA",
@@ -9694,7 +9704,7 @@
       "dataset": "FlashMLA",
       "method": "V1",
       "model": "deepseek-flash",
-      "status": "unscheduled",
+      "status": "planned",
       "native_attempts": 0,
       "valid_rounds": 0,
       "attempts": [],
@@ -9704,9 +9714,9 @@
       "warmup": 10,
       "id": "bv26--V1--FlashMLA--deepseek",
       "effort": "max",
-      "schedule_index": null,
-      "card": null,
-      "environment_id": null
+      "schedule_index": 112,
+      "card": "8MZlZ",
+      "environment_id": "2f83e4075b2e4562b7b6af7cabd1d00f"
     },
     {
       "dataset": "FlashMLA",
@@ -9748,7 +9758,7 @@
       "dataset": "FlashMLA",
       "method": "V1-no-arch",
       "model": "deepseek-flash",
-      "status": "unscheduled",
+      "status": "planned",
       "native_attempts": 0,
       "valid_rounds": 0,
       "attempts": [],
@@ -9758,9 +9768,9 @@
       "warmup": 10,
       "id": "bv26--V1-no-arch--FlashMLA--deepseek",
       "effort": "max",
-      "schedule_index": null,
-      "card": null,
-      "environment_id": null
+      "schedule_index": 148,
+      "card": "8MZlZ",
+      "environment_id": "2f83e4075b2e4562b7b6af7cabd1d00f"
     }
   ]
 }
