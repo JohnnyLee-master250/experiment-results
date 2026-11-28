@@ -3,7 +3,7 @@
   "suite": "thunderkittens-based-h100",
   "title": "Based",
   "workload": "BF16 | B16 H16 N1024 D16 DV64",
-  "updated_at": "2026-11-28T00:08:14.085486+00:00",
+  "updated_at": "2026-11-28T00:13:14.242948+00:00",
   "runs": [
     {
       "id": "bv26--B2--Based--gpt-astra",
@@ -16,8 +16,8 @@
       "method": "B2",
       "method_version": "B2",
       "status": "running",
-      "phase": "ready",
-      "native_stage": "ready",
+      "phase": "evaluating",
+      "native_stage": "evaluating",
       "native_attempts": 0,
       "reported_attempts": 0,
       "valid_rounds": 0,
@@ -33,7 +33,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "uYtpx",
+        "position": 1,
+        "ticket": 707,
+        "status": "running",
+        "cell_id": "bv26--B2--Based--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795824578.9515061,
+        "acquired_at": 1795824591.635141
+      },
       "source_id": "bv-20261126-local-001",
       "search": [],
       "formal": null,
@@ -43,18 +52,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 41.964832592755556,
-        "net_duration_seconds": 0.09088612347841263,
+        "duration_seconds": 146.63261182047427,
+        "net_duration_seconds": 104.75866535119712,
         "probe_duration_seconds": 41.87394646927714,
-        "main_tokens": 129000,
+        "main_tokens": 721501,
         "reviewer_tokens": 0,
         "probe_tokens": 26778,
         "main_native": {
-          "totalTokens": 129000,
-          "inputTokens": 128621,
-          "cachedInputTokens": 114816,
-          "outputTokens": 379,
-          "reasoningOutputTokens": 0
+          "totalTokens": 721501,
+          "inputTokens": 717283,
+          "cachedInputTokens": 686336,
+          "outputTokens": 4218,
+          "reasoningOutputTokens": 744
         }
       },
       "search_best_round": null,
@@ -12832,8 +12841,8 @@
         "method": "B2",
         "method_version": "B2",
         "status": "running",
-        "phase": "ready",
-        "native_stage": "ready",
+        "phase": "evaluating",
+        "native_stage": "evaluating",
         "native_attempts": 0,
         "reported_attempts": 0,
         "valid_rounds": 0,
@@ -12849,7 +12858,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "uYtpx",
+          "position": 1,
+          "ticket": 707,
+          "status": "running",
+          "cell_id": "bv26--B2--Based--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795824578.9515061,
+          "acquired_at": 1795824591.635141
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -13267,27 +13285,37 @@
         "card": "uYtpx",
         "environment_id": "2a8b976225f54aa7a6d48c694b832bbd",
         "run_id": "2f8fc3378df740c2",
-        "stage": "ready",
+        "stage": "evaluating",
         "started_at": "2026-11-28T00:07:25.018979+00:00",
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/baselines-910C/B2/workspaces/20261128T000725018979Z-gpt-high-thunderkittens-based-h100-b16-h16-n1024-d16-dv64-bf16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/baselines-910C/B2",
-        "native_state": "ready",
+        "native_state": "evaluating",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 41.964832592755556,
-          "net_duration_seconds": 0.09088612347841263,
+          "duration_seconds": 146.63261182047427,
+          "net_duration_seconds": 104.75866535119712,
           "probe_duration_seconds": 41.87394646927714,
-          "main_tokens": 129000,
+          "main_tokens": 721501,
           "reviewer_tokens": 0,
           "probe_tokens": 26778,
           "main_native": {
-            "totalTokens": 129000,
-            "inputTokens": 128621,
-            "cachedInputTokens": 114816,
-            "outputTokens": 379,
-            "reasoningOutputTokens": 0
+            "totalTokens": 721501,
+            "inputTokens": 717283,
+            "cachedInputTokens": 686336,
+            "outputTokens": 4218,
+            "reasoningOutputTokens": 744
           }
+        },
+        "device_request": {
+          "card": "uYtpx",
+          "position": 1,
+          "ticket": 707,
+          "status": "running",
+          "cell_id": "bv26--B2--Based--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795824578.9515061,
+          "acquired_at": 1795824591.635141
         }
       },
       {

@@ -1,6 +1,6 @@
 {
   "dataset": "HSTU",
-  "updated_at": "2026-11-28T00:08:14.085486+00:00",
+  "updated_at": "2026-11-28T00:13:14.242948+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -170,8 +170,8 @@
       "method": "V1",
       "model": "gpt-6.2-astra",
       "status": "running",
-      "native_attempts": 46,
-      "valid_rounds": 46,
+      "native_attempts": 47,
+      "valid_rounds": 47,
       "attempts": [
         {
           "number": 1,
@@ -2323,6 +2323,52 @@
           "native_outcome": "passed",
           "job_id": "01a21f70-9af3-7bcf-8890-1297b39806a6",
           "job_status": "succeeded"
+        },
+        {
+          "number": 47,
+          "outcome": "passed",
+          "timing": {
+            "p50_ms": 76.24737930297852,
+            "samples_ms": [
+              76.24591827392578,
+              76.31405639648438,
+              76.2430419921875,
+              76.23577880859375,
+              75.41014099121094,
+              76.28082275390625,
+              76.274658203125,
+              76.20912170410156,
+              76.21536254882812,
+              76.3135986328125,
+              76.39906311035156,
+              76.24210357666016,
+              76.23258209228516,
+              76.2656021118164,
+              76.19058227539062,
+              76.29109954833984,
+              76.20352172851562,
+              76.2900390625,
+              76.36518096923828,
+              76.24884033203125,
+              76.26761627197266,
+              76.32701873779297,
+              76.18968200683594,
+              76.21558380126953,
+              75.46282196044922,
+              76.2559585571289,
+              76.27796173095703,
+              76.23101806640625,
+              76.22493743896484,
+              76.28633880615234
+            ],
+            "sample_count": 30
+          },
+          "pytorch": null,
+          "correct_trials": 5,
+          "total_trials": 5,
+          "native_outcome": "passed",
+          "job_id": "01a21f77-b352-7356-9f67-b063341f748e",
+          "job_status": "succeeded"
         }
       ],
       "budget": 51,
@@ -2343,30 +2389,30 @@
       "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 24973.01445272006,
-        "net_duration_seconds": 24494.004043953493,
-        "probe_duration_seconds": 479.0104087665677,
-        "main_tokens": 76700376,
+        "duration_seconds": 25465.252778785303,
+        "net_duration_seconds": 24958.10577681288,
+        "probe_duration_seconds": 507.147001972422,
+        "main_tokens": 78119956,
         "reviewer_tokens": 3406898,
-        "probe_tokens": 122247,
+        "probe_tokens": 136144,
         "main_native": {
-          "totalTokens": 76700376,
-          "inputTokens": 76638098,
-          "cachedInputTokens": 76466560,
-          "outputTokens": 62278,
-          "reasoningOutputTokens": 13440
+          "totalTokens": 78119956,
+          "inputTokens": 78057026,
+          "cachedInputTokens": 77884672,
+          "outputTokens": 62930,
+          "reasoningOutputTokens": 13737
         }
       },
       "pytorch_p50_ms": 4685.742919921875,
       "device_request": {
         "card": "LxrgZ",
         "position": 1,
-        "ticket": 54,
+        "ticket": 55,
         "status": "running",
         "cell_id": "bv26--V1--HSTU--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795824263.8597624,
-        "acquired_at": 1795824263.8602648
+        "queued_at": 1795824756.090785,
+        "acquired_at": 1795824756.0913239
       }
     },
     {
