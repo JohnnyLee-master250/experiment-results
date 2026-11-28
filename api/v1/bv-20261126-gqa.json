@@ -1,6 +1,6 @@
 {
   "dataset": "GQA",
-  "updated_at": "2026-11-28T15:18:17.603302+00:00",
+  "updated_at": "2026-11-28T15:19:45.624995+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -29391,7 +29391,7 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 22,
+      "native_attempts": 23,
       "valid_rounds": 18,
       "attempts": [
         {
@@ -31000,6 +31000,17 @@
           "native_outcome": "passed",
           "job_id": "01a222a3-3918-76b1-b16c-ece3b4b24273",
           "job_status": "succeeded"
+        },
+        {
+          "number": 23,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a222bc-b1aa-78d9-9bb8-6ff4b6b7e85a",
+          "job_status": "failed"
         }
       ],
       "budget": 51,
@@ -31020,7 +31031,7 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 29959.469375230372,
+        "duration_seconds": 30704.971527801827,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 511725695,
@@ -31037,12 +31048,12 @@
       "pytorch_p50_ms": 4.696759939193726,
       "device_request": {
         "card": "8MZlZ",
-        "position": 2,
-        "ticket": 142,
+        "position": 5,
+        "ticket": 147,
         "status": "queued",
         "cell_id": "bv26--V1--GQA--deepseek",
         "operation": "eval",
-        "queued_at": 1795878453.3717241,
+        "queued_at": 1795879180.5146253,
         "acquired_at": null
       }
     },

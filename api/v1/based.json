@@ -3,7 +3,7 @@
   "suite": "thunderkittens-based-h100",
   "title": "Based",
   "workload": "BF16 | B16 H16 N1024 D16 DV64",
-  "updated_at": "2026-11-28T15:18:17.603302+00:00",
+  "updated_at": "2026-11-28T15:19:45.624995+00:00",
   "runs": [
     {
       "id": "bv26--B1--Based--gpt-astra",
@@ -30100,8 +30100,8 @@
       "effort": "max",
       "method": "V1",
       "method_version": "V1",
-      "status": "blocked",
-      "phase": "eval_failed",
+      "status": "running",
+      "phase": "queued",
       "native_stage": "l3_search",
       "native_attempts": 24,
       "reported_attempts": 19,
@@ -30115,10 +30115,19 @@
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P",
       "started_at": "2026-11-28T06:56:09.614071+00:00",
-      "finished_at": "2026-11-28T15:09:46.246380+00:00",
+      "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "EIv1P",
+        "position": 5,
+        "ticket": 150,
+        "status": "queued",
+        "cell_id": "bv26--V1--Based--deepseek",
+        "operation": "eval",
+        "queued_at": 1795879118.4440134,
+        "acquired_at": null
+      },
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -30886,6 +30895,15 @@
           "timing": null,
           "pytorch": null,
           "job_id": "01a222a2-dd5e-7bb5-b23e-0f9956d3dc8a"
+        },
+        {
+          "round": 25,
+          "role": "candidate",
+          "status": "infrastructure",
+          "outcome": "infrastructure",
+          "timing": null,
+          "pytorch": null,
+          "job_id": "01a222ab-cdbb-746c-941b-f9448696d693"
         }
       ],
       "formal": null,
@@ -30912,7 +30930,7 @@
       "search_best_round": 6,
       "search_best_ms": 141.4388427734375,
       "valid_measurements": 4,
-      "excluded_records": 20
+      "excluded_records": 21
     }
   ],
   "slots": [
@@ -31658,8 +31676,8 @@
         "effort": "max",
         "method": "V1",
         "method_version": "V1",
-        "status": "blocked",
-        "phase": "eval_failed",
+        "status": "running",
+        "phase": "queued",
         "native_stage": "l3_search",
         "native_attempts": 24,
         "reported_attempts": 19,
@@ -31673,10 +31691,19 @@
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P",
         "started_at": "2026-11-28T06:56:09.614071+00:00",
-        "finished_at": "2026-11-28T15:09:46.246380+00:00",
+        "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "EIv1P",
+          "position": 5,
+          "ticket": 150,
+          "status": "queued",
+          "cell_id": "bv26--V1--Based--deepseek",
+          "operation": "eval",
+          "queued_at": 1795879118.4440134,
+          "acquired_at": null
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -61161,7 +61188,7 @@
         "dataset": "Based",
         "method": "V1",
         "model": "deepseek-flash",
-        "status": "needs_reconciliation",
+        "status": "running",
         "native_attempts": 24,
         "valid_rounds": 19,
         "attempts": [
@@ -61953,6 +61980,18 @@
             "native_outcome": "failed",
             "job_id": "01a222a2-dd5e-7bb5-b23e-0f9956d3dc8a",
             "job_status": "failed"
+          },
+          {
+            "number": 25,
+            "outcome": "infrastructure",
+            "timing": null,
+            "pytorch": null,
+            "correct_trials": 0,
+            "total_trials": 6,
+            "native_outcome": "interrupted",
+            "job_id": "01a222ab-cdbb-746c-941b-f9448696d693",
+            "job_status": "failed",
+            "native_number": 25
           }
         ],
         "budget": 51,
@@ -61970,8 +62009,8 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1/workspaces/20261128T065609614071Z-v1-r1-deepseek-flash-max-thunderkittens-based-h100-b16-h16-n1024-d16-dv64-bf16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1",
-        "native_state": "eval_failed",
-        "finished_at": "2026-11-28T15:09:46.246380+00:00",
+        "native_state": "ready",
+        "finished_at": null,
         "cost": {
           "duration_seconds": 29616.632308920845,
           "net_duration_seconds": null,
@@ -61987,7 +62026,17 @@
             "reasoningOutputTokens": 102831
           }
         },
-        "pytorch_p50_ms": 2226.6484375
+        "pytorch_p50_ms": 2226.6484375,
+        "device_request": {
+          "card": "EIv1P",
+          "position": 5,
+          "ticket": 150,
+          "status": "queued",
+          "cell_id": "bv26--V1--Based--deepseek",
+          "operation": "eval",
+          "queued_at": 1795879118.4440134,
+          "acquired_at": null
+        }
       },
       {
         "dataset": "Based",
