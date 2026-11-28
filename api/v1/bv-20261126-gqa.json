@@ -1,6 +1,6 @@
 {
   "dataset": "GQA",
-  "updated_at": "2026-11-28T07:43:40.380582+00:00",
+  "updated_at": "2026-11-28T07:48:17.230723+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -29391,7 +29391,7 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 1,
+      "native_attempts": 2,
       "valid_rounds": 0,
       "attempts": [
         {
@@ -29403,6 +29403,17 @@
           "total_trials": 5,
           "native_outcome": "failed",
           "job_id": "01a2210e-dc23-7046-9689-8355cf2da520",
+          "job_status": "failed"
+        },
+        {
+          "number": 2,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a22113-f0f1-7103-ac9f-5852648432da",
           "job_status": "failed"
         }
       ],
@@ -29421,25 +29432,25 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1/workspaces/20261128T064750133054Z-v1-r1-deepseek-flash-max-flashinfer-gqa-decode-a100-single-q32-kv4-d128-l32768-fp16",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1",
-      "native_state": "evaluating",
+      "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 2810.475061200559,
+        "duration_seconds": 3573.6611738149077,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 45355346,
-        "reviewer_tokens": 4330641,
+        "main_tokens": 56890128,
+        "reviewer_tokens": 5405281,
         "probe_tokens": null
       },
       "device_request": {
         "card": "8MZlZ",
-        "position": 1,
-        "ticket": 17,
-        "status": "running",
+        "position": 5,
+        "ticket": 22,
+        "status": "queued",
         "cell_id": "bv26--V1--GQA--deepseek",
         "operation": "eval",
-        "queued_at": 1795851027.3084555,
-        "acquired_at": 1795851280.5385416
+        "queued_at": 1795852046.368204,
+        "acquired_at": null
       }
     },
     {
