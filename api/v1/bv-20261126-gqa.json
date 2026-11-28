@@ -1,6 +1,6 @@
 {
   "dataset": "GQA",
-  "updated_at": "2026-11-28T07:28:39.507615+00:00",
+  "updated_at": "2026-11-28T07:34:04.592325+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -29391,9 +29391,21 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 0,
+      "native_attempts": 1,
       "valid_rounds": 0,
-      "attempts": [],
+      "attempts": [
+        {
+          "number": 1,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a2210e-dc23-7046-9689-8355cf2da520",
+          "job_status": "failed"
+        }
+      ],
       "budget": 51,
       "formal": null,
       "sample_count": 100,
@@ -29412,21 +29424,21 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 2130.6431878004223,
+        "duration_seconds": 2554.1383613664657,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 32029601,
+        "main_tokens": 42008729,
         "reviewer_tokens": 4330641,
         "probe_tokens": null
       },
       "device_request": {
         "card": "8MZlZ",
         "position": 2,
-        "ticket": 14,
+        "ticket": 17,
         "status": "queued",
         "cell_id": "bv26--V1--GQA--deepseek",
         "operation": "eval",
-        "queued_at": 1795850716.8160944,
+        "queued_at": 1795851027.3084555,
         "acquired_at": null
       }
     },

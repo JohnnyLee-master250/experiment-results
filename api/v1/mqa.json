@@ -3,7 +3,7 @@
   "suite": "deepgemm-mqa-h800",
   "title": "MQA",
   "workload": "FP8 | SQ2048 SK8192 H32 D64",
-  "updated_at": "2026-11-28T07:28:39.507615+00:00",
+  "updated_at": "2026-11-28T07:34:04.592325+00:00",
   "runs": [
     {
       "id": "bv26--V1--MQA--gpt-astra",
@@ -12160,7 +12160,7 @@
       "method": "V1",
       "method_version": "V1",
       "status": "running",
-      "phase": "reviewing",
+      "phase": "evaluating",
       "native_stage": "l3_search",
       "native_attempts": 3,
       "reported_attempts": 0,
@@ -12177,7 +12177,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "EIv1P",
+        "position": 1,
+        "ticket": 17,
+        "status": "running",
+        "cell_id": "bv26--V1--MQA--deepseek",
+        "operation": "eval",
+        "queued_at": 1795851131.0815284,
+        "acquired_at": 1795851196.226101
+      },
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -12215,11 +12224,11 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 1932.96161477454,
+        "duration_seconds": 2226.562802663073,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 33280221,
-        "reviewer_tokens": 9338589,
+        "main_tokens": 38706440,
+        "reviewer_tokens": 10336647,
         "probe_tokens": null
       },
       "search_best_round": null,
@@ -13101,7 +13110,7 @@
         "method": "V1",
         "method_version": "V1",
         "status": "running",
-        "phase": "reviewing",
+        "phase": "evaluating",
         "native_stage": "l3_search",
         "native_attempts": 3,
         "reported_attempts": 0,
@@ -13118,7 +13127,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "EIv1P",
+          "position": 1,
+          "ticket": 17,
+          "status": "running",
+          "cell_id": "bv26--V1--MQA--deepseek",
+          "operation": "eval",
+          "queued_at": 1795851131.0815284,
+          "acquired_at": 1795851196.226101
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -25250,15 +25268,25 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1/workspaces/20261128T065609716410Z-v1-r1-deepseek-flash-max-deepgemm-mqa-h800-sq2048-sk8192-h32-d64-fp8",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1",
-        "native_state": "reviewing",
+        "native_state": "evaluating",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 1932.96161477454,
+          "duration_seconds": 2226.562802663073,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
-          "main_tokens": 33280221,
-          "reviewer_tokens": 9338589,
+          "main_tokens": 38706440,
+          "reviewer_tokens": 10336647,
           "probe_tokens": null
+        },
+        "device_request": {
+          "card": "EIv1P",
+          "position": 1,
+          "ticket": 17,
+          "status": "running",
+          "cell_id": "bv26--V1--MQA--deepseek",
+          "operation": "eval",
+          "queued_at": 1795851131.0815284,
+          "acquired_at": 1795851196.226101
         }
       },
       {
