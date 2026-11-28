@@ -3,7 +3,7 @@
   "suite": "deepgemm-mqa-h800",
   "title": "MQA",
   "workload": "FP8 | SQ2048 SK8192 H32 D64",
-  "updated_at": "2026-11-28T08:49:04.127499+00:00",
+  "updated_at": "2026-11-28T08:53:17.533855+00:00",
   "runs": [
     {
       "id": "bv26--B2--MQA--gpt-astra",
@@ -16,8 +16,8 @@
       "method": "B2",
       "method_version": "B2",
       "status": "running",
-      "phase": "queued",
-      "native_stage": "ready",
+      "phase": "evaluating",
+      "native_stage": "evaluating",
       "native_attempts": 1,
       "reported_attempts": 1,
       "valid_rounds": 1,
@@ -35,13 +35,13 @@
       "verified_at": null,
       "device_request": {
         "card": "RXVG3",
-        "position": 2,
+        "position": 1,
         "ticket": 673,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--B2--MQA--gpt-astra",
         "operation": "eval",
         "queued_at": 1795855704.526581,
-        "acquired_at": null
+        "acquired_at": 1795855857.420669
       },
       "source_id": "bv-20261126-local-001",
       "search": [
@@ -282,18 +282,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 1089.8644797429442,
-        "net_duration_seconds": 1050.6389875635505,
+        "duration_seconds": 1254.9296515006572,
+        "net_duration_seconds": 1215.7041593212634,
         "probe_duration_seconds": 39.22549217939377,
-        "main_tokens": 2634419,
+        "main_tokens": 2946318,
         "reviewer_tokens": 250840,
         "probe_tokens": 26577,
         "main_native": {
-          "totalTokens": 2634419,
-          "inputTokens": 2626369,
-          "cachedInputTokens": 2567552,
-          "outputTokens": 8050,
-          "reasoningOutputTokens": 915
+          "totalTokens": 2946318,
+          "inputTokens": 2938031,
+          "cachedInputTokens": 2878720,
+          "outputTokens": 8287,
+          "reasoningOutputTokens": 922
         }
       },
       "search_best_round": 1,
@@ -13380,8 +13380,8 @@
         "method": "B2",
         "method_version": "B2",
         "status": "running",
-        "phase": "queued",
-        "native_stage": "ready",
+        "phase": "evaluating",
+        "native_stage": "evaluating",
         "native_attempts": 1,
         "reported_attempts": 1,
         "valid_rounds": 1,
@@ -13399,13 +13399,13 @@
         "verified_at": null,
         "device_request": {
           "card": "RXVG3",
-          "position": 2,
+          "position": 1,
           "ticket": 673,
-          "status": "queued",
+          "status": "running",
           "cell_id": "bv26--B2--MQA--gpt-astra",
           "operation": "eval",
           "queued_at": 1795855704.526581,
-          "acquired_at": null
+          "acquired_at": 1795855857.420669
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -14055,38 +14055,38 @@
         "card": "RXVG3",
         "environment_id": "204e37e699434e5682bea05cfa7cfe38",
         "run_id": "9f292ef7706b6921",
-        "stage": "ready",
+        "stage": "evaluating",
         "started_at": "2026-11-28T08:30:02.507962+00:00",
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/baselines-910C/B2/workspaces/20261128T083002507962Z-gpt-high-deepgemm-mqa-h800-sq2048-sk8192-h32-d64-fp8",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/baselines-910C/B2",
-        "native_state": "ready",
+        "native_state": "evaluating",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 1089.8644797429442,
-          "net_duration_seconds": 1050.6389875635505,
+          "duration_seconds": 1254.9296515006572,
+          "net_duration_seconds": 1215.7041593212634,
           "probe_duration_seconds": 39.22549217939377,
-          "main_tokens": 2634419,
+          "main_tokens": 2946318,
           "reviewer_tokens": 250840,
           "probe_tokens": 26577,
           "main_native": {
-            "totalTokens": 2634419,
-            "inputTokens": 2626369,
-            "cachedInputTokens": 2567552,
-            "outputTokens": 8050,
-            "reasoningOutputTokens": 915
+            "totalTokens": 2946318,
+            "inputTokens": 2938031,
+            "cachedInputTokens": 2878720,
+            "outputTokens": 8287,
+            "reasoningOutputTokens": 922
           }
         },
         "pytorch_p50_ms": 27.31109046936035,
         "device_request": {
           "card": "RXVG3",
-          "position": 2,
+          "position": 1,
           "ticket": 673,
-          "status": "queued",
+          "status": "running",
           "cell_id": "bv26--B2--MQA--gpt-astra",
           "operation": "eval",
           "queued_at": 1795855704.526581,
-          "acquired_at": null
+          "acquired_at": 1795855857.420669
         }
       },
       {

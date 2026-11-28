@@ -3,7 +3,7 @@
   "suite": "gdn-prefill-sm100",
   "title": "GDN prefill",
   "workload": "FP16 | S2048 QK16 V32 D128",
-  "updated_at": "2026-11-28T08:49:04.127499+00:00",
+  "updated_at": "2026-11-28T08:53:17.533855+00:00",
   "runs": [
     {
       "id": "bv26--B1--GDN--gpt-astra",
@@ -30543,7 +30543,7 @@
       "status": "running",
       "phase": "queued",
       "native_stage": "l3_search",
-      "native_attempts": 5,
+      "native_attempts": 6,
       "reported_attempts": 5,
       "valid_rounds": 5,
       "budget": 51,
@@ -30560,12 +30560,12 @@
       "verified_at": null,
       "device_request": {
         "card": "8MZlZ",
-        "position": 2,
-        "ticket": 39,
+        "position": 5,
+        "ticket": 44,
         "status": "queued",
         "cell_id": "bv26--V1--GDN--deepseek",
         "operation": "eval",
-        "queued_at": 1795855108.7485983,
+        "queued_at": 1795855848.8661926,
         "acquired_at": null
       },
       "source_id": "bv-20261126-local-001",
@@ -31164,6 +31164,15 @@
           },
           "pytorch": null,
           "job_id": "01a22146-2758-73f6-a479-130aab66dcb9"
+        },
+        {
+          "round": 6,
+          "role": "candidate",
+          "status": "unclassified",
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "job_id": "01a22158-77e4-7336-9c5b-51b9c2279571"
         }
       ],
       "formal": null,
@@ -31173,17 +31182,17 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 6548.995540000498,
+        "duration_seconds": 7365.471012895927,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 104664046,
+        "main_tokens": 118520454,
         "reviewer_tokens": 6953477,
         "probe_tokens": null
       },
       "search_best_round": 4,
       "search_best_ms": 2799.2977294921875,
       "valid_measurements": 4,
-      "excluded_records": 1
+      "excluded_records": 2
     }
   ],
   "slots": [
@@ -31932,7 +31941,7 @@
         "status": "running",
         "phase": "queued",
         "native_stage": "l3_search",
-        "native_attempts": 5,
+        "native_attempts": 6,
         "reported_attempts": 5,
         "valid_rounds": 5,
         "budget": 51,
@@ -31949,12 +31958,12 @@
         "verified_at": null,
         "device_request": {
           "card": "8MZlZ",
-          "position": 2,
-          "ticket": 39,
+          "position": 5,
+          "ticket": 44,
           "status": "queued",
           "cell_id": "bv26--V1--GDN--deepseek",
           "operation": "eval",
-          "queued_at": 1795855108.7485983,
+          "queued_at": 1795855848.8661926,
           "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
@@ -61862,7 +61871,7 @@
         "method": "V1",
         "model": "deepseek-flash",
         "status": "running",
-        "native_attempts": 5,
+        "native_attempts": 6,
         "valid_rounds": 5,
         "attempts": [
           {
@@ -62444,6 +62453,17 @@
             "native_outcome": "passed",
             "job_id": "01a22146-2758-73f6-a479-130aab66dcb9",
             "job_status": "succeeded"
+          },
+          {
+            "number": 6,
+            "outcome": "unclassified",
+            "timing": null,
+            "pytorch": null,
+            "correct_trials": 0,
+            "total_trials": 5,
+            "native_outcome": "failed",
+            "job_id": "01a22158-77e4-7336-9c5b-51b9c2279571",
+            "job_status": "failed"
           }
         ],
         "budget": 51,
@@ -62464,22 +62484,22 @@
         "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 6548.995540000498,
+          "duration_seconds": 7365.471012895927,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
-          "main_tokens": 104664046,
+          "main_tokens": 118520454,
           "reviewer_tokens": 6953477,
           "probe_tokens": null
         },
         "pytorch_p50_ms": 455.33428955078125,
         "device_request": {
           "card": "8MZlZ",
-          "position": 2,
-          "ticket": 39,
+          "position": 5,
+          "ticket": 44,
           "status": "queued",
           "cell_id": "bv26--V1--GDN--deepseek",
           "operation": "eval",
-          "queued_at": 1795855108.7485983,
+          "queued_at": 1795855848.8661926,
           "acquired_at": null
         }
       },
