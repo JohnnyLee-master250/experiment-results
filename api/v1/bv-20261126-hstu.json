@@ -1,6 +1,6 @@
 {
   "dataset": "HSTU",
-  "updated_at": "2026-11-28T04:03:58.645514+00:00",
+  "updated_at": "2026-11-28T04:08:16.465911+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -62,8 +62,8 @@
       "method": "B2",
       "model": "gpt-6.2-astra",
       "status": "running",
-      "native_attempts": 11,
-      "valid_rounds": 10,
+      "native_attempts": 12,
+      "valid_rounds": 11,
       "attempts": [
         {
           "number": 1,
@@ -570,6 +570,52 @@
           "native_outcome": "passed",
           "job_id": "01a22047-4fa5-7b3b-b835-ed5398fcef69",
           "job_status": "succeeded"
+        },
+        {
+          "number": 12,
+          "outcome": "passed",
+          "timing": {
+            "p50_ms": 81.18614196777344,
+            "samples_ms": [
+              81.15779876708984,
+              81.32096099853516,
+              81.35627746582031,
+              81.2205581665039,
+              81.08001708984375,
+              80.95793914794922,
+              80.7488784790039,
+              81.77906036376953,
+              81.14273834228516,
+              81.70777893066406,
+              81.85182189941406,
+              81.1038818359375,
+              81.96019744873047,
+              81.25846099853516,
+              81.17891693115234,
+              81.37664031982422,
+              81.25193786621094,
+              81.68585968017578,
+              81.01946258544922,
+              81.25773620605469,
+              81.18090057373047,
+              81.00055694580078,
+              81.54010009765625,
+              81.14466094970703,
+              81.1913833618164,
+              80.95596313476562,
+              80.77127838134766,
+              81.15306091308594,
+              81.14018249511719,
+              81.244140625
+            ],
+            "sample_count": 30
+          },
+          "pytorch": null,
+          "correct_trials": 5,
+          "total_trials": 5,
+          "native_outcome": "passed",
+          "job_id": "01a2204e-5d58-784f-8d98-96d95cb55b13",
+          "job_status": "succeeded"
         }
       ],
       "budget": 51,
@@ -582,25 +628,25 @@
       "card": "LxrgZ",
       "environment_id": "2fe846731400422db33c202d63a696ec",
       "run_id": "43e090b39e3f8c7a",
-      "stage": "evaluating",
+      "stage": "profiling",
       "started_at": "2026-11-28T01:32:24.352864+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-LxrgZ/baselines-910C/B2/workspaces/20261128T013224352864Z-gpt-high-hstu-silu-forward-sm90-b512-h4-d128-max4096-bf16-jagged-silu",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-LxrgZ",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-LxrgZ/baselines-910C/B2",
-      "native_state": "evaluating",
+      "native_state": "profiling",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 8788.067210130394,
-        "net_duration_seconds": 8637.719620378688,
-        "probe_duration_seconds": 150.34758975170553,
-        "main_tokens": 16033484,
+        "duration_seconds": 9241.703917227685,
+        "net_duration_seconds": 9091.318499134853,
+        "probe_duration_seconds": 150.38541809283197,
+        "main_tokens": 16810350,
         "reviewer_tokens": 367397,
         "probe_tokens": 81770,
         "main_native": {
-          "totalTokens": 16033484,
-          "inputTokens": 16011709,
-          "cachedInputTokens": 15899904,
-          "outputTokens": 21775,
+          "totalTokens": 16810350,
+          "inputTokens": 16788387,
+          "cachedInputTokens": 16675328,
+          "outputTokens": 21963,
           "reasoningOutputTokens": 3155
         }
       },
@@ -608,12 +654,12 @@
       "device_request": {
         "card": "LxrgZ",
         "position": 1,
-        "ticket": 76,
+        "ticket": 77,
         "status": "running",
         "cell_id": "bv26--B2--HSTU--gpt-astra",
-        "operation": "eval",
-        "queued_at": 1795838332.3756697,
-        "acquired_at": 1795838332.3761768
+        "operation": "msprof",
+        "queued_at": 1795838785.8350217,
+        "acquired_at": 1795838785.835547
       }
     },
     {
