@@ -1,6 +1,6 @@
 {
   "dataset": "Based",
-  "updated_at": "2026-11-28T17:18:19.262618+00:00",
+  "updated_at": "2026-11-28T17:23:40.597170+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -29391,7 +29391,7 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 32,
+      "native_attempts": 33,
       "valid_rounds": 25,
       "attempts": [
         {
@@ -30920,6 +30920,18 @@
           "job_id": "01a22328-59d7-7905-95ad-18d7b753535c",
           "job_status": "failed",
           "native_number": 32
+        },
+        {
+          "number": 34,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 6,
+          "native_outcome": "failed",
+          "job_id": "01a2232e-0fc2-7430-a4f6-beb1327b9665",
+          "job_status": "failed",
+          "native_number": 33
         }
       ],
       "budget": 51,
@@ -30937,10 +30949,10 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1/workspaces/20261128T065609614071Z-v1-r1-deepseek-flash-max-thunderkittens-based-h100-b16-h16-n1024-d16-dv64-bf16",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1",
-      "native_state": "ready",
+      "native_state": "reviewing",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 37265.16617631912,
+        "duration_seconds": 37638.957121979445,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 478631432,
@@ -30954,17 +30966,7 @@
           "reasoningOutputTokens": 102831
         }
       },
-      "pytorch_p50_ms": 2226.6484375,
-      "device_request": {
-        "card": "EIv1P",
-        "position": 3,
-        "ticket": 194,
-        "status": "queued",
-        "cell_id": "bv26--V1--Based--deepseek",
-        "operation": "eval",
-        "queued_at": 1795886255.7080467,
-        "acquired_at": null
-      }
+      "pytorch_p50_ms": 2226.6484375
     },
     {
       "dataset": "Based",
