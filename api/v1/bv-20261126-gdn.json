@@ -1,13 +1,13 @@
 {
   "dataset": "GDN",
-  "updated_at": "2026-11-28T06:58:19.017702+00:00",
+  "updated_at": "2026-11-28T07:01:55.846485+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
       "dataset": "GDN",
       "method": "B1",
       "model": "gpt-6.2-astra",
-      "status": "needs_reconciliation",
+      "status": "running",
       "native_attempts": 40,
       "valid_rounds": 38,
       "attempts": [
@@ -4568,18 +4568,28 @@
         "duration_seconds": 23157.744772808626,
         "net_duration_seconds": 20289.908331469993,
         "probe_duration_seconds": 546.917061528191,
-        "main_tokens": 53553340,
+        "main_tokens": 54221924,
         "reviewer_tokens": 1139380,
         "probe_tokens": 245886,
         "main_native": {
-          "totalTokens": 53553340,
-          "inputTokens": 53448797,
-          "cachedInputTokens": 53106560,
-          "outputTokens": 104543,
+          "totalTokens": 54221924,
+          "inputTokens": 54116445,
+          "cachedInputTokens": 53770880,
+          "outputTokens": 105479,
           "reasoningOutputTokens": 44413
         }
       },
-      "pytorch_p50_ms": 182.90723419189453
+      "pytorch_p50_ms": 182.90723419189453,
+      "device_request": {
+        "card": "RXVG3",
+        "position": 2,
+        "ticket": 624,
+        "status": "queued",
+        "cell_id": "bv26--B1--GDN--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795849260.6358151,
+        "acquired_at": null
+      }
     },
     {
       "dataset": "GDN",
@@ -28552,14 +28562,14 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1/workspaces/20261128T064749947698Z-v1-r1-deepseek-flash-max-gdn-prefill-sm100-single-s2048-qk16-v32-d128-fp16",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1",
-      "native_state": "reviewing",
+      "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 422.63452186994255,
+        "duration_seconds": 768.390775885433,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 7123693,
-        "reviewer_tokens": null,
+        "main_tokens": 9764181,
+        "reviewer_tokens": 2301908,
         "probe_tokens": null
       }
     },
