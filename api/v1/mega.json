@@ -3,7 +3,7 @@
   "suite": "deepgemm-mega-mhc-sm100",
   "title": "Mega mHC",
   "workload": "BF16 | M64 H4096 HC4",
-  "updated_at": "2026-11-28T14:53:19.861414+00:00",
+  "updated_at": "2026-11-28T14:58:19.430802+00:00",
   "runs": [
     {
       "id": "bv26--B1--Mega--gpt-astra",
@@ -5887,15 +5887,15 @@
         "duration_seconds": 25086.939399175346,
         "net_duration_seconds": 24652.683564165607,
         "probe_duration_seconds": 434.2558350097388,
-        "main_tokens": 50203343,
+        "main_tokens": 51232198,
         "reviewer_tokens": 1853404,
         "probe_tokens": 122629,
         "main_native": {
-          "totalTokens": 50203343,
-          "inputTokens": 50138706,
-          "cachedInputTokens": 49835904,
-          "outputTokens": 64637,
-          "reasoningOutputTokens": 21805
+          "totalTokens": 51232198,
+          "inputTokens": 51167408,
+          "cachedInputTokens": 50864000,
+          "outputTokens": 64790,
+          "reasoningOutputTokens": 21831
         }
       },
       "search_best_round": 42,
@@ -30424,9 +30424,9 @@
       "status": "running",
       "phase": "queued",
       "native_stage": "l3_search",
-      "native_attempts": 20,
-      "reported_attempts": 13,
-      "valid_rounds": 13,
+      "native_attempts": 21,
+      "reported_attempts": 14,
+      "valid_rounds": 14,
       "budget": 51,
       "card_id": "EIv1P",
       "environment_name": "DevEnvC_EIv1P",
@@ -30441,12 +30441,12 @@
       "verified_at": null,
       "device_request": {
         "card": "EIv1P",
-        "position": 3,
-        "ticket": 142,
+        "position": 4,
+        "ticket": 146,
         "status": "queued",
         "cell_id": "bv26--V1--Mega--deepseek",
         "operation": "eval",
-        "queued_at": 1795877430.4742346,
+        "queued_at": 1795877842.1808555,
         "acquired_at": null
       },
       "source_id": "bv-20261126-local-001",
@@ -31070,6 +31070,15 @@
           "timing": null,
           "pytorch": null,
           "job_id": "01a22291-d5bd-7a69-8aa3-b0dd980fb121"
+        },
+        {
+          "round": 21,
+          "role": "candidate",
+          "status": "failed",
+          "outcome": "candidate_failure",
+          "timing": null,
+          "pytorch": null,
+          "job_id": "01a222a8-241b-71d1-8f77-978e530cdf37"
         }
       ],
       "formal": null,
@@ -31079,7 +31088,7 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 28459.229480640963,
+        "duration_seconds": 28867.871294528246,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 411891896,
@@ -31096,7 +31105,7 @@
       "search_best_round": 13,
       "search_best_ms": 31.616440773010254,
       "valid_measurements": 3,
-      "excluded_records": 17
+      "excluded_records": 18
     }
   ],
   "slots": [
@@ -31854,9 +31863,9 @@
         "status": "running",
         "phase": "queued",
         "native_stage": "l3_search",
-        "native_attempts": 20,
-        "reported_attempts": 13,
-        "valid_rounds": 13,
+        "native_attempts": 21,
+        "reported_attempts": 14,
+        "valid_rounds": 14,
         "budget": 51,
         "card_id": "EIv1P",
         "environment_name": "DevEnvC_EIv1P",
@@ -31871,12 +31880,12 @@
         "verified_at": null,
         "device_request": {
           "card": "EIv1P",
-          "position": 3,
-          "ticket": 142,
+          "position": 4,
+          "ticket": 146,
           "status": "queued",
           "cell_id": "bv26--V1--Mega--deepseek",
           "operation": "eval",
-          "queued_at": 1795877430.4742346,
+          "queued_at": 1795877842.1808555,
           "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
@@ -37690,15 +37699,15 @@
           "duration_seconds": 25086.939399175346,
           "net_duration_seconds": 24652.683564165607,
           "probe_duration_seconds": 434.2558350097388,
-          "main_tokens": 50203343,
+          "main_tokens": 51232198,
           "reviewer_tokens": 1853404,
           "probe_tokens": 122629,
           "main_native": {
-            "totalTokens": 50203343,
-            "inputTokens": 50138706,
-            "cachedInputTokens": 49835904,
-            "outputTokens": 64637,
-            "reasoningOutputTokens": 21805
+            "totalTokens": 51232198,
+            "inputTokens": 51167408,
+            "cachedInputTokens": 50864000,
+            "outputTokens": 64790,
+            "reasoningOutputTokens": 21831
           }
         },
         "pytorch_p50_ms": 1.862239956855774,
@@ -61666,8 +61675,8 @@
         "method": "V1",
         "model": "deepseek-flash",
         "status": "running",
-        "native_attempts": 20,
-        "valid_rounds": 13,
+        "native_attempts": 21,
+        "valid_rounds": 14,
         "attempts": [
           {
             "number": 1,
@@ -62308,6 +62317,17 @@
             "native_outcome": "failed",
             "job_id": "01a22291-d5bd-7a69-8aa3-b0dd980fb121",
             "job_status": "failed"
+          },
+          {
+            "number": 21,
+            "outcome": "candidate_failure",
+            "timing": null,
+            "pytorch": null,
+            "correct_trials": 0,
+            "total_trials": 5,
+            "native_outcome": "failed",
+            "job_id": "01a222a8-241b-71d1-8f77-978e530cdf37",
+            "job_status": "failed"
           }
         ],
         "budget": 51,
@@ -62328,7 +62348,7 @@
         "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 28459.229480640963,
+          "duration_seconds": 28867.871294528246,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
           "main_tokens": 411891896,
@@ -62345,12 +62365,12 @@
         "pytorch_p50_ms": 1.8921900391578674,
         "device_request": {
           "card": "EIv1P",
-          "position": 3,
-          "ticket": 142,
+          "position": 4,
+          "ticket": 146,
           "status": "queued",
           "cell_id": "bv26--V1--Mega--deepseek",
           "operation": "eval",
-          "queued_at": 1795877430.4742346,
+          "queued_at": 1795877842.1808555,
           "acquired_at": null
         }
       },
