@@ -1,6 +1,6 @@
 {
   "dataset": "Based",
-  "updated_at": "2026-11-28T17:43:19.809136+00:00",
+  "updated_at": "2026-11-28T17:48:42.501153+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -29391,7 +29391,7 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 34,
+      "native_attempts": 35,
       "valid_rounds": 26,
       "attempts": [
         {
@@ -30944,6 +30944,18 @@
           "job_id": "01a2233a-da1f-7297-b83b-2be288ff2802",
           "job_status": "failed",
           "native_number": 34
+        },
+        {
+          "number": 36,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 6,
+          "native_outcome": "failed",
+          "job_id": "01a22340-eee5-77e1-9dbc-00f5e7195e50",
+          "job_status": "failed",
+          "native_number": 35
         }
       ],
       "budget": 51,
@@ -30961,10 +30973,10 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1/workspaces/20261128T065609614071Z-v1-r1-deepseek-flash-max-thunderkittens-based-h100-b16-h16-n1024-d16-dv64-bf16",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1",
-      "native_state": "evaluating",
+      "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 38813.56619540416,
+        "duration_seconds": 38888.348675059155,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 478631432,
@@ -30981,13 +30993,13 @@
       "pytorch_p50_ms": 2226.6484375,
       "device_request": {
         "card": "EIv1P",
-        "position": 1,
-        "ticket": 204,
-        "status": "running",
+        "position": 3,
+        "ticket": 209,
+        "status": "queued",
         "cell_id": "bv26--V1--Based--deepseek",
         "operation": "eval",
-        "queued_at": 1795887474.5742579,
-        "acquired_at": 1795887782.8095615
+        "queued_at": 1795887869.3531904,
+        "acquired_at": null
       }
     },
     {

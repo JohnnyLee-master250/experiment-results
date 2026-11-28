@@ -1,6 +1,6 @@
 {
   "dataset": "GQA",
-  "updated_at": "2026-11-28T17:43:19.809136+00:00",
+  "updated_at": "2026-11-28T17:48:42.501153+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -29391,7 +29391,7 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 32,
+      "native_attempts": 33,
       "valid_rounds": 26,
       "attempts": [
         {
@@ -31845,6 +31845,17 @@
           "native_outcome": "failed",
           "job_id": "01a2233b-9973-7e79-a4b8-5f63a106b180",
           "job_status": "failed"
+        },
+        {
+          "number": 33,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 2,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a22344-6538-797e-a68a-d63b6a0564b6",
+          "job_status": "failed"
         }
       ],
       "budget": 51,
@@ -31865,7 +31876,7 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 39030.75117005594,
+        "duration_seconds": 39603.779798179865,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 511725695,
@@ -31879,17 +31890,7 @@
           "reasoningOutputTokens": 109750
         }
       },
-      "pytorch_p50_ms": 4.696759939193726,
-      "device_request": {
-        "card": "8MZlZ",
-        "position": 3,
-        "ticket": 199,
-        "status": "queued",
-        "cell_id": "bv26--V1--GQA--deepseek",
-        "operation": "eval",
-        "queued_at": 1795887505.6624663,
-        "acquired_at": null
-      }
+      "pytorch_p50_ms": 4.696759939193726
     },
     {
       "dataset": "GQA",

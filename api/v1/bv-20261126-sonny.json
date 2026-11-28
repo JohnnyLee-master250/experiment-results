@@ -1,6 +1,6 @@
 {
   "dataset": "Sonny",
-  "updated_at": "2026-11-28T17:43:19.809136+00:00",
+  "updated_at": "2026-11-28T17:48:42.501153+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -15100,15 +15100,15 @@
       "card": "8MZlZ",
       "environment_id": "2f83e4075b2e4562b7b6af7cabd1d00f",
       "run_id": "50fc0053cd865cbd",
-      "stage": "ready",
+      "stage": "evaluating",
       "started_at": "2026-11-28T06:47:54.803018+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/baselines-910C/B2/workspaces/20261128T064754803018Z-deepseek-max-sonny-mha-forward-rtx3090-production-b16-s4096-h16-d128-fp16-noncausal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/baselines-910C/B2",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 39107.27224784717,
+        "duration_seconds": 39599.735639214516,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 351405802,
@@ -15125,13 +15125,13 @@
       "pytorch_p50_ms": 187.42401123046875,
       "device_request": {
         "card": "8MZlZ",
-        "position": 4,
+        "position": 1,
         "ticket": 200,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--B2--Sonny--deepseek",
         "operation": "eval",
         "queued_at": 1795887589.0162046,
-        "acquired_at": null
+        "acquired_at": 1795888074.281458
       }
     },
     {
@@ -23856,7 +23856,7 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 38800.39105829038,
+        "duration_seconds": 38822.681219652295,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 367387352,
@@ -23870,7 +23870,17 @@
           "reasoningOutputTokens": 83581
         }
       },
-      "pytorch_p50_ms": 187.46714782714844
+      "pytorch_p50_ms": 187.46714782714844,
+      "device_request": {
+        "card": "EIv1P",
+        "position": 2,
+        "ticket": 208,
+        "status": "queued",
+        "cell_id": "bv26--B3--Sonny--deepseek",
+        "operation": "eval",
+        "queued_at": 1795887821.1000152,
+        "acquired_at": null
+      }
     },
     {
       "dataset": "Sonny",
@@ -38061,7 +38071,7 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 39328.684404941276,
+        "duration_seconds": 39407.06472373195,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 487133519,
@@ -38075,7 +38085,17 @@
           "reasoningOutputTokens": 123196
         }
       },
-      "pytorch_p50_ms": 187.5492172241211
+      "pytorch_p50_ms": 187.5492172241211,
+      "device_request": {
+        "card": "8MZlZ",
+        "position": 2,
+        "ticket": 201,
+        "status": "queued",
+        "cell_id": "bv26--V1--Sonny--deepseek",
+        "operation": "eval",
+        "queued_at": 1795887927.4550052,
+        "acquired_at": null
+      }
     },
     {
       "dataset": "Sonny",
@@ -45191,7 +45211,7 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 38948.0634980239,
+        "duration_seconds": 39625.926753478125,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 449522663,
@@ -45208,12 +45228,12 @@
       "pytorch_p50_ms": 187.1291732788086,
       "device_request": {
         "card": "8MZlZ",
-        "position": 2,
-        "ticket": 198,
+        "position": 4,
+        "ticket": 203,
         "status": "queued",
         "cell_id": "bv26--V1-no-arch--Sonny--deepseek",
-        "operation": "msprof",
-        "queued_at": 1795887443.302165,
+        "operation": "eval",
+        "queued_at": 1795888120.0878615,
         "acquired_at": null
       }
     }
