@@ -1,6 +1,6 @@
 {
   "dataset": "Sonny",
-  "updated_at": "2026-11-28T07:01:55.846485+00:00",
+  "updated_at": "2026-11-28T07:03:16.766658+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -12134,32 +12134,22 @@
       "card": "8MZlZ",
       "environment_id": "2f83e4075b2e4562b7b6af7cabd1d00f",
       "run_id": "50fc0053cd865cbd",
-      "stage": "profiling",
+      "stage": "reviewing",
       "started_at": "2026-11-28T06:47:54.803018+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/baselines-910C/B2/workspaces/20261128T064754803018Z-deepseek-max-sonny-mha-forward-rtx3090-production-b16-s4096-h16-d128-fp16-noncausal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/baselines-910C/B2",
-      "native_state": "profiling",
+      "native_state": "reviewing",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 704.5641533341259,
+        "duration_seconds": 914.9161641728133,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 5915166,
-        "reviewer_tokens": 0,
+        "main_tokens": 9119937,
+        "reviewer_tokens": null,
         "probe_tokens": null
       },
-      "pytorch_p50_ms": 187.42401123046875,
-      "device_request": {
-        "card": "8MZlZ",
-        "position": 1,
-        "ticket": 4,
-        "status": "running",
-        "cell_id": "bv26--B2--Sonny--deepseek",
-        "operation": "msprof",
-        "queued_at": 1795849179.1483393,
-        "acquired_at": 1795849179.1525118
-      }
+      "pytorch_p50_ms": 187.42401123046875
     },
     {
       "dataset": "Sonny",
@@ -17970,20 +17960,30 @@
       "card": "EIv1P",
       "environment_id": "bb6c73612d3745f5a8ca4e5d80935dd8",
       "run_id": "d0a85e53bb1a2b87",
-      "stage": "ready",
+      "stage": "evaluating",
       "started_at": "2026-11-28T06:56:22.099327+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/baselines-910C/B3/workspaces/20261128T065622099327Z-deepseek-max-sonny-mha-forward-rtx3090-production-b16-s4096-h16-d128-fp16-noncausal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/baselines-910C/B3",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 300.4104728810489,
+        "duration_seconds": 367.0166243035346,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 1969931,
+        "main_tokens": 2871762,
         "reviewer_tokens": 0,
         "probe_tokens": null
+      },
+      "device_request": {
+        "card": "EIv1P",
+        "position": 1,
+        "ticket": 3,
+        "status": "running",
+        "cell_id": "bv26--B3--Sonny--deepseek",
+        "operation": "eval",
+        "queued_at": 1795849349.0977533,
+        "acquired_at": 1795849349.098282
       }
     },
     {
