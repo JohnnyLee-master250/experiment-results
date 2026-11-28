@@ -1,6 +1,6 @@
 {
   "dataset": "Sonny",
-  "updated_at": "2026-11-28T17:38:20.071961+00:00",
+  "updated_at": "2026-11-28T17:43:19.809136+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -11877,7 +11877,7 @@
       "method": "B2",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 33,
+      "native_attempts": 34,
       "valid_rounds": 29,
       "attempts": [
         {
@@ -15077,6 +15077,17 @@
           "native_outcome": "passed",
           "job_id": "01a22331-aef3-729c-a602-f7da6a80a2b0",
           "job_status": "succeeded"
+        },
+        {
+          "number": 34,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a2233c-725a-7585-bcc0-b7f901999fc7",
+          "job_status": "failed"
         }
       ],
       "budget": 51,
@@ -15089,15 +15100,15 @@
       "card": "8MZlZ",
       "environment_id": "2f83e4075b2e4562b7b6af7cabd1d00f",
       "run_id": "50fc0053cd865cbd",
-      "stage": "evaluating",
+      "stage": "ready",
       "started_at": "2026-11-28T06:47:54.803018+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/baselines-910C/B2/workspaces/20261128T064754803018Z-deepseek-max-sonny-mha-forward-rtx3090-production-b16-s4096-h16-d128-fp16-noncausal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/baselines-910C/B2",
-      "native_state": "evaluating",
+      "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 39014.63425786048,
+        "duration_seconds": 39107.27224784717,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 351405802,
@@ -15114,13 +15125,13 @@
       "pytorch_p50_ms": 187.42401123046875,
       "device_request": {
         "card": "8MZlZ",
-        "position": 1,
-        "ticket": 195,
-        "status": "running",
+        "position": 4,
+        "ticket": 200,
+        "status": "queued",
         "cell_id": "bv26--B2--Sonny--deepseek",
         "operation": "eval",
-        "queued_at": 1795887042.1798322,
-        "acquired_at": 1795887489.1702554
+        "queued_at": 1795887589.0162046,
+        "acquired_at": null
       }
     },
     {
@@ -23845,7 +23856,7 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 38312.16312260181,
+        "duration_seconds": 38800.39105829038,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 367387352,
@@ -23859,17 +23870,7 @@
           "reasoningOutputTokens": 83581
         }
       },
-      "pytorch_p50_ms": 187.46714782714844,
-      "device_request": {
-        "card": "EIv1P",
-        "position": 3,
-        "ticket": 203,
-        "status": "queued",
-        "cell_id": "bv26--B3--Sonny--deepseek",
-        "operation": "msprof",
-        "queued_at": 1795887300.9202437,
-        "acquired_at": null
-      }
+      "pytorch_p50_ms": 187.46714782714844
     },
     {
       "dataset": "Sonny",
@@ -35586,8 +35587,8 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 31,
-      "valid_rounds": 24,
+      "native_attempts": 32,
+      "valid_rounds": 25,
       "attempts": [
         {
           "number": 1,
@@ -37924,6 +37925,122 @@
           "native_outcome": "failed",
           "job_id": "01a22335-4868-78cb-9618-6075560d848b",
           "job_status": "failed"
+        },
+        {
+          "number": 32,
+          "outcome": "passed",
+          "timing": {
+            "p50_ms": 93.41830062866211,
+            "samples_ms": [
+              93.120361328125,
+              93.31426239013672,
+              93.21894073486328,
+              93.45638275146484,
+              93.39550018310547,
+              93.70677947998047,
+              93.50093841552734,
+              93.54969787597656,
+              93.40390014648438,
+              93.67167663574219,
+              93.98014068603516,
+              93.3559799194336,
+              93.01007843017578,
+              94.29644012451172,
+              93.31722259521484,
+              93.47257995605469,
+              93.30470275878906,
+              93.42304229736328,
+              93.41355895996094,
+              93.4654769897461,
+              93.31014251708984,
+              93.62892150878906,
+              93.2215805053711,
+              93.60118103027344,
+              93.1192626953125,
+              93.54801940917969,
+              93.40892028808594,
+              93.38691711425781,
+              93.2394790649414,
+              93.5073013305664,
+              93.4424819946289,
+              93.40418243408203,
+              93.37075805664062,
+              93.61398315429688,
+              93.52316284179688,
+              93.69698333740234,
+              93.37416076660156,
+              93.64080047607422,
+              93.30725860595703,
+              93.22440338134766,
+              93.30481719970703,
+              93.55352020263672,
+              93.25733947753906,
+              93.62657928466797,
+              93.6711196899414,
+              93.72843933105469,
+              93.27570343017578,
+              93.62969970703125,
+              93.45818328857422,
+              93.685302734375,
+              93.26746368408203,
+              93.36387634277344,
+              93.39958190917969,
+              93.3643569946289,
+              93.97128295898438,
+              93.47879791259766,
+              93.23296356201172,
+              93.606201171875,
+              93.33358001708984,
+              93.47567749023438,
+              93.32029724121094,
+              93.56575775146484,
+              93.52429962158203,
+              93.60269927978516,
+              93.4518814086914,
+              93.44406127929688,
+              93.38497924804688,
+              93.30921936035156,
+              93.21398162841797,
+              93.76862335205078,
+              93.41255950927734,
+              93.30280303955078,
+              93.47551727294922,
+              93.71173858642578,
+              94.10917663574219,
+              93.6814193725586,
+              93.45496368408203,
+              93.40630340576172,
+              93.2525405883789,
+              93.31565856933594,
+              93.31964111328125,
+              93.42903900146484,
+              93.27839660644531,
+              93.67426300048828,
+              93.42659759521484,
+              93.64659881591797,
+              93.24002075195312,
+              93.57592010498047,
+              93.25450134277344,
+              93.59175872802734,
+              93.2640609741211,
+              93.30814361572266,
+              93.30146026611328,
+              93.395263671875,
+              93.30967712402344,
+              93.44471740722656,
+              93.3136978149414,
+              93.48970031738281,
+              93.40155792236328,
+              93.55085754394531
+            ],
+            "sample_count": 100
+          },
+          "pytorch": null,
+          "correct_trials": 5,
+          "total_trials": 5,
+          "native_outcome": "passed",
+          "job_id": "01a2233d-5d9a-7f01-8900-85cacbc94ea1",
+          "job_status": "succeeded"
         }
       ],
       "budget": 51,
@@ -37944,7 +38061,7 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 38627.579672481865,
+        "duration_seconds": 39328.684404941276,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 487133519,
@@ -37958,17 +38075,7 @@
           "reasoningOutputTokens": 123196
         }
       },
-      "pytorch_p50_ms": 187.5492172241211,
-      "device_request": {
-        "card": "8MZlZ",
-        "position": 2,
-        "ticket": 196,
-        "status": "queued",
-        "cell_id": "bv26--V1--Sonny--deepseek",
-        "operation": "eval",
-        "queued_at": 1795887098.9969358,
-        "acquired_at": null
-      }
+      "pytorch_p50_ms": 187.5492172241211
     },
     {
       "dataset": "Sonny",
@@ -45101,7 +45208,7 @@
       "pytorch_p50_ms": 187.1291732788086,
       "device_request": {
         "card": "8MZlZ",
-        "position": 4,
+        "position": 2,
         "ticket": 198,
         "status": "queued",
         "cell_id": "bv26--V1-no-arch--Sonny--deepseek",
