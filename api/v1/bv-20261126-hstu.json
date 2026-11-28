@@ -1,6 +1,6 @@
 {
   "dataset": "HSTU",
-  "updated_at": "2026-11-28T08:04:58.133244+00:00",
+  "updated_at": "2026-11-28T08:08:18.723949+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -1881,29 +1881,39 @@
       "card": "LxrgZ",
       "environment_id": "2fe846731400422db33c202d63a696ec",
       "run_id": "43e090b39e3f8c7a",
-      "stage": "ready",
+      "stage": "evaluating",
       "started_at": "2026-11-28T01:32:24.352864+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-LxrgZ/baselines-910C/B2/workspaces/20261128T013224352864Z-gpt-high-hstu-silu-forward-sm90-b512-h4-d128-max4096-bf16-jagged-silu",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-LxrgZ",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-LxrgZ/baselines-910C/B2",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 23549.00913092494,
-        "net_duration_seconds": 23186.150447759777,
+        "duration_seconds": 23612.17497335747,
+        "net_duration_seconds": 23249.316290192306,
         "probe_duration_seconds": 362.8586831651628,
-        "main_tokens": 72087275,
+        "main_tokens": 73162203,
         "reviewer_tokens": 1516168,
         "probe_tokens": 163677,
         "main_native": {
-          "totalTokens": 72087275,
-          "inputTokens": 72030353,
-          "cachedInputTokens": 71846912,
-          "outputTokens": 56922,
-          "reasoningOutputTokens": 12699
+          "totalTokens": 73162203,
+          "inputTokens": 73103006,
+          "cachedInputTokens": 72918272,
+          "outputTokens": 59197,
+          "reasoningOutputTokens": 13900
         }
       },
-      "pytorch_p50_ms": 4703.16552734375
+      "pytorch_p50_ms": 4703.16552734375,
+      "device_request": {
+        "card": "LxrgZ",
+        "position": 1,
+        "ticket": 110,
+        "status": "running",
+        "cell_id": "bv26--B2--HSTU--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795853156.3342292,
+        "acquired_at": 1795853156.3348055
+      }
     },
     {
       "dataset": "HSTU",
