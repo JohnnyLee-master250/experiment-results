@@ -3,7 +3,7 @@
   "suite": "flashinfer-gqa-decode-a100",
   "title": "GQA decode",
   "workload": "FP16 | Q32 KV4 D128 L32768",
-  "updated_at": "2026-11-28T06:53:44.711853+00:00",
+  "updated_at": "2026-11-28T06:58:19.017702+00:00",
   "runs": [
     {
       "id": "bv26--B1--GQA--gpt-astra",
@@ -30101,7 +30101,7 @@
       "method": "V1",
       "method_version": "V1",
       "status": "running",
-      "phase": "reviewing",
+      "phase": "ready",
       "native_stage": "l2_adapt",
       "native_attempts": 0,
       "reported_attempts": 0,
@@ -30128,11 +30128,11 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 280.7241862639785,
+        "duration_seconds": 600.9636370874941,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 2253621,
-        "reviewer_tokens": null,
+        "main_tokens": 4029573,
+        "reviewer_tokens": 888210,
         "probe_tokens": null
       },
       "search_best_round": null,
@@ -30885,7 +30885,7 @@
         "method": "V1",
         "method_version": "V1",
         "status": "running",
-        "phase": "reviewing",
+        "phase": "ready",
         "native_stage": "l2_adapt",
         "native_attempts": 0,
         "reported_attempts": 0,
@@ -60406,14 +60406,14 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1/workspaces/20261128T064750133054Z-v1-r1-deepseek-flash-max-flashinfer-gqa-decode-a100-single-q32-kv4-d128-l32768-fp16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1",
-        "native_state": "reviewing",
+        "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 280.7241862639785,
+          "duration_seconds": 600.9636370874941,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
-          "main_tokens": 2253621,
-          "reviewer_tokens": null,
+          "main_tokens": 4029573,
+          "reviewer_tokens": 888210,
           "probe_tokens": null
         }
       },
