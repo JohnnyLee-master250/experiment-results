@@ -1,6 +1,6 @@
 {
   "dataset": "Based",
-  "updated_at": "2026-11-28T14:14:51.221105+00:00",
+  "updated_at": "2026-11-28T14:18:18.799469+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -29391,8 +29391,8 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 20,
-      "valid_rounds": 16,
+      "native_attempts": 21,
+      "valid_rounds": 17,
       "attempts": [
         {
           "number": 1,
@@ -30138,6 +30138,17 @@
           "native_outcome": "failed",
           "job_id": "01a2227d-55c5-73bf-a469-7100663db68b",
           "job_status": "failed"
+        },
+        {
+          "number": 21,
+          "outcome": "candidate_failure",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 6,
+          "native_outcome": "failed",
+          "job_id": "01a22282-a215-7e15-9dd0-27ab5ee7d26f",
+          "job_status": "failed"
         }
       ],
       "budget": 51,
@@ -30158,7 +30169,7 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 26247.146121019498,
+        "duration_seconds": 26409.333822229877,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 299979423,
@@ -30175,12 +30186,12 @@
       "pytorch_p50_ms": 2226.6484375,
       "device_request": {
         "card": "EIv1P",
-        "position": 2,
-        "ticket": 123,
+        "position": 4,
+        "ticket": 128,
         "status": "queued",
         "cell_id": "bv26--V1--Based--deepseek",
         "operation": "eval",
-        "queued_at": 1795875242.5205061,
+        "queued_at": 1795875389.8041494,
         "acquired_at": null
       }
     },

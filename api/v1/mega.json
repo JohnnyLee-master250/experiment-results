@@ -3,7 +3,7 @@
   "suite": "deepgemm-mega-mhc-sm100",
   "title": "Mega mHC",
   "workload": "BF16 | M64 H4096 HC4",
-  "updated_at": "2026-11-28T14:14:51.221105+00:00",
+  "updated_at": "2026-11-28T14:18:18.799469+00:00",
   "runs": [
     {
       "id": "bv26--B1--Mega--gpt-astra",
@@ -16,8 +16,8 @@
       "method": "B1",
       "method_version": "B1",
       "status": "running",
-      "phase": "reviewing",
-      "native_stage": "reviewing",
+      "phase": "queued",
+      "native_stage": "ready",
       "native_attempts": 46,
       "reported_attempts": 45,
       "valid_rounds": 45,
@@ -33,7 +33,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "uYtpx",
+        "position": 2,
+        "ticket": 1057,
+        "status": "queued",
+        "cell_id": "bv26--B1--Mega--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795875321.6084318,
+        "acquired_at": null
+      },
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -5518,18 +5527,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 22847.412340242416,
-        "net_duration_seconds": 22449.86096954532,
+        "duration_seconds": 22936.143760968,
+        "net_duration_seconds": 22538.592390270904,
         "probe_duration_seconds": 397.551370697096,
-        "main_tokens": 42675639,
-        "reviewer_tokens": 1582789,
+        "main_tokens": 43624341,
+        "reviewer_tokens": 1853404,
         "probe_tokens": 108822,
         "main_native": {
-          "totalTokens": 42675639,
-          "inputTokens": 42615678,
-          "cachedInputTokens": 42327296,
-          "outputTokens": 59961,
-          "reasoningOutputTokens": 21011
+          "totalTokens": 43624341,
+          "inputTokens": 43564002,
+          "cachedInputTokens": 43274624,
+          "outputTokens": 60339,
+          "reasoningOutputTokens": 21061
         }
       },
       "search_best_round": 42,
@@ -30056,9 +30065,9 @@
       "method": "V1",
       "method_version": "V1",
       "status": "running",
-      "phase": "evaluating",
+      "phase": "queued",
       "native_stage": "l3_search",
-      "native_attempts": 17,
+      "native_attempts": 18,
       "reported_attempts": 11,
       "valid_rounds": 11,
       "budget": 51,
@@ -30075,13 +30084,13 @@
       "verified_at": null,
       "device_request": {
         "card": "EIv1P",
-        "position": 1,
-        "ticket": 122,
-        "status": "running",
+        "position": 2,
+        "ticket": 126,
+        "status": "queued",
         "cell_id": "bv26--V1--Mega--deepseek",
         "operation": "eval",
-        "queued_at": 1795874949.8077,
-        "acquired_at": 1795875264.056159
+        "queued_at": 1795875324.5515869,
+        "acquired_at": null
       },
       "source_id": "bv-20261126-local-001",
       "search": [
@@ -30677,6 +30686,15 @@
           "timing": null,
           "pytorch": null,
           "job_id": "01a2227b-2e06-7860-bdc7-af8c3ac6a5dc"
+        },
+        {
+          "round": 18,
+          "role": "candidate",
+          "status": "unclassified",
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "job_id": "01a22281-e7a2-73d6-9d50-2edc9686b3a0"
         }
       ],
       "formal": null,
@@ -30686,7 +30704,7 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 26296.036026299,
+        "duration_seconds": 26351.686053192243,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 249011968,
@@ -30703,7 +30721,7 @@
       "search_best_round": 13,
       "search_best_ms": 31.616440773010254,
       "valid_measurements": 3,
-      "excluded_records": 14
+      "excluded_records": 15
     }
   ],
   "slots": [
@@ -31109,8 +31127,8 @@
         "method": "B1",
         "method_version": "B1",
         "status": "running",
-        "phase": "reviewing",
-        "native_stage": "reviewing",
+        "phase": "queued",
+        "native_stage": "ready",
         "native_attempts": 46,
         "reported_attempts": 45,
         "valid_rounds": 45,
@@ -31126,7 +31144,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "uYtpx",
+          "position": 2,
+          "ticket": 1057,
+          "status": "queued",
+          "cell_id": "bv26--B1--Mega--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795875321.6084318,
+          "acquired_at": null
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -31450,9 +31477,9 @@
         "method": "V1",
         "method_version": "V1",
         "status": "running",
-        "phase": "evaluating",
+        "phase": "queued",
         "native_stage": "l3_search",
-        "native_attempts": 17,
+        "native_attempts": 18,
         "reported_attempts": 11,
         "valid_rounds": 11,
         "budget": 51,
@@ -31469,13 +31496,13 @@
         "verified_at": null,
         "device_request": {
           "card": "EIv1P",
-          "position": 1,
-          "ticket": 122,
-          "status": "running",
+          "position": 2,
+          "ticket": 126,
+          "status": "queued",
           "cell_id": "bv26--V1--Mega--deepseek",
           "operation": "eval",
-          "queued_at": 1795874949.8077,
-          "acquired_at": 1795875264.056159
+          "queued_at": 1795875324.5515869,
+          "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -36929,29 +36956,39 @@
         "card": "uYtpx",
         "environment_id": "2a8b976225f54aa7a6d48c694b832bbd",
         "run_id": "60a4ae4134f5666a",
-        "stage": "reviewing",
+        "stage": "ready",
         "started_at": "2026-11-28T07:53:04.960227+00:00",
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/baselines-910C/B1/workspaces/20261128T075304960227Z-gpt-high-deepgemm-mega-mhc-sm100-m64-h4096-hc4-bf16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/baselines-910C/B1",
-        "native_state": "reviewing",
+        "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 22847.412340242416,
-          "net_duration_seconds": 22449.86096954532,
+          "duration_seconds": 22936.143760968,
+          "net_duration_seconds": 22538.592390270904,
           "probe_duration_seconds": 397.551370697096,
-          "main_tokens": 42675639,
-          "reviewer_tokens": 1582789,
+          "main_tokens": 43624341,
+          "reviewer_tokens": 1853404,
           "probe_tokens": 108822,
           "main_native": {
-            "totalTokens": 42675639,
-            "inputTokens": 42615678,
-            "cachedInputTokens": 42327296,
-            "outputTokens": 59961,
-            "reasoningOutputTokens": 21011
+            "totalTokens": 43624341,
+            "inputTokens": 43564002,
+            "cachedInputTokens": 43274624,
+            "outputTokens": 60339,
+            "reasoningOutputTokens": 21061
           }
         },
-        "pytorch_p50_ms": 1.862239956855774
+        "pytorch_p50_ms": 1.862239956855774,
+        "device_request": {
+          "card": "uYtpx",
+          "position": 2,
+          "ticket": 1057,
+          "status": "queued",
+          "cell_id": "bv26--B1--Mega--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795875321.6084318,
+          "acquired_at": null
+        }
       },
       {
         "dataset": "Mega",
@@ -60906,7 +60943,7 @@
         "method": "V1",
         "model": "deepseek-flash",
         "status": "running",
-        "native_attempts": 17,
+        "native_attempts": 18,
         "valid_rounds": 11,
         "attempts": [
           {
@@ -61515,6 +61552,17 @@
             "native_outcome": "failed",
             "job_id": "01a2227b-2e06-7860-bdc7-af8c3ac6a5dc",
             "job_status": "failed"
+          },
+          {
+            "number": 18,
+            "outcome": "unclassified",
+            "timing": null,
+            "pytorch": null,
+            "correct_trials": 0,
+            "total_trials": 5,
+            "native_outcome": "failed",
+            "job_id": "01a22281-e7a2-73d6-9d50-2edc9686b3a0",
+            "job_status": "failed"
           }
         ],
         "budget": 51,
@@ -61532,10 +61580,10 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1/workspaces/20261128T065608189123Z-v1-r1-deepseek-flash-max-deepgemm-mega-mhc-sm100-m64-h4096-hc4-bf16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1",
-        "native_state": "evaluating",
+        "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 26296.036026299,
+          "duration_seconds": 26351.686053192243,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
           "main_tokens": 249011968,
@@ -61552,13 +61600,13 @@
         "pytorch_p50_ms": 1.8921900391578674,
         "device_request": {
           "card": "EIv1P",
-          "position": 1,
-          "ticket": 122,
-          "status": "running",
+          "position": 2,
+          "ticket": 126,
+          "status": "queued",
           "cell_id": "bv26--V1--Mega--deepseek",
           "operation": "eval",
-          "queued_at": 1795874949.8077,
-          "acquired_at": 1795875264.056159
+          "queued_at": 1795875324.5515869,
+          "acquired_at": null
         }
       },
       {
