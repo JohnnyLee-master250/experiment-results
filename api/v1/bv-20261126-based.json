@@ -1,6 +1,6 @@
 {
   "dataset": "Based",
-  "updated_at": "2026-11-28T15:09:03.134943+00:00",
+  "updated_at": "2026-11-28T15:13:41.123641+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -29390,7 +29390,7 @@
       "dataset": "Based",
       "method": "V1",
       "model": "deepseek-flash",
-      "status": "running",
+      "status": "needs_reconciliation",
       "native_attempts": 24,
       "valid_rounds": 19,
       "attempts": [
@@ -30199,34 +30199,24 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1/workspaces/20261128T065609614071Z-v1-r1-deepseek-flash-max-thunderkittens-based-h100-b16-h16-n1024-d16-dv64-bf16",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1",
-      "native_state": "evaluating",
-      "finished_at": null,
+      "native_state": "eval_failed",
+      "finished_at": "2026-11-28T15:09:46.246380+00:00",
       "cost": {
-        "duration_seconds": 29040.481972157955,
+        "duration_seconds": 29616.632308920845,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 437924824,
+        "main_tokens": 478631432,
         "reviewer_tokens": 15481771,
         "probe_tokens": null,
         "main_native": {
-          "totalTokens": 437924824,
-          "inputTokens": 437599313,
-          "cachedInputTokens": 436998016,
-          "outputTokens": 325511,
-          "reasoningOutputTokens": 101889
+          "totalTokens": 478631432,
+          "inputTokens": 478297073,
+          "cachedInputTokens": 477653376,
+          "outputTokens": 334359,
+          "reasoningOutputTokens": 102831
         }
       },
-      "pytorch_p50_ms": 2226.6484375,
-      "device_request": {
-        "card": "EIv1P",
-        "position": 1,
-        "ticket": 144,
-        "status": "running",
-        "cell_id": "bv26--V1--Based--deepseek",
-        "operation": "eval",
-        "queued_at": 1795877500.899044,
-        "acquired_at": 1795878009.8695736
-      }
+      "pytorch_p50_ms": 2226.6484375
     },
     {
       "dataset": "Based",
