@@ -1,6 +1,6 @@
 {
   "dataset": "Mega",
-  "updated_at": "2026-11-28T15:38:38.988312+00:00",
+  "updated_at": "2026-11-28T15:48:38.131333+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -30021,8 +30021,8 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 22,
-      "valid_rounds": 15,
+      "native_attempts": 23,
+      "valid_rounds": 16,
       "attempts": [
         {
           "number": 1,
@@ -30803,6 +30803,18 @@
           "job_id": "01a222cc-05b0-7390-bdac-e4dafe4da454",
           "job_status": "succeeded",
           "native_number": 22
+        },
+        {
+          "number": 24,
+          "outcome": "candidate_failure",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a222d7-3b8a-7d1c-ac8e-61f4f3303267",
+          "job_status": "failed",
+          "native_number": 23
         }
       ],
       "budget": 51,
@@ -30823,7 +30835,7 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 31269.561191752553,
+        "duration_seconds": 31935.66869724728,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 481278285,
@@ -30837,17 +30849,7 @@
           "reasoningOutputTokens": 122975
         }
       },
-      "pytorch_p50_ms": 1.8921900391578674,
-      "device_request": {
-        "card": "EIv1P",
-        "position": 4,
-        "ticket": 158,
-        "status": "queued",
-        "cell_id": "bv26--V1--Mega--deepseek",
-        "operation": "eval",
-        "queued_at": 1795880264.1844954,
-        "acquired_at": null
-      }
+      "pytorch_p50_ms": 1.8921900391578674
     },
     {
       "dataset": "Mega",
