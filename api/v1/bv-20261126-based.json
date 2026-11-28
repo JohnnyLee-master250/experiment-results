@@ -1,6 +1,6 @@
 {
   "dataset": "Based",
-  "updated_at": "2026-11-28T18:14:05.208579+00:00",
+  "updated_at": "2026-11-28T18:18:20.291915+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -29391,8 +29391,8 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 37,
-      "valid_rounds": 28,
+      "native_attempts": 38,
+      "valid_rounds": 29,
       "attempts": [
         {
           "number": 1,
@@ -30980,6 +30980,18 @@
           "job_id": "01a22355-6650-74a1-bb7a-761b78de4982",
           "job_status": "failed",
           "native_number": 37
+        },
+        {
+          "number": 39,
+          "outcome": "candidate_failure",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 6,
+          "native_outcome": "failed",
+          "job_id": "01a2235c-ac9f-75da-8909-bb300f60e478",
+          "job_status": "failed",
+          "native_number": 38
         }
       ],
       "budget": 51,
@@ -30997,10 +31009,10 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1/workspaces/20261128T065609614071Z-v1-r1-deepseek-flash-max-thunderkittens-based-h100-b16-h16-n1024-d16-dv64-bf16",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1",
-      "native_state": "evaluating",
+      "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 40631.61089902185,
+        "duration_seconds": 40705.40603637695,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 478631432,
@@ -31017,13 +31029,13 @@
       "pytorch_p50_ms": 2226.6484375,
       "device_request": {
         "card": "EIv1P",
-        "position": 1,
-        "ticket": 220,
-        "status": "running",
+        "position": 3,
+        "ticket": 224,
+        "status": "queued",
         "cell_id": "bv26--V1--Based--deepseek",
         "operation": "eval",
-        "queued_at": 1795889198.9390764,
-        "acquired_at": 1795889600.5235054
+        "queued_at": 1795889701.641048,
+        "acquired_at": null
       }
     },
     {
