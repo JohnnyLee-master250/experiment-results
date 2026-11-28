@@ -1,6 +1,6 @@
 {
   "dataset": "MQA",
-  "updated_at": "2026-11-28T10:08:17.306307+00:00",
+  "updated_at": "2026-11-28T10:13:16.642183+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -62,7 +62,7 @@
       "method": "B2",
       "model": "gpt-6.2-astra",
       "status": "running",
-      "native_attempts": 9,
+      "native_attempts": 10,
       "valid_rounds": 9,
       "attempts": [
         {
@@ -1213,6 +1213,17 @@
           "native_outcome": "passed",
           "job_id": "01a2219a-e8fd-7e41-9541-c09c707bb3c1",
           "job_status": "succeeded"
+        },
+        {
+          "number": 10,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a2219f-f0f1-77b1-817e-e1049379aa0c",
+          "job_status": "failed"
         }
       ],
       "budget": 51,
@@ -1225,38 +1236,38 @@
       "card": "RXVG3",
       "environment_id": "204e37e699434e5682bea05cfa7cfe38",
       "run_id": "9f292ef7706b6921",
-      "stage": "evaluating",
+      "stage": "ready",
       "started_at": "2026-11-28T08:30:02.507962+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/baselines-910C/B2/workspaces/20261128T083002507962Z-gpt-high-deepgemm-mqa-h800-sq2048-sk8192-h32-d64-fp8",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/baselines-910C/B2",
-      "native_state": "evaluating",
+      "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 5853.257813362405,
-        "net_duration_seconds": 5794.219953365624,
-        "probe_duration_seconds": 59.03785999678075,
-        "main_tokens": 13333621,
+        "duration_seconds": 5961.8139559440315,
+        "net_duration_seconds": 5880.241073343903,
+        "probe_duration_seconds": 81.57288260012865,
+        "main_tokens": 14711337,
         "reviewer_tokens": 250840,
-        "probe_tokens": 39986,
+        "probe_tokens": 53170,
         "main_native": {
-          "totalTokens": 13333621,
-          "inputTokens": 13312001,
-          "cachedInputTokens": 13232896,
-          "outputTokens": 21620,
-          "reasoningOutputTokens": 3997
+          "totalTokens": 14711337,
+          "inputTokens": 14688399,
+          "cachedInputTokens": 14605056,
+          "outputTokens": 22938,
+          "reasoningOutputTokens": 4314
         }
       },
       "pytorch_p50_ms": 27.31109046936035,
       "device_request": {
         "card": "RXVG3",
-        "position": 1,
-        "ticket": 700,
-        "status": "running",
+        "position": 2,
+        "ticket": 703,
+        "status": "queued",
         "cell_id": "bv26--B2--MQA--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795860295.361352,
-        "acquired_at": 1795860455.7345989
+        "queued_at": 1795860576.420258,
+        "acquired_at": null
       }
     },
     {
@@ -1325,37 +1336,37 @@
       "card": "RXVG3",
       "environment_id": "204e37e699434e5682bea05cfa7cfe38",
       "run_id": "3fa80d15e9d8f9d8",
-      "stage": "ready",
+      "stage": "evaluating",
       "started_at": "2026-11-28T10:01:24.894702+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/baselines-910C/B3/workspaces/20261128T100124894702Z-gpt-high-deepgemm-mqa-h800-sq2048-sk8192-h32-d64-fp8",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-RXVG3/baselines-910C/B3",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 376.76577717624605,
-        "net_duration_seconds": 331.52973028086126,
+        "duration_seconds": 561.2038229200989,
+        "net_duration_seconds": 515.9677760247141,
         "probe_duration_seconds": 45.23604689538479,
-        "main_tokens": 1098073,
+        "main_tokens": 1335719,
         "reviewer_tokens": 0,
         "probe_tokens": 26959,
         "main_native": {
-          "totalTokens": 1098073,
-          "inputTokens": 1092639,
-          "cachedInputTokens": 1050752,
-          "outputTokens": 5434,
-          "reasoningOutputTokens": 935
+          "totalTokens": 1335719,
+          "inputTokens": 1330068,
+          "cachedInputTokens": 1287680,
+          "outputTokens": 5651,
+          "reasoningOutputTokens": 976
         }
       },
       "device_request": {
         "card": "RXVG3",
-        "position": 3,
+        "position": 1,
         "ticket": 702,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--B3--MQA--gpt-astra",
         "operation": "eval",
         "queued_at": 1795860475.7658124,
-        "acquired_at": null
+        "acquired_at": 1795860646.0792208
       }
     },
     {
@@ -13214,7 +13225,7 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 14,
+      "native_attempts": 15,
       "valid_rounds": 8,
       "attempts": [
         {
@@ -13580,6 +13591,17 @@
           "native_outcome": "failed",
           "job_id": "01a2219a-d672-7482-b370-f19c6f5b7b0f",
           "job_status": "failed"
+        },
+        {
+          "number": 15,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a221a0-2edc-7acc-b67f-a6c0eb5a5811",
+          "job_status": "failed"
         }
       ],
       "budget": 51,
@@ -13597,26 +13619,26 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1/workspaces/20261128T065609716410Z-v1-r1-deepseek-flash-max-deepgemm-mqa-h800-sq2048-sk8192-h32-d64-fp8",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1",
-      "native_state": "evaluating",
+      "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 11501.780403170735,
+        "duration_seconds": 11575.5879313685,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 211234623,
+        "main_tokens": 214326468,
         "reviewer_tokens": 14605532,
         "probe_tokens": null
       },
       "pytorch_p50_ms": 27.8125,
       "device_request": {
         "card": "EIv1P",
-        "position": 1,
-        "ticket": 68,
-        "status": "running",
+        "position": 2,
+        "ticket": 72,
+        "status": "queued",
         "cell_id": "bv26--V1--MQA--deepseek",
         "operation": "eval",
-        "queued_at": 1795860380.5589654,
-        "acquired_at": 1795860471.352466
+        "queued_at": 1795860565.2459714,
+        "acquired_at": null
       }
     },
     {
