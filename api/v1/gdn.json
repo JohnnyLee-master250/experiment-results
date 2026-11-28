@@ -3,7 +3,7 @@
   "suite": "gdn-prefill-sm100",
   "title": "GDN prefill",
   "workload": "FP16 | S2048 QK16 V32 D128",
-  "updated_at": "2026-11-28T09:08:18.981356+00:00",
+  "updated_at": "2026-11-28T09:18:40.181956+00:00",
   "runs": [
     {
       "id": "bv26--B1--GDN--gpt-astra",
@@ -30543,7 +30543,7 @@
       "status": "running",
       "phase": "queued",
       "native_stage": "l3_search",
-      "native_attempts": 7,
+      "native_attempts": 9,
       "reported_attempts": 5,
       "valid_rounds": 5,
       "budget": 51,
@@ -30560,12 +30560,12 @@
       "verified_at": null,
       "device_request": {
         "card": "8MZlZ",
-        "position": 2,
-        "ticket": 48,
+        "position": 4,
+        "ticket": 58,
         "status": "queued",
         "cell_id": "bv26--V1--GDN--deepseek",
         "operation": "eval",
-        "queued_at": 1795856543.0417142,
+        "queued_at": 1795857477.1091392,
         "acquired_at": null
       },
       "source_id": "bv-20261126-local-001",
@@ -31182,6 +31182,24 @@
           "timing": null,
           "pytorch": null,
           "job_id": "01a22163-0f12-78f8-96fa-aa6ceeae2064"
+        },
+        {
+          "round": 8,
+          "role": "candidate",
+          "status": "unclassified",
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "job_id": "01a2216a-a19a-715a-8697-4d48a017cabe"
+        },
+        {
+          "round": 9,
+          "role": "candidate",
+          "status": "unclassified",
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "job_id": "01a22171-1414-7336-aead-111bcf5ef4f8"
         }
       ],
       "formal": null,
@@ -31191,17 +31209,17 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 8065.950126985088,
+        "duration_seconds": 9001.767750861123,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 128067681,
-        "reviewer_tokens": 6953477,
+        "main_tokens": 144921994,
+        "reviewer_tokens": 7691604,
         "probe_tokens": null
       },
       "search_best_round": 4,
       "search_best_ms": 2799.2977294921875,
       "valid_measurements": 4,
-      "excluded_records": 3
+      "excluded_records": 5
     }
   ],
   "slots": [
@@ -31950,7 +31968,7 @@
         "status": "running",
         "phase": "queued",
         "native_stage": "l3_search",
-        "native_attempts": 7,
+        "native_attempts": 9,
         "reported_attempts": 5,
         "valid_rounds": 5,
         "budget": 51,
@@ -31967,12 +31985,12 @@
         "verified_at": null,
         "device_request": {
           "card": "8MZlZ",
-          "position": 2,
-          "ticket": 48,
+          "position": 4,
+          "ticket": 58,
           "status": "queued",
           "cell_id": "bv26--V1--GDN--deepseek",
           "operation": "eval",
-          "queued_at": 1795856543.0417142,
+          "queued_at": 1795857477.1091392,
           "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
@@ -61880,7 +61898,7 @@
         "method": "V1",
         "model": "deepseek-flash",
         "status": "running",
-        "native_attempts": 7,
+        "native_attempts": 9,
         "valid_rounds": 5,
         "attempts": [
           {
@@ -62484,6 +62502,28 @@
             "native_outcome": "failed",
             "job_id": "01a22163-0f12-78f8-96fa-aa6ceeae2064",
             "job_status": "failed"
+          },
+          {
+            "number": 8,
+            "outcome": "unclassified",
+            "timing": null,
+            "pytorch": null,
+            "correct_trials": 0,
+            "total_trials": 5,
+            "native_outcome": "failed",
+            "job_id": "01a2216a-a19a-715a-8697-4d48a017cabe",
+            "job_status": "failed"
+          },
+          {
+            "number": 9,
+            "outcome": "unclassified",
+            "timing": null,
+            "pytorch": null,
+            "correct_trials": 0,
+            "total_trials": 5,
+            "native_outcome": "failed",
+            "job_id": "01a22171-1414-7336-aead-111bcf5ef4f8",
+            "job_status": "failed"
           }
         ],
         "budget": 51,
@@ -62504,22 +62544,22 @@
         "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 8065.950126985088,
+          "duration_seconds": 9001.767750861123,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
-          "main_tokens": 128067681,
-          "reviewer_tokens": 6953477,
+          "main_tokens": 144921994,
+          "reviewer_tokens": 7691604,
           "probe_tokens": null
         },
         "pytorch_p50_ms": 455.33428955078125,
         "device_request": {
           "card": "8MZlZ",
-          "position": 2,
-          "ticket": 48,
+          "position": 4,
+          "ticket": 58,
           "status": "queued",
           "cell_id": "bv26--V1--GDN--deepseek",
           "operation": "eval",
-          "queued_at": 1795856543.0417142,
+          "queued_at": 1795857477.1091392,
           "acquired_at": null
         }
       },
