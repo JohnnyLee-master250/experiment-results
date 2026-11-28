@@ -3,7 +3,7 @@
   "suite": "deepgemm-mqa-h800",
   "title": "MQA",
   "workload": "FP8 | SQ2048 SK8192 H32 D64",
-  "updated_at": "2026-11-28T08:03:17.492681+00:00",
+  "updated_at": "2026-11-28T08:04:58.133244+00:00",
   "runs": [
     {
       "id": "bv26--V1--MQA--gpt-astra",
@@ -12163,8 +12163,8 @@
       "phase": "evaluating",
       "native_stage": "l3_search",
       "native_attempts": 4,
-      "reported_attempts": 0,
-      "valid_rounds": 0,
+      "reported_attempts": 3,
+      "valid_rounds": 3,
       "budget": 51,
       "card_id": "EIv1P",
       "environment_name": "DevEnvC_EIv1P",
@@ -12192,8 +12192,8 @@
         {
           "round": 1,
           "role": "candidate",
-          "status": "unclassified",
-          "outcome": "unclassified",
+          "status": "failed",
+          "outcome": "candidate_failure",
           "timing": null,
           "pytorch": null,
           "job_id": "01a2210a-f0ea-73c8-8d63-36de4540b052"
@@ -12210,8 +12210,8 @@
         {
           "round": 3,
           "role": "candidate",
-          "status": "unclassified",
-          "outcome": "unclassified",
+          "status": "failed",
+          "outcome": "candidate_failure",
           "timing": null,
           "pytorch": null,
           "job_id": "01a2210d-07ec-7bd0-b731-6d489e0ba597"
@@ -12219,8 +12219,8 @@
         {
           "round": 4,
           "role": "candidate",
-          "status": "unclassified",
-          "outcome": "unclassified",
+          "status": "failed",
+          "outcome": "candidate_failure",
           "timing": null,
           "pytorch": null,
           "job_id": "01a22112-a7e2-7f27-8372-c553927de5d1"
@@ -13122,8 +13122,8 @@
         "phase": "evaluating",
         "native_stage": "l3_search",
         "native_attempts": 4,
-        "reported_attempts": 0,
-        "valid_rounds": 0,
+        "reported_attempts": 3,
+        "valid_rounds": 3,
         "budget": 51,
         "card_id": "EIv1P",
         "environment_name": "DevEnvC_EIv1P",
@@ -25226,11 +25226,11 @@
         "model": "deepseek-flash",
         "status": "running",
         "native_attempts": 4,
-        "valid_rounds": 0,
+        "valid_rounds": 3,
         "attempts": [
           {
             "number": 1,
-            "outcome": "unclassified",
+            "outcome": "candidate_failure",
             "timing": null,
             "pytorch": null,
             "correct_trials": 0,
@@ -25252,7 +25252,7 @@
           },
           {
             "number": 3,
-            "outcome": "unclassified",
+            "outcome": "candidate_failure",
             "timing": null,
             "pytorch": null,
             "correct_trials": 0,
@@ -25263,7 +25263,7 @@
           },
           {
             "number": 4,
-            "outcome": "unclassified",
+            "outcome": "candidate_failure",
             "timing": null,
             "pytorch": null,
             "correct_trials": 0,

@@ -3,7 +3,7 @@
   "suite": "flashinfer-gqa-decode-a100",
   "title": "GQA decode",
   "workload": "FP16 | Q32 KV4 D128 L32768",
-  "updated_at": "2026-11-28T08:03:17.492681+00:00",
+  "updated_at": "2026-11-28T08:04:58.133244+00:00",
   "runs": [
     {
       "id": "bv26--B1--GQA--gpt-astra",
@@ -30104,8 +30104,8 @@
       "phase": "queued",
       "native_stage": "l3_search",
       "native_attempts": 3,
-      "reported_attempts": 1,
-      "valid_rounds": 1,
+      "reported_attempts": 2,
+      "valid_rounds": 2,
       "budget": 51,
       "card_id": "8MZlZ",
       "environment_name": "DevEnvC_8MZlZ",
@@ -30133,8 +30133,8 @@
         {
           "round": 1,
           "role": "candidate",
-          "status": "unclassified",
-          "outcome": "unclassified",
+          "status": "failed",
+          "outcome": "candidate_failure",
           "timing": null,
           "pytorch": null,
           "job_id": "01a2210e-dc23-7046-9689-8355cf2da520"
@@ -31145,8 +31145,8 @@
         "phase": "queued",
         "native_stage": "l3_search",
         "native_attempts": 3,
-        "reported_attempts": 1,
-        "valid_rounds": 1,
+        "reported_attempts": 2,
+        "valid_rounds": 2,
         "budget": 51,
         "card_id": "8MZlZ",
         "environment_name": "DevEnvC_8MZlZ",
@@ -60655,11 +60655,11 @@
         "model": "deepseek-flash",
         "status": "running",
         "native_attempts": 3,
-        "valid_rounds": 1,
+        "valid_rounds": 2,
         "attempts": [
           {
             "number": 1,
-            "outcome": "unclassified",
+            "outcome": "candidate_failure",
             "timing": null,
             "pytorch": null,
             "correct_trials": 0,
