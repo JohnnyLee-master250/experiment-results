@@ -1,6 +1,6 @@
 {
   "dataset": "FA3",
-  "updated_at": "2026-11-28T11:08:17.862271+00:00",
+  "updated_at": "2026-11-28T11:12:37.513798+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -11880,8 +11880,8 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 10,
-      "valid_rounds": 7,
+      "native_attempts": 11,
+      "valid_rounds": 8,
       "attempts": [
         {
           "number": 1,
@@ -12517,6 +12517,17 @@
           "native_outcome": "failed",
           "job_id": "01a221b6-4821-749d-84b0-10a734678843",
           "job_status": "failed"
+        },
+        {
+          "number": 11,
+          "outcome": "candidate_failure",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a221d7-2338-78a8-8879-57aeaa272669",
+          "job_status": "failed"
         }
       ],
       "budget": 51,
@@ -12534,27 +12545,17 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1/workspaces/20261128T065608403510Z-v1-r1-deepseek-flash-max-fa3-backward-sm90-b2-s4096-h6-d128-bf16-causal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1",
-      "native_state": "evaluating",
+      "native_state": "reviewing",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 15104.372438639402,
+        "duration_seconds": 15176.02595726028,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 363145970,
+        "main_tokens": 366684797,
         "reviewer_tokens": 15887786,
         "probe_tokens": null
       },
-      "pytorch_p50_ms": 14.64434003829956,
-      "device_request": {
-        "card": "EIv1P",
-        "position": 1,
-        "ticket": 85,
-        "status": "running",
-        "cell_id": "bv26--V1--FA3--deepseek",
-        "operation": "eval",
-        "queued_at": 1795862005.3073785,
-        "acquired_at": 1795864072.6082575
-      }
+      "pytorch_p50_ms": 14.64434003829956
     },
     {
       "dataset": "FA3",
