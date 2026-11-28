@@ -3,7 +3,7 @@
   "suite": "gdn-prefill-sm100",
   "title": "GDN prefill",
   "workload": "FP16 | S2048 QK16 V32 D128",
-  "updated_at": "2026-11-28T13:33:40.538066+00:00",
+  "updated_at": "2026-11-28T13:39:46.984562+00:00",
   "runs": [
     {
       "id": "bv26--B1--GDN--gpt-astra",
@@ -30540,8 +30540,8 @@
       "effort": "max",
       "method": "V1",
       "method_version": "V1",
-      "status": "blocked",
-      "phase": "eval_failed",
+      "status": "running",
+      "phase": "queued",
       "native_stage": "l3_search",
       "native_attempts": 17,
       "reported_attempts": 11,
@@ -30555,10 +30555,19 @@
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
       "started_at": "2026-11-28T06:47:49.947698+00:00",
-      "finished_at": "2026-11-28T11:06:50.509845+00:00",
+      "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "8MZlZ",
+        "position": 5,
+        "ticket": 113,
+        "status": "queued",
+        "cell_id": "bv26--V1--GDN--deepseek",
+        "operation": "eval",
+        "queued_at": 1795872982.6353369,
+        "acquired_at": null
+      },
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -32475,8 +32484,8 @@
         "effort": "max",
         "method": "V1",
         "method_version": "V1",
-        "status": "blocked",
-        "phase": "eval_failed",
+        "status": "running",
+        "phase": "queued",
         "native_stage": "l3_search",
         "native_attempts": 17,
         "reported_attempts": 11,
@@ -32490,10 +32499,19 @@
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
         "started_at": "2026-11-28T06:47:49.947698+00:00",
-        "finished_at": "2026-11-28T11:06:50.509845+00:00",
+        "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "8MZlZ",
+          "position": 5,
+          "ticket": 113,
+          "status": "queued",
+          "cell_id": "bv26--V1--GDN--deepseek",
+          "operation": "eval",
+          "queued_at": 1795872982.6353369,
+          "acquired_at": null
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -62398,7 +62416,7 @@
         "dataset": "GDN",
         "method": "V1",
         "model": "deepseek-flash",
-        "status": "needs_reconciliation",
+        "status": "running",
         "native_attempts": 17,
         "valid_rounds": 11,
         "attempts": [
@@ -63550,8 +63568,8 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1/workspaces/20261128T064749947698Z-v1-r1-deepseek-flash-max-gdn-prefill-sm100-single-s2048-qk16-v32-d128-fp16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1",
-        "native_state": "eval_failed",
-        "finished_at": "2026-11-28T11:06:50.509845+00:00",
+        "native_state": "ready",
+        "finished_at": null,
         "cost": {
           "duration_seconds": 15540.56214665249,
           "net_duration_seconds": null,
@@ -63567,7 +63585,17 @@
             "reasoningOutputTokens": 112672
           }
         },
-        "pytorch_p50_ms": 455.33428955078125
+        "pytorch_p50_ms": 455.33428955078125,
+        "device_request": {
+          "card": "8MZlZ",
+          "position": 5,
+          "ticket": 113,
+          "status": "queued",
+          "cell_id": "bv26--V1--GDN--deepseek",
+          "operation": "eval",
+          "queued_at": 1795872982.6353369,
+          "acquired_at": null
+        }
       },
       {
         "dataset": "GDN",
