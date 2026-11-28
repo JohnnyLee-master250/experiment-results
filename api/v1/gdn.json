@@ -3,7 +3,7 @@
   "suite": "gdn-prefill-sm100",
   "title": "GDN prefill",
   "workload": "FP16 | S2048 QK16 V32 D128",
-  "updated_at": "2026-11-28T06:48:17.998444+00:00",
+  "updated_at": "2026-11-28T06:53:44.711853+00:00",
   "runs": [
     {
       "id": "bv26--B1--GDN--gpt-astra",
@@ -29233,7 +29233,7 @@
       "method_version": "V1",
       "status": "running",
       "phase": "ready",
-      "native_stage": "l1_overview",
+      "native_stage": "l2_adapt",
       "native_attempts": 0,
       "reported_attempts": 0,
       "valid_rounds": 0,
@@ -29259,10 +29259,10 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 0.05287746153771877,
+        "duration_seconds": 161.16357398964465,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 0,
+        "main_tokens": 3001581,
         "reviewer_tokens": 0,
         "probe_tokens": null
       },
@@ -30017,7 +30017,7 @@
         "method_version": "V1",
         "status": "running",
         "phase": "ready",
-        "native_stage": "l1_overview",
+        "native_stage": "l2_adapt",
         "native_attempts": 0,
         "reported_attempts": 0,
         "valid_rounds": 0,
@@ -58675,7 +58675,7 @@
         "card": "8MZlZ",
         "environment_id": "2f83e4075b2e4562b7b6af7cabd1d00f",
         "run_id": "02b1f9bbe1363393",
-        "stage": "l1_overview",
+        "stage": "l2_adapt",
         "started_at": "2026-11-28T06:47:49.947698+00:00",
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1/workspaces/20261128T064749947698Z-v1-r1-deepseek-flash-max-gdn-prefill-sm100-single-s2048-qk16-v32-d128-fp16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
@@ -58683,10 +58683,10 @@
         "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 0.05287746153771877,
+          "duration_seconds": 161.16357398964465,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
-          "main_tokens": 0,
+          "main_tokens": 3001581,
           "reviewer_tokens": 0,
           "probe_tokens": null
         }
