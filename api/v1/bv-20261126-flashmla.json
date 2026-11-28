@@ -1,6 +1,6 @@
 {
   "dataset": "FlashMLA",
-  "updated_at": "2026-11-28T08:19:01.005833+00:00",
+  "updated_at": "2026-11-28T08:23:19.762532+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -5434,39 +5434,29 @@
       "card": "imkdG",
       "environment_id": "41a832c5c8be46e6a39fcd54e51992f9",
       "run_id": "48925343308c2280",
-      "stage": "profiling",
+      "stage": "reviewing",
       "started_at": "2026-11-27T17:08:10.217563+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/baselines-910C/B2/workspaces/20261127T170810217563Z-gpt-high-flashmla-dense-decode-sm90-b128-sq2-hq128-kv32768-d576-bf16-causal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/baselines-910C/B2",
-      "native_state": "profiling",
+      "native_state": "reviewing",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 54609.64188504964,
-        "net_duration_seconds": 51425.180407846725,
+        "duration_seconds": 54798.865251744166,
+        "net_duration_seconds": 51614.40377454125,
         "probe_duration_seconds": 796.6676038596779,
-        "main_tokens": 139384752,
+        "main_tokens": 139806197,
         "reviewer_tokens": 875860,
         "probe_tokens": 190971,
         "main_native": {
-          "totalTokens": 139384752,
-          "inputTokens": 139280572,
-          "cachedInputTokens": 139021440,
-          "outputTokens": 104180,
+          "totalTokens": 139806197,
+          "inputTokens": 139701438,
+          "cachedInputTokens": 139440896,
+          "outputTokens": 104759,
           "reasoningOutputTokens": 27127
         }
       },
-      "pytorch_p50_ms": 2337.352294921875,
-      "device_request": {
-        "card": "imkdG",
-        "position": 1,
-        "ticket": 162,
-        "status": "running",
-        "cell_id": "bv26--B2--FlashMLA--gpt-astra",
-        "operation": "msprof",
-        "queued_at": 1795853659.518711,
-        "acquired_at": 1795853899.6847212
-      }
+      "pytorch_p50_ms": 2337.352294921875
     },
     {
       "dataset": "FlashMLA",
@@ -11067,33 +11057,33 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/kernel-bridge/V1/workspaces/20261127T170813093072Z-v1-r1-gpt-6.2-astra-high-flashmla-dense-decode-sm90-b128-sq2-hq128-kv32768-d576-bf16-causal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/kernel-bridge/V1",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 54385.909764677286,
-        "net_duration_seconds": 53726.32433797233,
+        "duration_seconds": 54777.59357318282,
+        "net_duration_seconds": 54118.00814647786,
         "probe_duration_seconds": 659.5854267049581,
-        "main_tokens": 138546605,
+        "main_tokens": 138714707,
         "reviewer_tokens": 4142582,
         "probe_tokens": 203606,
         "main_native": {
-          "totalTokens": 138546605,
-          "inputTokens": 138455638,
-          "cachedInputTokens": 138196608,
-          "outputTokens": 90967,
+          "totalTokens": 138714707,
+          "inputTokens": 138623616,
+          "cachedInputTokens": 138364032,
+          "outputTokens": 91091,
           "reasoningOutputTokens": 20976
         }
       },
       "pytorch_p50_ms": 2337.9825439453125,
       "device_request": {
         "card": "imkdG",
-        "position": 2,
+        "position": 1,
         "ticket": 163,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--V1--FlashMLA--gpt-astra",
         "operation": "eval",
         "queued_at": 1795853680.044895,
-        "acquired_at": null
+        "acquired_at": 1795854069.930701
       }
     },
     {
