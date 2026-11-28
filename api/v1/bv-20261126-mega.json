@@ -1,6 +1,6 @@
 {
   "dataset": "Mega",
-  "updated_at": "2026-11-28T14:05:38.663457+00:00",
+  "updated_at": "2026-11-28T14:08:38.557492+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -5253,21 +5253,21 @@
         "duration_seconds": 22295.869005961344,
         "net_duration_seconds": 21898.508030291647,
         "probe_duration_seconds": 397.3609756696969,
-        "main_tokens": 40612631,
+        "main_tokens": 40986538,
         "reviewer_tokens": 1582789,
         "probe_tokens": 108822,
         "main_native": {
-          "totalTokens": 40612631,
-          "inputTokens": 40553434,
-          "cachedInputTokens": 40267264,
-          "outputTokens": 59197,
-          "reasoningOutputTokens": 20951
+          "totalTokens": 40986538,
+          "inputTokens": 40927194,
+          "cachedInputTokens": 40640896,
+          "outputTokens": 59344,
+          "reasoningOutputTokens": 20982
         }
       },
       "pytorch_p50_ms": 1.862239956855774,
       "device_request": {
         "card": "uYtpx",
-        "position": 3,
+        "position": 2,
         "ticket": 1052,
         "status": "queued",
         "cell_id": "bv26--B1--Mega--gpt-astra",
@@ -29229,8 +29229,8 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 16,
-      "valid_rounds": 10,
+      "native_attempts": 17,
+      "valid_rounds": 11,
       "attempts": [
         {
           "number": 1,
@@ -29827,6 +29827,17 @@
           "native_outcome": "failed",
           "job_id": "01a22275-45ed-753e-b901-ba0da31eacad",
           "job_status": "failed"
+        },
+        {
+          "number": 17,
+          "outcome": "candidate_failure",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a2227b-2e06-7860-bdc7-af8c3ac6a5dc",
+          "job_status": "failed"
         }
       ],
       "budget": 51,
@@ -29847,7 +29858,7 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 25657.50207100436,
+        "duration_seconds": 25930.37946047075,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 249011968,
@@ -29861,17 +29872,7 @@
           "reasoningOutputTokens": 97562
         }
       },
-      "pytorch_p50_ms": 1.8921900391578674,
-      "device_request": {
-        "card": "EIv1P",
-        "position": 3,
-        "ticket": 117,
-        "status": "queued",
-        "cell_id": "bv26--V1--Mega--deepseek",
-        "operation": "eval",
-        "queued_at": 1795874660.8435194,
-        "acquired_at": null
-      }
+      "pytorch_p50_ms": 1.8921900391578674
     },
     {
       "dataset": "Mega",
