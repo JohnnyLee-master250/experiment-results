@@ -1,6 +1,6 @@
 {
   "dataset": "HSTU",
-  "updated_at": "2026-11-28T04:58:16.793632+00:00",
+  "updated_at": "2026-11-28T05:03:37.660564+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -62,8 +62,8 @@
       "method": "B2",
       "model": "gpt-6.2-astra",
       "status": "running",
-      "native_attempts": 18,
-      "valid_rounds": 17,
+      "native_attempts": 19,
+      "valid_rounds": 18,
       "attempts": [
         {
           "number": 1,
@@ -892,6 +892,52 @@
           "native_outcome": "passed",
           "job_id": "01a2207b-ca62-747b-9b14-f4c05f59f808",
           "job_status": "succeeded"
+        },
+        {
+          "number": 19,
+          "outcome": "passed",
+          "timing": {
+            "p50_ms": 74.6259880065918,
+            "samples_ms": [
+              75.06828308105469,
+              74.52635955810547,
+              74.62153625488281,
+              74.02661895751953,
+              73.96431732177734,
+              74.13175964355469,
+              74.537841796875,
+              74.61067962646484,
+              75.14627838134766,
+              74.75868225097656,
+              74.93074035644531,
+              74.9256591796875,
+              74.63043975830078,
+              74.33228302001953,
+              74.32774353027344,
+              74.80037689208984,
+              74.98634338378906,
+              75.27464294433594,
+              75.02806091308594,
+              74.65460205078125,
+              74.06784057617188,
+              75.24095916748047,
+              74.35321807861328,
+              75.08841705322266,
+              74.23391723632812,
+              74.86225891113281,
+              74.84001922607422,
+              74.33580017089844,
+              74.0462417602539,
+              73.90412139892578
+            ],
+            "sample_count": 30
+          },
+          "pytorch": null,
+          "correct_trials": 5,
+          "total_trials": 5,
+          "native_outcome": "passed",
+          "job_id": "01a22082-bd5f-7d2c-a1b7-b194948feed3",
+          "job_status": "succeeded"
         }
       ],
       "budget": 51,
@@ -904,39 +950,29 @@
       "card": "LxrgZ",
       "environment_id": "2fe846731400422db33c202d63a696ec",
       "run_id": "43e090b39e3f8c7a",
-      "stage": "evaluating",
+      "stage": "ready",
       "started_at": "2026-11-28T01:32:24.352864+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-LxrgZ/baselines-910C/B2/workspaces/20261128T013224352864Z-gpt-high-hstu-silu-forward-sm90-b512-h4-d128-max4096-bf16-jagged-silu",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-LxrgZ",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-LxrgZ/baselines-910C/B2",
-      "native_state": "evaluating",
+      "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 12220.587548883632,
-        "net_duration_seconds": 12069.878437401727,
-        "probe_duration_seconds": 150.70911148190498,
-        "main_tokens": 26092711,
+        "duration_seconds": 12666.53373153694,
+        "net_duration_seconds": 12515.763940403238,
+        "probe_duration_seconds": 150.7697911337018,
+        "main_tokens": 27122966,
         "reviewer_tokens": 367397,
         "probe_tokens": 81770,
         "main_native": {
-          "totalTokens": 26092711,
-          "inputTokens": 26063313,
-          "cachedInputTokens": 25935872,
-          "outputTokens": 29398,
+          "totalTokens": 27122966,
+          "inputTokens": 27093372,
+          "cachedInputTokens": 26964992,
+          "outputTokens": 29594,
           "reasoningOutputTokens": 4707
         }
       },
-      "pytorch_p50_ms": 4703.16552734375,
-      "device_request": {
-        "card": "LxrgZ",
-        "position": 1,
-        "ticket": 84,
-        "status": "running",
-        "cell_id": "bv26--B2--HSTU--gpt-astra",
-        "operation": "eval",
-        "queued_at": 1795841764.873121,
-        "acquired_at": 1795841764.8736126
-      }
+      "pytorch_p50_ms": 4703.16552734375
     },
     {
       "dataset": "HSTU",
