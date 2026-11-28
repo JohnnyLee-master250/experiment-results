@@ -1,6 +1,6 @@
 {
   "dataset": "HSTU",
-  "updated_at": "2026-11-28T09:45:22.249643+00:00",
+  "updated_at": "2026-11-28T09:53:16.350068+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -62,8 +62,8 @@
       "method": "B2",
       "model": "gpt-6.2-astra",
       "status": "running",
-      "native_attempts": 50,
-      "valid_rounds": 48,
+      "native_attempts": 51,
+      "valid_rounds": 49,
       "attempts": [
         {
           "number": 1,
@@ -2329,6 +2329,52 @@
           "native_outcome": "passed",
           "job_id": "01a2217b-f3f5-74b3-b886-69e3cdec4c1f",
           "job_status": "succeeded"
+        },
+        {
+          "number": 51,
+          "outcome": "passed",
+          "timing": {
+            "p50_ms": 62.1834602355957,
+            "samples_ms": [
+              62.38447952270508,
+              62.20098114013672,
+              62.071781158447266,
+              62.200538635253906,
+              62.1867790222168,
+              62.189659118652344,
+              62.24190139770508,
+              62.072078704833984,
+              62.14870071411133,
+              61.98939895629883,
+              62.615821838378906,
+              62.231658935546875,
+              62.29935836791992,
+              62.200439453125,
+              62.17713928222656,
+              62.202640533447266,
+              62.18682098388672,
+              62.042179107666016,
+              62.1627197265625,
+              62.14487838745117,
+              62.1456413269043,
+              62.18014144897461,
+              61.95465850830078,
+              62.31507873535156,
+              62.1928596496582,
+              62.2976188659668,
+              62.050479888916016,
+              62.17055892944336,
+              62.065101623535156,
+              62.065879821777344
+            ],
+            "sample_count": 30
+          },
+          "pytorch": null,
+          "correct_trials": 5,
+          "total_trials": 5,
+          "native_outcome": "passed",
+          "job_id": "01a22185-ee75-7b2a-a4ae-1358ca7f0ae1",
+          "job_status": "succeeded"
         }
       ],
       "budget": 51,
@@ -2341,25 +2387,25 @@
       "card": "LxrgZ",
       "environment_id": "2fe846731400422db33c202d63a696ec",
       "run_id": "43e090b39e3f8c7a",
-      "stage": "evaluating",
+      "stage": "finishing",
       "started_at": "2026-11-28T01:32:24.352864+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-LxrgZ/baselines-910C/B2/workspaces/20261128T013224352864Z-gpt-high-hstu-silu-forward-sm90-b512-h4-d128-max4096-bf16-jagged-silu",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-LxrgZ",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-LxrgZ/baselines-910C/B2",
-      "native_state": "evaluating",
+      "native_state": "finishing",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 29206.35698099062,
-        "net_duration_seconds": 28773.34818555601,
-        "probe_duration_seconds": 433.00879543460906,
-        "main_tokens": 102351759,
-        "reviewer_tokens": 2505821,
+        "duration_seconds": 29806.036622535437,
+        "net_duration_seconds": 29369.17034237832,
+        "probe_duration_seconds": 436.86628015711904,
+        "main_tokens": 102811229,
+        "reviewer_tokens": 2901252,
         "probe_tokens": 177311,
         "main_native": {
-          "totalTokens": 102351759,
-          "inputTokens": 102280097,
-          "cachedInputTokens": 102057472,
-          "outputTokens": 71662,
+          "totalTokens": 102811229,
+          "inputTokens": 102738789,
+          "cachedInputTokens": 102512768,
+          "outputTokens": 72440,
           "reasoningOutputTokens": 16859
         }
       },
@@ -2367,12 +2413,12 @@
       "device_request": {
         "card": "LxrgZ",
         "position": 1,
-        "ticket": 123,
+        "ticket": 124,
         "status": "running",
         "cell_id": "bv26--B2--HSTU--gpt-astra",
-        "operation": "eval",
-        "queued_at": 1795858750.3326726,
-        "acquired_at": 1795858750.3334222
+        "operation": "finish",
+        "queued_at": 1795859350.0503495,
+        "acquired_at": 1795859350.050966
       }
     },
     {

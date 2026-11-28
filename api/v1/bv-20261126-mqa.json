@@ -1,6 +1,6 @@
 {
   "dataset": "MQA",
-  "updated_at": "2026-11-28T09:45:22.249643+00:00",
+  "updated_at": "2026-11-28T09:53:16.350068+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -1120,15 +1120,15 @@
         "duration_seconds": 4182.918230431154,
         "net_duration_seconds": 4123.917440110818,
         "probe_duration_seconds": 59.00079032033682,
-        "main_tokens": 10412090,
+        "main_tokens": 11307650,
         "reviewer_tokens": 250840,
         "probe_tokens": 39986,
         "main_native": {
-          "totalTokens": 10412090,
-          "inputTokens": 10391937,
-          "cachedInputTokens": 10317312,
-          "outputTokens": 20153,
-          "reasoningOutputTokens": 3816
+          "totalTokens": 11307650,
+          "inputTokens": 11287204,
+          "cachedInputTokens": 11211520,
+          "outputTokens": 20446,
+          "reasoningOutputTokens": 3845
         }
       },
       "pytorch_p50_ms": 27.31109046936035,
@@ -13053,7 +13053,7 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 12,
+      "native_attempts": 13,
       "valid_rounds": 8,
       "attempts": [
         {
@@ -13397,6 +13397,17 @@
           "native_outcome": "failed",
           "job_id": "01a22186-2f59-76c0-a049-ccbfb0608c1f",
           "job_status": "failed"
+        },
+        {
+          "number": 13,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a2218c-c5b9-71e9-95f0-ee10440c2ea5",
+          "job_status": "failed"
         }
       ],
       "budget": 51,
@@ -13417,10 +13428,10 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 9873.069574663416,
+        "duration_seconds": 10295.758050704375,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 176066367,
+        "main_tokens": 186012970,
         "reviewer_tokens": 12598668,
         "probe_tokens": null
       },
@@ -13428,11 +13439,11 @@
       "device_request": {
         "card": "EIv1P",
         "position": 2,
-        "ticket": 58,
+        "ticket": 62,
         "status": "queued",
         "cell_id": "bv26--V1--MQA--deepseek",
         "operation": "eval",
-        "queued_at": 1795858849.6006463,
+        "queued_at": 1795859269.6539056,
         "acquired_at": null
       }
     },
