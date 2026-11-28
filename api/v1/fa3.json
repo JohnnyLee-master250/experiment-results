@@ -3,7 +3,7 @@
   "suite": "fa3-backward-sm90",
   "title": "FA3 backward",
   "workload": "BF16 | B2 S4096 H6 D128 | causal",
-  "updated_at": "2026-11-28T14:28:21.310791+00:00",
+  "updated_at": "2026-11-28T14:33:18.360863+00:00",
   "runs": [
     {
       "id": "bv26--B2--FA3--gpt-astra",
@@ -761,15 +761,15 @@
         "duration_seconds": 3173.1822488922626,
         "net_duration_seconds": 3075.831457408145,
         "probe_duration_seconds": 97.35079148411751,
-        "main_tokens": 6423430,
+        "main_tokens": 6893292,
         "reviewer_tokens": 268915,
         "probe_tokens": 40449,
         "main_native": {
-          "totalTokens": 6423430,
-          "inputTokens": 6407233,
-          "cachedInputTokens": 6336512,
-          "outputTokens": 16197,
-          "reasoningOutputTokens": 1831
+          "totalTokens": 6893292,
+          "inputTokens": 6876919,
+          "cachedInputTokens": 6805632,
+          "outputTokens": 16373,
+          "reasoningOutputTokens": 1856
         }
       },
       "search_best_round": 5,
@@ -1304,14 +1304,14 @@
         "duration_seconds": 2132.656931594014,
         "net_duration_seconds": 2058.926871540025,
         "probe_duration_seconds": 73.73006005398929,
-        "main_tokens": 5058846,
+        "main_tokens": 5509836,
         "reviewer_tokens": 255548,
         "probe_tokens": 40665,
         "main_native": {
-          "totalTokens": 5058846,
-          "inputTokens": 5046741,
-          "cachedInputTokens": 4970752,
-          "outputTokens": 12105,
+          "totalTokens": 5509836,
+          "inputTokens": 5497606,
+          "cachedInputTokens": 5421184,
+          "outputTokens": 12230,
           "reasoningOutputTokens": 1328
         }
       },
@@ -13365,7 +13365,7 @@
       "method": "V1",
       "method_version": "V1",
       "status": "running",
-      "phase": "ready",
+      "phase": "queued",
       "native_stage": "l3_search",
       "native_attempts": 17,
       "reported_attempts": 13,
@@ -13382,7 +13382,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "EIv1P",
+        "position": 2,
+        "ticket": 135,
+        "status": "queued",
+        "cell_id": "bv26--V1--FA3--deepseek",
+        "operation": "eval",
+        "queued_at": 1795876105.1050286,
+        "acquired_at": null
+      },
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -15150,7 +15159,7 @@
         "method": "V1",
         "method_version": "V1",
         "status": "running",
-        "phase": "ready",
+        "phase": "queued",
         "native_stage": "l3_search",
         "native_attempts": 17,
         "reported_attempts": 13,
@@ -15167,7 +15176,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "EIv1P",
+          "position": 2,
+          "ticket": 135,
+          "status": "queued",
+          "cell_id": "bv26--V1--FA3--deepseek",
+          "operation": "eval",
+          "queued_at": 1795876105.1050286,
+          "acquired_at": null
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -16034,15 +16052,15 @@
           "duration_seconds": 3173.1822488922626,
           "net_duration_seconds": 3075.831457408145,
           "probe_duration_seconds": 97.35079148411751,
-          "main_tokens": 6423430,
+          "main_tokens": 6893292,
           "reviewer_tokens": 268915,
           "probe_tokens": 40449,
           "main_native": {
-            "totalTokens": 6423430,
-            "inputTokens": 6407233,
-            "cachedInputTokens": 6336512,
-            "outputTokens": 16197,
-            "reasoningOutputTokens": 1831
+            "totalTokens": 6893292,
+            "inputTokens": 6876919,
+            "cachedInputTokens": 6805632,
+            "outputTokens": 16373,
+            "reasoningOutputTokens": 1856
           }
         },
         "pytorch_p50_ms": 14.369740009307861,
@@ -16587,14 +16605,14 @@
           "duration_seconds": 2132.656931594014,
           "net_duration_seconds": 2058.926871540025,
           "probe_duration_seconds": 73.73006005398929,
-          "main_tokens": 5058846,
+          "main_tokens": 5509836,
           "reviewer_tokens": 255548,
           "probe_tokens": 40665,
           "main_native": {
-            "totalTokens": 5058846,
-            "inputTokens": 5046741,
-            "cachedInputTokens": 4970752,
-            "outputTokens": 12105,
+            "totalTokens": 5509836,
+            "inputTokens": 5497606,
+            "cachedInputTokens": 5421184,
+            "outputTokens": 12230,
             "reasoningOutputTokens": 1328
           }
         },
@@ -29335,7 +29353,17 @@
             "reasoningOutputTokens": 151805
           }
         },
-        "pytorch_p50_ms": 14.64434003829956
+        "pytorch_p50_ms": 14.64434003829956,
+        "device_request": {
+          "card": "EIv1P",
+          "position": 2,
+          "ticket": 135,
+          "status": "queued",
+          "cell_id": "bv26--V1--FA3--deepseek",
+          "operation": "eval",
+          "queued_at": 1795876105.1050286,
+          "acquired_at": null
+        }
       },
       {
         "dataset": "FA3",
