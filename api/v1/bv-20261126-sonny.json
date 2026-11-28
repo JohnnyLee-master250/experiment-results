@@ -1,6 +1,6 @@
 {
   "dataset": "Sonny",
-  "updated_at": "2026-11-28T15:53:20.826089+00:00",
+  "updated_at": "2026-11-28T15:59:01.618358+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -14603,19 +14603,19 @@
       "card": "8MZlZ",
       "environment_id": "2f83e4075b2e4562b7b6af7cabd1d00f",
       "run_id": "50fc0053cd865cbd",
-      "stage": "reviewing",
+      "stage": "ready",
       "started_at": "2026-11-28T06:47:54.803018+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/baselines-910C/B2/workspaces/20261128T064754803018Z-deepseek-max-sonny-mha-forward-rtx3090-production-b16-s4096-h16-d128-fp16-noncausal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/baselines-910C/B2",
-      "native_state": "reviewing",
+      "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 32409.8025045041,
+        "duration_seconds": 32830.641748286784,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 351405802,
-        "reviewer_tokens": 9102087,
+        "reviewer_tokens": 12594525,
         "probe_tokens": null,
         "main_native": {
           "totalTokens": 351405802,
@@ -14625,7 +14625,17 @@
           "reasoningOutputTokens": 97673
         }
       },
-      "pytorch_p50_ms": 187.42401123046875
+      "pytorch_p50_ms": 187.42401123046875,
+      "device_request": {
+        "card": "8MZlZ",
+        "position": 2,
+        "ticket": 160,
+        "status": "queued",
+        "cell_id": "bv26--B2--Sonny--deepseek",
+        "operation": "msprof",
+        "queued_at": 1795881317.7417963,
+        "acquired_at": null
+      }
     },
     {
       "dataset": "Sonny",
@@ -22863,7 +22873,7 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 31715.721504557878,
+        "duration_seconds": 32494.087353309616,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 367387352,
@@ -22880,12 +22890,12 @@
       "pytorch_p50_ms": 187.46714782714844,
       "device_request": {
         "card": "EIv1P",
-        "position": 2,
-        "ticket": 161,
+        "position": 4,
+        "ticket": 166,
         "status": "queued",
         "cell_id": "bv26--B3--Sonny--deepseek",
-        "operation": "msprof",
-        "queued_at": 1795880703.2385833,
+        "operation": "eval",
+        "queued_at": 1795881524.1681983,
         "acquired_at": null
       }
     },
@@ -36473,10 +36483,10 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1/workspaces/20261128T064747245812Z-v1-r1-deepseek-flash-max-sonny-mha-forward-rtx3090-production-b16-s4096-h16-d128-fp16-noncausal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 32674.2553550303,
+        "duration_seconds": 33057.806306470186,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 487133519,
@@ -36493,13 +36503,13 @@
       "pytorch_p50_ms": 187.5492172241211,
       "device_request": {
         "card": "8MZlZ",
-        "position": 3,
+        "position": 1,
         "ticket": 159,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--V1--Sonny--deepseek",
         "operation": "eval",
         "queued_at": 1795881147.3797307,
-        "acquired_at": null
+        "acquired_at": 1795881524.8235078
       }
     },
     {
@@ -42171,7 +42181,7 @@
       "model": "deepseek-flash",
       "status": "running",
       "native_attempts": 29,
-      "valid_rounds": 26,
+      "valid_rounds": 27,
       "attempts": [
         {
           "number": 1,
@@ -43008,7 +43018,7 @@
         },
         {
           "number": 29,
-          "outcome": "unclassified",
+          "outcome": "candidate_failure",
           "timing": null,
           "pytorch": null,
           "correct_trials": 0,
@@ -43036,11 +43046,11 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 32708.582125985995,
+        "duration_seconds": 32970.744329052046,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 449522663,
-        "reviewer_tokens": 13234552,
+        "reviewer_tokens": 13557518,
         "probe_tokens": null,
         "main_native": {
           "totalTokens": 449522663,
@@ -43050,7 +43060,17 @@
           "reasoningOutputTokens": 108990
         }
       },
-      "pytorch_p50_ms": 187.1291732788086
+      "pytorch_p50_ms": 187.1291732788086,
+      "device_request": {
+        "card": "8MZlZ",
+        "position": 4,
+        "ticket": 162,
+        "status": "queued",
+        "cell_id": "bv26--V1-no-arch--Sonny--deepseek",
+        "operation": "eval",
+        "queued_at": 1795881498.193299,
+        "acquired_at": null
+      }
     }
   ]
 }
