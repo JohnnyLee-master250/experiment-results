@@ -3,7 +3,7 @@
   "suite": "fa3-backward-sm90",
   "title": "FA3 backward",
   "workload": "BF16 | B2 S4096 H6 D128 | causal",
-  "updated_at": "2026-11-28T08:23:19.762532+00:00",
+  "updated_at": "2026-11-28T08:33:42.568701+00:00",
   "runs": [
     {
       "id": "bv26--V1--FA3--gpt-astra",
@@ -12052,9 +12052,9 @@
       "status": "running",
       "phase": "queued",
       "native_stage": "l3_search",
-      "native_attempts": 2,
-      "reported_attempts": 2,
-      "valid_rounds": 2,
+      "native_attempts": 3,
+      "reported_attempts": 3,
+      "valid_rounds": 3,
       "budget": 51,
       "card_id": "EIv1P",
       "environment_name": "DevEnvC_EIv1P",
@@ -12069,12 +12069,12 @@
       "verified_at": null,
       "device_request": {
         "card": "EIv1P",
-        "position": 2,
-        "ticket": 33,
+        "position": 4,
+        "ticket": 39,
         "status": "queued",
         "cell_id": "bv26--V1--FA3--deepseek",
         "operation": "eval",
-        "queued_at": 1795854039.8261287,
+        "queued_at": 1795854718.029412,
         "acquired_at": null
       },
       "source_id": "bv-20261126-local-001",
@@ -12096,6 +12096,15 @@
           "timing": null,
           "pytorch": null,
           "job_id": "01a2213c-bc4b-7e1f-bc55-4f594c42d1fe"
+        },
+        {
+          "round": 3,
+          "role": "candidate",
+          "status": "failed",
+          "outcome": "candidate_failure",
+          "timing": null,
+          "pytorch": null,
+          "job_id": "01a22143-bca4-7c56-b50c-eeec4569b255"
         }
       ],
       "formal": null,
@@ -12105,17 +12114,17 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 5066.124336319044,
+        "duration_seconds": 5737.090562188998,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 89712229,
-        "reviewer_tokens": 13877277,
+        "main_tokens": 104037883,
+        "reviewer_tokens": 15097122,
         "probe_tokens": null
       },
       "search_best_round": null,
       "search_best_ms": null,
       "valid_measurements": 0,
-      "excluded_records": 2
+      "excluded_records": 3
     }
   ],
   "slots": [
@@ -12993,9 +13002,9 @@
         "status": "running",
         "phase": "queued",
         "native_stage": "l3_search",
-        "native_attempts": 2,
-        "reported_attempts": 2,
-        "valid_rounds": 2,
+        "native_attempts": 3,
+        "reported_attempts": 3,
+        "valid_rounds": 3,
         "budget": 51,
         "card_id": "EIv1P",
         "environment_name": "DevEnvC_EIv1P",
@@ -13010,12 +13019,12 @@
         "verified_at": null,
         "device_request": {
           "card": "EIv1P",
-          "position": 2,
-          "ticket": 33,
+          "position": 4,
+          "ticket": 39,
           "status": "queued",
           "cell_id": "bv26--V1--FA3--deepseek",
           "operation": "eval",
-          "queued_at": 1795854039.8261287,
+          "queued_at": 1795854718.029412,
           "acquired_at": null
         },
         "source_id": "bv-20261126-local-001"
@@ -24992,8 +25001,8 @@
         "method": "V1",
         "model": "deepseek-flash",
         "status": "running",
-        "native_attempts": 2,
-        "valid_rounds": 2,
+        "native_attempts": 3,
+        "valid_rounds": 3,
         "attempts": [
           {
             "number": 1,
@@ -25016,6 +25025,17 @@
             "native_outcome": "failed",
             "job_id": "01a2213c-bc4b-7e1f-bc55-4f594c42d1fe",
             "job_status": "failed"
+          },
+          {
+            "number": 3,
+            "outcome": "candidate_failure",
+            "timing": null,
+            "pytorch": null,
+            "correct_trials": 0,
+            "total_trials": 5,
+            "native_outcome": "failed",
+            "job_id": "01a22143-bca4-7c56-b50c-eeec4569b255",
+            "job_status": "failed"
           }
         ],
         "budget": 51,
@@ -25036,21 +25056,21 @@
         "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 5066.124336319044,
+          "duration_seconds": 5737.090562188998,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
-          "main_tokens": 89712229,
-          "reviewer_tokens": 13877277,
+          "main_tokens": 104037883,
+          "reviewer_tokens": 15097122,
           "probe_tokens": null
         },
         "device_request": {
           "card": "EIv1P",
-          "position": 2,
-          "ticket": 33,
+          "position": 4,
+          "ticket": 39,
           "status": "queued",
           "cell_id": "bv26--V1--FA3--deepseek",
           "operation": "eval",
-          "queued_at": 1795854039.8261287,
+          "queued_at": 1795854718.029412,
           "acquired_at": null
         }
       },
