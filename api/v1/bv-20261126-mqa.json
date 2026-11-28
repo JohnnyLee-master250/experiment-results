@@ -1,6 +1,6 @@
 {
   "dataset": "MQA",
-  "updated_at": "2026-11-28T07:18:40.289673+00:00",
+  "updated_at": "2026-11-28T07:28:39.507615+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -11985,9 +11985,43 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 0,
+      "native_attempts": 3,
       "valid_rounds": 0,
-      "attempts": [],
+      "attempts": [
+        {
+          "number": 1,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a2210a-f0ea-73c8-8d63-36de4540b052",
+          "job_status": "failed"
+        },
+        {
+          "number": 2,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a2210b-fa42-774e-9025-93e7bb7cdef4",
+          "job_status": "failed"
+        },
+        {
+          "number": 3,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a2210d-07ec-7bd0-b731-6d489e0ba597",
+          "job_status": "failed"
+        }
+      ],
       "budget": 51,
       "formal": null,
       "sample_count": 100,
@@ -11998,7 +12032,7 @@
       "card": "EIv1P",
       "environment_id": "bb6c73612d3745f5a8ca4e5d80935dd8",
       "run_id": "dcb40447b0df4df2",
-      "stage": "l2_adapt",
+      "stage": "l3_search",
       "started_at": "2026-11-28T06:56:09.716410+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1/workspaces/20261128T065609716410Z-v1-r1-deepseek-flash-max-deepgemm-mqa-h800-sq2048-sk8192-h32-d64-fp8",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P",
@@ -12006,11 +12040,11 @@
       "native_state": "reviewing",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 1191.160641150549,
+        "duration_seconds": 1932.96161477454,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 19597982,
-        "reviewer_tokens": 6995692,
+        "main_tokens": 33280221,
+        "reviewer_tokens": 9338589,
         "probe_tokens": null
       }
     },

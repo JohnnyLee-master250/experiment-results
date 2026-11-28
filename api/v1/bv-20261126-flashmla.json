@@ -1,6 +1,6 @@
 {
   "dataset": "FlashMLA",
-  "updated_at": "2026-11-28T07:18:40.289673+00:00",
+  "updated_at": "2026-11-28T07:28:39.507615+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -62,7 +62,7 @@
       "method": "B2",
       "model": "gpt-6.2-astra",
       "status": "running",
-      "native_attempts": 44,
+      "native_attempts": 45,
       "valid_rounds": 42,
       "attempts": [
         {
@@ -5063,6 +5063,17 @@
           "native_outcome": "passed",
           "job_id": "01a220f7-b432-7501-aecd-6f39b1d141dc",
           "job_status": "succeeded"
+        },
+        {
+          "number": 45,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a22107-3c1a-7c56-a843-b651e7a31315",
+          "job_status": "failed"
         }
       ],
       "budget": 51,
@@ -5083,29 +5094,29 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 50663.12553896755,
-        "net_duration_seconds": 47872.50643145517,
-        "probe_duration_seconds": 402.82523416914046,
-        "main_tokens": 134729195,
+        "duration_seconds": 51278.726871445775,
+        "net_duration_seconds": 48487.76685856693,
+        "probe_duration_seconds": 403.1661395356059,
+        "main_tokens": 135497542,
         "reviewer_tokens": 875860,
         "probe_tokens": 190971,
         "main_native": {
-          "totalTokens": 134729195,
-          "inputTokens": 134629895,
-          "cachedInputTokens": 134384000,
-          "outputTokens": 99300,
-          "reasoningOutputTokens": 26144
+          "totalTokens": 135497542,
+          "inputTokens": 135397080,
+          "cachedInputTokens": 135147264,
+          "outputTokens": 100462,
+          "reasoningOutputTokens": 26246
         }
       },
       "pytorch_p50_ms": 2337.352294921875,
       "device_request": {
         "card": "imkdG",
-        "position": 2,
-        "ticket": 150,
+        "position": 3,
+        "ticket": 153,
         "status": "queued",
         "cell_id": "bv26--B2--FlashMLA--gpt-astra",
         "operation": "eval",
-        "queued_at": 1795849996.1060662,
+        "queued_at": 1795850572.1509326,
         "acquired_at": null
       }
     },
@@ -10349,33 +10360,33 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/kernel-bridge/V1/workspaces/20261127T170813093072Z-v1-r1-gpt-6.2-astra-high-flashmla-dense-decode-sm90-b128-sq2-hq128-kv32768-d576-bf16-causal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/kernel-bridge/V1",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 50955.60804330744,
-        "net_duration_seconds": 50297.25871700421,
+        "duration_seconds": 51247.742788460106,
+        "net_duration_seconds": 50589.39346215688,
         "probe_duration_seconds": 658.3493263032287,
-        "main_tokens": 136188285,
+        "main_tokens": 136438350,
         "reviewer_tokens": 3844449,
         "probe_tokens": 203606,
         "main_native": {
-          "totalTokens": 136188285,
-          "inputTokens": 136101282,
-          "cachedInputTokens": 135871744,
-          "outputTokens": 87003,
-          "reasoningOutputTokens": 20564
+          "totalTokens": 136438350,
+          "inputTokens": 136351040,
+          "cachedInputTokens": 136120192,
+          "outputTokens": 87310,
+          "reasoningOutputTokens": 20590
         }
       },
       "pytorch_p50_ms": 2337.9825439453125,
       "device_request": {
         "card": "imkdG",
-        "position": 3,
+        "position": 1,
         "ticket": 151,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--V1--FlashMLA--gpt-astra",
         "operation": "eval",
         "queued_at": 1795850249.7035718,
-        "acquired_at": null
+        "acquired_at": 1795850540.4802282
       }
     },
     {
