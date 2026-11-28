@@ -1,6 +1,6 @@
 {
   "dataset": "FA3",
-  "updated_at": "2026-11-28T11:12:37.513798+00:00",
+  "updated_at": "2026-11-28T11:18:17.220408+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -11879,7 +11879,7 @@
       "dataset": "FA3",
       "method": "V1",
       "model": "deepseek-flash",
-      "status": "running",
+      "status": "needs_reconciliation",
       "native_attempts": 11,
       "valid_rounds": 8,
       "attempts": [
@@ -12545,15 +12545,22 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1/workspaces/20261128T065608403510Z-v1-r1-deepseek-flash-max-fa3-backward-sm90-b2-s4096-h6-d128-bf16-causal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1",
-      "native_state": "reviewing",
+      "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 15176.02595726028,
+        "duration_seconds": 15433.985535787418,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 366684797,
-        "reviewer_tokens": 15887786,
-        "probe_tokens": null
+        "main_tokens": 382954306,
+        "reviewer_tokens": 17582233,
+        "probe_tokens": null,
+        "main_native": {
+          "totalTokens": 382954306,
+          "inputTokens": 382602168,
+          "cachedInputTokens": 381945344,
+          "outputTokens": 352138,
+          "reasoningOutputTokens": 130719
+        }
       },
       "pytorch_p50_ms": 14.64434003829956
     },
