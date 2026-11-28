@@ -1,15 +1,15 @@
 {
   "dataset": "FlashMLA",
-  "updated_at": "2026-11-28T15:59:01.618358+00:00",
+  "updated_at": "2026-11-28T16:00:38.227612+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
       "dataset": "FlashMLA",
       "method": "B1",
       "model": "gpt-6.2-astra",
-      "status": "needs_reconciliation",
+      "status": "running",
       "native_attempts": 7,
-      "valid_rounds": 7,
+      "valid_rounds": 8,
       "attempts": [
         {
           "number": 1,
@@ -927,6 +927,18 @@
           "native_outcome": "passed",
           "job_id": "01a222d0-ae63-7e7f-9a4d-a1a1a9267089",
           "job_status": "succeeded"
+        },
+        {
+          "number": 8,
+          "outcome": "candidate_failure",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 0,
+          "native_outcome": null,
+          "job_id": "01a222db-6fa4-7767-a26e-a3ec000e8a25",
+          "job_status": "failed",
+          "native_number": 8
         }
       ],
       "budget": 51,
@@ -939,29 +951,39 @@
       "card": "imkdG",
       "environment_id": "41a832c5c8be46e6a39fcd54e51992f9",
       "run_id": "3cb9de833a2cac7f",
-      "stage": "eval_failed",
+      "stage": "ready",
       "started_at": "2026-11-28T10:40:02.442959+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/baselines-910C/B1/workspaces/20261128T104002442959Z-gpt-high-flashmla-dense-decode-sm90-b128-sq2-hq128-kv32768-d576-bf16-causal",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/baselines-910C/B1",
-      "native_state": "eval_failed",
-      "finished_at": "2026-11-28T15:53:37.484604+00:00",
+      "native_state": "ready",
+      "finished_at": null,
       "cost": {
-        "duration_seconds": 18815.041642216966,
-        "net_duration_seconds": 18724.49921819009,
+        "duration_seconds": 19175.03891677782,
+        "net_duration_seconds": 19084.496492750943,
         "probe_duration_seconds": 90.54242402687669,
-        "main_tokens": 25251764,
+        "main_tokens": 26141765,
         "reviewer_tokens": 242803,
         "probe_tokens": 41076,
         "main_native": {
-          "totalTokens": 25251764,
-          "inputTokens": 25219077,
-          "cachedInputTokens": 25061888,
-          "outputTokens": 32687,
-          "reasoningOutputTokens": 6295
+          "totalTokens": 26141765,
+          "inputTokens": 26107809,
+          "cachedInputTokens": 25944704,
+          "outputTokens": 33956,
+          "reasoningOutputTokens": 6465
         }
       },
-      "pytorch_p50_ms": 2335.03271484375
+      "pytorch_p50_ms": 2335.03271484375,
+      "device_request": {
+        "card": "imkdG",
+        "position": 3,
+        "ticket": 214,
+        "status": "queued",
+        "cell_id": "bv26--B1--FlashMLA--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795881595.9167123,
+        "acquired_at": null
+      }
     },
     {
       "dataset": "FlashMLA",
@@ -7994,21 +8016,31 @@
       "native_state": "ready",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 24126.635209755972,
-        "net_duration_seconds": 24020.75958065316,
+        "duration_seconds": 24153.545988144353,
+        "net_duration_seconds": 24047.67035904154,
         "probe_duration_seconds": 105.87562910281122,
-        "main_tokens": 34044116,
+        "main_tokens": 34532092,
         "reviewer_tokens": 299762,
         "probe_tokens": 53948,
         "main_native": {
-          "totalTokens": 34044116,
-          "inputTokens": 34010478,
-          "cachedInputTokens": 33807360,
-          "outputTokens": 33638,
-          "reasoningOutputTokens": 6281
+          "totalTokens": 34532092,
+          "inputTokens": 34496646,
+          "cachedInputTokens": 34290944,
+          "outputTokens": 35446,
+          "reasoningOutputTokens": 6908
         }
       },
-      "pytorch_p50_ms": 2336.4964599609375
+      "pytorch_p50_ms": 2336.4964599609375,
+      "device_request": {
+        "card": "imkdG",
+        "position": 2,
+        "ticket": 213,
+        "status": "queued",
+        "cell_id": "bv26--B3--FlashMLA--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795881589.6649487,
+        "acquired_at": null
+      }
     },
     {
       "dataset": "FlashMLA",
