@@ -15,8 +15,8 @@
       "method": "B2",
       "method_version": "B2",
       "status": "running",
-      "phase": "ready",
-      "native_stage": "ready",
+      "phase": "evaluating",
+      "native_stage": "evaluating",
       "native_attempts": 0,
       "reported_attempts": 0,
       "valid_rounds": 0,
@@ -32,7 +32,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "LxrgZ",
+        "position": 1,
+        "ticket": 62,
+        "status": "running",
+        "cell_id": "bv26--B2--HSTU--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795829692.4179914,
+        "acquired_at": 1795829692.4185512
+      },
       "source_id": "bv-20261126-local-001",
       "search": [],
       "formal": null,
@@ -42,18 +51,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 43.68155156262219,
-        "net_duration_seconds": 0.2526371758431196,
+        "duration_seconds": 148.0795863661915,
+        "net_duration_seconds": 104.65067197941244,
         "probe_duration_seconds": 43.42891438677907,
-        "main_tokens": 129159,
+        "main_tokens": 863362,
         "reviewer_tokens": 0,
         "probe_tokens": 26830,
         "main_native": {
-          "totalTokens": 129159,
-          "inputTokens": 128848,
-          "cachedInputTokens": 108544,
-          "outputTokens": 311,
-          "reasoningOutputTokens": 0
+          "totalTokens": 863362,
+          "inputTokens": 858573,
+          "cachedInputTokens": 812160,
+          "outputTokens": 4789,
+          "reasoningOutputTokens": 688
         }
       },
       "search_best_round": null,
@@ -3260,7 +3269,7 @@
       "excluded_records": 0
     }
   ],
-  "updated_at": "2026-11-28T01:33:14.564815+00:00",
+  "updated_at": "2026-11-28T01:38:14.830664+00:00",
   "bv_20261126": {
     "api": "bv-20261126-hstu.json",
     "slots": [
@@ -3368,8 +3377,8 @@
         "method": "B2",
         "method_version": "B2",
         "status": "running",
-        "phase": "ready",
-        "native_stage": "ready",
+        "phase": "evaluating",
+        "native_stage": "evaluating",
         "native_attempts": 0,
         "reported_attempts": 0,
         "valid_rounds": 0,
@@ -3385,7 +3394,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "LxrgZ",
+          "position": 1,
+          "ticket": 62,
+          "status": "running",
+          "cell_id": "bv26--B2--HSTU--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795829692.4179914,
+          "acquired_at": 1795829692.4185512
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -3803,27 +3821,37 @@
         "card": "LxrgZ",
         "environment_id": "2fe846731400422db33c202d63a696ec",
         "run_id": "43e090b39e3f8c7a",
-        "stage": "ready",
+        "stage": "evaluating",
         "started_at": "2026-11-28T01:32:24.352864+00:00",
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-LxrgZ/baselines-910C/B2/workspaces/20261128T013224352864Z-gpt-high-hstu-silu-forward-sm90-b512-h4-d128-max4096-bf16-jagged-silu",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-LxrgZ",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-LxrgZ/baselines-910C/B2",
-        "native_state": "ready",
+        "native_state": "evaluating",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 43.68155156262219,
-          "net_duration_seconds": 0.2526371758431196,
+          "duration_seconds": 148.0795863661915,
+          "net_duration_seconds": 104.65067197941244,
           "probe_duration_seconds": 43.42891438677907,
-          "main_tokens": 129159,
+          "main_tokens": 863362,
           "reviewer_tokens": 0,
           "probe_tokens": 26830,
           "main_native": {
-            "totalTokens": 129159,
-            "inputTokens": 128848,
-            "cachedInputTokens": 108544,
-            "outputTokens": 311,
-            "reasoningOutputTokens": 0
+            "totalTokens": 863362,
+            "inputTokens": 858573,
+            "cachedInputTokens": 812160,
+            "outputTokens": 4789,
+            "reasoningOutputTokens": 688
           }
+        },
+        "device_request": {
+          "card": "LxrgZ",
+          "position": 1,
+          "ticket": 62,
+          "status": "running",
+          "cell_id": "bv26--B2--HSTU--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795829692.4179914,
+          "acquired_at": 1795829692.4185512
         }
       },
       {
