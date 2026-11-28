@@ -3,7 +3,7 @@
   "suite": "thunderkittens-based-h100",
   "title": "Based",
   "workload": "BF16 | B16 H16 N1024 D16 DV64",
-  "updated_at": "2026-11-28T14:39:28.159658+00:00",
+  "updated_at": "2026-11-28T14:48:17.543240+00:00",
   "runs": [
     {
       "id": "bv26--B1--Based--gpt-astra",
@@ -30100,8 +30100,8 @@
       "effort": "max",
       "method": "V1",
       "method_version": "V1",
-      "status": "running",
-      "phase": "queued",
+      "status": "blocked",
+      "phase": "ready",
       "native_stage": "l3_search",
       "native_attempts": 23,
       "reported_attempts": 19,
@@ -30118,16 +30118,7 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": {
-        "card": "EIv1P",
-        "position": 3,
-        "ticket": 136,
-        "status": "queued",
-        "cell_id": "bv26--V1--Based--deepseek",
-        "operation": "eval",
-        "queued_at": 1795876379.4694786,
-        "acquired_at": null
-      },
+      "device_request": null,
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -30898,15 +30889,15 @@
         "duration_seconds": 27403.37121120654,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 299979423,
+        "main_tokens": 437924824,
         "reviewer_tokens": 15481771,
         "probe_tokens": null,
         "main_native": {
-          "totalTokens": 299979423,
-          "inputTokens": 299711797,
-          "cachedInputTokens": 299233152,
-          "outputTokens": 267626,
-          "reasoningOutputTokens": 86658
+          "totalTokens": 437924824,
+          "inputTokens": 437599313,
+          "cachedInputTokens": 436998016,
+          "outputTokens": 325511,
+          "reasoningOutputTokens": 101889
         }
       },
       "search_best_round": 6,
@@ -31658,8 +31649,8 @@
         "effort": "max",
         "method": "V1",
         "method_version": "V1",
-        "status": "running",
-        "phase": "queued",
+        "status": "blocked",
+        "phase": "ready",
         "native_stage": "l3_search",
         "native_attempts": 23,
         "reported_attempts": 19,
@@ -31676,16 +31667,7 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": {
-          "card": "EIv1P",
-          "position": 3,
-          "ticket": 136,
-          "status": "queued",
-          "cell_id": "bv26--V1--Based--deepseek",
-          "operation": "eval",
-          "queued_at": 1795876379.4694786,
-          "acquired_at": null
-        },
+        "device_request": null,
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -61170,7 +61152,7 @@
         "dataset": "Based",
         "method": "V1",
         "model": "deepseek-flash",
-        "status": "running",
+        "status": "needs_reconciliation",
         "native_attempts": 23,
         "valid_rounds": 19,
         "attempts": [
@@ -61974,28 +61956,18 @@
           "duration_seconds": 27403.37121120654,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
-          "main_tokens": 299979423,
+          "main_tokens": 437924824,
           "reviewer_tokens": 15481771,
           "probe_tokens": null,
           "main_native": {
-            "totalTokens": 299979423,
-            "inputTokens": 299711797,
-            "cachedInputTokens": 299233152,
-            "outputTokens": 267626,
-            "reasoningOutputTokens": 86658
+            "totalTokens": 437924824,
+            "inputTokens": 437599313,
+            "cachedInputTokens": 436998016,
+            "outputTokens": 325511,
+            "reasoningOutputTokens": 101889
           }
         },
-        "pytorch_p50_ms": 2226.6484375,
-        "device_request": {
-          "card": "EIv1P",
-          "position": 3,
-          "ticket": 136,
-          "status": "queued",
-          "cell_id": "bv26--V1--Based--deepseek",
-          "operation": "eval",
-          "queued_at": 1795876379.4694786,
-          "acquired_at": null
-        }
+        "pytorch_p50_ms": 2226.6484375
       },
       {
         "dataset": "Based",
