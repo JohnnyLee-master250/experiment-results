@@ -3,7 +3,7 @@
   "suite": "gdn-prefill-sm100",
   "title": "GDN prefill",
   "workload": "FP16 | S2048 QK16 V32 D128",
-  "updated_at": "2026-11-28T11:03:18.079405+00:00",
+  "updated_at": "2026-11-28T11:08:17.862271+00:00",
   "runs": [
     {
       "id": "bv26--B1--GDN--gpt-astra",
@@ -30540,8 +30540,8 @@
       "effort": "max",
       "method": "V1",
       "method_version": "V1",
-      "status": "running",
-      "phase": "queued",
+      "status": "blocked",
+      "phase": "eval_failed",
       "native_stage": "l3_search",
       "native_attempts": 17,
       "reported_attempts": 11,
@@ -30555,19 +30555,10 @@
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
       "started_at": "2026-11-28T06:47:49.947698+00:00",
-      "finished_at": null,
+      "finished_at": "2026-11-28T11:06:50.509845+00:00",
       "independently_complete": false,
       "verified_at": null,
-      "device_request": {
-        "card": "8MZlZ",
-        "position": 2,
-        "ticket": 103,
-        "status": "queued",
-        "cell_id": "bv26--V1--GDN--deepseek",
-        "operation": "eval",
-        "queued_at": 1795863373.3542793,
-        "acquired_at": null
-      },
+      "device_request": null,
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -31721,12 +31712,19 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 14899.112744867802,
+        "duration_seconds": 15540.56214665249,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 256109399,
+        "main_tokens": 266502533,
         "reviewer_tokens": 12206662,
-        "probe_tokens": null
+        "probe_tokens": null,
+        "main_native": {
+          "totalTokens": 266502533,
+          "inputTokens": 266208934,
+          "cachedInputTokens": 265685376,
+          "outputTokens": 293599,
+          "reasoningOutputTokens": 112672
+        }
       },
       "search_best_round": 17,
       "search_best_ms": 2516.99609375,
@@ -32477,8 +32475,8 @@
         "effort": "max",
         "method": "V1",
         "method_version": "V1",
-        "status": "running",
-        "phase": "queued",
+        "status": "blocked",
+        "phase": "eval_failed",
         "native_stage": "l3_search",
         "native_attempts": 17,
         "reported_attempts": 11,
@@ -32492,19 +32490,10 @@
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
         "started_at": "2026-11-28T06:47:49.947698+00:00",
-        "finished_at": null,
+        "finished_at": "2026-11-28T11:06:50.509845+00:00",
         "independently_complete": false,
         "verified_at": null,
-        "device_request": {
-          "card": "8MZlZ",
-          "position": 2,
-          "ticket": 103,
-          "status": "queued",
-          "cell_id": "bv26--V1--GDN--deepseek",
-          "operation": "eval",
-          "queued_at": 1795863373.3542793,
-          "acquired_at": null
-        },
+        "device_request": null,
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -62409,7 +62398,7 @@
         "dataset": "GDN",
         "method": "V1",
         "model": "deepseek-flash",
-        "status": "running",
+        "status": "needs_reconciliation",
         "native_attempts": 17,
         "valid_rounds": 11,
         "attempts": [
@@ -63561,27 +63550,24 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1/workspaces/20261128T064749947698Z-v1-r1-deepseek-flash-max-gdn-prefill-sm100-single-s2048-qk16-v32-d128-fp16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1",
-        "native_state": "ready",
-        "finished_at": null,
+        "native_state": "eval_failed",
+        "finished_at": "2026-11-28T11:06:50.509845+00:00",
         "cost": {
-          "duration_seconds": 14899.112744867802,
+          "duration_seconds": 15540.56214665249,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
-          "main_tokens": 256109399,
+          "main_tokens": 266502533,
           "reviewer_tokens": 12206662,
-          "probe_tokens": null
+          "probe_tokens": null,
+          "main_native": {
+            "totalTokens": 266502533,
+            "inputTokens": 266208934,
+            "cachedInputTokens": 265685376,
+            "outputTokens": 293599,
+            "reasoningOutputTokens": 112672
+          }
         },
-        "pytorch_p50_ms": 455.33428955078125,
-        "device_request": {
-          "card": "8MZlZ",
-          "position": 2,
-          "ticket": 103,
-          "status": "queued",
-          "cell_id": "bv26--V1--GDN--deepseek",
-          "operation": "eval",
-          "queued_at": 1795863373.3542793,
-          "acquired_at": null
-        }
+        "pytorch_p50_ms": 455.33428955078125
       },
       {
         "dataset": "GDN",
