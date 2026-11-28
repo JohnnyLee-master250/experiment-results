@@ -3,7 +3,7 @@
   "suite": "flashinfer-gqa-decode-a100",
   "title": "GQA decode",
   "workload": "FP16 | Q32 KV4 D128 L32768",
-  "updated_at": "2026-11-28T08:13:41.659288+00:00",
+  "updated_at": "2026-11-28T08:19:01.005833+00:00",
   "runs": [
     {
       "id": "bv26--B1--GQA--gpt-astra",
@@ -30101,7 +30101,7 @@
       "method": "V1",
       "method_version": "V1",
       "status": "running",
-      "phase": "queued",
+      "phase": "ready",
       "native_stage": "l3_search",
       "native_attempts": 3,
       "reported_attempts": 2,
@@ -30118,16 +30118,7 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": {
-        "card": "8MZlZ",
-        "position": 2,
-        "ticket": 27,
-        "status": "queued",
-        "cell_id": "bv26--V1--GQA--deepseek",
-        "operation": "msprof",
-        "queued_at": 1795852854.6161504,
-        "acquired_at": null
-      },
+      "device_request": null,
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -30385,11 +30376,11 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 4367.9713263474405,
+        "duration_seconds": 5445.997146669775,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 67644262,
-        "reviewer_tokens": 5405281,
+        "main_tokens": 88498259,
+        "reviewer_tokens": 7541912,
         "probe_tokens": null
       },
       "search_best_round": 3,
@@ -31142,7 +31133,7 @@
         "method": "V1",
         "method_version": "V1",
         "status": "running",
-        "phase": "queued",
+        "phase": "ready",
         "native_stage": "l3_search",
         "native_attempts": 3,
         "reported_attempts": 2,
@@ -31159,16 +31150,7 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": {
-          "card": "8MZlZ",
-          "position": 2,
-          "ticket": 27,
-          "status": "queued",
-          "cell_id": "bv26--V1--GQA--deepseek",
-          "operation": "msprof",
-          "queued_at": 1795852854.6161504,
-          "acquired_at": null
-        },
+        "device_request": null,
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -60916,27 +60898,17 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1/workspaces/20261128T064750133054Z-v1-r1-deepseek-flash-max-flashinfer-gqa-decode-a100-single-q32-kv4-d128-l32768-fp16",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1",
-        "native_state": "pending_review",
+        "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 4367.9713263474405,
+          "duration_seconds": 5445.997146669775,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
-          "main_tokens": 67644262,
-          "reviewer_tokens": 5405281,
+          "main_tokens": 88498259,
+          "reviewer_tokens": 7541912,
           "probe_tokens": null
         },
-        "pytorch_p50_ms": 4.696759939193726,
-        "device_request": {
-          "card": "8MZlZ",
-          "position": 2,
-          "ticket": 27,
-          "status": "queued",
-          "cell_id": "bv26--V1--GQA--deepseek",
-          "operation": "msprof",
-          "queued_at": 1795852854.6161504,
-          "acquired_at": null
-        }
+        "pytorch_p50_ms": 4.696759939193726
       },
       {
         "dataset": "GQA",
