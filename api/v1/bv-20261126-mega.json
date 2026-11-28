@@ -1,6 +1,6 @@
 {
   "dataset": "Mega",
-  "updated_at": "2026-11-28T14:01:06.620421+00:00",
+  "updated_at": "2026-11-28T14:03:18.631833+00:00",
   "protocol": "cold_flush_queue_ahead_v1",
   "cells": [
     {
@@ -5126,38 +5126,38 @@
       "card": "uYtpx",
       "environment_id": "2a8b976225f54aa7a6d48c694b832bbd",
       "run_id": "60a4ae4134f5666a",
-      "stage": "ready",
+      "stage": "evaluating",
       "started_at": "2026-11-28T07:53:04.960227+00:00",
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/baselines-910C/B1/workspaces/20261128T075304960227Z-gpt-high-deepgemm-mega-mhc-sm100-m64-h4096-hc4-bf16",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-uYtpx/baselines-910C/B1",
-      "native_state": "ready",
+      "native_state": "evaluating",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 21988.390076238662,
-        "net_duration_seconds": 21591.22338400595,
+        "duration_seconds": 22194.117776649073,
+        "net_duration_seconds": 21796.95108441636,
         "probe_duration_seconds": 397.1666922327131,
-        "main_tokens": 39497405,
+        "main_tokens": 39868378,
         "reviewer_tokens": 1582789,
         "probe_tokens": 108822,
         "main_native": {
-          "totalTokens": 39497405,
-          "inputTokens": 39439175,
-          "cachedInputTokens": 39153920,
-          "outputTokens": 58230,
-          "reasoningOutputTokens": 20540
+          "totalTokens": 39868378,
+          "inputTokens": 39809962,
+          "cachedInputTokens": 39524480,
+          "outputTokens": 58416,
+          "reasoningOutputTokens": 20674
         }
       },
       "pytorch_p50_ms": 1.862239956855774,
       "device_request": {
         "card": "uYtpx",
-        "position": 2,
+        "position": 1,
         "ticket": 1049,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--B1--Mega--gpt-astra",
         "operation": "eval",
         "queued_at": 1795874382.9354599,
-        "acquired_at": null
+        "acquired_at": 1795874578.9110076
       }
     },
     {
@@ -29113,7 +29113,7 @@
       "method": "V1",
       "model": "deepseek-flash",
       "status": "running",
-      "native_attempts": 15,
+      "native_attempts": 16,
       "valid_rounds": 10,
       "attempts": [
         {
@@ -29700,6 +29700,17 @@
           "native_outcome": "failed",
           "job_id": "01a22271-2387-7b6b-b578-e9d684011214",
           "job_status": "failed"
+        },
+        {
+          "number": 16,
+          "outcome": "unclassified",
+          "timing": null,
+          "pytorch": null,
+          "correct_trials": 0,
+          "total_trials": 5,
+          "native_outcome": "failed",
+          "job_id": "01a22275-45ed-753e-b901-ba0da31eacad",
+          "job_status": "failed"
         }
       ],
       "budget": 51,
@@ -29717,10 +29728,10 @@
       "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1/workspaces/20261128T065608189123Z-v1-r1-deepseek-flash-max-deepgemm-mega-mhc-sm100-m64-h4096-hc4-bf16",
       "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P",
       "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-EIv1P/kernel-bridge/V1",
-      "native_state": "evaluating",
+      "native_state": "reviewing",
       "finished_at": null,
       "cost": {
-        "duration_seconds": 25468.240793526173,
+        "duration_seconds": 25521.604938680306,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 249011968,
@@ -29734,17 +29745,7 @@
           "reasoningOutputTokens": 97562
         }
       },
-      "pytorch_p50_ms": 1.8921900391578674,
-      "device_request": {
-        "card": "EIv1P",
-        "position": 1,
-        "ticket": 111,
-        "status": "running",
-        "cell_id": "bv26--V1--Mega--deepseek",
-        "operation": "eval",
-        "queued_at": 1795874238.284161,
-        "acquired_at": 1795874436.3389156
-      }
+      "pytorch_p50_ms": 1.8921900391578674
     },
     {
       "dataset": "Mega",

@@ -3,7 +3,7 @@
   "suite": "sonny-mha-forward-rtx3090",
   "title": "FA forward",
   "workload": "FP16 | B16 S4096 H16 D128 | noncausal",
-  "updated_at": "2026-11-28T14:01:06.620421+00:00",
+  "updated_at": "2026-11-28T14:03:18.631833+00:00",
   "runs": [
     {
       "id": "bv26--B1--Sonny--gpt-astra",
@@ -20413,7 +20413,7 @@
       "method": "B3",
       "method_version": "B3",
       "status": "running",
-      "phase": "queued",
+      "phase": "ready",
       "native_stage": "ready",
       "native_attempts": 24,
       "reported_attempts": 20,
@@ -20430,16 +20430,7 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": {
-        "card": "EIv1P",
-        "position": 2,
-        "ticket": 112,
-        "status": "queued",
-        "cell_id": "bv26--B3--Sonny--deepseek",
-        "operation": "msprof",
-        "queued_at": 1795874379.2092404,
-        "acquired_at": null
-      },
+      "device_request": null,
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -22316,7 +22307,7 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 25390.873811140656,
+        "duration_seconds": 25612.550946002826,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
         "main_tokens": 255764636,
@@ -42020,7 +42011,7 @@
         "method": "B3",
         "method_version": "B3",
         "status": "running",
-        "phase": "queued",
+        "phase": "ready",
         "native_stage": "ready",
         "native_attempts": 24,
         "reported_attempts": 20,
@@ -42037,16 +42028,7 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": {
-          "card": "EIv1P",
-          "position": 2,
-          "ticket": 112,
-          "status": "queued",
-          "cell_id": "bv26--B3--Sonny--deepseek",
-          "operation": "msprof",
-          "queued_at": 1795874379.2092404,
-          "acquired_at": null
-        },
+        "device_request": null,
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -64037,7 +64019,7 @@
         "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 25390.873811140656,
+          "duration_seconds": 25612.550946002826,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
           "main_tokens": 255764636,
@@ -64051,17 +64033,7 @@
             "reasoningOutputTokens": 75523
           }
         },
-        "pytorch_p50_ms": 187.46714782714844,
-        "device_request": {
-          "card": "EIv1P",
-          "position": 2,
-          "ticket": 112,
-          "status": "queued",
-          "cell_id": "bv26--B3--Sonny--deepseek",
-          "operation": "msprof",
-          "queued_at": 1795874379.2092404,
-          "acquired_at": null
-        }
+        "pytorch_p50_ms": 187.46714782714844
       },
       {
         "dataset": "Sonny",
