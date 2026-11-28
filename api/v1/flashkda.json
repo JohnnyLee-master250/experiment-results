@@ -15,8 +15,8 @@
       "method": "B2",
       "method_version": "B2",
       "status": "running",
-      "phase": "reviewing",
-      "native_stage": "reviewing",
+      "phase": "queued",
+      "native_stage": "ready",
       "native_attempts": 1,
       "reported_attempts": 1,
       "valid_rounds": 1,
@@ -32,7 +32,16 @@
       "finished_at": null,
       "independently_complete": false,
       "verified_at": null,
-      "device_request": null,
+      "device_request": {
+        "card": "imkdG",
+        "position": 2,
+        "ticket": 189,
+        "status": "queued",
+        "cell_id": "bv26--B2--FlashKDA--gpt-astra",
+        "operation": "eval",
+        "queued_at": 1795875723.9749022,
+        "acquired_at": null
+      },
       "source_id": "bv-20261126-local-001",
       "search": [
         {
@@ -272,18 +281,18 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 1576.6015443373471,
-        "net_duration_seconds": 1521.6160423252732,
+        "duration_seconds": 1678.923876741901,
+        "net_duration_seconds": 1623.938374729827,
         "probe_duration_seconds": 54.985502012073994,
-        "main_tokens": 2036268,
-        "reviewer_tokens": null,
+        "main_tokens": 2847564,
+        "reviewer_tokens": 285423,
         "probe_tokens": 27022,
         "main_native": {
-          "totalTokens": 2036268,
-          "inputTokens": 2029335,
-          "cachedInputTokens": 1988480,
-          "outputTokens": 6933,
-          "reasoningOutputTokens": 1448
+          "totalTokens": 2847564,
+          "inputTokens": 2835650,
+          "cachedInputTokens": 2779648,
+          "outputTokens": 11914,
+          "reasoningOutputTokens": 2630
         }
       },
       "search_best_round": 1,
@@ -7090,7 +7099,7 @@
       "excluded_records": 0
     }
   ],
-  "updated_at": "2026-11-28T14:18:18.799469+00:00",
+  "updated_at": "2026-11-28T14:23:21.516966+00:00",
   "bv_20261126": {
     "api": "bv-20261126-flashkda.json",
     "slots": [
@@ -7198,8 +7207,8 @@
         "method": "B2",
         "method_version": "B2",
         "status": "running",
-        "phase": "reviewing",
-        "native_stage": "reviewing",
+        "phase": "queued",
+        "native_stage": "ready",
         "native_attempts": 1,
         "reported_attempts": 1,
         "valid_rounds": 1,
@@ -7215,7 +7224,16 @@
         "finished_at": null,
         "independently_complete": false,
         "verified_at": null,
-        "device_request": null,
+        "device_request": {
+          "card": "imkdG",
+          "position": 2,
+          "ticket": 189,
+          "status": "queued",
+          "cell_id": "bv26--B2--FlashKDA--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795875723.9749022,
+          "acquired_at": null
+        },
         "source_id": "bv-20261126-local-001"
       },
       {
@@ -7855,29 +7873,39 @@
         "card": "imkdG",
         "environment_id": "41a832c5c8be46e6a39fcd54e51992f9",
         "run_id": "0e9da9b6851147fe",
-        "stage": "reviewing",
+        "stage": "ready",
         "started_at": "2026-11-28T13:51:51.944582+00:00",
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/baselines-910C/B2/workspaces/20261128T135151944582Z-gpt-high-flashkda-forward-sm90-b1-t8192-h96-d128-bf16-fp32-state",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-imkdG/baselines-910C/B2",
-        "native_state": "reviewing",
+        "native_state": "ready",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 1576.6015443373471,
-          "net_duration_seconds": 1521.6160423252732,
+          "duration_seconds": 1678.923876741901,
+          "net_duration_seconds": 1623.938374729827,
           "probe_duration_seconds": 54.985502012073994,
-          "main_tokens": 2036268,
-          "reviewer_tokens": null,
+          "main_tokens": 2847564,
+          "reviewer_tokens": 285423,
           "probe_tokens": 27022,
           "main_native": {
-            "totalTokens": 2036268,
-            "inputTokens": 2029335,
-            "cachedInputTokens": 1988480,
-            "outputTokens": 6933,
-            "reasoningOutputTokens": 1448
+            "totalTokens": 2847564,
+            "inputTokens": 2835650,
+            "cachedInputTokens": 2779648,
+            "outputTokens": 11914,
+            "reasoningOutputTokens": 2630
           }
         },
-        "pytorch_p50_ms": 3910.013671875
+        "pytorch_p50_ms": 3910.013671875,
+        "device_request": {
+          "card": "imkdG",
+          "position": 2,
+          "ticket": 189,
+          "status": "queued",
+          "cell_id": "bv26--B2--FlashKDA--gpt-astra",
+          "operation": "eval",
+          "queued_at": 1795875723.9749022,
+          "acquired_at": null
+        }
       },
       {
         "dataset": "FlashKDA",
