@@ -3,7 +3,7 @@
   "suite": "sonny-mha-forward-rtx3090",
   "title": "FA forward",
   "workload": "FP16 | B16 S4096 H16 D128 | noncausal",
-  "updated_at": "2026-11-28T07:48:17.230723+00:00",
+  "updated_at": "2026-11-28T07:53:17.579212+00:00",
   "runs": [
     {
       "id": "bv26--B1--Sonny--gpt-astra",
@@ -12179,7 +12179,7 @@
       "verified_at": null,
       "device_request": {
         "card": "8MZlZ",
-        "position": 4,
+        "position": 3,
         "ticket": 21,
         "status": "queued",
         "cell_id": "bv26--B2--Sonny--deepseek",
@@ -31465,7 +31465,7 @@
       "method": "V1",
       "method_version": "V1",
       "status": "running",
-      "phase": "queued",
+      "phase": "evaluating",
       "native_stage": "l3_search",
       "native_attempts": 2,
       "reported_attempts": 0,
@@ -31484,13 +31484,13 @@
       "verified_at": null,
       "device_request": {
         "card": "8MZlZ",
-        "position": 2,
+        "position": 1,
         "ticket": 19,
-        "status": "queued",
+        "status": "running",
         "cell_id": "bv26--V1--Sonny--deepseek",
         "operation": "eval",
         "queued_at": 1795851140.734572,
-        "acquired_at": null
+        "acquired_at": 1795852361.368727
       },
       "source_id": "bv-20261126-local-001",
       "search": [
@@ -31520,10 +31520,10 @@
       "timing_protocol": "cold_flush_queue_ahead_v1",
       "ranking_statistic": "p50_ms",
       "cost": {
-        "duration_seconds": 2667.014928372577,
+        "duration_seconds": 3894.168680537492,
         "net_duration_seconds": null,
         "probe_duration_seconds": null,
-        "main_tokens": 33058980,
+        "main_tokens": 48052425,
         "reviewer_tokens": 8186166,
         "probe_tokens": null
       },
@@ -37359,7 +37359,7 @@
       "verified_at": null,
       "device_request": {
         "card": "8MZlZ",
-        "position": 3,
+        "position": 2,
         "ticket": 20,
         "status": "queued",
         "cell_id": "bv26--V1-no-arch--Sonny--deepseek",
@@ -37822,7 +37822,7 @@
         "verified_at": null,
         "device_request": {
           "card": "8MZlZ",
-          "position": 4,
+          "position": 3,
           "ticket": 21,
           "status": "queued",
           "cell_id": "bv26--B2--Sonny--deepseek",
@@ -38007,7 +38007,7 @@
         "method": "V1",
         "method_version": "V1",
         "status": "running",
-        "phase": "queued",
+        "phase": "evaluating",
         "native_stage": "l3_search",
         "native_attempts": 2,
         "reported_attempts": 0,
@@ -38026,13 +38026,13 @@
         "verified_at": null,
         "device_request": {
           "card": "8MZlZ",
-          "position": 2,
+          "position": 1,
           "ticket": 19,
-          "status": "queued",
+          "status": "running",
           "cell_id": "bv26--V1--Sonny--deepseek",
           "operation": "eval",
           "queued_at": 1795851140.734572,
-          "acquired_at": null
+          "acquired_at": 1795852361.368727
         },
         "source_id": "bv-20261126-local-001"
       },
@@ -38128,7 +38128,7 @@
         "verified_at": null,
         "device_request": {
           "card": "8MZlZ",
-          "position": 3,
+          "position": 2,
           "ticket": 20,
           "status": "queued",
           "cell_id": "bv26--V1-no-arch--Sonny--deepseek",
@@ -50753,7 +50753,7 @@
         "pytorch_p50_ms": 187.42401123046875,
         "device_request": {
           "card": "8MZlZ",
-          "position": 4,
+          "position": 3,
           "ticket": 21,
           "status": "queued",
           "cell_id": "bv26--B2--Sonny--deepseek",
@@ -68851,25 +68851,25 @@
         "workspace_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1/workspaces/20261128T064747245812Z-v1-r1-deepseek-flash-max-sonny-mha-forward-rtx3090-production-b16-s4096-h16-d128-fp16-noncausal",
         "worktree_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ",
         "method_path": "/home/lbh24/codex-workspace/bv-20261126-local-001/card-8MZlZ/kernel-bridge/V1",
-        "native_state": "ready",
+        "native_state": "evaluating",
         "finished_at": null,
         "cost": {
-          "duration_seconds": 2667.014928372577,
+          "duration_seconds": 3894.168680537492,
           "net_duration_seconds": null,
           "probe_duration_seconds": null,
-          "main_tokens": 33058980,
+          "main_tokens": 48052425,
           "reviewer_tokens": 8186166,
           "probe_tokens": null
         },
         "device_request": {
           "card": "8MZlZ",
-          "position": 2,
+          "position": 1,
           "ticket": 19,
-          "status": "queued",
+          "status": "running",
           "cell_id": "bv26--V1--Sonny--deepseek",
           "operation": "eval",
           "queued_at": 1795851140.734572,
-          "acquired_at": null
+          "acquired_at": 1795852361.368727
         }
       },
       {
@@ -74604,7 +74604,7 @@
         },
         "device_request": {
           "card": "8MZlZ",
-          "position": 3,
+          "position": 2,
           "ticket": 20,
           "status": "queued",
           "cell_id": "bv26--V1-no-arch--Sonny--deepseek",
